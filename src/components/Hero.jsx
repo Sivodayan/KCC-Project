@@ -21,7 +21,7 @@ export default function Hero({ onExploreHistory }) {
 
           {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl px-6 sm:px-12 py-12 lg:py-16 text-left">
-            <div className="space-y-3 mb-5 reveal-item stagger-1">
+            <div className="space-y-3 mb-5 animate-hero-1">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-white tracking-tight leading-[1.15]">
                 J/Kopay Christian College
               </h1>
@@ -30,12 +30,12 @@ export default function Hero({ onExploreHistory }) {
               </h2>
             </div>
 
-            <p className="text-base sm:text-lg text-brand-light/90 max-w-xl leading-relaxed mb-8 font-normal reveal-item stagger-2">
+            <p className="text-base sm:text-lg text-brand-light/90 max-w-xl leading-relaxed mb-8 font-normal animate-hero-2">
               A well-established mixed school in Kopay, Jaffna, dedicated to delivering holistic secondary and
               collegiate education.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 reveal-item stagger-3">
+            <div className="flex flex-wrap items-center gap-4 animate-hero-3">
               <button
                 type="button"
                 onClick={onExploreHistory}

@@ -7,23 +7,33 @@ import Contact from '../components/Contact.jsx';
 
 export default function HomePage({ onNavigate }) {
   useEffect(() => {
-    // Scroll entrance observer for smoothly revealing sections
-    const observer = new IntersectionObserver((entries, obs) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          obs.unobserve(entry.target);
+    function revealInView() {
+      const items = document.querySelectorAll('.reveal-item:not(.is-visible)');
+      const triggerBottom = window.innerHeight * 0.92;
+      items.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if (top < triggerBottom) {
+          el.classList.add('is-visible');
         }
       });
-    }, {
-      threshold: 0.08,
-      rootMargin: '0px 0px -30px 0px'
-    });
+    }
 
-    const items = document.querySelectorAll('.reveal-item:not(.is-visible)');
-    items.forEach(el => observer.observe(el));
+    // Run immediately and after mounting ticks
+    revealInView();
+    const rafId = requestAnimationFrame(revealInView);
+    const t1 = setTimeout(revealInView, 150);
+    const t2 = setTimeout(revealInView, 400);
 
-    return () => observer.disconnect();
+    window.addEventListener('scroll', revealInView, { passive: true });
+    window.addEventListener('resize', revealInView, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      window.removeEventListener('scroll', revealInView);
+      window.removeEventListener('resize', revealInView);
+    };
   }, []);
 
   return (

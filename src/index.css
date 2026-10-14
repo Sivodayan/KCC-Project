@@ -180,8 +180,6 @@
   -webkit-backface-visibility: hidden;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  transform: translate3d(0, 0, 0);
-  -webkit-transform: translate3d(0, 0, 0);
 }
 
 .rotate-y-180 {
@@ -193,11 +191,13 @@
 .flip-card-front {
   z-index: 2;
   transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
 }
 
 .flip-card-back {
   z-index: 1;
   transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
 }
 
 .flip-card.is-flipped .flip-card-front {
@@ -206,6 +206,32 @@
 
 .flip-card.is-flipped .flip-card-back {
   z-index: 2;
+}
+
+/* Hero Entrance Animations */
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-1 {
+  animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-hero-2 {
+  opacity: 0;
+  animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.12s forwards;
+}
+
+.animate-hero-3 {
+  opacity: 0;
+  animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
 /* Modal Entrance Animations */

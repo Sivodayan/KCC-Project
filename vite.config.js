@@ -5,6 +5,11 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    base: '/KCC-Project/',
     open: false
   }
+
+
+  // https://vite.dev/config/
+
 });
