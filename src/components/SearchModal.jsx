@@ -208,12 +208,12 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 transition-opacity duration-200"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 animate-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-brand-white max-w-2xl w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col shadow-2xl transform transition-all duration-200 max-h-[80vh]">
+      <div className="bg-brand-white max-w-2xl w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
         {/* Search Input Header */}
         <div className="p-4 sm:p-5 border-b border-brand-pale bg-brand-white flex items-center gap-3">
           <svg className="w-5 h-5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

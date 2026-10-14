@@ -73,50 +73,34 @@ export default function Gallery() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hasEntered, setHasEntered] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [hoveredSide, setHoveredSide] = useState(null); // 'prev' | 'next' | null
 
   const stageRef = useRef(null);
   const sectionRef = useRef(null);
-  const autoRotateRef = useRef(null);
 
   const total = journalGallery.length;
-
-  const startAutoRotate = useCallback(() => {
-    if (autoRotateRef.current) clearInterval(autoRotateRef.current);
-    autoRotateRef.current = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % total);
-    }, 3500);
-  }, [total]);
-
-  const stopAutoRotate = useCallback(() => {
-    if (autoRotateRef.current) {
-      clearInterval(autoRotateRef.current);
-      autoRotateRef.current = null;
-    }
-  }, []);
 
   const focusIndex = useCallback((targetIndex) => {
     if (!hasEntered) {
       setHasEntered(true);
       setIsEntering(false);
     }
-    const safeIndex = (targetIndex % total + total) % total;
+    const safeIndex = ((targetIndex % total) + total) % total;
     setCurrentIndex(safeIndex);
-    startAutoRotate();
-  }, [hasEntered, total, startAutoRotate]);
+  }, [hasEntered, total]);
 
   // Entrance Observer
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if (entry.isIntersecting && !hasEntered) {
+        if (entry.isIntersecting) {
           setHasEntered(true);
           setIsEntering(true);
-          startAutoRotate();
           setTimeout(() => {
             setIsEntering(false);
           }, 1100);
-          observer.unobserve(entry.target);
+          observer.disconnect();
         }
       });
     }, { threshold: 0.12 });
@@ -125,22 +109,39 @@ export default function Gallery() {
       observer.observe(sectionRef.current);
     }
 
-    // Fallback trigger if user scrolled fast or already visible
-    const timer = setTimeout(() => {
-      if (!hasEntered) {
-        setHasEntered(true);
-        setIsEntering(true);
-        startAutoRotate();
-        setTimeout(() => setIsEntering(false), 1100);
-      }
+    const fallbackTimer = setTimeout(() => {
+      setHasEntered(true);
     }, 1200);
 
     return () => {
       observer.disconnect();
-      clearTimeout(timer);
-      stopAutoRotate();
+      clearTimeout(fallbackTimer);
     };
-  }, [hasEntered, startAutoRotate, stopAutoRotate]);
+  }, []);
+
+  // Continuous Auto-rotation (pauses on hover or inactive tab)
+  useEffect(() => {
+    if (!hasEntered || isPaused) return;
+
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % total);
+    }, 3800);
+
+    return () => clearInterval(interval);
+  }, [hasEntered, isPaused, total]);
+
+  // Pause when tab is not active
+  useEffect(() => {
+    function handleVisibility() {
+      if (document.hidden) {
+        setIsPaused(true);
+      } else {
+        setIsPaused(false);
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, []);
 
   // Keyboard navigation for Left/Right arrows
   useEffect(() => {
@@ -196,7 +197,6 @@ export default function Gallery() {
     const centerX = stageRect.left + stageRect.width / 2;
     const mouseX = e.clientX;
 
-    // Approximate card width: 330px on desktop
     const cardHalfWidth = 260;
     if (mouseX < centerX - cardHalfWidth + 50) {
       setHoveredSide('prev');
@@ -239,7 +239,7 @@ export default function Gallery() {
 
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Gallery Header */}
-        <div className="text-center pb-2 mb-6 reveal-item is-visible">
+        <div className="text-center pb-2 mb-6 reveal-item">
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
             Campus Life Gallery
           </h2>
@@ -247,19 +247,53 @@ export default function Gallery() {
             <span className="font-tamil">கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு</span>
             <span>•</span>
             <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full text-[11px] font-mono text-white">
-              11 Moments
+              {currentIndex + 1} of {total} Moments
             </span>
           </div>
         </div>
 
         {/* 3D Carousel Stage Area */}
         <div className="relative w-full py-4 sm:py-6 flex flex-col items-center justify-center">
+          {/* Previous Slide Floating Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              focusIndex(currentIndex - 1);
+            }}
+            aria-label="Previous image"
+            className="hidden sm:flex absolute left-3 lg:left-8 z-40 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-brand-forest border border-white/20 text-white items-center justify-center transition-all duration-200 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-xs"
+          >
+            <svg className="w-5 h-5 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          {/* Next Slide Floating Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              focusIndex(currentIndex + 1);
+            }}
+            aria-label="Next image"
+            className="hidden sm:flex absolute right-3 lg:right-8 z-40 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-brand-forest border border-white/20 text-white items-center justify-center transition-all duration-200 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-xs"
+          >
+            <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
           {/* 3D Perspective Viewport */}
           <div
             ref={stageRef}
             onClick={handleStageClick}
             onMouseMove={handleStageMouseMove}
-            onMouseLeave={handleStageMouseLeave}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => {
+              setIsPaused(false);
+              handleStageMouseLeave();
+            }}
             className="journal-stage relative w-full max-w-6xl h-[360px] sm:h-[450px] lg:h-[520px] flex items-center justify-center cursor-pointer"
           >
             {journalGallery.map((item, index) => {
@@ -307,7 +341,6 @@ export default function Gallery() {
                     extraClasses += ' is-hover-zoomed';
                   }
 
-                  // Responsive translation percentage
                   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
                   const tx = isMobile ? dir * 48 : dir * 64;
                   const rotY = dir * -25;
@@ -399,8 +432,21 @@ export default function Gallery() {
           {/* Floor Shadow beneath curved cards */}
           <div className="w-[85%] max-w-4xl h-10 mx-auto -mt-6 bg-black/60 rounded-full blur-2xl pointer-events-none" />
 
+          {/* Active Moment Caption & Narrative */}
+          <div key={currentIndex} className="animate-caption mt-6 text-center max-w-2xl mx-auto px-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-forest/70 border border-brand-soft/40 text-xs text-brand-pale mb-2 backdrop-blur-xs">
+              <span className="font-tamil">{journalGallery[currentIndex].titleTa}</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+              {journalGallery[currentIndex].titleEn}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed font-normal">
+              {journalGallery[currentIndex].desc}
+            </p>
+          </div>
+
           {/* Single Clean Interactive Indicator Dots */}
-          <div className="mt-8 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
+          <div className="mt-7 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
             {journalGallery.map((_, i) => (
               <button
                 key={i}

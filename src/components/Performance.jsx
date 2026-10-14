@@ -77,7 +77,7 @@ export default function Performance() {
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.1 });
 
     observer.observe(performanceRef.current);
     return () => observer.disconnect();
@@ -86,7 +86,7 @@ export default function Performance() {
   return (
     <section ref={performanceRef} className="py-16 bg-brand-white border-b border-brand-pale" id="performance">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12 reveal-item is-visible">
+        <div className="text-center max-w-2xl mx-auto mb-12 reveal-item">
           <span className="text-xs uppercase font-bold tracking-widest text-brand-sage">At a Glance</span>
           <h2 className="text-3xl font-extrabold text-brand-forest mt-1 tracking-tight">Key Numbers &amp; Performance</h2>
           <p className="text-slate-600 text-sm mt-2">
@@ -97,7 +97,7 @@ export default function Performance() {
         {/* Primary Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {/* Founded Year (1852 without comma) */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.founded}
             </p>
@@ -106,7 +106,7 @@ export default function Performance() {
           </div>
 
           {/* Total Students */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.students}+
             </p>
@@ -115,7 +115,7 @@ export default function Performance() {
           </div>
 
           {/* Teaching Staff */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.staff}
             </p>
@@ -124,7 +124,7 @@ export default function Performance() {
           </div>
 
           {/* G.C.E. O/L Pass Rate */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.olPass}%
             </p>
@@ -133,7 +133,7 @@ export default function Performance() {
           </div>
 
           {/* University Qualifying */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.alQual}%
             </p>
@@ -142,7 +142,7 @@ export default function Performance() {
           </div>
 
           {/* Clubs & Societies */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.clubs}
             </p>
@@ -151,7 +151,7 @@ export default function Performance() {
           </div>
 
           {/* Houses */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.houses}
             </p>
@@ -160,7 +160,7 @@ export default function Performance() {
           </div>
 
           {/* Smart Facilities */}
-          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item is-visible stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
+          <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.labs}%
             </p>

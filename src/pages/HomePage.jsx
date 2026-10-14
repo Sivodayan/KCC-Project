@@ -7,7 +7,7 @@ import Contact from '../components/Contact.jsx';
 
 export default function HomePage({ onNavigate }) {
   useEffect(() => {
-    // Scroll entrance observer for any dynamically loaded elements
+    // Scroll entrance observer for smoothly revealing sections
     const observer = new IntersectionObserver((entries, obs) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -15,7 +15,10 @@ export default function HomePage({ onNavigate }) {
           obs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12 });
+    }, {
+      threshold: 0.08,
+      rootMargin: '0px 0px -30px 0px'
+    });
 
     const items = document.querySelectorAll('.reveal-item:not(.is-visible)');
     items.forEach(el => observer.observe(el));

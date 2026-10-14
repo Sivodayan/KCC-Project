@@ -68,12 +68,6 @@ export default function Navbar({
                 >
                   Performance
                 </button>
-                <button
-                  onClick={() => handleNavLink('home', '#performance')}
-                  className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
-                >
-                  News
-                </button>
 
                 {/* Search Button in Nav */}
                 <button

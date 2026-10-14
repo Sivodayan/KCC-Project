@@ -15,12 +15,12 @@ export default function AnthemModal({ isOpen, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 transition-opacity duration-300 backdrop-blur-xs"
+      className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-modal-backdrop"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-brand-white max-w-lg w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col max-h-[85vh] shadow-xl transform transition-all duration-300">
+      <div className="bg-brand-white max-w-lg w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col max-h-[85vh] shadow-2xl animate-modal-content">
         {/* Anthem Header */}
         <div className="bg-brand-forest p-5 text-brand-white flex items-center justify-between">
           <div>

@@ -10,8 +10,8 @@ export default function HistoryPage({ lang = 'en' }) {
   return (
     <main className="flex-grow py-10 sm:py-14">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <HistoryTimeline lang={lang} />
-        <LeadershipDirectory lang={lang} />
+        <HistoryTimeline key={`timeline-${lang}`} lang={lang} />
+        <LeadershipDirectory key={`lead-${lang}`} lang={lang} />
       </div>
     </main>
   );
