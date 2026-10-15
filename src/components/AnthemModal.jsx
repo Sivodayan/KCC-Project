@@ -41,8 +41,8 @@ export default function AnthemModal({ isOpen, onClose }) {
         {/* Anthem Verses in Tamil */}
         <div className="p-6 overflow-y-auto space-y-4 text-slate-800 font-tamil leading-loose text-center text-sm sm:text-base bg-brand-light">
           <div className="p-4 bg-brand-white rounded-xl border border-brand-pale shadow-2xs">
-            <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
-            <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
+            <p >வாழிய நம் கலைக்கூடமே வாழ்க</p>
+            <p >வாழிய வாழிய வாழியவே</p>
             <p>கழனிகள் சூழ்ந்திடு கோவையம் பதியில்</p>
             <p>விளங்குநற் சிறந்தவக் கல்லூரி</p>
             <p>உண்மையும் நேர்மையும்</p>
@@ -64,7 +64,7 @@ export default function AnthemModal({ isOpen, onClose }) {
             <p>காட்டிடுவாய் தாயே</p>
           </div>
 
-          <div className="p-4 bg-brand-white rounded-xl border border-brand-pale font-bold text-brand-forest shadow-2xs">
+          <div className="p-4 bg-brand-white rounded-xl border border-brand-pale shadow-2xs">
             <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
             <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>
             <p>நிலை பெறு கலைகளின் நிறைவுடனாக</p>
