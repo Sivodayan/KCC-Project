@@ -171,6 +171,9 @@
   transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
+/* Hover flip: just hovering flips the card to Tamil */
+.flip-card:hover .flip-card-inner,
+.flip-card:focus-within .flip-card-inner,
 .flip-card.is-flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
@@ -200,10 +203,14 @@
   -webkit-transform: rotateY(180deg);
 }
 
+.flip-card:hover .flip-card-front,
+.flip-card:focus-within .flip-card-front,
 .flip-card.is-flipped .flip-card-front {
   z-index: 1;
 }
 
+.flip-card:hover .flip-card-back,
+.flip-card:focus-within .flip-card-back,
 .flip-card.is-flipped .flip-card-back {
   z-index: 2;
 }
