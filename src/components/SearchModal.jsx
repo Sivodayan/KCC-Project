@@ -1,27 +1,81 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const searchItems = [
+  // Events & Facebook Updates
   {
     title: "School Events & Facebook Community Updates",
     tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
     category: "Events",
-    description: "Official Facebook community updates from கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்",
+    description: "Official Facebook updates, announcements & campus news from கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்",
     url: "events",
     action: "navigate"
   },
   {
-    title: "Campus Life Journal & Image Gallery",
+    title: "Annual Prize Giving & Student Achievements",
+    tamil: "வருடாந்த பரிசளிப்பு விழா & மாணவர் சாதனைகள்",
+    category: "Events",
+    description: "Academic honors, special awards, and student distinction highlights on Facebook",
+    url: "events",
+    action: "navigate"
+  },
+  {
+    title: "Inter-House Sports Meet & Athletics",
+    tamil: "இல்லங்களுக்கிடையிலான விளையாட்டுப் போட்டி",
+    category: "Events",
+    description: "Track & field events, relay championships, marching parade & sports celebrations",
+    url: "events",
+    action: "navigate"
+  },
+  {
+    title: "Cultural Festivals & College Celebrations",
+    tamil: "கலாசார விழாக்கள் & கலை நிகழ்வுகள்",
+    category: "Events",
+    description: "Tamil cultural day celebrations, musical performances & exhibitions",
+    url: "events",
+    action: "navigate"
+  },
+  {
+    title: "Official Facebook Community Page",
+    tamil: "அதிகாரபூர்வ பேஸ்புக் சமூகம் (Facebook)",
+    category: "Social",
+    description: "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் - Official Facebook profile (ID: 61575442051109)",
+    url: "https://www.facebook.com/profile.php?id=61575442051109",
+    action: "external"
+  },
+
+  // Campus Life & Gallery
+  {
+    title: "Campus Life Journal & 3D Digital Gallery",
     tamil: "கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு",
     category: "Gallery",
     description: "11 historic campus moments, sports meet, science labs, celebrations & collegiate life",
     url: "gallery",
     action: "navigate"
   },
+
+  // History & Heritage
   {
-    title: "College History (1849 - Present)",
+    title: "College History Timeline (1849 - Present)",
     tamil: "கல்லூரி வரலாறு (1849 - இன்று வரை)",
     category: "History",
     description: "CMS English School founding, Robert Bren, Bren Hall, Principals & Managers timeline",
+    url: "history",
+    action: "navigate"
+  },
+  {
+    title: "Tamil History Chronicle (தமிழ் வரலாற்றுப் பதிப்பு)",
+    tamil: "கல்லூரி வரலாறு - தமிழ் ஆவணம்",
+    category: "History",
+    description: "Read the authentic historical chronicle in Tamil script (?lang=ta)",
+    url: "history?lang=ta",
+    action: "navigate"
+  },
+  {
+    title: "Founded Year 1852 (170+ Years of Service)",
+    tamil: "நிறுவப்பட்ட ஆண்டு 1852 (170+ ஆண்டு பாரம்பரியம்)",
+    category: "Heritage",
+    description: "Over 170+ years of dedicated service to secondary and collegiate education in Kopay",
     url: "history",
     action: "navigate"
   },
@@ -37,7 +91,7 @@ const searchItems = [
     title: "Vision: The Ideal School in Peninsula",
     tamil: "தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
     category: "Heritage",
-    description: "Leading Northern Province secondary and collegiate education",
+    description: "Leading Northern Province secondary and collegiate education with high standards",
     url: "motto",
     action: "navigate"
   },
@@ -45,39 +99,35 @@ const searchItems = [
     title: "Mission Statement",
     tamil: "நோக்கக்கூற்று: விழுமியங்கள், கடமைகள்",
     category: "Heritage",
-    description: "Fostering self-respect, character, patriotism, and optimum resource utilization",
+    description: "Fostering self-respect, moral character, patriotism, and optimum resource utilization",
     url: "motto",
     action: "navigate"
   },
+
+  // School Anthem
   {
     title: "School Anthem (பாடசாலைக் கீதம்)",
     tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
     category: "Tradition",
-    description: "College anthem composed in Ragam Hamsadhwani celebrating KCC",
+    description: "Official college anthem composed in Ragam Hamsadhwani celebrating truth, justice and KCC pride",
     url: "anthem",
     action: "navigate"
   },
+
+  // Academics & Key Metrics
   {
-    title: "Key Numbers & Performance",
+    title: "Key Performance & Enrolment Metrics",
     tamil: "செயற்திறன் புள்ளிவிபரங்கள்",
     category: "Academics",
-    description: "Pass rates, 386+ enrolled students, 46 faculty mentors, 18 clubs & societies",
+    description: "386+ enrolled students, 46 faculty mentors, 18 clubs & societies, high national pass rates",
     url: "performance",
-    action: "navigate"
-  },
-  {
-    title: "Founded Year 1852",
-    tamil: "நிறுவப்பட்ட ஆண்டு 1852",
-    category: "Heritage",
-    description: "Over 170+ years of dedicated service to secondary education in Kopay",
-    url: "history",
     action: "navigate"
   },
   {
     title: "G.C.E. O/L Examination Results (94.2%)",
     tamil: "க.பொ.த சாதாரண தரப் பரீட்சை பெறுபேறுகள்",
     category: "Academics",
-    description: "High achievement records in national general certificate examinations",
+    description: "High achievement records in national general certificate examinations in Jaffna district",
     url: "performance",
     action: "navigate"
   },
@@ -85,49 +135,51 @@ const searchItems = [
     title: "G.C.E. A/L University Qualifying Rate (78%)",
     tamil: "பல்கலைக்கழக அனுமதி வீதம் (78%)",
     category: "Academics",
-    description: "Science, Commerce, Arts, and Technology collegiate education",
+    description: "Science, Commerce, Arts, and Technology collegiate education and university admissions",
     url: "performance",
-    action: "navigate"
-  },
-  {
-    title: "Four Competitive Houses (விளையாட்டு இல்லங்கள்)",
-    tamil: "விளையாட்டு இல்லங்கள் (4 Competitive Houses)",
-    category: "Sports",
-    description: "Annual sports meet division, athletic spirit, and team rivalry",
-    url: "events",
     action: "navigate"
   },
   {
     title: "Clubs & Societies (18 Co-Curriculars)",
     tamil: "பாடசாலைச் சங்கங்களும் மன்றங்களும் (18)",
     category: "Activities",
-    description: "Tamil Literary Association, Science Union, ICT Club, Scouts & Guides",
+    description: "Tamil Literary Association, Science Union, ICT Club, Scouts & Guides, English Society",
     url: "performance",
     action: "navigate"
   },
   {
-    title: "Science & ICT Smart Facilities",
+    title: "Science & ICT Smart Laboratories",
     tamil: "விஞ்ஞான & கணனி ஆய்வுகூடங்கள்",
     category: "Facilities",
-    description: "Modern computer laboratory and advanced science experimental units",
-    url: "academics",
+    description: "Modern computer laboratory and advanced science experimental units for students",
+    url: "performance",
     action: "navigate"
   },
+
+  // Contact & Location
   {
-    title: "College Office & Direct Contact",
+    title: "College Administrative Office",
     tamil: "கல்லூரி அலுவலகம் & தொடர்புகள்",
     category: "Contact",
-    description: "Address: Kopay, Jaffna | Tel: 021 223 0040 | Email: kcckopay@gmail.com",
+    description: "Administrative inquiries, admissions & records | Phone: 021 223 0040 | Email: kcckopay@gmail.com",
     url: "contact",
     action: "navigate"
   },
   {
-    title: "Online Inquiry & Message Form",
-    tamil: "விசாரணைப் படிவம்",
+    title: "Campus Location & Google Maps Directions",
+    tamil: "பாடசாலை அமைவிடம் & வரைபடம்",
     category: "Contact",
-    description: "Send inquiries directly to the college administration office",
-    url: "contact",
-    action: "navigate"
+    description: "Point Pedro Road, Kopay, Jaffna, Sri Lanka - Get instant directions on Google Maps",
+    url: "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
+    action: "external"
+  },
+  {
+    title: "Instagram Official Tag (@kopaychristiancollege)",
+    tamil: "இன்ஸ்டாகிராம் தொடர்புகள்",
+    category: "Social",
+    description: "Explore campus photos, alumni tags & visual moments on Instagram",
+    url: "https://www.instagram.com/explore/tags/kopaychristiancollege/",
+    action: "external"
   }
 ];
 
@@ -136,6 +188,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef(null);
   const itemRefs = useRef([]);
+  const routerNavigate = useNavigate();
 
   const filteredItems = searchItems.filter(item => {
     if (!query.trim()) return true;
@@ -196,21 +249,38 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   function handleSelect(item) {
     onClose();
-    if (item.action === 'anthem') {
+    if (item.action === 'external' && item.url) {
+      window.open(item.url, '_blank', 'noopener,noreferrer');
+    } else if (item.action === 'anthem') {
       onOpenAnthem();
+    } else if (item.url?.includes('?')) {
+      routerNavigate(`/${item.url}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       onNavigate(item.url);
     }
   }
 
+  function handleQuickFilter(catName) {
+    if (query.toLowerCase() === catName.toLowerCase()) {
+      setQuery('');
+    } else {
+      setQuery(catName);
+    }
+    if (inputRef.current) inputRef.current.focus();
+  }
+
   function getCategoryBadgeClass(category) {
-    if (category === 'Events') return 'bg-[#1877F2]/15 text-[#1877F2] font-semibold';
-    if (category === 'History') return 'bg-amber-100 text-amber-800';
-    if (category === 'Heritage') return 'bg-emerald-100 text-emerald-800';
-    if (category === 'Tradition') return 'bg-indigo-100 text-indigo-800';
-    if (category === 'Academics') return 'bg-blue-100 text-blue-800';
-    if (category === 'Sports') return 'bg-orange-100 text-orange-800';
-    return 'bg-brand-pale text-brand-forest';
+    if (category === 'Events') return 'bg-[#1877F2]/15 text-[#1877F2] font-semibold border border-[#1877F2]/20';
+    if (category === 'Social') return 'bg-sky-100 text-sky-800 font-semibold border border-sky-200';
+    if (category === 'History') return 'bg-amber-100 text-amber-800 font-semibold border border-amber-200';
+    if (category === 'Heritage') return 'bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200';
+    if (category === 'Tradition') return 'bg-indigo-100 text-indigo-800 font-semibold border border-indigo-200';
+    if (category === 'Academics') return 'bg-blue-100 text-blue-800 font-semibold border border-blue-200';
+    if (category === 'Gallery') return 'bg-purple-100 text-purple-800 font-semibold border border-purple-200';
+    if (category === 'Activities') return 'bg-teal-100 text-teal-800 font-semibold border border-teal-200';
+    if (category === 'Contact') return 'bg-emerald-100 text-brand-forest font-semibold border border-brand-pale';
+    return 'bg-brand-pale text-brand-forest font-semibold';
   }
 
   return (
@@ -233,7 +303,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             onChange={(e) => setQuery(e.target.value)}
             autoComplete="off"
             spellCheck="false"
-            placeholder="Search history, anthem, admissions, staff, results, contact..."
+            placeholder="Search events, facebook updates, history, anthem, contact, results..."
             className="w-full text-slate-800 text-sm sm:text-base bg-transparent placeholder:text-slate-400 focus:outline-none"
           />
           {query && (
@@ -260,29 +330,56 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Quick:</span>
           <button
             type="button"
-            onClick={() => setQuery('History')}
-            className="px-2.5 py-1 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40 transition-colors shrink-0 cursor-pointer"
+            onClick={() => handleQuickFilter('Events')}
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
+              query.toLowerCase() === 'events'
+                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
+                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+            }`}
+          >
+            Events & FB
+          </button>
+          <button
+            type="button"
+            onClick={() => handleQuickFilter('History')}
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
+              query.toLowerCase() === 'history'
+                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
+                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+            }`}
           >
             History (வரலாறு)
           </button>
           <button
             type="button"
-            onClick={() => setQuery('Anthem')}
-            className="px-2.5 py-1 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40 transition-colors shrink-0 cursor-pointer"
+            onClick={() => handleQuickFilter('Anthem')}
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
+              query.toLowerCase() === 'anthem'
+                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
+                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+            }`}
           >
-            பாடசாலைக் கீதம்
+            School Anthem
           </button>
           <button
             type="button"
-            onClick={() => setQuery('Performance')}
-            className="px-2.5 py-1 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40 transition-colors shrink-0 cursor-pointer"
+            onClick={() => handleQuickFilter('Gallery')}
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
+              query.toLowerCase() === 'gallery'
+                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
+                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+            }`}
           >
-            Performance
+            3D Gallery
           </button>
           <button
             type="button"
-            onClick={() => setQuery('Contact')}
-            className="px-2.5 py-1 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40 transition-colors shrink-0 cursor-pointer"
+            onClick={() => handleQuickFilter('Contact')}
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
+              query.toLowerCase() === 'contact'
+                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
+                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+            }`}
           >
             Contact Office
           </button>
@@ -301,7 +398,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 />
               </svg>
               <p className="font-semibold text-slate-700">No matching results found</p>
-              <p className="text-xs text-slate-400 mt-1">Try searching for "History", "Anthem", "1852", or "Contact"</p>
+              <p className="text-xs text-slate-400 mt-1">Try searching for "Events", "Facebook", "History", "Anthem", or "Contact"</p>
             </div>
           ) : (
             filteredItems.map((item, index) => {
@@ -314,9 +411,9 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`search-item p-3 sm:p-3.5 rounded-xl cursor-pointer transition-all flex items-start justify-between gap-3 ${
+                  className={`search-item p-3 sm:p-3.5 rounded-xl cursor-pointer transition-all flex items-start justify-between gap-3 select-none ${
                     isSelected
-                      ? 'bg-brand-light border border-brand-pale text-brand-forest'
+                      ? 'bg-brand-light border border-brand-pale text-brand-forest shadow-2xs translate-x-0.5'
                       : 'hover:bg-brand-light/60 text-slate-700'
                   }`}
                 >
@@ -330,11 +427,17 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                     <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
                     <p className="text-[11px] font-tamil text-brand-forest font-medium">{item.tamil}</p>
                   </div>
-                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 pt-1 opacity-70">
-                    <span>Go</span>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
+                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 pt-1 opacity-80">
+                    <span>{item.action === 'external' ? 'Open' : 'Go'}</span>
+                    {item.action === 'external' ? (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      </svg>
+                    )}
                   </div>
                 </div>
               );
