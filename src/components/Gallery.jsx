@@ -3,69 +3,47 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 const journalGallery = [
   {
     src: "assets/gal_(1).jpeg",
-    titleEn: "Historic Main Hall & Campus Heritage",
-    titleTa: "வரலாற்றுச் சிறப்புமிக்க பிரதான மண்டபம்",
-    desc: "The venerated colonial-era architecture and administrative center standing tall since 1852."
+    
   },
   {
     src: "assets/gal_(2).jpeg",
-    titleEn: "Annual Sports Meet & Athletic Parade",
-    titleTa: "இல்ல மெய்வல்லுநர் விளையாட்டு விழா",
-    desc: "Spectacular student march past and track competitions representing our four historic houses."
+    
   },
   {
     src: "assets/gal_(3).jpeg",
-    titleEn: "Collegiate Assembly & Morning Devotion",
-    titleTa: "காலை ஆராதனை மற்றும் ஒன்றுகூடல்",
-    desc: "Instilling discipline, spiritual grounding, and institutional pride in the student body."
+    
   },
   {
     src: "assets/gal_(4).jpeg",
-    titleEn: "Advanced Science Laboratory Sessions",
-    titleTa: "விஞ்ஞான ஆய்வுகூட பரிசோதனைகள்",
-    desc: "Hands-on physics, chemistry, and biology experiments empowering future scientists."
-  },
+    
+    },
   {
     src: "assets/gal_(5).jpeg",
-    titleEn: "Cultural Celebrations & Traditional Arts",
-    titleTa: "கலை, கலாசார பெருவிழாக்கள்",
-    desc: "Vibrant festivities celebrating Tamil heritage, music, drama, and folklore traditions."
+   
   },
   {
     src: "assets/gal_(6).jpeg",
-    titleEn: "Annual Prize Giving & Honors Day",
-    titleTa: "வருடாந்த பரிசளிப்பு விழா",
-    desc: "Recognizing stellar academic, co-curricular, and moral achievements of top scholars."
+    
   },
   {
     src: "assets/gal_(7).jpeg",
-    titleEn: "College Library & Knowledge Sanctuary",
-    titleTa: "நூலகமும் அமைதியான கற்றல் சூழலும்",
-    desc: "Vast collection of reference volumes, literature, and quiet zones for focused study."
-  },
+    
+    
+    },
   {
     src: "assets/gal_(8).jpeg",
-    titleEn: "ICT Center & Smart Digital Learning",
-    titleTa: "தகவல் தொடர்பாடல் தொழினுட்ப மையம்",
-    desc: "Equipped modern computer labs nurturing coding, digital literacy, and modern IT skills."
-  },
+    
+  },  
   {
     src: "assets/gal_(9).jpeg",
-    titleEn: "Lush Campus Canopy & Courtyard Life",
-    titleTa: "பசுமை வளாகமும் மரநிழல் சூழலும்",
-    desc: "Picturesque shady green walkways fostering camaraderie and serene collegiate life."
+   
   },
   {
     src: "assets/gal_(10).jpeg",
-    titleEn: "Student Leadership & Prefects Guild",
-    titleTa: "மாணவர் தலைவர் கழகம்",
-    desc: "Nurturing exemplary integrity, leadership, duty, and service to our community."
+  
   },
   {
     src: "assets/gal_(11).jpeg",
-    titleEn: "Community Service & Eco Initiatives",
-    titleTa: "சமூக நற்பணி மற்றும் சூழல் பாதுகாப்பு",
-    desc: "Active scouting, environmental drives, and social responsibility initiatives."
   }
 ];
 
@@ -114,7 +92,7 @@ export default function Gallery() {
             if (initialSlideTimerRef.current) clearTimeout(initialSlideTimerRef.current);
             initialSlideTimerRef.current = setTimeout(() => {
               setCurrentIndex(prev => (prev + 1) % total);
-            }, 1500);
+            }, 500);
           }
         } else {
           setIsInView(false);
