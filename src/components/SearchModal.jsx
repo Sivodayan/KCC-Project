@@ -30,7 +30,7 @@ const searchItems = [
     tamil: "மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்",
     category: "Heritage",
     description: "The core motto of Kopay Christian College fostering truth and upright character",
-    url: "academics",
+    url: "motto",
     action: "navigate"
   },
   {
@@ -38,7 +38,7 @@ const searchItems = [
     tamil: "தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
     category: "Heritage",
     description: "Leading Northern Province secondary and collegiate education",
-    url: "academics",
+    url: "motto",
     action: "navigate"
   },
   {
@@ -46,7 +46,7 @@ const searchItems = [
     tamil: "நோக்கக்கூற்று: விழுமியங்கள், கடமைகள்",
     category: "Heritage",
     description: "Fostering self-respect, character, patriotism, and optimum resource utilization",
-    url: "academics",
+    url: "motto",
     action: "navigate"
   },
   {

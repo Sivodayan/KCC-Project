@@ -41,12 +41,6 @@ export default function Footer({ onNavigate, onOpenAnthem }) {
               Gallery
             </button>
             <button
-              onClick={() => onNavigate('academics')}
-              className="hover:text-brand-forest transition-colors cursor-pointer"
-            >
-              Academics
-            </button>
-            <button
               onClick={() => onNavigate('performance')}
               className="hover:text-brand-forest transition-colors cursor-pointer"
             >

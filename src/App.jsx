@@ -6,8 +6,6 @@ import HomePage from './pages/HomePage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
 import EventsPage from './pages/EventsPage.jsx';
 import GalleryPage from './pages/GalleryPage.jsx';
-import AcademicsPage from './pages/AcademicsPage.jsx';
-import PerformancePage from './pages/PerformancePage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import AnthemPage from './pages/AnthemPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
@@ -30,8 +28,6 @@ export default function App() {
     if (path.startsWith('/history')) return 'history';
     if (path.startsWith('/events')) return 'events';
     if (path.startsWith('/gallery')) return 'gallery';
-    if (path.startsWith('/academics')) return 'academics';
-    if (path.startsWith('/performance')) return 'performance';
     if (path.startsWith('/contact')) return 'contact';
     if (path.startsWith('/anthem')) return 'anthem';
     return 'home';
@@ -58,9 +54,17 @@ export default function App() {
     } else if (hash.startsWith('#gallery')) {
       navigate('/gallery', { replace: true });
     } else if (hash.startsWith('#principles')) {
-      navigate('/academics', { replace: true });
+      if (window.location.pathname === '/') {
+        document.getElementById('principles')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/#principles', { replace: true });
+      }
     } else if (hash.startsWith('#performance')) {
-      navigate('/performance', { replace: true });
+      if (window.location.pathname === '/') {
+        document.getElementById('performance')?.scrollIntoView({ behavior: 'smooth' });
+      } else {
+        navigate('/#performance', { replace: true });
+      }
     } else if (hash.startsWith('#contact')) {
       navigate('/contact', { replace: true });
     } else if (hash.startsWith('#anthem')) {
@@ -106,14 +110,6 @@ export default function App() {
       pageTitle = "Photo Gallery & Campus Life | J/Kopay Christian College";
       descContent = "Explore our 3D digital photo gallery showcasing collegiate life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
       canonicalUrl = "https://kcc-project.vercel.app/gallery";
-    } else if (path.startsWith('/academics')) {
-      pageTitle = "Academics, Motto & Vision | J/Kopay Christian College";
-      descContent = "Discover the founding motto 'Truth and Justice' (உண்மைக்கும் நேர்மைக்கும்), institutional vision, mission, and collegiate education at Kopay Christian College.";
-      canonicalUrl = "https://kcc-project.vercel.app/academics";
-    } else if (path.startsWith('/performance')) {
-      pageTitle = "Performance & Achievements | J/Kopay Christian College";
-      descContent = "Academic performance records: 94.2% G.C.E. O/L pass rate, 78% university qualifying rate, four athletic houses, and 18 co-curricular student clubs.";
-      canonicalUrl = "https://kcc-project.vercel.app/performance";
     } else if (path.startsWith('/contact')) {
       pageTitle = "Contact Us & Campus Location | J/Kopay Christian College";
       descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
@@ -134,18 +130,44 @@ export default function App() {
 
   // Clean navigation handler without '#'
   const handleNavigate = useCallback((page) => {
+    if (page === 'performance') {
+      if (location.pathname === '/') {
+        const el = document.getElementById('performance');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.location.hash = '#performance';
+        }
+      } else {
+        navigate('/#performance');
+      }
+      return;
+    }
+
+    if (page === 'motto' || page === 'principles') {
+      if (location.pathname === '/') {
+        const el = document.getElementById('principles');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        } else {
+          window.location.hash = '#principles';
+        }
+      } else {
+        navigate('/#principles');
+      }
+      return;
+    }
+
     let target = '/';
     if (page === 'history') target = '/history';
     else if (page === 'events') target = '/events';
     else if (page === 'gallery') target = '/gallery';
-    else if (page === 'academics') target = '/academics';
-    else if (page === 'performance') target = '/performance';
     else if (page === 'contact') target = '/contact';
     else if (page === 'anthem') target = '/anthem';
 
     navigate(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [navigate]);
+  }, [navigate, location.pathname]);
 
   // Global Keyboard shortcuts
   useEffect(() => {
@@ -183,10 +205,11 @@ export default function App() {
         <Route path="/history" element={<HistoryPage lang={historyLang} />} />
         <Route path="/events" element={<EventsPage />} />
         <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/academics" element={<AcademicsPage />} />
-        <Route path="/performance" element={<PerformancePage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/anthem" element={<AnthemPage />} />
+        {/* Redirect performance to index anchor */}
+        <Route path="/performance" element={<Navigate to="/#performance" replace />} />
+        <Route path="/academics" element={<Navigate to="/" replace />} />
         {/* Fallback to Home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

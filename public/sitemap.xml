@@ -35,22 +35,6 @@
     <priority>0.85</priority>
   </url>
 
-  <!-- Academics, Motto & Vision -->
-  <url>
-    <loc>https://kcc-project.vercel.app/academics</loc>
-    <lastmod>2026-10-15</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.85</priority>
-  </url>
-
-  <!-- Performance & Examination Achievements -->
-  <url>
-    <loc>https://kcc-project.vercel.app/performance</loc>
-    <lastmod>2026-10-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.85</priority>
-  </url>
-
   <!-- Contact Us & Location -->
   <url>
     <loc>https://kcc-project.vercel.app/contact</loc>

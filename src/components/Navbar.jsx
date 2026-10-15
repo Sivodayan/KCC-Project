@@ -88,26 +88,10 @@ export default function Navbar({
                 Gallery
               </button>
 
-              {/* Academics Pill */}
-              <button
-                onClick={() => handleNavLink('academics')}
-                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                  currentPage === 'academics'
-                    ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
-                    : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
-                }`}
-              >
-                Academics
-              </button>
-
-              {/* Performance Pill */}
+              {/* Performance Pill - Redirects/scrolls to Performance on index */}
               <button
                 onClick={() => handleNavLink('performance')}
-                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                  currentPage === 'performance'
-                    ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
-                    : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
-                }`}
+                className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60"
               >
                 Performance
               </button>
@@ -307,10 +291,8 @@ export default function Navbar({
                   School Anthem (பாடசாலைக் கீதம்)
                 </button>
                 <button
-                  onClick={() => handleNavLink('academics')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${
-                    currentPage === 'academics' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
-                  }`}
+                  onClick={() => handleNavLink('motto')}
+                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium text-slate-700 hover:text-brand-forest"
                 >
                   Motto & Principles
                 </button>
@@ -335,18 +317,8 @@ export default function Navbar({
             Gallery
           </button>
           <button
-            onClick={() => handleNavLink('academics')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
-              currentPage === 'academics' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
-            }`}
-          >
-            Academics
-          </button>
-          <button
             onClick={() => handleNavLink('performance')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
-              currentPage === 'performance' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
-            }`}
+            className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-light"
           >
             Performance
           </button>
