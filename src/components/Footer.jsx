@@ -2,9 +2,9 @@ import React from 'react';
 
 export default function Footer({ onNavigate, onOpenAnthem }) {
   return (
-    <footer className="bg-brand-white border-t border-brand-pale py-8 text-xs text-slate-500">
+    <footer className="bg-brand-white border-t border-brand-pale pt-4 pb-4 sm:pt-5 sm:pb-5 text-xs text-slate-500">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-6 border-b border-brand-pale/60">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pb-3 sm:pb-4 border-b border-brand-pale/60">
           <div>
             <div className="font-bold text-base text-brand-forest">
               J/Kopay Christian College
@@ -67,7 +67,7 @@ export default function Footer({ onNavigate, onOpenAnthem }) {
           </nav>
         </div>
 
-        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
+        <div className="pt-2.5 sm:pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
           <div>
             &copy; 2026 J/Kopay Christian College. All rights reserved.
           </div>
