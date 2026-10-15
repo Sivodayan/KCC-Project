@@ -2,48 +2,48 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const journalGallery = [
   {
-    src: "assets/gal_(1).jpeg",
+    src: "/assets/gal_(1).jpeg",
     
   },
   {
-    src: "assets/gal_(2).jpeg",
+    src: "/assets/gal_(2).jpeg",
     
   },
   {
-    src: "assets/gal_(3).jpeg",
+    src: "/assets/gal_(3).jpeg",
     
   },
   {
-    src: "assets/gal_(4).jpeg",
+    src: "/assets/gal_(4).jpeg",
     
     },
   {
-    src: "assets/gal_(5).jpeg",
+    src: "/assets/gal_(5).jpeg",
    
   },
   {
-    src: "assets/gal_(6).jpeg",
+    src: "/assets/gal_(6).jpeg",
     
   },
   {
-    src: "assets/gal_(7).jpeg",
+    src: "/assets/gal_(7).jpeg",
     
     
     },
   {
-    src: "assets/gal_(8).jpeg",
+    src: "/assets/gal_(8).jpeg",
     
   },  
   {
-    src: "assets/gal_(9).jpeg",
+    src: "/assets/gal_(9).jpeg",
    
   },
   {
-    src: "assets/gal_(10).jpeg",
+    src: "/assets/gal_(10).jpeg",
   
   },
   {
-    src: "assets/gal_(11).jpeg",
+    src: "/assets/gal_(11).jpeg",
   }
 ];
 

@@ -161,101 +161,59 @@ html {
   }
 }
 
-/* 3D Flip Card Interactive System (Mobile Safe) */
-.perspective-1000 {
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-}
-
-.transform-style-3d {
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
-}
-
+/* 3D Flip Card Interactive System (Flicker-Free, Mobile & Desktop Optimized) */
 .flip-card {
-  perspective: 1000px;
-  -webkit-perspective: 1000px;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
+  perspective: 1200px;
+  -webkit-perspective: 1200px;
   -webkit-tap-highlight-color: transparent;
+  transform: translateZ(0);
 }
 
 .flip-card-inner {
   position: relative;
   width: 100%;
   height: 100%;
-  text-align: left;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transition: transform 0.65s cubic-bezier(0.25, 0.8, 0.25, 1);
+  will-change: transform;
 }
 
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-
-/* Layer positioning with translateZ for mobile GPU stability */
-.flip-card-front {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  transform: rotateY(0deg) translateZ(1px);
-  -webkit-transform: rotateY(0deg) translateZ(1px);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transition: opacity 0.35s ease, z-index 0.35s ease;
-}
-
+.flip-card-front,
 .flip-card-back {
   position: absolute;
   inset: 0;
-  z-index: 1;
-  transform: rotateY(180deg) translateZ(1px);
-  -webkit-transform: rotateY(180deg) translateZ(1px);
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transition: opacity 0.35s ease, z-index 0.35s ease;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Click/Tap Toggle State (Works 100% on Mobile & Desktop) */
+.flip-card-front {
+  transform: rotateY(0deg);
+  -webkit-transform: rotateY(0deg);
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+  -webkit-transform: rotateY(180deg);
+}
+
+/* Click/Tap Toggle State (Essential for Mobile touch screens) */
 .flip-card.is-flipped .flip-card-inner {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }
 
-.flip-card.is-flipped .flip-card-front {
-  z-index: 1;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.flip-card.is-flipped .flip-card-back {
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
-}
-
-/* Desktop Hover Support (Pointer Devices Only) */
+/* Desktop Hover Support (Smooth, No pointer-events toggle or z-index flash) */
 @media (hover: hover) and (pointer: fine) {
-  .flip-card:hover .flip-card-inner,
-  .flip-card:focus-within .flip-card-inner {
+  .flip-card:hover .flip-card-inner {
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
-  }
-
-  .flip-card:hover .flip-card-front,
-  .flip-card:focus-within .flip-card-front {
-    z-index: 1;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .flip-card:hover .flip-card-back,
-  .flip-card:focus-within .flip-card-back {
-    z-index: 2;
-    opacity: 1;
-    pointer-events: auto;
   }
 }
 

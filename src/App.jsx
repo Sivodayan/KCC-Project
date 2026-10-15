@@ -1,81 +1,142 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { Routes, Route, useNavigate, useLocation, useSearchParams, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import HomePage from './pages/HomePage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
+import EventsPage from './pages/EventsPage.jsx';
+import GalleryPage from './pages/GalleryPage.jsx';
+import AcademicsPage from './pages/AcademicsPage.jsx';
+import PerformancePage from './pages/PerformancePage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState('home');
-  const [historyLang, setHistoryLang] = useState('en');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Single source of truth for language: read directly from URL query param ?lang=ta
+  const historyLang = searchParams.get('lang') === 'ta' ? 'ta' : 'en';
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAnthemOpen, setIsAnthemOpen] = useState(false);
 
-  // Sync state with URL hash
+  // Derive current page from URL pathname for clean React Router state
+  const getActivePageName = () => {
+    const path = location.pathname.toLowerCase();
+    if (path.startsWith('/history')) return 'history';
+    if (path.startsWith('/events')) return 'events';
+    if (path.startsWith('/gallery')) return 'gallery';
+    if (path.startsWith('/academics')) return 'academics';
+    if (path.startsWith('/performance')) return 'performance';
+    if (path.startsWith('/contact')) return 'contact';
+    return 'home';
+  };
+
+  const currentPage = getActivePageName();
+
+  // Backward compatibility: redirect any legacy anchor hash URLs to clean BrowserRouter paths
   useEffect(() => {
-    function handleHashChange() {
-      const hash = window.location.hash.toLowerCase();
-      if (hash.startsWith('#history')) {
-        setCurrentPage('history');
-      } else {
-        setCurrentPage('home');
-      }
+    // 1. Check for SPA redirect from 404.html (e.g., GitHub Pages)
+    const redirectPath = sessionStorage.getItem('redirect_path');
+    if (redirectPath) {
+      sessionStorage.removeItem('redirect_path');
+      navigate(redirectPath, { replace: true });
+      return;
     }
 
-    // Check initial hash
-    handleHashChange();
+    // 2. Redirect legacy hash fragments to clean URL paths
+    const hash = window.location.hash.toLowerCase();
+    if (hash.startsWith('#history')) {
+      navigate('/history', { replace: true });
+    } else if (hash.startsWith('#events')) {
+      navigate('/events', { replace: true });
+    } else if (hash.startsWith('#gallery')) {
+      navigate('/gallery', { replace: true });
+    } else if (hash.startsWith('#principles')) {
+      navigate('/academics', { replace: true });
+    } else if (hash.startsWith('#performance')) {
+      navigate('/performance', { replace: true });
+    } else if (hash.startsWith('#contact')) {
+      navigate('/contact', { replace: true });
+    }
+  }, [navigate]);
 
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const handleNavigate = useCallback((page, hash = '') => {
-    if (page === 'history') {
-      setCurrentPage('history');
-      window.location.hash = '#history';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Sync historyLang with ?lang parameter when changed via Navbar
+  const handleHistoryLangChange = useCallback((lang) => {
+    const nextParams = new URLSearchParams(searchParams);
+    if (lang === 'ta') {
+      nextParams.set('lang', 'ta');
     } else {
-      setCurrentPage('home');
-      if (hash) {
-        if (window.location.hash !== hash) {
-          window.history.pushState(null, '', hash);
-        }
-        setTimeout(() => {
-          const el = document.querySelector(hash);
-          if (el) {
-            const navHeader = document.getElementById('mainHeader');
-            const navHeight = navHeader ? navHeader.getBoundingClientRect().height : 75;
-            const elementTop = el.getBoundingClientRect().top + window.pageYOffset;
-            const elementHeight = el.getBoundingClientRect().height;
-            const availableHeight = window.innerHeight - navHeight;
-
-            let offsetPosition;
-            if (hash === '#gallery' && elementHeight < availableHeight) {
-              // Vertically center gallery within the visible viewport below sticky navbar
-              const verticalSlack = Math.max(0, (availableHeight - elementHeight) / 2);
-              offsetPosition = Math.max(0, elementTop - navHeight - verticalSlack);
-            } else {
-              offsetPosition = Math.max(0, elementTop - navHeight - 16);
-            }
-
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            });
-
-            el.classList.add('ring-4', 'ring-brand-pale', 'transition-all', 'duration-500');
-            setTimeout(() => el.classList.remove('ring-4', 'ring-brand-pale'), 2000);
-          }
-        }, 80);
-      } else {
-        if (window.location.hash) {
-          window.history.pushState(null, '', window.location.pathname);
-        }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
+      nextParams.delete('lang');
     }
-  }, []);
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  // Dynamic SEO metadata updates per route for Google Search discovery
+  useEffect(() => {
+    const path = location.pathname.toLowerCase();
+    const metaDesc = document.querySelector('meta[name="description"]');
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+
+    let pageTitle = "J/Kopay Christian College | யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி | Jaffna";
+    let descContent = "Official portal of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, history, traditions, and collegiate education.";
+    let canonicalUrl = "https://kcc-project.vercel.app/";
+
+    if (path.startsWith('/history')) {
+      pageTitle = historyLang === 'ta'
+        ? "கல்லூரி வரலாறு | J/Kopay Christian College (1849 - இன்று வரை)"
+        : "History & Heritage | J/Kopay Christian College (Est. 1852)";
+      descContent = "Explore the 170+ year historic timeline of J/Kopay Christian College (1849 - Present), from Robert Bren and the CMS English School to the modern collegiate era in Kopay, Jaffna.";
+      canonicalUrl = "https://kcc-project.vercel.app/history";
+    } else if (path.startsWith('/events')) {
+      pageTitle = "School Events & Facebook Updates | J/Kopay Christian College";
+      descContent = "Explore latest sports meets, academic exhibitions, cultural festivals, prize givings, and campus milestones from the official Facebook community of Kopay Christian College.";
+      canonicalUrl = "https://kcc-project.vercel.app/events";
+    } else if (path.startsWith('/gallery')) {
+      pageTitle = "Photo Gallery & Campus Life | J/Kopay Christian College";
+      descContent = "Explore our 3D digital photo gallery showcasing collegiate life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
+      canonicalUrl = "https://kcc-project.vercel.app/gallery";
+    } else if (path.startsWith('/academics')) {
+      pageTitle = "Academics, Motto & Vision | J/Kopay Christian College";
+      descContent = "Discover the founding motto 'Truth and Justice' (உண்மைக்கும் நேர்மைக்கும்), institutional vision, mission, and collegiate education at Kopay Christian College.";
+      canonicalUrl = "https://kcc-project.vercel.app/academics";
+    } else if (path.startsWith('/performance')) {
+      pageTitle = "Performance & Achievements | J/Kopay Christian College";
+      descContent = "Academic performance records: 94.2% G.C.E. O/L pass rate, 78% university qualifying rate, four athletic houses, and 18 co-curricular student clubs.";
+      canonicalUrl = "https://kcc-project.vercel.app/performance";
+    } else if (path.startsWith('/contact')) {
+      pageTitle = "Contact Us & Campus Location | J/Kopay Christian College";
+      descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
+      canonicalUrl = "https://kcc-project.vercel.app/contact";
+    }
+
+    document.title = pageTitle;
+    if (metaDesc) metaDesc.setAttribute("content", descContent);
+    if (canonicalLink) canonicalLink.setAttribute("href", canonicalUrl);
+    if (ogTitle) ogTitle.setAttribute("content", pageTitle);
+    if (ogDesc) ogDesc.setAttribute("content", descContent);
+    if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
+  }, [location.pathname, historyLang]);
+
+  // Clean navigation handler without '#'
+  const handleNavigate = useCallback((page) => {
+    let target = '/';
+    if (page === 'history') target = '/history';
+    else if (page === 'events') target = '/events';
+    else if (page === 'gallery') target = '/gallery';
+    else if (page === 'academics') target = '/academics';
+    else if (page === 'performance') target = '/performance';
+    else if (page === 'contact') target = '/contact';
+
+    navigate(target);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [navigate]);
 
   // Global Keyboard shortcuts
   useEffect(() => {
@@ -104,17 +165,21 @@ export default function App() {
         onOpenSearch={() => setIsSearchOpen(true)}
         onOpenAnthem={() => setIsAnthemOpen(true)}
         historyLang={historyLang}
-        onChangeHistoryLang={setHistoryLang}
+        onChangeHistoryLang={handleHistoryLangChange}
       />
 
-      {/* Conditional Rendering between Pages */}
-      {currentPage === 'home' && (
-        <HomePage onNavigate={handleNavigate} />
-      )}
-
-      {currentPage === 'history' && (
-        <HistoryPage lang={historyLang} />
-      )}
+      {/* Clean BrowserRouter Routes (NO '#' in URLs) */}
+      <Routes>
+        <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+        <Route path="/history" element={<HistoryPage lang={historyLang} />} />
+        <Route path="/events" element={<EventsPage />} />
+        <Route path="/gallery" element={<GalleryPage />} />
+        <Route path="/academics" element={<AcademicsPage />} />
+        <Route path="/performance" element={<PerformancePage />} />
+        <Route path="/contact" element={<ContactPage />} />
+        {/* Fallback to Home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
 
       {/* Global Footer */}
       <Footer

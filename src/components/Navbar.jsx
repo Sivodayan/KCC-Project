@@ -28,7 +28,7 @@ export default function Navbar({
             className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
             <img
-              src="assets/logo.png"
+              src="/assets/logo.png"
               alt="Logo"
               style={{ width: '44px', height: '44px', minWidth: '44px', minHeight: '44px' }}
               className="transition-transform duration-300 group-hover:scale-105 shrink-0"
@@ -43,8 +43,8 @@ export default function Navbar({
             </div>
           </button>
 
-          {/* Desktop Navigation for Home Page */}
-          {currentPage === 'home' && (
+          {/* Desktop Navigation for Standard Pages */}
+          {currentPage !== 'history' && (
             <div className="hidden md:flex items-center gap-2">
               <div className="flex items-center bg-brand-light border border-brand-pale px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
                 {/* About Dropdown (History, Anthem, Motto) */}
@@ -53,20 +53,42 @@ export default function Navbar({
                   onOpenAnthem={onOpenAnthem}
                 />
                 <button
-                  onClick={() => handleNavLink('home', '#gallery')}
-                  className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
+                  onClick={() => handleNavLink('events')}
+                  className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                    currentPage === 'events'
+                      ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
+                      : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
+                >
+                  Events
+                </button>
+                <button
+                  onClick={() => handleNavLink('gallery')}
+                  className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                    currentPage === 'gallery'
+                      ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
+                      : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
                 >
                   Gallery
                 </button>
                 <button
-                  onClick={() => handleNavLink('home', '#principles')}
-                  className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
+                  onClick={() => handleNavLink('academics')}
+                  className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                    currentPage === 'academics'
+                      ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
+                      : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
                 >
                   Academics
                 </button>
                 <button
-                  onClick={() => handleNavLink('home', '#performance')}
-                  className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
+                  onClick={() => handleNavLink('performance')}
+                  className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
+                    currentPage === 'performance'
+                      ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
+                      : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
                 >
                   Performance
                 </button>
@@ -99,8 +121,12 @@ export default function Navbar({
 
                 {/* Contact Us Button */}
                 <button
-                  onClick={() => handleNavLink('home', '#contact')}
-                  className="ml-2 inline-flex items-center bg-brand-forest text-brand-white px-5 py-2 rounded-full font-medium transition-all duration-200 ease-out hover:bg-brand-forestHover hover:-translate-y-0.5 shadow-sm active:translate-y-0 cursor-pointer"
+                  onClick={() => handleNavLink('contact')}
+                  className={`ml-2 inline-flex items-center px-5 py-2 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${
+                    currentPage === 'contact'
+                      ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest'
+                      : 'bg-brand-forest text-brand-white hover:bg-brand-forestHover hover:-translate-y-0.5'
+                  }`}
                 >
                   Contact Us
                 </button>
@@ -216,7 +242,7 @@ export default function Navbar({
             </kbd>
           </button>
 
-          {currentPage === 'home' ? (
+          {currentPage !== 'history' ? (
             <>
               {/* Mobile About Accordion */}
               <div className="border border-brand-pale rounded-xl overflow-hidden bg-brand-light/40">
@@ -259,7 +285,7 @@ export default function Navbar({
                       Anthem
                     </button>
                     <button
-                      onClick={() => handleNavLink('home', '#principles')}
+                      onClick={() => handleNavLink('academics')}
                       className="w-full text-left text-slate-700 hover:text-brand-forest text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium"
                     >
                       Motto
@@ -268,25 +294,39 @@ export default function Navbar({
                 )}
               </div>
               <button
-                onClick={() => handleNavLink('home', '#gallery')}
-                className="block w-full text-left text-slate-700 hover:text-brand-forest font-medium py-2 rounded-lg hover:bg-brand-light px-3 transition-colors cursor-pointer"
+                onClick={() => handleNavLink('events')}
+                className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
+                  currentPage === 'events' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+                }`}
+              >
+                Events
+              </button>
+              <button
+                onClick={() => handleNavLink('gallery')}
+                className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
+                  currentPage === 'gallery' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+                }`}
               >
                 Gallery
               </button>
               <button
-                onClick={() => handleNavLink('home', '#principles')}
-                className="block w-full text-left text-slate-700 hover:text-brand-forest font-medium py-2 rounded-lg hover:bg-brand-light px-3 transition-colors cursor-pointer"
+                onClick={() => handleNavLink('academics')}
+                className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
+                  currentPage === 'academics' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+                }`}
               >
                 Academics
               </button>
               <button
-                onClick={() => handleNavLink('home', '#performance')}
-                className="block w-full text-left text-slate-700 hover:text-brand-forest font-medium py-2 rounded-lg hover:bg-brand-light px-3 transition-colors cursor-pointer"
+                onClick={() => handleNavLink('performance')}
+                className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
+                  currentPage === 'performance' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+                }`}
               >
                 Performance
               </button>
               <button
-                onClick={() => handleNavLink('home', '#contact')}
+                onClick={() => handleNavLink('contact')}
                 className="block w-full text-center bg-brand-forest hover:bg-brand-forestHover text-brand-white py-2.5 rounded-full font-medium transition-colors cursor-pointer"
               >
                 Contact Us

@@ -1,0 +1,6 @@
+# Robots.txt for J/Kopay Christian College
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://kcc-project.vercel.app/sitemap.xml

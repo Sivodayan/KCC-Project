@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import Hero from '../components/Hero.jsx';
 import Principles from '../components/Principles.jsx';
 import Performance from '../components/Performance.jsx';
+import SchoolEvents from '../components/SchoolEvents.jsx';
 import Gallery from '../components/Gallery.jsx';
 import Contact from '../components/Contact.jsx';
 
@@ -41,6 +42,7 @@ export default function HomePage({ onNavigate }) {
       <Hero onExploreHistory={() => onNavigate('history')} />
       <Principles />
       <Performance />
+      <SchoolEvents />
       <Gallery />
       <Contact />
     </main>

@@ -23,16 +23,16 @@ export default function Principles() {
             <div
               role="button"
               tabIndex={0}
-              aria-label="Motto card - hover or click to flip between English and Tamil"
-              className={`flip-card perspective-1000 w-full h-full cursor-pointer group select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl ${
+              aria-label="Motto card - hover or tap to flip between English and Tamil"
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
                 flippedCards.motto ? 'is-flipped' : ''
               }`}
               onClick={() => toggleFlip('motto')}
               onKeyDown={(e) => handleKeyDown(e, 'motto')}
             >
-              <div className="flip-card-inner relative w-full h-full duration-500 transform-style-3d transition-transform">
+              <div className="flip-card-inner">
                 {/* Front (English - Default) */}
-                <div className="flip-card-front absolute inset-0 backface-hidden bg-brand-forest text-brand-white rounded-3xl p-7 sm:p-8 border border-brand-soft/40 shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-front bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale">
                       Motto
@@ -46,7 +46,7 @@ export default function Principles() {
                 </div>
 
                 {/* Back (Tamil - on Hover/Flip) */}
-                <div className="flip-card-back absolute inset-0 backface-hidden bg-brand-white text-slate-800 rounded-3xl p-7 sm:p-8 border border-brand-pale shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-back bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest font-tamil">
                       மகுடவாசகம்
@@ -68,16 +68,16 @@ export default function Principles() {
             <div
               role="button"
               tabIndex={0}
-              aria-label="Vision card - hover or click to flip between English and Tamil"
-              className={`flip-card perspective-1000 w-full h-full cursor-pointer group select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl ${
+              aria-label="Vision card - hover or tap to flip between English and Tamil"
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
                 flippedCards.vision ? 'is-flipped' : ''
               }`}
               onClick={() => toggleFlip('vision')}
               onKeyDown={(e) => handleKeyDown(e, 'vision')}
             >
-              <div className="flip-card-inner relative w-full h-full duration-500 transform-style-3d transition-transform">
+              <div className="flip-card-inner">
                 {/* Front (English - Default) */}
-                <div className="flip-card-front absolute inset-0 backface-hidden bg-brand-white text-slate-800 rounded-3xl p-7 sm:p-8 border border-brand-pale shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Vision
@@ -91,7 +91,7 @@ export default function Principles() {
                 </div>
 
                 {/* Back (Tamil - on Hover/Flip) */}
-                <div className="flip-card-back absolute inset-0 backface-hidden bg-brand-forest text-brand-white rounded-3xl p-7 sm:p-8 border border-brand-soft/40 shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       தூரநோக்கு
@@ -113,16 +113,16 @@ export default function Principles() {
             <div
               role="button"
               tabIndex={0}
-              aria-label="Mission Statement card - hover or click to flip between English and Tamil"
-              className={`flip-card perspective-1000 w-full h-full cursor-pointer group select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl ${
+              aria-label="Mission Statement card - hover or tap to flip between English and Tamil"
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
                 flippedCards.mission ? 'is-flipped' : ''
               }`}
               onClick={() => toggleFlip('mission')}
               onKeyDown={(e) => handleKeyDown(e, 'mission')}
             >
-              <div className="flip-card-inner relative w-full h-full duration-500 transform-style-3d transition-transform">
+              <div className="flip-card-inner">
                 {/* Front (English - Default) */}
-                <div className="flip-card-front absolute inset-0 backface-hidden bg-brand-white text-slate-800 rounded-3xl p-7 sm:p-8 border border-brand-pale shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Mission Statement
@@ -138,7 +138,7 @@ export default function Principles() {
                 </div>
 
                 {/* Back (Tamil - on Hover/Flip) */}
-                <div className="flip-card-back absolute inset-0 backface-hidden bg-brand-forest text-brand-white rounded-3xl p-7 sm:p-8 border border-brand-soft/40 shadow-sm flex flex-col transition-shadow duration-300 group-hover:shadow-xl">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       நோக்கக்கூற்று

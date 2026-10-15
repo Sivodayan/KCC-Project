@@ -2,12 +2,20 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const searchItems = [
   {
+    title: "School Events & Facebook Community Updates",
+    tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
+    category: "Events",
+    description: "Latest 10 school events, sports meet, Tamil day, science exhibition & Facebook news",
+    url: "events",
+    action: "navigate"
+  },
+  {
     title: "Campus Life Journal & Image Gallery",
     tamil: "கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு",
     category: "Gallery",
     description: "11 historic campus moments, sports meet, science labs, celebrations & collegiate life",
-    url: "#gallery",
-    action: "scroll"
+    url: "gallery",
+    action: "navigate"
   },
   {
     title: "College History (1849 - Present)",
@@ -22,31 +30,31 @@ const searchItems = [
     tamil: "மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்",
     category: "Heritage",
     description: "The core motto of Kopay Christian College fostering truth and upright character",
-    url: "#principles",
-    action: "scroll"
+    url: "academics",
+    action: "navigate"
   },
   {
     title: "Vision: The Ideal School in Peninsula",
     tamil: "தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
     category: "Heritage",
     description: "Leading Northern Province secondary and collegiate education",
-    url: "#principles",
-    action: "scroll"
+    url: "academics",
+    action: "navigate"
   },
   {
     title: "Mission Statement",
     tamil: "நோக்கக்கூற்று: விழுமியங்கள், கடமைகள்",
     category: "Heritage",
     description: "Fostering self-respect, character, patriotism, and optimum resource utilization",
-    url: "#principles",
-    action: "scroll"
+    url: "academics",
+    action: "navigate"
   },
   {
     title: "School Anthem (பாடசாலைக் கீதம்)",
     tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
     category: "Tradition",
     description: "College anthem composed in Ragam Hamsadhwani celebrating KCC",
-    url: "#anthemModal",
+    url: "anthemModal",
     action: "anthem"
   },
   {
@@ -54,72 +62,72 @@ const searchItems = [
     tamil: "செயற்திறன் புள்ளிவிபரங்கள்",
     category: "Academics",
     description: "Pass rates, 386+ enrolled students, 46 faculty mentors, 18 clubs & societies",
-    url: "#performance",
-    action: "scroll"
+    url: "performance",
+    action: "navigate"
   },
   {
     title: "Founded Year 1852",
     tamil: "நிறுவப்பட்ட ஆண்டு 1852",
     category: "Heritage",
     description: "Over 170+ years of dedicated service to secondary education in Kopay",
-    url: "#performance",
-    action: "scroll"
+    url: "history",
+    action: "navigate"
   },
   {
     title: "G.C.E. O/L Examination Results (94.2%)",
     tamil: "க.பொ.த சாதாரண தரப் பரீட்சை பெறுபேறுகள்",
     category: "Academics",
     description: "High achievement records in national general certificate examinations",
-    url: "#performance",
-    action: "scroll"
+    url: "performance",
+    action: "navigate"
   },
   {
     title: "G.C.E. A/L University Qualifying Rate (78%)",
     tamil: "பல்கலைக்கழக அனுமதி வீதம் (78%)",
     category: "Academics",
     description: "Science, Commerce, Arts, and Technology collegiate education",
-    url: "#performance",
-    action: "scroll"
+    url: "performance",
+    action: "navigate"
   },
   {
     title: "Four Competitive Houses (விளையாட்டு இல்லங்கள்)",
     tamil: "விளையாட்டு இல்லங்கள் (4 Competitive Houses)",
     category: "Sports",
     description: "Annual sports meet division, athletic spirit, and team rivalry",
-    url: "#performance",
-    action: "scroll"
+    url: "events",
+    action: "navigate"
   },
   {
     title: "Clubs & Societies (18 Co-Curriculars)",
     tamil: "பாடசாலைச் சங்கங்களும் மன்றங்களும் (18)",
     category: "Activities",
     description: "Tamil Literary Association, Science Union, ICT Club, Scouts & Guides",
-    url: "#performance",
-    action: "scroll"
+    url: "performance",
+    action: "navigate"
   },
   {
     title: "Science & ICT Smart Facilities",
     tamil: "விஞ்ஞான & கணனி ஆய்வுகூடங்கள்",
     category: "Facilities",
     description: "Modern computer laboratory and advanced science experimental units",
-    url: "#performance",
-    action: "scroll"
+    url: "academics",
+    action: "navigate"
   },
   {
     title: "College Office & Direct Contact",
     tamil: "கல்லூரி அலுவலகம் & தொடர்புகள்",
     category: "Contact",
     description: "Address: Kopay, Jaffna | Tel: 021 223 0040 | Email: kcckopay@gmail.com",
-    url: "#contact",
-    action: "scroll"
+    url: "contact",
+    action: "navigate"
   },
   {
     title: "Online Inquiry & Message Form",
     tamil: "விசாரணைப் படிவம்",
     category: "Contact",
     description: "Send inquiries directly to the college administration office",
-    url: "#contact",
-    action: "scroll"
+    url: "contact",
+    action: "navigate"
   }
 ];
 
@@ -188,16 +196,15 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   function handleSelect(item) {
     onClose();
-    if (item.action === 'navigate') {
-      onNavigate('history');
-    } else if (item.action === 'anthem') {
+    if (item.action === 'anthem') {
       onOpenAnthem();
-    } else if (item.action === 'scroll') {
-      onNavigate('home', item.url);
+    } else {
+      onNavigate(item.url);
     }
   }
 
   function getCategoryBadgeClass(category) {
+    if (category === 'Events') return 'bg-[#1877F2]/15 text-[#1877F2] font-semibold';
     if (category === 'History') return 'bg-amber-100 text-amber-800';
     if (category === 'Heritage') return 'bg-emerald-100 text-emerald-800';
     if (category === 'Tradition') return 'bg-indigo-100 text-indigo-800';

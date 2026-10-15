@@ -8,7 +8,7 @@ export default function Hero({ onExploreHistory }) {
           {/* Background Campus Image Container */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
-              src="assets/hero.jpg"
+              src="/assets/hero.jpg"
               alt="J/Kopay Christian College Campus Arch"
               className="w-full h-full object-cover object-top scale-110 sm:scale-115 lg:scale-100 origin-top translate-x-[10%] sm:translate-x-[13%] lg:translate-x-[25%]"
               loading="eager"

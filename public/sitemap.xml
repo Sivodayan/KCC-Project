@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Homepage -->
+  <url>
+    <loc>https://kcc-project.vercel.app/</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <!-- History & Heritage (English & Tamil) -->
+  <url>
+    <loc>https://kcc-project.vercel.app/history</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://kcc-project.vercel.app/history?lang=en" />
+    <xhtml:link rel="alternate" hreflang="ta" href="https://kcc-project.vercel.app/history?lang=ta" />
+  </url>
+
+  <!-- School Events & Facebook Updates -->
+  <url>
+    <loc>https://kcc-project.vercel.app/events</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.90</priority>
+  </url>
+
+  <!-- Campus Life & Photo Gallery -->
+  <url>
+    <loc>https://kcc-project.vercel.app/gallery</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Academics, Motto & Vision -->
+  <url>
+    <loc>https://kcc-project.vercel.app/academics</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Performance & Examination Achievements -->
+  <url>
+    <loc>https://kcc-project.vercel.app/performance</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Contact Us & Location -->
+  <url>
+    <loc>https://kcc-project.vercel.app/contact</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+</urlset>

@@ -50,7 +50,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his1.jpg"
+                    src="/assets/his1.jpg"
                     alt="வரலாற்றுப் பின்னணி"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -77,7 +77,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his2.jpg"
+                    src="/assets/his2.jpg"
                     alt="CMS கட்டமைப்பு"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -125,7 +125,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his3.jpg"
+                    src="/assets/his3.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -152,7 +152,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his4.jpg"
+                    src="/assets/his4.jpg"
                     alt="கைத்தொழில் மற்றும் சந்தை"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -201,7 +201,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his5.jpg"
+                    src="/assets/his5.jpg"
                     alt="சீருடை மற்றும் போட்டிகள்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -228,7 +228,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his6.jpg"
+                    src="/assets/his6.jpg"
                     alt="பாக்கியம் வில்லியம்ஸ் கட்டிடம் மற்றும் விளையாட்டு"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -273,7 +273,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his7.jpg"
+                    src="/assets/his7.jpg"
                     alt="சண்முகநாதன் மண்டபம் மற்றும் சங்கங்கள்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -300,7 +300,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his8.jpg"
+                    src="/assets/his8.jpg"
                     alt="125ஆவது நினைவு மண்டபம் மற்றும் ஆய்வுகூடங்கள்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -350,7 +350,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his9.jpg"
+                    src="/assets/his9.jpg"
                     alt="பாடசாலை மறுசீரமைப்பு"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -377,7 +377,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his10.jpg"
+                    src="/assets/his10.jpg"
                     alt="புனரமைப்பு மற்றும் கட்டிடங்கள்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -438,7 +438,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </div>
                 <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his11.jpg"
+                    src="/assets/his11.jpg"
                     alt="பல்கலைக்கழக சாதனையாளர்கள் மற்றும் மண்டபங்கள்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -465,7 +465,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                   <img
-                    src="assets/his12.jpg"
+                    src="/assets/his12.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
                     className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                     loading="lazy"
@@ -537,7 +537,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </div>
               <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his1.jpg"
+                  src="/assets/his1.jpg"
                   alt="Historical archival photograph 1"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -564,7 +564,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his2.jpg"
+                  src="/assets/his2.jpg"
                   alt="Historical archival photograph 2"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -610,7 +610,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </div>
               <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his3.jpg"
+                  src="/assets/his3.jpg"
                   alt="Historical archival photograph 3"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -635,7 +635,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his4.jpg"
+                  src="/assets/his4.jpg"
                   alt="Historical archival photograph 4"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -680,7 +680,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </div>
               <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his5.jpg"
+                  src="/assets/his5.jpg"
                   alt="Historical archival photograph 5"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -707,7 +707,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his6.jpg"
+                  src="/assets/his6.jpg"
                   alt="Historical archival photograph 6"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -756,7 +756,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </div>
               <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his7.jpg"
+                  src="/assets/his7.jpg"
                   alt="Historical archival photograph 7"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -783,7 +783,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his8.jpg"
+                  src="/assets/his8.jpg"
                   alt="Historical archival photograph 8"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -840,7 +840,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </div>
               <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his9.jpg"
+                  src="/assets/his9.jpg"
                   alt="Historical archival photograph 9"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
@@ -867,7 +867,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
                 <img
-                  src="assets/his10.jpg"
+                  src="/assets/his10.jpg"
                   alt="Historical archival photograph 10"
                   className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
                   loading="lazy"
