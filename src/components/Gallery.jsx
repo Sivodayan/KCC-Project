@@ -108,7 +108,7 @@ export default function Gallery() {
     };
   }, [hasEntered, total]);
 
-  // Continuous Auto-rotation (runs when entered, in view, and not hovered/paused)
+  // Continuous Auto-rotation (runs when entered and in view; does not pause on hover)
   useEffect(() => {
     if (!hasEntered || !isInView || isPaused) return;
 
@@ -229,46 +229,12 @@ export default function Gallery() {
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* 3D Carousel Stage Area */}
         <div className="relative w-full py-4 sm:py-6 flex flex-col items-center justify-center">
-          {/* Previous Slide Floating Button */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              focusIndex(currentIndex - 1);
-            }}
-            aria-label="Previous image"
-            className="hidden sm:flex absolute left-3 lg:left-8 z-40 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-brand-forest border border-white/20 text-white items-center justify-center transition-all duration-200 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-xs"
-          >
-            <svg className="w-5 h-5 -translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          {/* Next Slide Floating Button */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              focusIndex(currentIndex + 1);
-            }}
-            aria-label="Next image"
-            className="hidden sm:flex absolute right-3 lg:right-8 z-40 w-12 h-12 rounded-full bg-slate-900/80 hover:bg-brand-forest border border-white/20 text-white items-center justify-center transition-all duration-200 hover:scale-110 shadow-xl cursor-pointer backdrop-blur-xs"
-          >
-            <svg className="w-5 h-5 translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
-
           {/* 3D Perspective Viewport */}
           <div
             ref={stageRef}
             onClick={handleStageClick}
             onMouseMove={handleStageMouseMove}
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => {
-              setIsPaused(false);
-              handleStageMouseLeave();
-            }}
+            onMouseLeave={handleStageMouseLeave}
             className="journal-stage relative w-full max-w-6xl h-[360px] sm:h-[450px] lg:h-[520px] flex items-center justify-center cursor-pointer"
           >
             {journalGallery.map((item, index) => {
