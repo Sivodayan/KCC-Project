@@ -25,13 +25,13 @@ export default function Navbar({
           <button
             onClick={() => handleNavLink('home')}
             aria-label="J/Kopay Christian College Home"
-            className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none"
+            className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
             <img
               src="assets/logo.png"
               alt="Logo"
-              style={{ width: '44px', height: '44px' }}
-              className="transition-transform duration-300 group-hover:scale-105"
+              style={{ width: '44px', height: '44px', minWidth: '44px', minHeight: '44px' }}
+              className="transition-transform duration-300 group-hover:scale-105 shrink-0"
             />
             <div className="hidden sm:block">
               <span className="block text-xs font-bold text-brand-forest uppercase tracking-wider">
@@ -155,10 +155,10 @@ export default function Navbar({
                 </kbd>
               </button>
 
-              {/* Home Return Button */}
+              {/* Home Return Button (Desktop Only - on mobile tapping logo returns home) */}
               <button
                 onClick={() => handleNavLink('home')}
-                className="inline-flex items-center gap-1.5 bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-2xs"
+                className="hidden sm:inline-flex items-center gap-1.5 bg-brand-white border border-brand-pale hover:border-brand-soft text-brand-forest px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer shadow-2xs"
               >
                 <span>← Home</span>
               </button>

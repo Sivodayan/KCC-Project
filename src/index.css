@@ -161,7 +161,7 @@ html {
   }
 }
 
-/* 3D Flip Card Interactive System */
+/* 3D Flip Card Interactive System (Mobile Safe) */
 .perspective-1000 {
   perspective: 1000px;
   -webkit-perspective: 1000px;
@@ -175,6 +175,9 @@ html {
 .flip-card {
   perspective: 1000px;
   -webkit-perspective: 1000px;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .flip-card-inner {
@@ -184,51 +187,76 @@ html {
   text-align: left;
   transform-style: preserve-3d;
   -webkit-transform-style: preserve-3d;
-  transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
-}
-
-/* Hover flip: just hovering flips the card to Tamil */
-.flip-card:hover .flip-card-inner,
-.flip-card:focus-within .flip-card-inner,
-.flip-card.is-flipped .flip-card-inner {
-  transform: rotateY(180deg);
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
 }
 
 .backface-hidden {
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  transform-style: preserve-3d;
-  -webkit-transform-style: preserve-3d;
 }
 
-.rotate-y-180 {
-  transform: rotateY(180deg);
-  -webkit-transform: rotateY(180deg);
-}
-
-/* Layer positioning for flawless 3D flip on all browsers */
+/* Layer positioning with translateZ for mobile GPU stability */
 .flip-card-front {
+  position: absolute;
+  inset: 0;
   z-index: 2;
-  transform: rotateY(0deg);
-  -webkit-transform: rotateY(0deg);
+  transform: rotateY(0deg) translateZ(1px);
+  -webkit-transform: rotateY(0deg) translateZ(1px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: opacity 0.35s ease, z-index 0.35s ease;
 }
 
 .flip-card-back {
+  position: absolute;
+  inset: 0;
   z-index: 1;
+  transform: rotateY(180deg) translateZ(1px);
+  -webkit-transform: rotateY(180deg) translateZ(1px);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transition: opacity 0.35s ease, z-index 0.35s ease;
+}
+
+/* Click/Tap Toggle State (Works 100% on Mobile & Desktop) */
+.flip-card.is-flipped .flip-card-inner {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }
 
-.flip-card:hover .flip-card-front,
-.flip-card:focus-within .flip-card-front,
 .flip-card.is-flipped .flip-card-front {
   z-index: 1;
+  opacity: 0;
+  pointer-events: none;
 }
 
-.flip-card:hover .flip-card-back,
-.flip-card:focus-within .flip-card-back,
 .flip-card.is-flipped .flip-card-back {
   z-index: 2;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Desktop Hover Support (Pointer Devices Only) */
+@media (hover: hover) and (pointer: fine) {
+  .flip-card:hover .flip-card-inner,
+  .flip-card:focus-within .flip-card-inner {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+  }
+
+  .flip-card:hover .flip-card-front,
+  .flip-card:focus-within .flip-card-front {
+    z-index: 1;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .flip-card:hover .flip-card-back,
+  .flip-card:focus-within .flip-card-back {
+    z-index: 2;
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 /* Hero Entrance Animations */

@@ -17,23 +17,23 @@ export default function LeadershipDirectory({ lang = 'en' }) {
               <span className="font-medium text-slate-800">Mr. Valippillai (Later R. V. Vathavanam)</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1909 – 1914</span>
+              <span className="font-bold text-brand-forest">1909 - 1914</span>
               <span className="font-medium text-slate-800">Rev. I. S. Ratnathikkam</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1917 – 1920</span>
+              <span className="font-bold text-brand-forest">1917 - 1920</span>
               <span className="font-medium text-slate-800">Rev. A. M. Nathaniel</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1924 – 1926</span>
+              <span className="font-bold text-brand-forest">1924 - 1926</span>
               <span className="font-medium text-slate-800">Rev. I. S. Ratnathikkam</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1926 – 1938</span>
+              <span className="font-bold text-brand-forest">1926 - 1938</span>
               <span className="font-medium text-slate-800">Mr. J. P. Chelliah</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1939 – 1944</span>
+              <span className="font-bold text-brand-forest">1939 - 1944</span>
               <span className="font-medium text-slate-800">Mr. G. S. Chelliah</span>
             </div>
           </div>
@@ -48,11 +48,11 @@ export default function LeadershipDirectory({ lang = 'en' }) {
           </div>
           <div className="divide-y divide-brand-pale/70 text-sm">
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1899 – 1900</span>
+              <span className="font-bold text-brand-forest">1899 - 1900</span>
               <span className="font-medium text-slate-800">Rev. R. W. Ryde</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1900 – 1919</span>
+              <span className="font-bold text-brand-forest">1900 - 1919</span>
               <span className="font-medium text-slate-800">Rev. J. Thompson</span>
             </div>
             <div className="py-2.5 flex justify-between">
@@ -60,15 +60,15 @@ export default function LeadershipDirectory({ lang = 'en' }) {
               <span className="font-medium text-slate-800">Rev. K. C. McPherson</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1920 – 1940</span>
+              <span className="font-bold text-brand-forest">1920 - 1940</span>
               <span className="font-medium text-slate-800">Rev. Henry Peto</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1940 – 1957</span>
+              <span className="font-bold text-brand-forest">1940 - 1957</span>
               <span className="font-medium text-slate-800">Rev. J. T. Arulanantham</span>
             </div>
             <div className="py-2.5 flex justify-between">
-              <span className="font-bold text-brand-forest">1957 – 1960</span>
+              <span className="font-bold text-brand-forest">1957 - 1960</span>
               <span className="font-medium text-slate-800">Mr. A. W. Rajasekaram</span>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function LeadershipDirectory({ lang = 'en' }) {
           <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
             HM
           </span>
-          <h2 className="text-base font-bold text-brand-forest">Headmasters (1880 – 1944)</h2>
+          <h2 className="text-base font-bold text-brand-forest">Headmasters (1880 - 1944)</h2>
         </div>
         <div className="divide-y divide-brand-pale/70 text-sm">
           <div className="py-2.5 flex justify-between">
@@ -92,23 +92,23 @@ export default function LeadershipDirectory({ lang = 'en' }) {
             <span className="font-medium text-slate-800">Mr. Valippillai (Later R. V. Vathavanam)</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1909 – 1914</span>
+            <span className="font-bold text-brand-forest">1909 - 1914</span>
             <span className="font-medium text-slate-800">Rev. I. S. Ratnathikkam</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1917 – 1920</span>
+            <span className="font-bold text-brand-forest">1917 - 1920</span>
             <span className="font-medium text-slate-800">Rev. A. M. Nathaniel</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1924 – 1926</span>
+            <span className="font-bold text-brand-forest">1924 - 1926</span>
             <span className="font-medium text-slate-800">Rev. I. S. Ratnathikkam</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1926 – 1938</span>
+            <span className="font-bold text-brand-forest">1926 - 1938</span>
             <span className="font-medium text-slate-800">Mr. J. P. Chelliah</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1939 – 1944</span>
+            <span className="font-bold text-brand-forest">1939 - 1944</span>
             <span className="font-medium text-slate-800">Mr. G. S. Chelliah</span>
           </div>
         </div>
@@ -119,15 +119,15 @@ export default function LeadershipDirectory({ lang = 'en' }) {
           <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
             M
           </span>
-          <h2 className="text-base font-bold text-brand-forest">Managers (1899 – 1960)</h2>
+          <h2 className="text-base font-bold text-brand-forest">Managers (1899 - 1960)</h2>
         </div>
         <div className="divide-y divide-brand-pale/70 text-sm">
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1899 – 1900</span>
+            <span className="font-bold text-brand-forest">1899 - 1900</span>
             <span className="font-medium text-slate-800">Rev. R. W. Ryde</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1900 – 1919</span>
+            <span className="font-bold text-brand-forest">1900 - 1919</span>
             <span className="font-medium text-slate-800">Rev. J. Thompson</span>
           </div>
           <div className="py-2.5 flex justify-between">
@@ -135,15 +135,15 @@ export default function LeadershipDirectory({ lang = 'en' }) {
             <span className="font-medium text-slate-800">Rev. K. C. McPherson</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1920 – 1940</span>
+            <span className="font-bold text-brand-forest">1920 - 1940</span>
             <span className="font-medium text-slate-800">Rev. Henry Peto</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1940 – 1957</span>
+            <span className="font-bold text-brand-forest">1940 - 1957</span>
             <span className="font-medium text-slate-800">Rev. J. T. Arulanantham</span>
           </div>
           <div className="py-2.5 flex justify-between">
-            <span className="font-bold text-brand-forest">1957 – 1960</span>
+            <span className="font-bold text-brand-forest">1957 - 1960</span>
             <span className="font-medium text-slate-800">Mr. A. W. Rajasekaram</span>
           </div>
         </div>
