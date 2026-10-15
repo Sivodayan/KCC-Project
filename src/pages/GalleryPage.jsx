@@ -18,9 +18,17 @@ export default function GalleryPage() {
             <span>← Home</span>
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-800 font-semibold">Campus Photo Gallery</span>
+          <span className="text-slate-800 font-semibold">Photo Gallery</span>
         </nav>
       </div>
+
+      {/* Header Banner as in History Page */}
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+          Photo Gallery
+        </h1>
+      </header>
+
       <Gallery />
     </main>
   );

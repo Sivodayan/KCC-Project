@@ -92,7 +92,7 @@ export default function App() {
     const ogDesc = document.querySelector('meta[property="og:description"]');
     const ogUrl = document.querySelector('meta[property="og:url"]');
 
-    let pageTitle = "J/Kopay Christian College | யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி | Jaffna";
+    let pageTitle = "J/Kopay Christian College";
     let descContent = "Official portal of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, history, traditions, and collegiate education.";
     let canonicalUrl = "https://kcc-project.vercel.app/";
 

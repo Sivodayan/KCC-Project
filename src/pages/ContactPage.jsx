@@ -18,7 +18,7 @@ export default function ContactPage() {
             <span>← Home</span>
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-800 font-semibold">Contact & Campus Inquiries</span>
+          <span className="text-slate-800 font-semibold">Contact & Inquiries</span>
         </nav>
       </div>
       <Contact />

@@ -18,9 +18,17 @@ export default function EventsPage() {
             <span>← Home</span>
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-800 font-semibold">School Events & Facebook Updates</span>
+          <span className="text-slate-800 font-semibold">School Events & Updates</span>
         </nav>
       </div>
+
+      {/* Header Banner as in History Page */}
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-2 px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+          School Events &amp; Updates
+        </h1>
+      </header>
+
       <SchoolEvents />
     </main>
   );

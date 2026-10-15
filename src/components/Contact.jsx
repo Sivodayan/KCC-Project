@@ -15,20 +15,10 @@ export default function Contact() {
             {/* Left Column: Contact Information & Social Channels (5 cols) */}
             <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
               <div>
-                {/* Badge */}
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-brand-pale text-[11px] font-bold tracking-wider uppercase mb-2">
-                  <span className="w-1.5 h-1.5 rounded-full bg-brand-pale animate-pulse"></span>
-                  <span>Contact & Office</span>
-                </div>
-
                 <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
                   College Office
                 </h2>
-                <p className="text-brand-light/90 text-xs leading-relaxed mt-1">
-                  Reach out to the college administration for admissions, transcripts, records, and student inquiries.
-                </p>
-
-                {/* Details List (Clean, No Pill Outlines) */}
+                {/* Details List */}
                 <div className="space-y-3 pt-3 text-xs">
                   {/* Address */}
                   <div className="flex items-start gap-3">
@@ -95,7 +85,7 @@ export default function Contact() {
 
               {/* Social Channels: Facebook & Instagram Logos Only */}
               <div className="pt-1 flex items-center gap-3">
-                <span className="text-[11px] font-semibold text-brand-pale uppercase tracking-wider">Social:</span>
+                
                 {/* Facebook Logo Button */}
                 <a
                   href={FACEBOOK_URL}
@@ -129,96 +119,59 @@ export default function Contact() {
             {/* Middle Column: Useful Links (4 cols) */}
             <div className="lg:col-span-4 flex flex-col justify-between space-y-3">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/20 text-brand-pale text-[11px] font-bold tracking-wider uppercase mb-2">
-                  <svg className="w-3 h-3 text-brand-pale" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                  </svg>
-                  <span>Useful Links</span>
-                </div>
-
                 <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   Quick Navigation
                 </h3>
 
-                <ul className="mt-3 space-y-2 text-xs">
+                <ul className="mt-3.5 space-y-2.5 text-xs sm:text-sm">
                   <li>
                     <Link
                       to="/history"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
+                      className="group inline-flex items-center gap-2.5 text-brand-light/95 hover:text-white transition-colors py-0.5"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">College History Timeline</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
+                      <span className="font-medium">College History</span>
                     </Link>
                   </li>
 
                   <li>
                     <Link
                       to="/events"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
+                      className="group inline-flex items-center gap-2.5 text-brand-light/95 hover:text-white transition-colors py-0.5"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">Events & Facebook Posts</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
+                      <span className="font-medium">Events & Posts</span>
                     </Link>
                   </li>
 
                   <li>
                     <Link
                       to="/gallery"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
+                      className="group inline-flex items-center gap-2.5 text-brand-light/95 hover:text-white transition-colors py-0.5"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">3D Photo Journal Gallery</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
+                      <span className="font-medium">Photo Gallery</span>
                     </Link>
                   </li>
 
                   <li>
                     <Link
                       to="/anthem"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
+                      className="group inline-flex items-center gap-2.5 text-brand-light/95 hover:text-white transition-colors py-0.5"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">School Anthem & Lyrics</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
+                      <span className="font-medium">School Anthem</span>
                     </Link>
                   </li>
 
                   <li>
                     <Link
                       to="/history?lang=ta"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
+                      className="group inline-flex items-center gap-2.5 text-brand-light/95 hover:text-white transition-colors py-0.5"
                     >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">Tamil History Edition</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">&rarr;</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-brand-pale group-hover:scale-125 transition-transform"></span>
+                      <span className="font-medium">Tamil History</span>
                     </Link>
-                  </li>
-
-                  <li>
-                    <a
-                      href={FACEBOOK_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center justify-between text-brand-light/95 hover:text-white transition-colors py-0.5"
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#1877F2] group-hover:scale-125 transition-transform"></span>
-                        <span className="font-medium">Official Facebook Page</span>
-                      </span>
-                      <span className="text-xs text-brand-pale/80 group-hover:text-brand-pale transition-transform group-hover:translate-x-0.5">↗</span>
-                    </a>
                   </li>
                 </ul>
               </div>
@@ -236,17 +189,6 @@ export default function Contact() {
                     </svg>
                     <span>Location Map</span>
                   </span>
-                  <a
-                    href={MAPS_LOCATION_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-[10px] font-semibold transition-all cursor-pointer"
-                  >
-                    <span>Open Maps</span>
-                    <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </a>
                 </div>
 
                 {/* Embedded Map (Small & Compact) */}

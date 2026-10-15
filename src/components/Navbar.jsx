@@ -231,17 +231,12 @@ export default function Navbar({
               onOpenSearch();
             }}
             type="button"
-            className="w-full flex items-center justify-between bg-brand-light border border-brand-pale px-4 py-2.5 rounded-xl text-xs text-slate-600 font-medium hover:bg-brand-pale/50 transition-colors"
+            className="w-full flex items-center gap-2 bg-brand-light border border-brand-pale px-4 py-2.5 rounded-xl text-xs text-slate-600 font-medium hover:bg-brand-pale/50 transition-colors text-left"
           >
-            <span className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-              <span>Search KCC portal...</span>
-            </span>
-            <kbd className="text-[10px] bg-brand-white px-2 py-0.5 rounded border border-brand-pale text-slate-400 font-mono">
-              Ctrl+K
-            </kbd>
+            <svg className="w-4 h-4 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Search KCC portal...</span>
           </button>
 
           {/* Home Link */}
@@ -263,7 +258,7 @@ export default function Navbar({
             >
               <span className="flex items-center gap-2 text-sm">
                 <span className="w-2 h-2 rounded-full bg-brand-forest"></span>
-                <span>About KCC</span>
+                <span>About</span>
               </span>
               <svg
                 className={`w-4 h-4 text-brand-forest transition-transform duration-200 ${
@@ -285,7 +280,7 @@ export default function Navbar({
                     currentPage === 'history' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
                   }`}
                 >
-                  History (1849 - Present)
+                  History
                 </button>
                 <button
                   onClick={() => handleNavLink('anthem')}
@@ -293,13 +288,13 @@ export default function Navbar({
                     currentPage === 'anthem' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
                   }`}
                 >
-                  School Anthem (பாடசாலைக் கீதம்)
+                  School Anthem
                 </button>
                 <button
                   onClick={() => handleNavLink('motto')}
                   className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium text-slate-700 hover:text-brand-forest"
                 >
-                  Motto & Principles
+                  Motto
                 </button>
               </div>
             )}

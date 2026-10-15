@@ -7,7 +7,6 @@ const searchItems = [
     title: "School Events & Facebook Community Updates",
     tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
     category: "Events",
-    description: "Official Facebook updates, announcements & campus news from கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்",
     url: "events",
     action: "navigate"
   },
@@ -15,7 +14,6 @@ const searchItems = [
     title: "Annual Prize Giving & Student Achievements",
     tamil: "வருடாந்த பரிசளிப்பு விழா & மாணவர் சாதனைகள்",
     category: "Events",
-    description: "Academic honors, special awards, and student distinction highlights on Facebook",
     url: "events",
     action: "navigate"
   },
@@ -23,7 +21,6 @@ const searchItems = [
     title: "Inter-House Sports Meet & Athletics",
     tamil: "இல்லங்களுக்கிடையிலான விளையாட்டுப் போட்டி",
     category: "Events",
-    description: "Track & field events, relay championships, marching parade & sports celebrations",
     url: "events",
     action: "navigate"
   },
@@ -31,7 +28,6 @@ const searchItems = [
     title: "Cultural Festivals & College Celebrations",
     tamil: "கலாசார விழாக்கள் & கலை நிகழ்வுகள்",
     category: "Events",
-    description: "Tamil cultural day celebrations, musical performances & exhibitions",
     url: "events",
     action: "navigate"
   },
@@ -39,7 +35,6 @@ const searchItems = [
     title: "Official Facebook Community Page",
     tamil: "அதிகாரபூர்வ பேஸ்புக் சமூகம் (Facebook)",
     category: "Social",
-    description: "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் - Official Facebook profile (ID: 61575442051109)",
     url: "https://www.facebook.com/profile.php?id=61575442051109",
     action: "external"
   },
@@ -49,7 +44,6 @@ const searchItems = [
     title: "Campus Life Journal & 3D Digital Gallery",
     tamil: "கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு",
     category: "Gallery",
-    description: "11 historic campus moments, sports meet, science labs, celebrations & collegiate life",
     url: "gallery",
     action: "navigate"
   },
@@ -59,7 +53,6 @@ const searchItems = [
     title: "College History Timeline (1849 - Present)",
     tamil: "கல்லூரி வரலாறு (1849 - இன்று வரை)",
     category: "History",
-    description: "CMS English School founding, Robert Bren, Bren Hall, Principals & Managers timeline",
     url: "history",
     action: "navigate"
   },
@@ -67,7 +60,6 @@ const searchItems = [
     title: "Tamil History Chronicle (தமிழ் வரலாற்றுப் பதிப்பு)",
     tamil: "கல்லூரி வரலாறு - தமிழ் ஆவணம்",
     category: "History",
-    description: "Read the authentic historical chronicle in Tamil script (?lang=ta)",
     url: "history?lang=ta",
     action: "navigate"
   },
@@ -75,7 +67,6 @@ const searchItems = [
     title: "Founded Year 1852 (170+ Years of Service)",
     tamil: "நிறுவப்பட்ட ஆண்டு 1852 (170+ ஆண்டு பாரம்பரியம்)",
     category: "Heritage",
-    description: "Over 170+ years of dedicated service to secondary and collegiate education in Kopay",
     url: "history",
     action: "navigate"
   },
@@ -83,7 +74,6 @@ const searchItems = [
     title: "Motto: Truth and Justice",
     tamil: "மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்",
     category: "Heritage",
-    description: "The core motto of Kopay Christian College fostering truth and upright character",
     url: "motto",
     action: "navigate"
   },
@@ -91,7 +81,6 @@ const searchItems = [
     title: "Vision: The Ideal School in Peninsula",
     tamil: "தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
     category: "Heritage",
-    description: "Leading Northern Province secondary and collegiate education with high standards",
     url: "motto",
     action: "navigate"
   },
@@ -99,7 +88,6 @@ const searchItems = [
     title: "Mission Statement",
     tamil: "நோக்கக்கூற்று: விழுமியங்கள், கடமைகள்",
     category: "Heritage",
-    description: "Fostering self-respect, moral character, patriotism, and optimum resource utilization",
     url: "motto",
     action: "navigate"
   },
@@ -109,7 +97,6 @@ const searchItems = [
     title: "School Anthem (பாடசாலைக் கீதம்)",
     tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
     category: "Tradition",
-    description: "Official college anthem composed in Ragam Hamsadhwani celebrating truth, justice and KCC pride",
     url: "anthem",
     action: "navigate"
   },
@@ -119,7 +106,6 @@ const searchItems = [
     title: "Key Performance & Enrolment Metrics",
     tamil: "செயற்திறன் புள்ளிவிபரங்கள்",
     category: "Academics",
-    description: "386+ enrolled students, 46 faculty mentors, 18 clubs & societies, high national pass rates",
     url: "performance",
     action: "navigate"
   },
@@ -127,7 +113,6 @@ const searchItems = [
     title: "G.C.E. O/L Examination Results (94.2%)",
     tamil: "க.பொ.த சாதாரண தரப் பரீட்சை பெறுபேறுகள்",
     category: "Academics",
-    description: "High achievement records in national general certificate examinations in Jaffna district",
     url: "performance",
     action: "navigate"
   },
@@ -135,7 +120,6 @@ const searchItems = [
     title: "G.C.E. A/L University Qualifying Rate (78%)",
     tamil: "பல்கலைக்கழக அனுமதி வீதம் (78%)",
     category: "Academics",
-    description: "Science, Commerce, Arts, and Technology collegiate education and university admissions",
     url: "performance",
     action: "navigate"
   },
@@ -143,7 +127,6 @@ const searchItems = [
     title: "Clubs & Societies (18 Co-Curriculars)",
     tamil: "பாடசாலைச் சங்கங்களும் மன்றங்களும் (18)",
     category: "Activities",
-    description: "Tamil Literary Association, Science Union, ICT Club, Scouts & Guides, English Society",
     url: "performance",
     action: "navigate"
   },
@@ -151,7 +134,6 @@ const searchItems = [
     title: "Science & ICT Smart Laboratories",
     tamil: "விஞ்ஞான & கணனி ஆய்வுகூடங்கள்",
     category: "Facilities",
-    description: "Modern computer laboratory and advanced science experimental units for students",
     url: "performance",
     action: "navigate"
   },
@@ -161,7 +143,6 @@ const searchItems = [
     title: "College Administrative Office",
     tamil: "கல்லூரி அலுவலகம் & தொடர்புகள்",
     category: "Contact",
-    description: "Administrative inquiries, admissions & records | Phone: 021 223 0040 | Email: kcckopay@gmail.com",
     url: "contact",
     action: "navigate"
   },
@@ -169,7 +150,6 @@ const searchItems = [
     title: "Campus Location & Google Maps Directions",
     tamil: "பாடசாலை அமைவிடம் & வரைபடம்",
     category: "Contact",
-    description: "Point Pedro Road, Kopay, Jaffna, Sri Lanka - Get instant directions on Google Maps",
     url: "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     action: "external"
   },
@@ -177,7 +157,6 @@ const searchItems = [
     title: "Instagram Official Tag (@kopaychristiancollege)",
     tamil: "இன்ஸ்டாகிராம் தொடர்புகள்",
     category: "Social",
-    description: "Explore campus photos, alumni tags & visual moments on Instagram",
     url: "https://www.instagram.com/explore/tags/kopaychristiancollege/",
     action: "external"
   }
@@ -190,16 +169,27 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
   const itemRefs = useRef([]);
   const routerNavigate = useNavigate();
 
-  const filteredItems = searchItems.filter(item => {
-    if (!query.trim()) return true;
-    const q = query.toLowerCase();
-    return (
-      item.title.toLowerCase().includes(q) ||
-      item.tamil.toLowerCase().includes(q) ||
-      item.category.toLowerCase().includes(q) ||
-      item.description.toLowerCase().includes(q)
-    );
-  });
+  const filteredItems = searchItems
+    .filter(item => {
+      if (!query.trim()) return true;
+      const q = query.toLowerCase().trim();
+      return (
+        item.title.toLowerCase().includes(q) ||
+        item.tamil.toLowerCase().includes(q) ||
+        item.category.toLowerCase().includes(q)
+      );
+    })
+    .sort((a, b) => {
+      if (!query.trim()) return 0;
+      const q = query.toLowerCase().trim();
+      const aTitle = a.title.toLowerCase();
+      const bTitle = b.title.toLowerCase();
+      const aStarts = aTitle.startsWith(q);
+      const bStarts = bTitle.startsWith(q);
+      if (aStarts && !bStarts) return -1;
+      if (!aStarts && bStarts) return 1;
+      return 0;
+    });
 
   useEffect(() => {
     if (isOpen) {
@@ -411,23 +401,26 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`search-item p-3 sm:p-3.5 rounded-xl cursor-pointer transition-all flex items-start justify-between gap-3 select-none ${
+                  className={`search-item px-3 sm:px-3.5 py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${
                     isSelected
                       ? 'bg-brand-light border border-brand-pale text-brand-forest shadow-2xs translate-x-0.5'
                       : 'hover:bg-brand-light/60 text-slate-700'
                   }`}
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md ${catClass}`}>
+                  <div className="min-w-0 flex-1 space-y-0.5">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md shrink-0 ${catClass}`}>
                         {item.category}
                       </span>
                       <span className="font-bold text-slate-900 text-sm">{item.title}</span>
                     </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">{item.description}</p>
-                    <p className="text-[11px] font-tamil text-brand-forest font-medium">{item.tamil}</p>
+                    {item.tamil && (
+                      <p className="text-[11px] font-tamil text-slate-500 font-medium pl-0.5">
+                        {item.tamil}
+                      </p>
+                    )}
                   </div>
-                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 pt-1 opacity-80">
+                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 opacity-80">
                     <span>{item.action === 'external' ? 'Open' : 'Go'}</span>
                     {item.action === 'external' ? (
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

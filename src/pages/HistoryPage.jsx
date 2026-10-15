@@ -20,7 +20,7 @@ export default function HistoryPage({ lang = 'en' }) {
           </Link>
           <span className="text-slate-300">/</span>
           <span className="text-slate-800 font-semibold">
-            {lang === 'ta' ? 'கல்லூரி வரலாறு (1849 - இன்று வரை)' : 'History & Heritage (1849 - Present)'}
+            {lang === 'ta' ? 'கல்லூரி வரலாறு' : 'History & Heritage'}
           </span>
         </nav>
       </div>

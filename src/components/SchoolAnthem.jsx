@@ -45,42 +45,15 @@ export default function SchoolAnthem() {
     <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6">
       {/* Header Badge & Crest */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-brand-light border-2 border-brand-pale p-3 shadow-md mb-5 mx-auto">
-          <img
-            src="/assets/logo.png"
-            alt="J/Kopay Christian College Crest"
-            className="w-full h-full object-contain"
-          />
-        </div>
-
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-forest/10 border border-brand-forest/20 text-brand-forest text-xs font-bold uppercase tracking-wider mb-3">
-          <span>College Heritage & Tradition</span>
-          <span className="text-brand-forest/40">•</span>
-          <span>இராகம் : ஹம்சத்வனி</span>
-        </div>
 
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
-        <h2 className="text-lg sm:text-xl font-bold text-brand-forest font-serif mt-2 tracking-wide">
-          Official School Anthem of J/Kopay Christian College
-        </h2>
-        <p className="text-xs sm:text-sm text-slate-500 font-tamil mt-1">
-          யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி (ஸ்தாபனம் 1852)
-        </p>
+        
 
         {/* Action Toolbar */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <button
-            type="button"
-            onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-slate-700 hover:text-brand-forest text-xs font-semibold shadow-2xs transition-all cursor-pointer"
-          >
-            <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-            </svg>
-            <span>{copied ? "வரிகள் நகலெடுக்கப்பட்டது!" : "Copy Tamil Lyrics"}</span>
-          </button>
+         
 
           <button
             type="button"
@@ -112,9 +85,7 @@ export default function SchoolAnthem() {
         <div className="relative z-10 space-y-8 text-center font-tamil">
           {/* Stanza 1 - Pallavi */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <span className="inline-block text-[11px] font-bold tracking-widest text-brand-forest uppercase mb-3 bg-brand-pale/60 px-3 py-1 rounded-full">
-              பல்லவி
-            </span>
+            
             <div className="text-lg sm:text-2xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
               <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
@@ -128,9 +99,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 2 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <span className="inline-block text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-3 bg-slate-100 px-3 py-1 rounded-full">
-              சரணம் 1
-            </span>
+            
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்</p>
               <p>படைத்து நற்பணிபுரிந்தாய்</p>
@@ -141,9 +110,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 3 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <span className="inline-block text-[11px] font-bold tracking-widest text-slate-500 uppercase mb-3 bg-slate-100 px-3 py-1 rounded-full">
-              சரணம் 2
-            </span>
+            
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>மனதினில் உள் திறம் மதிப் பொறிவைத்திட</p>
               <p>மகிழ்வொடு நாம் முயல்வோம்</p>
@@ -154,9 +121,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 4 - Conclusion */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <span className="inline-block text-[11px] font-bold tracking-widest text-brand-forest uppercase mb-3 bg-brand-pale/60 px-3 py-1 rounded-full">
-              வாழ்த்து நிறைவு
-            </span>
+            
             <div className="text-base sm:text-xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
               <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>
@@ -168,22 +133,15 @@ export default function SchoolAnthem() {
       </div>
 
       {/* College Values Banner */}
-      <div className="mt-8 p-6 rounded-2xl bg-brand-forest text-white text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div>
-          <h3 className="text-base font-bold font-tamil">
-            கல்லூரியின் மகுட வாசகம்: உண்மைக்கும் நேர்மைக்கும்
-          </h3>
-          <p className="text-xs text-brand-light/90 font-serif mt-0.5">
-            College Motto: "For Truth and Justice" • J/Kopay Christian College, Kopay, Jaffna
-          </p>
-        </div>
-        <Link
-          to="/"
-          className="shrink-0 px-5 py-2 rounded-full bg-white text-brand-forest hover:bg-brand-light font-bold text-xs shadow-xs transition-colors"
-        >
-          ← Return to Home
-        </Link>
-      </div>
+
+
+      <Link
+        to="/"
+        className="shrink-0 px-5 py-2 rounded-full bg-white text-brand-forest hover:bg-brand-light font-bold text-xs shadow-xs transition-colors center-align "
+      >
+        ← Return to Home
+      </Link>
+
     </article>
   );
 }

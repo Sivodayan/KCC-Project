@@ -19,7 +19,7 @@ export default function AnthemPage() {
             <span>← Home</span>
           </Link>
           <span className="text-slate-300">/</span>
-          <span className="text-slate-800 font-semibold font-tamil">பாடசாலைக் கீதம் (School Anthem)</span>
+          <span className="text-slate-800 font-semibold font-tamil">School Anthem</span>
         </nav>
       </div>
 
