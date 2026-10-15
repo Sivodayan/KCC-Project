@@ -99,6 +99,7 @@ KCC-Project/
 │   └── assets/                  # Campus imagery, archival photographs, and logo
 ├── src/
 │   ├── components/
+│   │   ├── AboutDropdown.jsx       # About dropdown menu (History, Anthem, Motto)
 │   │   ├── AnthemModal.jsx         # School anthem popup (பாடசாலைக் கீதம்)
 │   │   ├── Contact.jsx             # Contact details and inquiry submission form
 │   │   ├── Footer.jsx              # Footer links, navigation, and copyright

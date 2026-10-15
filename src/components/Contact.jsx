@@ -14,7 +14,7 @@ export default function Contact() {
   };
 
   return (
-    <section className="py-16 bg-brand-white border-t border-brand-pale" id="contact">
+    <section className="py-16 bg-brand-white border-t border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="contact">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-brand-forest rounded-2xl p-8 lg:p-12 text-brand-white reveal-item">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">

@@ -15,7 +15,7 @@ export default function Principles() {
   };
 
   return (
-    <section className="py-12 sm:py-16 bg-brand-light border-b border-brand-pale" id="principles">
+    <section className="py-12 sm:py-16 bg-brand-light border-b border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Motto */}

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Hero({ onExploreHistory }) {
   return (
-    <section className="py-6 sm:py-8 bg-brand-white border-b border-brand-pale" id="about">
+    <section className="py-6 sm:py-8 bg-brand-white border-b border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="about">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-brand-forest shadow-md border border-brand-soft/40 min-h-[500px] lg:min-h-[560px] flex items-center">
           {/* Background Campus Image Container */}

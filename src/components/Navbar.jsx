@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
+import AboutDropdown from './AboutDropdown.jsx';
 
 export default function Navbar({
   currentPage,
   onNavigate,
   onOpenSearch,
+  onOpenAnthem,
   historyLang,
   onChangeHistoryLang
 }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(true);
 
   function handleNavLink(page, hash = '') {
     setMobileMenuOpen(false);
@@ -44,12 +47,11 @@ export default function Navbar({
           {currentPage === 'home' && (
             <div className="hidden md:flex items-center gap-2">
               <div className="flex items-center bg-brand-light border border-brand-pale px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
-                <button
-                  onClick={() => handleNavLink('history')}
-                  className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
-                >
-                  History
-                </button>
+                {/* About Dropdown (History, Anthem, Motto) */}
+                <AboutDropdown
+                  onNavigate={handleNavLink}
+                  onOpenAnthem={onOpenAnthem}
+                />
                 <button
                   onClick={() => handleNavLink('home', '#gallery')}
                   className="nav-link px-4 py-1.5 rounded-full text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 transition-all duration-200 cursor-pointer"
@@ -216,12 +218,55 @@ export default function Navbar({
 
           {currentPage === 'home' ? (
             <>
-              <button
-                onClick={() => handleNavLink('history')}
-                className="block w-full text-left text-slate-700 hover:text-brand-forest font-medium py-2 rounded-lg hover:bg-brand-light px-3 transition-colors cursor-pointer"
-              >
-                History
-              </button>
+              {/* Mobile About Accordion */}
+              <div className="border border-brand-pale rounded-xl overflow-hidden bg-brand-light/40">
+                <button
+                  type="button"
+                  onClick={() => setMobileAboutOpen(prev => !prev)}
+                  className="w-full flex items-center justify-between text-left text-slate-800 font-semibold py-2.5 px-3 hover:bg-brand-pale/40 transition-colors cursor-pointer"
+                >
+                  <span className="flex items-center gap-2 text-sm">
+                    <span className="w-2 h-2 rounded-full bg-brand-forest"></span>
+                    <span>About KCC</span>
+                  </span>
+                  <svg
+                    className={`w-4 h-4 text-brand-forest transition-transform duration-200 ${
+                      mobileAboutOpen ? 'rotate-180' : 'rotate-0'
+                    }`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+
+                {mobileAboutOpen && (
+                  <div className="px-2 pb-2 space-y-1 bg-white/70 border-t border-brand-pale/40">
+                    <button
+                      onClick={() => handleNavLink('history')}
+                      className="w-full text-left text-slate-700 hover:text-brand-forest text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium"
+                    >
+                      History
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        onOpenAnthem();
+                      }}
+                      className="w-full text-left text-slate-700 hover:text-brand-forest text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium"
+                    >
+                      Anthem
+                    </button>
+                    <button
+                      onClick={() => handleNavLink('home', '#principles')}
+                      className="w-full text-left text-slate-700 hover:text-brand-forest text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium"
+                    >
+                      Motto
+                    </button>
+                  </div>
+                )}
+              </div>
               <button
                 onClick={() => handleNavLink('home', '#gallery')}
                 className="block w-full text-left text-slate-700 hover:text-brand-forest font-medium py-2 rounded-lg hover:bg-brand-light px-3 transition-colors cursor-pointer"

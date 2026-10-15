@@ -38,17 +38,40 @@ export default function App() {
     } else {
       setCurrentPage('home');
       if (hash) {
-        window.location.hash = hash;
+        if (window.location.hash !== hash) {
+          window.history.pushState(null, '', hash);
+        }
         setTimeout(() => {
           const el = document.querySelector(hash);
           if (el) {
-            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const navHeader = document.getElementById('mainHeader');
+            const navHeight = navHeader ? navHeader.getBoundingClientRect().height : 75;
+            const elementTop = el.getBoundingClientRect().top + window.pageYOffset;
+            const elementHeight = el.getBoundingClientRect().height;
+            const availableHeight = window.innerHeight - navHeight;
+
+            let offsetPosition;
+            if (hash === '#gallery' && elementHeight < availableHeight) {
+              // Vertically center gallery within the visible viewport below sticky navbar
+              const verticalSlack = Math.max(0, (availableHeight - elementHeight) / 2);
+              offsetPosition = Math.max(0, elementTop - navHeight - verticalSlack);
+            } else {
+              offsetPosition = Math.max(0, elementTop - navHeight - 16);
+            }
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+
             el.classList.add('ring-4', 'ring-brand-pale', 'transition-all', 'duration-500');
             setTimeout(() => el.classList.remove('ring-4', 'ring-brand-pale'), 2000);
           }
         }, 80);
       } else {
-        window.location.hash = '';
+        if (window.location.hash) {
+          window.history.pushState(null, '', window.location.pathname);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
@@ -79,6 +102,7 @@ export default function App() {
         currentPage={currentPage}
         onNavigate={handleNavigate}
         onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenAnthem={() => setIsAnthemOpen(true)}
         historyLang={historyLang}
         onChangeHistoryLang={setHistoryLang}
       />

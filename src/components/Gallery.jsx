@@ -49,7 +49,12 @@ const journalGallery = [
 
 export default function Gallery() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [hasEntered, setHasEntered] = useState(false);
+  const [hasEntered, setHasEntered] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash.toLowerCase() === '#gallery';
+    }
+    return false;
+  });
   const [isEntering, setIsEntering] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isInView, setIsInView] = useState(false);
@@ -70,7 +75,7 @@ export default function Gallery() {
     setCurrentIndex(safeIndex);
   }, [hasEntered, total]);
 
-  // Entrance & In-View Observer: Triggers ONLY when visitor actually enters the gallery section
+  // Entrance & In-View Observer: Triggers when visitor enters the gallery section
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -86,19 +91,19 @@ export default function Gallery() {
             // 3D Fan-in entrance animation duration
             setTimeout(() => {
               setIsEntering(false);
-            }, 1100);
+            }, 700);
 
-            // Start slideshow shortly after entering section (1.5s after entry)
+            // Start slideshow shortly after entering section
             if (initialSlideTimerRef.current) clearTimeout(initialSlideTimerRef.current);
             initialSlideTimerRef.current = setTimeout(() => {
               setCurrentIndex(prev => (prev + 1) % total);
-            }, 500);
+            }, 400);
           }
         } else {
           setIsInView(false);
         }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.05 });
 
     observer.observe(sectionRef.current);
 
@@ -217,7 +222,7 @@ export default function Gallery() {
   return (
     <section
       ref={sectionRef}
-      className="py-16 sm:py-24 bg-[#0a1c11] text-brand-white relative overflow-hidden select-none border-t border-b border-brand-forest/40"
+      className="py-8 sm:py-12 bg-[#0a1c11] text-brand-white relative overflow-hidden select-none border-t border-b border-brand-forest/40 scroll-mt-20 sm:scroll-mt-24"
       id="gallery"
     >
       {/* Ambient Lighting Glows */}
@@ -228,14 +233,14 @@ export default function Gallery() {
 
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* 3D Carousel Stage Area */}
-        <div className="relative w-full py-4 sm:py-6 flex flex-col items-center justify-center">
+        <div className="relative w-full flex flex-col items-center justify-center">
           {/* 3D Perspective Viewport */}
           <div
             ref={stageRef}
             onClick={handleStageClick}
             onMouseMove={handleStageMouseMove}
             onMouseLeave={handleStageMouseLeave}
-            className="journal-stage relative w-full max-w-6xl h-[360px] sm:h-[450px] lg:h-[520px] flex items-center justify-center cursor-pointer"
+            className="journal-stage relative w-full max-w-6xl h-[340px] sm:h-[380px] lg:h-[400px] flex items-center justify-center cursor-pointer"
           >
             {journalGallery.map((item, index) => {
               let offset = index - currentIndex;
@@ -371,10 +376,10 @@ export default function Gallery() {
           </div>
 
           {/* Floor Shadow beneath curved cards */}
-          <div className="w-[85%] max-w-4xl h-10 mx-auto -mt-6 bg-black/60 rounded-full blur-2xl pointer-events-none" />
+          <div className="w-[85%] max-w-3xl h-8 mx-auto -mt-4 bg-black/60 rounded-full blur-xl pointer-events-none" />
 
           {/* Single Clean Interactive Indicator Dots */}
-          <div className="mt-8 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
+          <div className="mt-5 sm:mt-6 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
             {journalGallery.map((_, i) => (
               <button
                 key={i}

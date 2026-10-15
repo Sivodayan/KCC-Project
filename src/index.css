@@ -1,3 +1,12 @@
+/* Scroll offset for sticky header */
+html {
+  scroll-padding-top: 5.5rem;
+}
+
+[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 /* Scroll Entrance Transition */
 .reveal-item {
   opacity: 0;
@@ -76,6 +85,13 @@
   will-change: transform, opacity;
   user-select: none;
   -webkit-user-select: none;
+}
+
+@media (max-width: 639px) {
+  .journal-card {
+    height: 270px;
+    width: min(440px, 88vw);
+  }
 }
 
 .journal-card .journal-img {

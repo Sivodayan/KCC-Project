@@ -6,7 +6,8 @@ export default defineConfig({
   server: {
     port: 5173,
     base: '/KCC-Project/',
-    open: false
+    open: false,
+    allowedHosts: true
   }
 
 

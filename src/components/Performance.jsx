@@ -84,7 +84,7 @@ export default function Performance() {
   }, [statsAnimated]);
 
   return (
-    <section ref={performanceRef} className="py-16 bg-brand-white border-b border-brand-pale" id="performance">
+    <section ref={performanceRef} className="py-16 bg-brand-white border-b border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="performance">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-12 reveal-item">
           
