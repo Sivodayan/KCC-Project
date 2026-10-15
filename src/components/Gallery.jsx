@@ -74,10 +74,12 @@ export default function Gallery() {
   const [hasEntered, setHasEntered] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(false);
   const [hoveredSide, setHoveredSide] = useState(null); // 'prev' | 'next' | null
 
   const stageRef = useRef(null);
   const sectionRef = useRef(null);
+  const initialSlideTimerRef = useRef(null);
 
   const total = journalGallery.length;
 
@@ -90,45 +92,54 @@ export default function Gallery() {
     setCurrentIndex(safeIndex);
   }, [hasEntered, total]);
 
-  // Entrance Observer
+  // Entrance & In-View Observer: Triggers ONLY when visitor actually enters the gallery section
   useEffect(() => {
+    if (!sectionRef.current) return;
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          setHasEntered(true);
-          setIsEntering(true);
-          setTimeout(() => {
-            setIsEntering(false);
-          }, 1100);
-          observer.disconnect();
+          setIsInView(true);
+
+          if (!hasEntered) {
+            setHasEntered(true);
+            setIsEntering(true);
+
+            // 3D Fan-in entrance animation duration
+            setTimeout(() => {
+              setIsEntering(false);
+            }, 1100);
+
+            // Start slideshow shortly after entering section (1.5s after entry)
+            if (initialSlideTimerRef.current) clearTimeout(initialSlideTimerRef.current);
+            initialSlideTimerRef.current = setTimeout(() => {
+              setCurrentIndex(prev => (prev + 1) % total);
+            }, 1500);
+          }
+        } else {
+          setIsInView(false);
         }
       });
-    }, { threshold: 0.12 });
+    }, { threshold: 0.15 });
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    const fallbackTimer = setTimeout(() => {
-      setHasEntered(true);
-    }, 1200);
+    observer.observe(sectionRef.current);
 
     return () => {
       observer.disconnect();
-      clearTimeout(fallbackTimer);
+      if (initialSlideTimerRef.current) clearTimeout(initialSlideTimerRef.current);
     };
-  }, []);
+  }, [hasEntered, total]);
 
-  // Continuous Auto-rotation (pauses on hover or inactive tab)
+  // Continuous Auto-rotation (runs when entered, in view, and not hovered/paused)
   useEffect(() => {
-    if (!hasEntered || isPaused) return;
+    if (!hasEntered || !isInView || isPaused) return;
 
     const interval = setInterval(() => {
       setCurrentIndex(prev => (prev + 1) % total);
-    }, 3800);
+    }, 3200);
 
     return () => clearInterval(interval);
-  }, [hasEntered, isPaused, total]);
+  }, [hasEntered, isInView, isPaused, total]);
 
   // Pause when tab is not active
   useEffect(() => {
@@ -238,20 +249,6 @@ export default function Gallery() {
       </div>
 
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Gallery Header */}
-        <div className="text-center pb-2 mb-6 reveal-item">
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight">
-            Campus Life Gallery
-          </h2>
-          <div className="flex items-center justify-center gap-2 mt-1.5 text-xs text-brand-pale">
-            <span className="font-tamil">கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு</span>
-            <span>•</span>
-            <span className="inline-flex items-center gap-1 bg-white/10 px-2.5 py-0.5 rounded-full text-[11px] font-mono text-white">
-              {currentIndex + 1} of {total} Moments
-            </span>
-          </div>
-        </div>
-
         {/* 3D Carousel Stage Area */}
         <div className="relative w-full py-4 sm:py-6 flex flex-col items-center justify-center">
           {/* Previous Slide Floating Button */}
@@ -432,21 +429,8 @@ export default function Gallery() {
           {/* Floor Shadow beneath curved cards */}
           <div className="w-[85%] max-w-4xl h-10 mx-auto -mt-6 bg-black/60 rounded-full blur-2xl pointer-events-none" />
 
-          {/* Active Moment Caption & Narrative */}
-          <div key={currentIndex} className="animate-caption mt-6 text-center max-w-2xl mx-auto px-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-forest/70 border border-brand-soft/40 text-xs text-brand-pale mb-2 backdrop-blur-xs">
-              <span className="font-tamil">{journalGallery[currentIndex].titleTa}</span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
-              {journalGallery[currentIndex].titleEn}
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed font-normal">
-              {journalGallery[currentIndex].desc}
-            </p>
-          </div>
-
           {/* Single Clean Interactive Indicator Dots */}
-          <div className="mt-7 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
+          <div className="mt-8 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
             {journalGallery.map((_, i) => (
               <button
                 key={i}
