@@ -19,37 +19,45 @@ export const FACEBOOK_PROFILE_IMAGE = "/assets/fb_profile.jpg";
 
 export const FACEBOOK_APP_URL = "fb://profile/61575442051109";
 
-export const FACEBOOK_SECTIONS = [
+/**
+ * Facebook Post Iframes rendered as Event Cards
+ * Target URL: https://www.facebook.com/profile.php?id=61575442051109
+ */
+export const FACEBOOK_POSTS = [
   {
-    id: "timeline",
-    title: "Timeline & Community Posts",
-    tamil: "காலவரிசை & சமூகப் பதிவுகள்",
-    description: "Live event broadcasts, collegiate notices, student announcements, and campus updates.",
-    url: "https://www.facebook.com/profile.php?id=61575442051109",
-    icon: "timeline"
+    id: "post-1",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
   },
   {
-    id: "photos",
-    title: "Photos & Event Albums",
-    tamil: "புகைப்படங்கள் & நிகழ்வுப் படங்கள்",
-    description: "Authentic photographs from sports meets, celebrations, academic functions, and ceremonies.",
-    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=photos",
-    icon: "photos"
+    id: "post-2",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0334nHGppar4ii9kpwojTJrsZ8jzd5xRRev34az8mcgYavz3Ff72oKgHD838z3kdXQl%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
   },
   {
-    id: "videos",
-    title: "Videos & Event Streams",
-    tamil: "காணொளிகள் & நேரலைகள்",
-    description: "Watch video highlights, ceremonies, cultural performances, and collegiate celebrations.",
-    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=videos",
-    icon: "videos"
+    id: "post-3",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0Kwk57DhmTE8CLEy3kx3RKV3TmXmddPzucrS2udotnHufxLprRzWnSEQivjGxLTh6l%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
   },
   {
-    id: "about",
-    title: "About & Community Info",
-    tamil: "விபரங்கள் & சமூகம்",
-    description: "Details, verified connection, student and alumni network in Kopay, Jaffna.",
-    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=about",
-    icon: "about"
+    id: "post-4",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02hbf8TSciS8MnviyQxDAWyBASJcQ97nj96nR7FmYBvKqYYaYYjeHzG4uADevDkAv7l%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
+  },
+  {
+    id: "post-5",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02zujdxmeds1hkqvEgQ2929f2aav9hZ5mSD7dKE17PFFMerBQ5DjAJVTuP73iJGinTl%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
+  },
+  {
+    id: "post-6",
+    iframeSrc: "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02xD25dwc3eikVr9poQLQ7NreZDWWzkiFcPbFJGjAaw8GeFGtNXHjpkPDPwj8bRx81l%26id%3D61575442051109&show_text=true&width=500",
+    width: 500,
+    height: 645
   }
 ];

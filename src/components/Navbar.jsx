@@ -58,11 +58,17 @@ export default function Navbar({
                 Home
               </button>
 
-              {/* About Dropdown (History, Anthem, Motto) */}
-              <AboutDropdown
-                onNavigate={handleNavLink}
-                onOpenAnthem={onOpenAnthem}
-              />
+              {/* Performance Pill - Redirects/scrolls to Performance on index */}
+              <button
+                onClick={() => handleNavLink('performance')}
+                className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60"
+              >
+                Performance
+              </button>
+
+              
+
+              
 
               {/* Events Pill */}
               <button
@@ -88,13 +94,12 @@ export default function Navbar({
                 Gallery
               </button>
 
-              {/* Performance Pill - Redirects/scrolls to Performance on index */}
-              <button
-                onClick={() => handleNavLink('performance')}
-                className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60"
-              >
-                Performance
-              </button>
+                {/* About Dropdown (History, Anthem, Motto) */}
+              <AboutDropdown
+                onNavigate={handleNavLink}
+                onOpenAnthem={onOpenAnthem}
+              />
+              
 
               {/* Language Switcher (Visible when on History Page) */}
               {currentPage === 'history' && (
