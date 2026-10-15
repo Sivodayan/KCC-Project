@@ -276,10 +276,7 @@ export default function Navbar({
                       History
                     </button>
                     <button
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        onOpenAnthem();
-                      }}
+                      onClick={() => handleNavLink('anthem')}
                       className="w-full text-left text-slate-700 hover:text-brand-forest text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium"
                     >
                       Anthem

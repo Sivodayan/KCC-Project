@@ -5,7 +5,7 @@ const searchItems = [
     title: "School Events & Facebook Community Updates",
     tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
     category: "Events",
-    description: "Latest 10 school events, sports meet, Tamil day, science exhibition & Facebook news",
+    description: "Official Facebook community updates from கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்",
     url: "events",
     action: "navigate"
   },
@@ -54,8 +54,8 @@ const searchItems = [
     tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
     category: "Tradition",
     description: "College anthem composed in Ragam Hamsadhwani celebrating KCC",
-    url: "anthemModal",
-    action: "anthem"
+    url: "anthem",
+    action: "navigate"
   },
   {
     title: "Key Numbers & Performance",

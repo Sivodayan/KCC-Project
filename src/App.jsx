@@ -9,6 +9,7 @@ import GalleryPage from './pages/GalleryPage.jsx';
 import AcademicsPage from './pages/AcademicsPage.jsx';
 import PerformancePage from './pages/PerformancePage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
+import AnthemPage from './pages/AnthemPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
 
@@ -32,6 +33,7 @@ export default function App() {
     if (path.startsWith('/academics')) return 'academics';
     if (path.startsWith('/performance')) return 'performance';
     if (path.startsWith('/contact')) return 'contact';
+    if (path.startsWith('/anthem')) return 'anthem';
     return 'home';
   };
 
@@ -61,6 +63,8 @@ export default function App() {
       navigate('/performance', { replace: true });
     } else if (hash.startsWith('#contact')) {
       navigate('/contact', { replace: true });
+    } else if (hash.startsWith('#anthem')) {
+      navigate('/anthem', { replace: true });
     }
   }, [navigate]);
 
@@ -114,6 +118,10 @@ export default function App() {
       pageTitle = "Contact Us & Campus Location | J/Kopay Christian College";
       descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
       canonicalUrl = "https://kcc-project.vercel.app/contact";
+    } else if (path.startsWith('/anthem')) {
+      pageTitle = "School Anthem (பாடசாலைக் கீதம்) | J/Kopay Christian College";
+      descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
+      canonicalUrl = "https://kcc-project.vercel.app/anthem";
     }
 
     document.title = pageTitle;
@@ -133,6 +141,7 @@ export default function App() {
     else if (page === 'academics') target = '/academics';
     else if (page === 'performance') target = '/performance';
     else if (page === 'contact') target = '/contact';
+    else if (page === 'anthem') target = '/anthem';
 
     navigate(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -177,6 +186,7 @@ export default function App() {
         <Route path="/academics" element={<AcademicsPage />} />
         <Route path="/performance" element={<PerformancePage />} />
         <Route path="/contact" element={<ContactPage />} />
+        <Route path="/anthem" element={<AnthemPage />} />
         {/* Fallback to Home */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

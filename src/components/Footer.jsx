@@ -59,7 +59,7 @@ export default function Footer({ onNavigate, onOpenAnthem }) {
               Contact Us
             </button>
             <button
-              onClick={onOpenAnthem}
+              onClick={() => onNavigate('anthem')}
               className="hover:text-brand-forest transition-colors cursor-pointer"
             >
               Anthem

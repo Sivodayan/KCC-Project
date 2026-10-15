@@ -58,4 +58,12 @@
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
+
+  <!-- School Anthem (பாடசாலைக் கீதம்) -->
+  <url>
+    <loc>https://kcc-project.vercel.app/anthem</loc>
+    <lastmod>2026-10-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
 </urlset>

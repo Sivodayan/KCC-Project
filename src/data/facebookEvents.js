@@ -1,232 +1,55 @@
 /**
- * School Events from Kopay Christian College Facebook Community
- * Official Profile: https://www.facebook.com/profile.php?id=61575442051109
- * Page Name: கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் (KCC Students & Community)
+ * Extracted Facebook Profile Data for J/Kopay Christian College
+ * Target URL: https://www.facebook.com/profile.php?id=61575442051109
+ * Extracted Name: கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்
+ * Extracted Crest Image: /assets/fb_profile.jpg
  */
 
 export const FACEBOOK_PAGE_URL = "https://www.facebook.com/profile.php?id=61575442051109";
-export const FACEBOOK_PAGE_NAME = "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்";
-export const FACEBOOK_PAGE_TAG = "@KCCStudentsKopay";
 
-export const facebookEvents = [
+export const FACEBOOK_CANONICAL_URL = "https://www.facebook.com/people/%E0%AE%95%E0%AF%8B%E0%AE%AA%E0%AF%8D%E0%AE%AA%E0%AE%BE%E0%AE%AF%E0%AF%8D-%E0%AE%95%E0%AE%BF%E0%AE%B1%E0%AE%BF%E0%AE%B8%E0%AF%8D%E0%AE%A4%E0%AE%B5-%E0%AE%95%E0%AE%B2%E0%AF%8D%E0%AE%B2%E0%AF%82%E0%AE%B0%E0%AE%BF-%E0%AE%AE%E0%AE%BE%E0%AE%A3%E0%AE%B5%E0%AE%B0%E0%AF%8D%E0%AE%95%E0%AE%B3%E0%AF%8D/pfbid02EEBQ1TnjeggnBkPt3EsU3ouwxJyeDqxhT3khfg1681XKbkdvCDXeiox8o2BzLyewl/";
+
+export const FACEBOOK_PROFILE_ID = "61575442051109";
+
+export const FACEBOOK_PROFILE_NAME = "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்";
+
+export const FACEBOOK_PROFILE_DESC = "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் is on Facebook. Join Facebook to connect with கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் and others you may know.";
+
+export const FACEBOOK_PROFILE_IMAGE = "/assets/fb_profile.jpg";
+
+export const FACEBOOK_APP_URL = "fb://profile/61575442051109";
+
+export const FACEBOOK_SECTIONS = [
   {
-    id: "evt-1",
-    title: "Annual Inter-House Athletic & Sports Meet 2026",
-    tamilTitle: "ஆண்டு இல்ல மெய்வல்லுநர் & விளையாட்டுப் போட்டி 2026",
-    date: "February 24, 2026",
-    tamilDate: "பெப்ரவரி 24, 2026",
-    category: "Sports",
-    categoryTamil: "விளையாட்டு",
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    venue: "College Main Grounds, Kopay",
-    venueTamil: "கல்லூரி விளையாட்டு மைதானம், கோப்பாய்",
-    organizer: "Physical Education Dept & Sports Council",
-    organizerTamil: "உடற்கல்வித் துறை & விளையாட்டுச் சங்கம்",
-    image: "/assets/gal_(1).jpeg",
-    summary: "The grand annual sports meet brought thrilling track and field rivalries among the four competitive college houses. Featuring march past, relays, high jump, and trophy presentations by distinguished alumni.",
-    tamilSummary: "கல்லூரியின் நான்கு இல்லங்களுக்கிடையிலான விறுவிறுப்பான மெய்வல்லுநர் போட்டிகள், அணிவகுப்பு மரியாதை, மற்றும் பழைய மாணவர் பிரமுகர்களின் முன்னிலையில் வெற்றிக் கிண்ணங்கள் வழங்கி வைக்கப்பட்டன.",
-    likes: 384,
-    comments: 52,
-    shares: 41,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["SportsMeet", "Athletics", "KCCSpirit", "TrackAndField"]
+    id: "timeline",
+    title: "Timeline & Community Posts",
+    tamil: "காலவரிசை & சமூகப் பதிவுகள்",
+    description: "Live event broadcasts, collegiate notices, student announcements, and campus updates.",
+    url: "https://www.facebook.com/profile.php?id=61575442051109",
+    icon: "timeline"
   },
   {
-    id: "evt-2",
-    title: "Tamil Day Celebrations & Literary Festival (தமிழ் தின விழா)",
-    tamilTitle: "முத்தமிழ் விழா & இலக்கியப் போட்டிப் பரிசளிப்பு",
-    date: "March 12, 2026",
-    tamilDate: "மார்ச் 12, 2026",
-    category: "Cultural",
-    categoryTamil: "கலாச்சாரம்",
-    badgeColor: "bg-amber-100 text-amber-800 border-amber-200",
-    venue: "Robert Bren Memorial Hall",
-    venueTamil: "றொபேட் பிறென் நினைவு மண்டபம்",
-    organizer: "Tamil Literary Association (தமிழ் மன்றம்)",
-    organizerTamil: "தமிழ் இலக்கிய மன்றம்",
-    image: "/assets/gal_(2).jpeg",
-    summary: "Celebrating our rich heritage through oratorical contests, Tamil drama, traditional dance, Villupaattu, and honoring student poets and essay winners across Kopay division.",
-    tamilSummary: "கல்லூரித் தமிழ் மன்றத்தின் ஏற்பாட்டில் கவிதை, பேச்சு, வில்லுப்பாட்டு, பாரம்பரிய நாட்டிய நிகழ்வுகளுடன் மாணவர்களின் இலக்கியப் படைப்புகள் பாராட்டிப் பரிசளிக்கப்பட்டுச் சிறப்பிக்கப்பட்டன.",
-    likes: 295,
-    comments: 38,
-    shares: 27,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["TamilDay", "Muthamil", "Heritage", "Literature"]
+    id: "photos",
+    title: "Photos & Event Albums",
+    tamil: "புகைப்படங்கள் & நிகழ்வுப் படங்கள்",
+    description: "Authentic photographs from sports meets, celebrations, academic functions, and ceremonies.",
+    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=photos",
+    icon: "photos"
   },
   {
-    id: "evt-3",
-    title: "G.C.E. Advanced Level Science & Smart ICT Exhibition",
-    tamilTitle: "க.பொ.த உயர்தர விஞ்ஞான & கணனி ஆய்வுகூடக் கண்காட்சி",
-    date: "April 05, 2026",
-    tamilDate: "ஏப்ரல் 05, 2026",
-    category: "Academics",
-    categoryTamil: "கல்வி",
-    badgeColor: "bg-blue-100 text-blue-800 border-blue-200",
-    venue: "Science Laboratory Complex & ICT Smart Wing",
-    venueTamil: "விஞ்ஞான ஆய்வுகூடத் தொகுதி & கணனி மையம்",
-    organizer: "Science Union & Computer Society",
-    organizerTamil: "விஞ்ஞான மன்றம் & கணனிச் சங்கம்",
-    image: "/assets/gal_(3).jpeg",
-    summary: "Students demonstrated interactive robotics, renewable solar energy models, chemistry experiments, and software demonstrations to visiting schools from across Jaffna peninsula.",
-    tamilSummary: "உயர்தர விஞ்ஞான மற்றும் கணனி மாணவர்களின் நவீன கண்டுபிடிப்புகள், சோலார் மின் உற்பத்தி மாதிரிகள், வேதியியல் சோதனைகள் மற்றும் தகவல் தொழில்நுட்பச் செயல்விளக்கங்கள் காட்சிப்படுத்தப்பட்டன.",
-    likes: 312,
-    comments: 44,
-    shares: 33,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["ScienceExhibition", "STEM", "ICT", "Innovation"]
+    id: "videos",
+    title: "Videos & Event Streams",
+    tamil: "காணொளிகள் & நேரலைகள்",
+    description: "Watch video highlights, ceremonies, cultural performances, and collegiate celebrations.",
+    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=videos",
+    icon: "videos"
   },
   {
-    id: "evt-4",
-    title: "174th College Founding Day & Thanksgiving Service",
-    tamilTitle: "174ஆவது கல்லூரி ஸ்தாபகர் தின ஆராதனை & நினைவுகூரல்",
-    date: "January 18, 2026",
-    tamilDate: "ஜனவரி 18, 2026",
-    category: "Celebrations",
-    categoryTamil: "நிகழ்வுகள்",
-    badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
-    venue: "College Chapel & Assembly Quadrangle",
-    venueTamil: "கல்லூரி தேவாலயம் & பிரதான மண்டபம்",
-    organizer: "College Administration & Chaplaincy",
-    organizerTamil: "கல்லூரி நிர்வாகம் & பழைய மாணவர் சங்கம்",
-    image: "/assets/gal_(4).jpeg",
-    summary: "Reflecting on over 170+ years of educational service in Kopay since 1852. Thanksgiving prayers, tribute to Robert Bren, and honoring veteran retired principals and master teachers.",
-    tamilSummary: "1852ஆம் ஆண்டு ஆரம்பிக்கப்பட்ட எமது கல்லூரியின் 170+ ஆண்டு கால வரலாற்றை நினைவுகூர்ந்து, ஸ்தாபகர் றொபேட் பிறென் ஐயாவின் அர்ப்பணிப்பைப் போற்றி நன்றி நவிலல் ஆராதனை நடைபெற்றது.",
-    likes: 420,
-    comments: 67,
-    shares: 55,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["FounderDay", "History", "Thanksgiving", "Est1852"]
-  },
-  {
-    id: "evt-5",
-    title: "Northern Province Inter-School Cricket Tournament Victory",
-    tamilTitle: "வடமாகாண பாடசாலைகளுக்கிடையிலான கிரிக்கெட் சுற்றுப்போட்டி வெற்றி",
-    date: "March 22, 2026",
-    tamilDate: "மார்ச் 22, 2026",
-    category: "Sports",
-    categoryTamil: "விளையாட்டு",
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    venue: "Jaffna Central College Grounds",
-    venueTamil: "யாழ்ப்பாணம் மத்திய கல்லூரி மைதானம்",
-    organizer: "KCC Cricket XI & Master-in-Charge",
-    organizerTamil: "கல்லூரி முதலாம் பதினொருவர் கிரிக்கெட் அணி",
-    image: "/assets/gal_(5).jpeg",
-    summary: "An exceptional performance by the KCC 1st XI Cricket team securing victory in the divisional semi-finals with brilliant bowling spells and match-winning half-centuries.",
-    tamilSummary: "கோப்பாய் கிறிஸ்தவ கல்லூரியின் முதலாம் பதினொருவர் கிரிக்கெட் அணி அபார துடுப்பாட்டம் மற்றும் பந்துவீச்சினால் எதிரணியை வீழ்த்தி மாபெரும் வெற்றியைப் பதிவு செய்தது.",
-    likes: 489,
-    comments: 92,
-    shares: 74,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["Cricket", "Champions", "SportsGlory", "KCCPride"]
-  },
-  {
-    id: "evt-6",
-    title: "Prefects' Investiture & Leadership Badge Ceremony 2026",
-    tamilTitle: "மாணவர் தலைவர்கள் பதவியேற்பு & சின்னம் சூட்டும் விழா",
-    date: "February 04, 2026",
-    tamilDate: "பெப்ரவரி 04, 2026",
-    category: "Academics",
-    categoryTamil: "கல்வி",
-    badgeColor: "bg-blue-100 text-blue-800 border-blue-200",
-    venue: "Main College Auditorium",
-    venueTamil: "கல்லூரி பிரதான மண்டபம்",
-    organizer: "Prefects' Guild & Discipline Committee",
-    organizerTamil: "மாணவர் தலைவர்கள் அவை & நிர்வாகம்",
-    image: "/assets/gal_(6).jpeg",
-    summary: "Installation of the Head Prefects and Senior Prefects' Guild for the academic year 2026, taking solemn oaths to uphold truth, justice, and school discipline with pride.",
-    tamilSummary: "2026ஆம் கல்வி ஆண்டிற்கான புதிய மாணவர் தலைவர்கள் சத்தியப்பிரமாணம் செய்து உத்தியோகபூர்வமாகப் பதவிகளையும் சின்னங்களையும் பொறுப்பேற்ற வரலாற்று நிகழ்வு.",
-    likes: 275,
-    comments: 31,
-    shares: 18,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["Leadership", "PrefectsInvestiture", "DutyAndHonor"]
-  },
-  {
-    id: "evt-7",
-    title: "Annual Prize Giving & Student Excellence Felicitation",
-    tamilTitle: "ஆண்டுப் பரிசளிப்பு விழா & திறமைச் சித்திகள் கௌரவிப்பு",
-    date: "May 10, 2026",
-    tamilDate: "மே 10, 2026",
-    category: "Celebrations",
-    categoryTamil: "நிகழ்வுகள்",
-    badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
-    venue: "Robert Bren Memorial Hall",
-    venueTamil: "றொபேட் பிறென் நினைவு மண்டபம்",
-    organizer: "Academic Committee & Administration",
-    organizerTamil: "கல்விப் பிரிவு & பழைய மாணவர் சங்கம்",
-    image: "/assets/gal_(7).jpeg",
-    summary: "Recognizing high achievers in G.C.E. O/L (94.2% pass rate) and university entrants in Medicine, Engineering, Arts, and Commerce streams with gold medals and certificates.",
-    tamilSummary: "க.பொ.த சாதாரண தரம் மற்றும் உயர்தரத்தில் மருத்துவ, பொறியியல் பீடங்களுக்கு தெரிவான சாதனை மாணவர்களுக்கு தங்கப் பதக்கங்களும் சான்றிதழ்களும் வழங்கிக் கௌரவிக்கப்பட்டன.",
-    likes: 360,
-    comments: 54,
-    shares: 42,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["PrizeGiving", "AcademicExcellence", "GoldMedals"]
-  },
-  {
-    id: "evt-8",
-    title: "Robert Bren Memorial Hall Modernization & Campus Green Drive",
-    tamilTitle: "றொபேட் பிறென் மண்டப புனரமைப்பு & மரநடுகை திட்டம்",
-    date: "June 02, 2026",
-    tamilDate: "ஜூன் 02, 2026",
-    category: "Celebrations",
-    categoryTamil: "நிகழ்வுகள்",
-    badgeColor: "bg-purple-100 text-purple-800 border-purple-200",
-    venue: "College Campus Greens & Hall Wing",
-    venueTamil: "கல்லூரி வளாகம் & பிறென் மண்டபம்",
-    organizer: "Old Boys' Association (OBA) & Eco Club",
-    organizerTamil: "பழைய மாணவர் சங்கம் & சுற்றாடல் கழகம்",
-    image: "/assets/gal_(8).jpeg",
-    summary: "Inauguration of modernized audio-visual acoustics in Bren Hall, followed by planting 150 indigenous shade trees across the campus perimeter by alumni and scout troops.",
-    tamilSummary: "பிறென் நினைவு மண்டபத்தின் நவீன ஒலியமைப்பு புனரமைப்பு நிறைவடைந்து, சுற்றாடல் தினத்தை முன்னிட்டு 150 நிழல் தரும் மரக்கன்றுகள் நடும் திட்டம் ஆரம்பித்து வைக்கப்பட்டது.",
-    likes: 240,
-    comments: 29,
-    shares: 22,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["CampusDevelopment", "OBAProject", "GreenCampus"]
-  },
-  {
-    id: "evt-9",
-    title: "Inter-School Football Championship Finals (உதைபந்தாட்டப் போட்டி)",
-    tamilTitle: "வலிகாமம் கிழக்கு கோட்ட உதைபந்தாட்டச் சம்பியன்ஷிப்",
-    date: "July 14, 2026",
-    tamilDate: "ஜூலை 14, 2026",
-    category: "Sports",
-    categoryTamil: "விளையாட்டு",
-    badgeColor: "bg-emerald-100 text-emerald-800 border-emerald-200",
-    venue: "Kopay Christian College Grounds",
-    venueTamil: "கோப்பாய் கிறிஸ்தவ கல்லூரி மைதானம்",
-    organizer: "Valikamam East Zonal Sports Bureau",
-    organizerTamil: "வலிகாமம் கிழக்கு வலய விளையாட்டுப் பிரிவு",
-    image: "/assets/gal_(9).jpeg",
-    summary: "In a packed home crowd, the KCC senior football team clinched the zonal championship trophy with a spectacular 2-1 final victory, showcasing exemplary teamwork and discipline.",
-    tamilSummary: "கல்லூரி மைதானத்தில் நடைபெற்ற இறுதி ஆட்டத்தில் கோப்பாய் கிறிஸ்தவ கல்லூரி உதைபந்தாட்ட அணி 2-1 என்ற கோல் கணக்கில் வலிகாம வலய சம்பியன் கிண்ணத்தைத் தட்டிச் சென்றது.",
-    likes: 512,
-    comments: 86,
-    shares: 68,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["Football", "ZonalChampions", "SoccerGlory"]
-  },
-  {
-    id: "evt-10",
-    title: "Global Alumni & Old Students' Association Annual General Meeting",
-    tamilTitle: "பழைய மாணவர் சங்க வருடாந்த பொதுக்கூட்டம் & தாயக மீள்சந்திப்பு",
-    date: "August 20, 2026",
-    tamilDate: "ஆகஸ்ட் 20, 2026",
-    category: "Cultural",
-    categoryTamil: "கலாச்சாரம்",
-    badgeColor: "bg-amber-100 text-amber-800 border-amber-200",
-    venue: "Robert Bren Memorial Hall & Online Stream",
-    venueTamil: "பிறென் நினைவு மண்டபம் & இணையவழி இணைப்பு",
-    organizer: "J/KCC OBA Colombo & International Branches (UK, Canada, Aus)",
-    organizerTamil: "பழைய மாணவர் சங்கம் (கொழும்பு & சர்வதேச கிளைகள்)",
-    image: "/assets/gal_(10).jpeg",
-    summary: "Alumni from across Sri Lanka and overseas diaspora gathered in Kopay to review scholarship funds for underprivileged students, sports facility grants, and STEM mentorship programs.",
-    tamilSummary: "உள்நாட்டு மற்றும் புலம்பெயர் பழைய மாணவர்கள் ஒன்றுகூடி, மாணவ புலமைப்பரிசில் நிதியம் மற்றும் கல்லூரி ஆய்வுகூட விஸ்தரிப்புத் திட்டங்களை முன்னெடுத்தனர்.",
-    likes: 435,
-    comments: 63,
-    shares: 49,
-    facebookUrl: "https://www.facebook.com/profile.php?id=61575442051109",
-    tags: ["AlumniReunion", "OBA", "KCCCommunity", "DiasporaSupport"]
+    id: "about",
+    title: "About & Community Info",
+    tamil: "விபரங்கள் & சமூகம்",
+    description: "Details, verified connection, student and alumni network in Kopay, Jaffna.",
+    url: "https://www.facebook.com/profile.php?id=61575442051109&sk=about",
+    icon: "about"
   }
 ];

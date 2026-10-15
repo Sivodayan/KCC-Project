@@ -54,7 +54,7 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
     if (action === 'history') {
       onNavigate('history');
     } else if (action === 'anthem') {
-      onOpenAnthem();
+      onNavigate('anthem');
     } else if (action === 'motto') {
       onNavigate('academics');
     }
