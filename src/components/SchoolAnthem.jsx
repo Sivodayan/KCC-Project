@@ -53,9 +53,12 @@ export default function SchoolAnthem() {
   return (
     <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6">
       <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-tamil leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
+        <p className="text-slate-600 text-sm sm:text-base mt-2 font-sans max-w-xl mx-auto">
+          Official School Anthem • Composed in Ragam Hamsadhwani
+        </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button

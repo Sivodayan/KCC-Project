@@ -130,44 +130,50 @@
       "category": "Campus"
     }
   ],
-  "events": {
-    "showFacebookFeed": true,
-    "customEvents": [
-      {
-        "id": "evt_sports_meet",
-        "title": "Annual Inter-House Sports Meet 2026",
-        "titleTa": "வருடாந்த இல்ல விளையாட்டுப் போட்டி 2026",
-        "date": "March 2026",
-        "category": "Sports",
-        "badge": "Annual Event",
-        "description": "Celebrating collegiate athletic prowess, house pride, and track and field competitions among our 4 houses.",
-        "image": "/assets/gal_(4).jpeg",
-        "link": "https://www.facebook.com/profile.php?id=61575442051109"
-      },
-      {
-        "id": "evt_thanksgiving",
-        "title": "Founder's Day & Thanksgiving Service",
-        "titleTa": "நிறுவுநர் தினம் & நன்றி ஆராதனை",
-        "date": "May 2026",
-        "category": "Tradition",
-        "badge": "Ceremony",
-        "description": "Commemorating 174 years of academic excellence and Christian heritage in Kopay, Jaffna.",
-        "image": "/assets/gal_(1).jpeg",
-        "link": "https://www.facebook.com/profile.php?id=61575442051109"
-      },
-      {
-        "id": "evt_science_day",
-        "title": "Collegiate Science & ICT Exhibition",
-        "titleTa": "கல்லூரி விஞ்ஞான & தகவல் தொழினுட்ப கண்காட்சி",
-        "date": "July 2026",
-        "category": "Academics",
-        "badge": "Exhibition",
-        "description": "Showcasing student-led innovations in robotics, renewable energy, and biological sciences.",
-        "image": "/assets/gal_(3).jpeg",
-        "link": ""
-      }
-    ]
-  },
+  "events": [
+    {
+      "id": "post-1",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
+      "id": "post-2",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid0334nHGppar4ii9kpwojTJrsZ8jzd5xRRev34az8mcgYavz3Ff72oKgHD838z3kdXQl&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0334nHGppar4ii9kpwojTJrsZ8jzd5xRRev34az8mcgYavz3Ff72oKgHD838z3kdXQl%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
+      "id": "post-3",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid0Kwk57DhmTE8CLEy3kx3RKV3TmXmddPzucrS2udotnHufxLprRzWnSEQivjGxLTh6l&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0Kwk57DhmTE8CLEy3kx3RKV3TmXmddPzucrS2udotnHufxLprRzWnSEQivjGxLTh6l%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
+      "id": "post-4",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02hbf8TSciS8MnviyQxDAWyBASJcQ97nj96nR7FmYBvKqYYaYYjeHzG4uADevDkAv7l&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02hbf8TSciS8MnviyQxDAWyBASJcQ97nj96nR7FmYBvKqYYaYYjeHzG4uADevDkAv7l%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
+      "id": "post-5",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02zujdxmeds1hkqvEgQ2929f2aav9hZ5mSD7dKE17PFFMerBQ5DjAJVTuP73iJGinTl&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02zujdxmeds1hkqvEgQ2929f2aav9hZ5mSD7dKE17PFFMerBQ5DjAJVTuP73iJGinTl%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
+      "id": "post-6",
+      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02xD25dwc3eikVr9poQLQ7NreZDWWzkiFcPbFJGjAaw8GeFGtNXHjpkPDPwj8bRx81l&id=61575442051109",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02xD25dwc3eikVr9poQLQ7NreZDWWzkiFcPbFJGjAaw8GeFGtNXHjpkPDPwj8bRx81l%26id%3D61575442051109&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    }
+  ],
   "contact": {
     "address": "J/Kopay Christian College, Kopay, Jaffna, Sri Lanka",
     "phone": "021 223 0040",

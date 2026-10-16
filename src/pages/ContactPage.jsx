@@ -27,6 +27,15 @@ export default function ContactPage() {
           <span className="text-slate-800 font-semibold">Contact & Inquiries</span>
         </nav>
       </div>
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+          Contact Us
+        </h1>
+        <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+          Reach out to the administrative office of J/Kopay Christian College for admissions, inquiries, or official records.
+        </p>
+      </header>
+
       <Contact />
     </main>
   );

@@ -16,7 +16,7 @@ export default function EventsPage() {
 
   return (
     <main className="flex-grow py-4 sm:py-6 bg-brand-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 font-medium">
           <Link
             to="/"
@@ -29,10 +29,13 @@ export default function EventsPage() {
         </nav>
       </div>
 
-      <header className="text-center max-w-3xl mx-auto pt-4 pb-2 px-4">
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           School Events &amp; Updates
         </h1>
+        <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+          Latest news, sports meets, academic ceremonies, and student milestones from the official school feed.
+        </p>
       </header>
 
       <SchoolEvents />

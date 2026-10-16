@@ -80,8 +80,8 @@ export function SiteContentProvider({ children }) {
             ...defaultSiteContent.performance,
             ...parsed?.performance
           },
-          gallery: parsed?.gallery || defaultSiteContent.gallery || [],
-          events: parsed?.events || defaultSiteContent.events || FACEBOOK_POSTS,
+          gallery: Array.isArray(parsed?.gallery) ? parsed.gallery : (defaultSiteContent.gallery || []),
+          events: Array.isArray(parsed?.events) ? parsed.events : FACEBOOK_POSTS,
           contact: { ...defaultSiteContent.contact, ...parsed?.contact }
         };
       }
@@ -90,7 +90,7 @@ export function SiteContentProvider({ children }) {
     }
     return {
       ...defaultSiteContent,
-      events: defaultSiteContent.events || FACEBOOK_POSTS
+      events: Array.isArray(defaultSiteContent.events) ? defaultSiteContent.events : FACEBOOK_POSTS
     };
   });
 

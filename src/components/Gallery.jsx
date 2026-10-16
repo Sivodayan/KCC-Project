@@ -307,15 +307,15 @@ export default function Gallery() {
                     focusIndex(index);
                   }}
                   style={style}
-                  className={`journal-card rounded-2xl sm:rounded-3xl shadow-xl border border-brand-soft/30 overflow-hidden bg-brand-white transition-all duration-500 ease-out flex flex-col ${extraClasses}`}
+                  className={`journal-card rounded-2xl sm:rounded-3xl shadow-lg border border-brand-pale overflow-hidden bg-transparent transition-all duration-500 ease-out ${extraClasses}`}
                 >
-                  <div className="w-full h-full relative overflow-hidden bg-slate-900">
+                  <div className="w-full h-full relative overflow-hidden bg-transparent">
                     <GlassImage
                       src={item.src}
                       alt={item.caption || `School moment ${index + 1}`}
                       variant="emerald"
                       containerClassName="w-full h-full"
-                      className="w-full h-full object-cover object-center pointer-events-none"
+                      className="w-full h-full object-cover object-center block pointer-events-none"
                       loading="lazy"
                     />
                   </div>

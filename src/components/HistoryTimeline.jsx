@@ -19,8 +19,8 @@ export default function HistoryTimeline({ lang = 'en' }) {
   if (lang === 'ta') {
     return (
       <article className="space-y-10 font-tamil">
-        <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-snug">
+        <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-brand-pale mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-snug">
             CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்
           </h1>
           <p className="text-xs sm:text-sm text-[#546057] font-medium">
@@ -509,8 +509,8 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
   return (
     <article className="space-y-10">
-      <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-tight">
+      <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-brand-pale mb-8">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           CMS English School &amp; Today’s Christian College
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-medium">

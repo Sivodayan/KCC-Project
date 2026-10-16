@@ -18,7 +18,7 @@ export default function HistoryPage({ lang = 'en' }) {
 
   return (
     <main className="flex-grow py-4 sm:py-6 bg-brand-white">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 font-medium">
           <Link
             to="/"
