@@ -38,7 +38,7 @@ export default function GalleryPage() {
         </p>
       </header>
 
-      <Gallery />
+      <Gallery showHeader={false} />
     </main>
   );
 }

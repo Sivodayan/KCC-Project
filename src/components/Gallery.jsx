@@ -21,7 +21,7 @@ const defaultJournalGallery = [
  * Computes angular offsets and perspective depth matrices dynamically
  * based on distance from the active center index.
  */
-export default function Gallery() {
+export default function Gallery({ showHeader = true }) {
   const { content } = useSiteContent();
   const journalGallery = (content?.gallery && content.gallery.length > 0) ? content.gallery : defaultJournalGallery;
 
@@ -189,8 +189,16 @@ export default function Gallery() {
       id="gallery"
     >
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-
-
+        {showHeader && (
+          <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+              Campus Moments &amp; Highlights
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+              Explore our collegiate life, campus grounds, academic events, and historic moments in our interactive 3D digital gallery.
+            </p>
+          </div>
+        )}
 
         <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden">
           <div
