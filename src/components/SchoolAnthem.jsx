@@ -49,11 +49,11 @@ export default function SchoolAnthem() {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
-        
+
 
         {/* Action Toolbar */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-         
+
 
           <button
             type="button"
@@ -85,7 +85,7 @@ export default function SchoolAnthem() {
         <div className="relative z-10 space-y-8 text-center font-tamil">
           {/* Stanza 1 - Pallavi */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            
+
             <div className="text-lg sm:text-2xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
               <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
@@ -99,7 +99,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 2 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            
+
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்</p>
               <p>படைத்து நற்பணிபுரிந்தாய்</p>
@@ -110,7 +110,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 3 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            
+
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>மனதினில் உள் திறம் மதிப் பொறிவைத்திட</p>
               <p>மகிழ்வொடு நாம் முயல்வோம்</p>
@@ -121,7 +121,7 @@ export default function SchoolAnthem() {
 
           {/* Stanza 4 - Conclusion */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            
+
             <div className="text-base sm:text-xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
               <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>

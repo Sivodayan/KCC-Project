@@ -321,55 +321,50 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <button
             type="button"
             onClick={() => handleQuickFilter('Events')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
-              query.toLowerCase() === 'events'
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'events'
                 ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
-            }`}
+              }`}
           >
             Events & FB
           </button>
           <button
             type="button"
             onClick={() => handleQuickFilter('History')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
-              query.toLowerCase() === 'history'
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'history'
                 ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
-            }`}
+              }`}
           >
             History (வரலாறு)
           </button>
           <button
             type="button"
             onClick={() => handleQuickFilter('Anthem')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
-              query.toLowerCase() === 'anthem'
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'anthem'
                 ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
-            }`}
+              }`}
           >
             School Anthem
           </button>
           <button
             type="button"
             onClick={() => handleQuickFilter('Gallery')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
-              query.toLowerCase() === 'gallery'
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'gallery'
                 ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
-            }`}
+              }`}
           >
             3D Gallery
           </button>
           <button
             type="button"
             onClick={() => handleQuickFilter('Contact')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${
-              query.toLowerCase() === 'contact'
+            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'contact'
                 ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
-            }`}
+              }`}
           >
             Contact Office
           </button>
@@ -401,11 +396,10 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`search-item px-3 sm:px-3.5 py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${
-                    isSelected
+                  className={`search-item px-3 sm:px-3.5 py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${isSelected
                       ? 'bg-brand-light border border-brand-pale text-brand-forest shadow-2xs translate-x-0.5'
                       : 'hover:bg-brand-light/60 text-slate-700'
-                  }`}
+                    }`}
                 >
                   <div className="min-w-0 flex-1 space-y-0.5">
                     <div className="flex items-center gap-2 flex-wrap">

@@ -3,44 +3,44 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 const journalGallery = [
   {
     src: "/assets/gal_(1).jpeg",
-    
+
   },
   {
     src: "/assets/gal_(2).jpeg",
-    
+
   },
   {
     src: "/assets/gal_(3).jpeg",
-    
+
   },
   {
     src: "/assets/gal_(4).jpeg",
-    
-    },
+
+  },
   {
     src: "/assets/gal_(5).jpeg",
-   
+
   },
   {
     src: "/assets/gal_(6).jpeg",
-    
+
   },
   {
     src: "/assets/gal_(7).jpeg",
-    
-    
-    },
+
+
+  },
   {
     src: "/assets/gal_(8).jpeg",
-    
-  },  
+
+  },
   {
     src: "/assets/gal_(9).jpeg",
-   
+
   },
   {
     src: "/assets/gal_(10).jpeg",
-  
+
   },
   {
     src: "/assets/gal_(11).jpeg",
@@ -356,10 +356,10 @@ export default function Gallery() {
                     offset === 0
                       ? `Current image (${index + 1} of ${total})`
                       : offset === 1
-                      ? 'Next image (Click to focus)'
-                      : offset === -1
-                      ? 'Previous image (Click to focus)'
-                      : 'Click to focus this image'
+                        ? 'Next image (Click to focus)'
+                        : offset === -1
+                          ? 'Previous image (Click to focus)'
+                          : 'Click to focus this image'
                   }
                 >
                   <div className="relative w-full h-full overflow-hidden rounded-3xl">
@@ -387,11 +387,10 @@ export default function Gallery() {
                 onClick={() => focusIndex(i)}
                 title={`Moment ${i + 1} of ${total}`}
                 aria-label={`Go to image ${i + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
-                  i === currentIndex
+                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i === currentIndex
                     ? 'bg-white w-8 shadow-md'
                     : 'bg-white/35 hover:bg-white/70 w-2.5'
-                }`}
+                  }`}
               />
             ))}
           </div>

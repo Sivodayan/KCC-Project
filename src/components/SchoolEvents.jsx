@@ -28,11 +28,10 @@ function EventCard({ post }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full max-w-[360px] h-[480px] bg-white rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group active:scale-[0.99] select-none ${
-        isHovered
+      className={`relative w-full max-w-[360px] h-[480px] bg-white rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group active:scale-[0.99] select-none ${isHovered
           ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/15 border-brand-forest/40 ring-2 ring-brand-forest/20'
           : 'shadow-sm border-slate-200/90 hover:shadow-md'
-      }`}
+        }`}
     >
       {/* Full-card overlay ensuring cursor is pointer across the entire card */}
       <a
@@ -55,16 +54,14 @@ function EventCard({ post }) {
 
       {/* Top Emerald Accent Shimmer on Hover */}
       <div
-        className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${
-          isHovered ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${isHovered ? 'opacity-100' : 'opacity-0'
+          }`}
       />
 
       {/* Card Content container with Facebook iframe */}
       <div
-        className={`w-full h-full overflow-y-auto overflow-x-hidden flex justify-center relative z-0 transition-transform duration-300 pointer-events-none ${
-          post.height <= 300 ? 'items-center' : 'items-start'
-        }`}
+        className={`w-full h-full overflow-y-auto overflow-x-hidden flex justify-center relative z-0 transition-transform duration-300 pointer-events-none ${post.height <= 300 ? 'items-center' : 'items-start'
+          }`}
       >
         <div
           className="shrink-0 flex justify-center origin-top transition-transform duration-300 pointer-events-none"

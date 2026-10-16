@@ -49,11 +49,10 @@ export default function Navbar({
               {/* Home Pill */}
               <button
                 onClick={() => handleNavLink('home')}
-                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                  currentPage === 'home'
+                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'home'
                     ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
                     : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
-                }`}
+                  }`}
               >
                 Home
               </button>
@@ -66,18 +65,17 @@ export default function Navbar({
                 Performance
               </button>
 
-              
 
-              
+
+
 
               {/* Events Pill */}
               <button
                 onClick={() => handleNavLink('events')}
-                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                  currentPage === 'events'
+                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'events'
                     ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
                     : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
-                }`}
+                  }`}
               >
                 Events
               </button>
@@ -85,21 +83,20 @@ export default function Navbar({
               {/* Gallery Pill */}
               <button
                 onClick={() => handleNavLink('gallery')}
-                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${
-                  currentPage === 'gallery'
+                className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'gallery'
                     ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
                     : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
-                }`}
+                  }`}
               >
                 Gallery
               </button>
 
-                {/* About Dropdown (History, Anthem, Motto) */}
+              {/* About Dropdown (History, Anthem, Motto) */}
               <AboutDropdown
                 onNavigate={handleNavLink}
                 onOpenAnthem={onOpenAnthem}
               />
-              
+
 
               {/* Language Switcher (Visible when on History Page) */}
               {currentPage === 'history' && (
@@ -107,11 +104,10 @@ export default function Navbar({
                   <button
                     type="button"
                     onClick={() => onChangeHistoryLang('en')}
-                    className={`px-2.5 py-1 rounded-full transition-all duration-200 cursor-pointer ${
-                      historyLang === 'en'
+                    className={`px-2.5 py-1 rounded-full transition-all duration-200 cursor-pointer ${historyLang === 'en'
                         ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
                         : 'text-slate-600 hover:text-brand-forest'
-                    }`}
+                      }`}
                     aria-label="Switch to English"
                   >
                     EN
@@ -119,11 +115,10 @@ export default function Navbar({
                   <button
                     type="button"
                     onClick={() => onChangeHistoryLang('ta')}
-                    className={`px-2.5 py-1 rounded-full transition-all duration-200 font-tamil cursor-pointer ${
-                      historyLang === 'ta'
+                    className={`px-2.5 py-1 rounded-full transition-all duration-200 font-tamil cursor-pointer ${historyLang === 'ta'
                         ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
                         : 'text-slate-600 hover:text-brand-forest'
-                    }`}
+                      }`}
                     aria-label="Switch to Tamil"
                   >
                     தமிழ்
@@ -160,11 +155,10 @@ export default function Navbar({
               {/* Contact Us Button */}
               <button
                 onClick={() => handleNavLink('contact')}
-                className={`ml-2 inline-flex items-center px-4 py-1.5 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${
-                  currentPage === 'contact'
+                className={`ml-2 inline-flex items-center px-4 py-1.5 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${currentPage === 'contact'
                     ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold'
                     : 'bg-brand-forest text-brand-white hover:bg-brand-forestHover hover:-translate-y-0.5'
-                }`}
+                  }`}
               >
                 Contact Us
               </button>
@@ -178,18 +172,16 @@ export default function Navbar({
                 <button
                   type="button"
                   onClick={() => onChangeHistoryLang('en')}
-                  className={`px-2 py-1 rounded-full text-[11px] font-bold ${
-                    historyLang === 'en' ? 'bg-brand-forest text-white' : 'text-slate-600'
-                  }`}
+                  className={`px-2 py-1 rounded-full text-[11px] font-bold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'text-slate-600'
+                    }`}
                 >
                   EN
                 </button>
                 <button
                   type="button"
                   onClick={() => onChangeHistoryLang('ta')}
-                  className={`px-2 py-1 rounded-full text-[11px] font-bold font-tamil ${
-                    historyLang === 'ta' ? 'bg-brand-forest text-white' : 'text-slate-600'
-                  }`}
+                  className={`px-2 py-1 rounded-full text-[11px] font-bold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'text-slate-600'
+                    }`}
                 >
                   தமிழ்
                 </button>
@@ -242,9 +234,8 @@ export default function Navbar({
           {/* Home Link */}
           <button
             onClick={() => handleNavLink('home')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
-              currentPage === 'home' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
-            }`}
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+              }`}
           >
             Home
           </button>
@@ -261,9 +252,8 @@ export default function Navbar({
                 <span>About</span>
               </span>
               <svg
-                className={`w-4 h-4 text-brand-forest transition-transform duration-200 ${
-                  mobileAboutOpen ? 'rotate-180' : 'rotate-0'
-                }`}
+                className={`w-4 h-4 text-brand-forest transition-transform duration-200 ${mobileAboutOpen ? 'rotate-180' : 'rotate-0'
+                  }`}
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -276,17 +266,15 @@ export default function Navbar({
               <div className="px-2 pb-2 space-y-1 bg-white/70 border-t border-brand-pale/40">
                 <button
                   onClick={() => handleNavLink('history')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${
-                    currentPage === 'history' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
-                  }`}
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${currentPage === 'history' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
+                    }`}
                 >
                   History
                 </button>
                 <button
                   onClick={() => handleNavLink('anthem')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${
-                    currentPage === 'anthem' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
-                  }`}
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${currentPage === 'anthem' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
+                    }`}
                 >
                   School Anthem
                 </button>
@@ -302,17 +290,15 @@ export default function Navbar({
 
           <button
             onClick={() => handleNavLink('events')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
-              currentPage === 'events' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
-            }`}
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+              }`}
           >
             Events
           </button>
           <button
             onClick={() => handleNavLink('gallery')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${
-              currentPage === 'gallery' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
-            }`}
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+              }`}
           >
             Gallery
           </button>
@@ -324,9 +310,8 @@ export default function Navbar({
           </button>
           <button
             onClick={() => handleNavLink('contact')}
-            className={`block w-full text-center py-2.5 rounded-full font-medium transition-colors cursor-pointer ${
-              currentPage === 'contact' ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold' : 'bg-brand-forest hover:bg-brand-forestHover text-brand-white'
-            }`}
+            className={`block w-full text-center py-2.5 rounded-full font-medium transition-colors cursor-pointer ${currentPage === 'contact' ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold' : 'bg-brand-forest hover:bg-brand-forestHover text-brand-white'
+              }`}
           >
             Contact Us
           </button>
@@ -338,17 +323,15 @@ export default function Navbar({
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => onChangeHistoryLang('en')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                    historyLang === 'en' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
-                  }`}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
+                    }`}
                 >
                   English
                 </button>
                 <button
                   onClick={() => onChangeHistoryLang('ta')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold font-tamil ${
-                    historyLang === 'ta' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
-                  }`}
+                  className={`px-3 py-1 rounded-full text-xs font-semibold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
+                    }`}
                 >
                   தமிழ்
                 </button>

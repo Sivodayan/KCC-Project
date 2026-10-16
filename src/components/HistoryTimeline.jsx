@@ -3,43 +3,43 @@ import React from 'react';
 export default function HistoryTimeline({ lang = 'en' }) {
   if (lang === 'ta') {
     return (
-      <article className="space-y-14 font-tamil fade-content">
+      <article className="space-y-10 font-tamil">
         {/* Header Banner */}
-        <header className="text-center max-w-3xl mx-auto space-y-4">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-snug">
+        <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-snug">
             CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+          <p className="text-xs sm:text-sm text-[#546057] font-medium">
             ஆசிரியர்கள்:{' '}
-            <span className="text-slate-900 font-bold">வண. J. S. இரத்தினாதிக்கா</span> &amp;{' '}
-            <span className="text-slate-900 font-bold">வண. A. M. நத்தானியல்</span>
+            <span className="text-[#1E2420] font-bold">வண. J. S. இரத்தினாதிக்கா</span> &amp;{' '}
+            <span className="text-[#1E2420] font-bold">வண. A. M. நத்தானியல்</span>
           </p>
         </header>
 
         {/* Timeline Section (Tamil: 12 Distinct Milestones) */}
-        <div className="relative border-l-2 border-brand-pale ml-4 sm:ml-32 space-y-12">
+        <div className="relative border-l border-[#DDD6C7] ml-3 sm:ml-28 space-y-8">
           {/* Section 1 (Ta) -> his1.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               1849–1850
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 1849–1850
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 பெண்களுக்கான ஆங்கிலப் பாடசாலை தோற்றம்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     இப்பாடசாலை முதன் முதலில் 1850ல் திருமதி பிறென் அவர்களால் பெண்களுக்கென ஆரம்பிக்கப்பட்டது என அறியக்
                     கிடக்கிறது. இலங்கை மத்திய குழுச் செயலாளரின் 1850ம் ஆண்டு வருகைக் குறிப்பில் பின்வருமாறு
                     குறிக்கப்பட்டுள்ளது:
                   </p>
-                  <blockquote className="border-l-4 border-brand-forest bg-brand-light/70 rounded-r-2xl p-4 italic text-slate-900 text-xs sm:text-sm">
+                  <blockquote className="border-l-2 border-[#1F4D2B] bg-[#F7F2E7] p-3.5 italic text-[#1E2420] text-xs sm:text-sm">
                     “இப்பொழுது இந்த நிலையத்திலுள்ள மிஷனறி Rev. Robert Bren அவர்களின் துணைவியார் திருமதி பிறென்
                     அவர்களுடன் 1849ம் ஆண்டு, நவம்பர் மாதம் இங்கு வருகை தந்தனர். தற்பொழுது ஒரு தேவாலயமும், குருமனை
                     ஒன்றும் கட்டப்பட்டுக் கொண்டிருக்கிறது. இங்கு திருமதி பிறென் அவர்களால் ஆரம்பிக்கப்பட்டு நடைபெற்றுக்
@@ -48,11 +48,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     வெள்ளிக்கிழமை பரிசோதித்தேன். தமிழ்ப் பாடசாலைகளைவிட, ஆங்கிலப் பாடசாலைகள் மேலோங்கினவாக உள்ளன.”
                   </blockquote>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his1.jpg"
                     alt="வரலாற்றுப் பின்னணி"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -62,28 +62,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 2 (Ta) -> his2.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               1852–1928
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 1852–1928
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 CMS பொறுப்பேற்பும் பரி. யோவான் முகாமைத்துவமும்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his2.jpg"
                     alt="CMS கட்டமைப்பு"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     இதுவரை தேவாலய வளாகத்தில் இயங்கிய இப்பாடசாலை 1852ல் CMS மிஷனறிமாரால் பொறுப்பேற்கப்பட்டுப் புதிய
                     கட்டிடத்தில் இயங்கத் தொடங்கியது. ஆண்களைப் பெரும்பான்மையினராகக் கொண்ட இப்பாடசாலை, கோப்பாய்ப்
@@ -100,20 +100,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 3 (Ta) -> his3.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               1939–1945
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 1939–1945
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 கோப்பாய் கிறிஸ்தவ கல்லூரி என்று பெயர் மாற்றம்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-3 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-3 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     1939ல் அமரர் G. S. செல்லையா அவர்கள் தலைமை ஆசிரியராகப் பொறுப்பேற்ற பின்னர் வகுப்புகள் படிப்படியாக
                     அதிகரிக்கப்பட்டு 1940ல் இருந்து S.S.C பரீட்சைக்குத் தோற்ற மாணவர் அனுமதிக்கப்பட்டனர். 1945ல் ஒரே
@@ -123,11 +123,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     அமைக்கப்பட்டபோதும் காலப்போக்கில் வேட்ஸ்வேத் மண்டபத்தில் அவை அமைக்கப்பட்டன.
                   </p>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his3.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -137,28 +137,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 4 (Ta) -> his4.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               நிதி &amp; பாரம்பரியம்
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 பாரம்பரியம்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 ஆண்டுச் சந்தையும் (Sale) ஆரம்ப விளையாட்டுக்களும்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his4.jpg"
                     alt="கைத்தொழில் மற்றும் சந்தை"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     இப்பாடசாலை அரசு மானிய உதவி, மாணவர்களிடம் பெறப்பட்ட கட்டணம் மற்றும் நிகழ்ச்சிகளில் சேகரிக்கப்பட்ட
                     நிதி என்பவற்றைக் கொண்டு செயற்பட்டு வந்தது. ஆண்டு தோறும் நடத்தப்பட்ட “சந்தை”யில் (Sale) மாணவர்கள்
@@ -175,20 +175,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 5 (Ta) -> his5.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               இராஜசேகரம்
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 அதிபர் இராஜசேகரம்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 “மைல்றேஸ்”, சீருடை &amp; மனையியற்கூடம்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-3 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-3 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     அமரர் A. W. இராஜசேகரம் அதிபர் காலத்தில், தற்பொழுது கோப்பாய் அரசினர் வைத்தியசாலை அமைந்துள்ள
                     இடத்துக்கு அண்மையில் ஒரு காணி குத்தகைக்குப் பெறப்பட்டு, அதிலே விளையாட்டுப் போட்டிகள் நடாத்தப்பட்டன.
@@ -199,11 +199,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     அதிபரின் காலத்திலேயே தற்போதுள்ள மனையியற்கூடம் அமைக்கப்பட்டது.
                   </p>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his5.jpg"
                     alt="சீருடை மற்றும் போட்டிகள்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -213,28 +213,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 6 (Ta) -> his6.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               நவரத்தினராஜா
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 அதிபர் நவரத்தினராஜா
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 அனைத்துத் துறை விஸ்தரிப்பும் தேசிய மட்டமும்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his6.jpg"
                     alt="பாக்கியம் வில்லியம்ஸ் கட்டிடம் மற்றும் விளையாட்டு"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     அமரர், E. C. A. நவரத்தினராஜா அதிபர் பாடசாலையைப் பொறுப்பேற்று நடாத்தி வந்த காலத்தில் அனைத்துத்
                     துறைகளிலும் பாடசாலை அபிவிருத்தியடைந்தது. ஆசிரியர் தங்கும் அறையாகிய “பாக்கியம் வில்லியம்ஸ் கட்டிடம்,
@@ -250,20 +250,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 7 (Ta) -> his7.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               சண்முகநாதன்
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 அதிபர் சண்முகநாதன்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 சண்முகநாதன் மண்டபம் &amp; கூட்டுறவுச் சங்கங்கள்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     அமரர் E. K. சண்முகநாதன் அதிபரின் காலப்பகுதியில் வடக்குப்பக்கமாக அமைந்திருந்த பாதை மூடப்பட்டது.
                     தற்போது சண்முகநாதன் மண்டபம் எனப்பெயரிடப்பட்டுள்ள தெற்குப்புற மண்டபம் அமைக்கப்பட்டது. ஆசிரியர்
@@ -271,11 +271,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     சங்கம் “நவரத்தினராஜா ஞாபகார்த்த நிதியம்” என்பவை ஆரம்பிக்கப்பட்டன.
                   </p>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his7.jpg"
                     alt="சண்முகநாதன் மண்டபம் மற்றும் சங்கங்கள்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -285,28 +285,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 8 (Ta) -> his8.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               கந்தசாமி &amp; சிவநேசன்
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 விஞ்ஞானகூடங்கள் &amp; மண்டபங்கள்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 செல்லையா மண்டபம் &amp; 125ஆவது ஆண்டு நினைவு மண்டபம்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his8.jpg"
                     alt="125ஆவது நினைவு மண்டபம் மற்றும் ஆய்வுகூடங்கள்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     திரு. S. கந்தசாமி அதிபர் காலத்தில் செல்லையா மண்டபம் அமைக்கப்பட்டதுடன் நவரத்தினராஜா மண்டபத்தின்
                     கீழ்த்தள வேலைகளும் மேற்கொள்ளப்பட்டன. இது விஞ்ஞானகூட வசதிகளை அதிகரித்தது. திரு. சி. சிவநேசன் அதிபர்
@@ -321,20 +321,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 9 (Ta) -> his9.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               மறுசீரமைப்பு
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 கல்விக் கொள்கை மாற்றம்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 ஆரம்பப்பிரிவு நீக்கமும் முறைசாராக் கல்வியும்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     ஆரம்பகாலம் தொடக்கம் இப்பாடசாலையில் அமைந்திருந்த ஆரம்பப்பிரிவு வகுப்புகள் அக்கால அரசாங்கக் கொள்கைக்கு
                     அமைய வருடாந்தம் ஒவ்வொரு வகுப்பாகப் படிப்படியாக நீக்கப்பட்டன. திரு. கந்தசாமி அதிபர் காலத்தில்
@@ -348,11 +348,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     திருமதி P. அருள்ராஜா அவர்கள் காலத்தில் அவை பூரணப்படுத்தப்பட்டன.
                   </p>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his9.jpg"
                     alt="பாடசாலை மறுசீரமைப்பு"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -362,28 +362,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 10 (Ta) -> his10.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               சவால்கள் &amp; மீட்சி
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 இடப்பெயர்வும் புனரமைப்பும்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 உ/த வர்த்தகம், ADB செயற்திட்டம் &amp; வைப்புக்கள்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his10.jpg"
                     alt="புனரமைப்பு மற்றும் கட்டிடங்கள்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     திரு. P. K. இராஜரத்தினம் அதிபர் காலத்தில் க.பொ.த. (உ/த) வர்த்தகப் பிரிவு வகுப்புகள்
                     ஆரம்பிக்கப்பட்டன. இந்திய இராணுவ நடவடிக்கை காரணமாகப் பாடசாலைச் சொத்துக்கள் களவு போயின. மூன்றாம் காலப்
@@ -406,20 +406,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 11 (Ta) -> his11.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               சிவகடாட்சம்
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 நவீன கட்டமைப்பு
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 புதிய மண்டபங்கள், மைதானங்கள் &amp; கல்வி அபிவிருத்தி
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-7 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     இன்றைய அதிபர் திரு. ந. சிவகடாட்சம் அவர்களின் காலத்தில் கார்த்திகேசன் மண்டபம், இராஜசேகரம் மண்டபம்,
                     சிவசுப்பிரமணியம் மண்டபம் ஆகியவையும், இந்து, கிறிஸ்தவ பிரார்த்தனை மண்டபங்கள், கூடைப்பந்து,
@@ -436,11 +436,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     கல்லூரிக்குப் பெருமை சேர்ப்பதாக உள்ளது.
                   </p>
                 </div>
-                <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his11.jpg"
                     alt="பல்கலைக்கழக சாதனையாளர்கள் மற்றும் மண்டபங்கள்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
@@ -450,28 +450,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
           {/* Section 12 (Ta) -> his12.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
-            <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-            <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+            <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+            <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
               150ஆவது ஆண்டு
             </span>
 
-            <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-              <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+            <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+              <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
                 150ஆவது ஆண்டு மைல்கல்
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+              <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
                 விளையாட்டுத் துறையும் 150ஆவது ஆண்டு நிறைவும்
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+                <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                   <img
                     src="/assets/his12.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
-                    className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                    className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
                 </div>
-                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-slate-800 text-sm sm:text-base leading-loose">
+                <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-[#1E2420] text-sm sm:text-base leading-loose">
                   <p>
                     விளையாட்டுத்துறையும் நன்கு அபிவிருத்தி பெற்று வருகின்றது. எமது மாணவர்கள் தேசிய மட்டப் போட்டிகளில்
                     பங்கேற்கும் தகைமை பெற்றமை சிறப்பாகக் குறிப்பிடத்தக்கதாகும். தற்காலிக வகுப்பறைக் கட்டிடங்களும்,
@@ -495,39 +495,39 @@ export default function HistoryTimeline({ lang = 'en' }) {
   }
 
   return (
-    <article className="space-y-14 fade-content">
+    <article className="space-y-10">
       {/* Header Banner */}
-      <header className="text-center max-w-3xl mx-auto space-y-4">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+      <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-tight">
           CMS English School &amp; Today’s Christian College
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-medium">
-          Compiled by: <span className="text-slate-800 font-bold">Rev. J. S. Ratnathikkam</span> &amp;{' '}
-          <span className="text-slate-800 font-bold">Rev. A. M. Nathaniel</span>
+          Compiled by: <span className="text-[#1E2420] font-bold">Rev. J. S. Ratnathikkam</span> &amp;{' '}
+          <span className="text-[#1E2420] font-bold">Rev. A. M. Nathaniel</span>
         </p>
       </header>
 
       {/* Timeline Section */}
-      <div className="relative border-l-2 border-brand-pale ml-4 sm:ml-32 space-y-12">
+      <div className="relative border-l border-[#DDD6C7] ml-3 sm:ml-28 space-y-8">
         {/* Section 1 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             1849–1850
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               1849–1850
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">Founding of the Girls' School</h2>
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">Founding of the Girls' School</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 space-y-4 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   It is documented that this institution was initially founded in 1850 for girls by Mrs. Bren. In the
                   1850 official visit report by the Secretary of the Ceylon Central Committee, it was observed:
                 </p>
-                <blockquote className="border-l-4 border-brand-forest bg-brand-light/70 rounded-r-2xl p-4 italic text-slate-800 text-xs sm:text-sm">
+                <blockquote className="border-l-4 border-brand-forest bg-brand-light/70 rounded-r-2xl p-4 italic text-[#1E2420] text-xs sm:text-sm">
                   “The missionary currently at this station, Rev. Robert Bren, arrived here with his wife, Mrs. Bren,
                   in November 1849. At present, a church and a parsonage are under construction. I wish to mention an
                   English school for girls that has been established and is being conducted here by Mrs. Bren.
@@ -535,11 +535,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   schools in this region. The English schools stand out far superior compared to the Tamil schools.”
                 </blockquote>
               </div>
-              <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his1.jpg"
                   alt="Historical archival photograph 1"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
@@ -549,28 +549,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 2 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             1852–1928
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               1852–1928
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
               CMS Takeover &amp; St. John's Management Board
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his2.jpg"
                   alt="Historical archival photograph 2"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
-              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   This school, which had been functioning within the church premises until then, was taken over by CMS
                   missionaries in 1852 and commenced operations in a newly constructed building. With male students
@@ -587,18 +587,18 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 3 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             1939–1945
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               1939–1945
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">Kopay Christian College Renaming</h2>
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">Kopay Christian College Renaming</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7 space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 space-y-3 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   In 1939, following the assumption of headmastership by the late Mr. G. S. Chelliah, classes were
                   expanded systematically, and beginning in 1940, candidates were prepared and presented for the
@@ -608,11 +608,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   were initially situated outside the premises, they were later housed within Wordsworth Hall.
                 </p>
               </div>
-              <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his3.jpg"
                   alt="Historical archival photograph 3"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
@@ -622,26 +622,26 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 4 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Traditions
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Institutional Traditions
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">The Annual "Sale" &amp; Early Athletics</h2>
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">The Annual "Sale" &amp; Early Athletics</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his4.jpg"
                   alt="Historical archival photograph 4"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
-              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   The college functioned through government grant-in-aid, student term fees, and community fundraising
                   initiatives. The annual "Sale" (fair) served as a key institutional tradition where agricultural
@@ -657,18 +657,18 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 5 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Rajasekaram
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Mr. A. W. Rajasekaram
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">The "Mile Race" &amp; Formal Uniforms</h2>
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">The "Mile Race" &amp; Formal Uniforms</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7 space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 space-y-3 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   During the administration of Principal Mr. A. W. Rajasekaram, land adjacent to the present Kopay
                   Government Hospital was leased to organize annual sports meets. The "Mile Race" emerged as the
@@ -678,11 +678,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   laboratory was established during this era.
                 </p>
               </div>
-              <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his5.jpg"
                   alt="Historical archival photograph 5"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
@@ -692,28 +692,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 6 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Navaratnarajah
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Mr. E. C. A. Navaratnarajah
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
               Multi-Disciplinary Growth &amp; Campus Grounds
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his6.jpg"
                   alt="Historical archival photograph 6"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
-              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   Under the leadership of Principal Mr. E. C. A. Navaratnarajah, the institution witnessed rapid
                   multi-disciplinary expansion. Staff residential quarters, designated the “Pakkiyam Williams
@@ -728,18 +728,18 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 7 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Expansion
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Structural Growth
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">Halls, Laboratories &amp; Jubilees</h2>
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">Halls, Laboratories &amp; Jubilees</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 space-y-4 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   During Principal Mr. E. K. Shanmuganathan’s tenure, the road traversing the northern boundary was
                   closed. The southern pavilion, later named Shanmuganathan Hall, and adjoining staff sanitary
@@ -754,11 +754,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   Shanmuganathan Hall.
                 </p>
               </div>
-              <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his7.jpg"
                   alt="Historical archival photograph 7"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
@@ -768,28 +768,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 8 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Policy Shift
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Institutional Focus
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
               Phase-Out of Primary Grades &amp; Non-Formal Education
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his8.jpg"
                   alt="Historical archival photograph 8"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
-              <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   In accordance with educational policy changes by the central government, primary grades were
                   phased out systematically. Commencing during Mr. Kandasamy’s administration, the phase-out was
@@ -809,20 +809,20 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 9 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Rebuilding
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Challenges &amp; Rebuilding
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
               Commerce Streams, ADB Support &amp; Alumni Foundations
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-7 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 space-y-4 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   Under Principal Mr. P. K. Rajarathinam, G.C.E. Advanced Level Commerce streams were introduced.
                   Following regional conflict and IPKF military operations, institutional assets suffered disruptions,
@@ -838,11 +838,11 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   branches), the School Development Society, and the Tamil Literary Association.
                 </p>
               </div>
-              <div className="lg:col-span-5 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his9.jpg"
                   alt="Historical archival photograph 9"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
@@ -852,28 +852,28 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
         {/* Section 10 */}
         <div className="relative pl-6 sm:pl-10 group">
-          <span className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full bg-brand-forest border-4 border-brand-white group-hover:scale-125 transition-transform duration-200" />
-          <span className="hidden sm:block absolute -left-32 top-1 w-24 text-right font-extrabold text-brand-forest text-sm">
+          <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
+          <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
             Present Day
           </span>
 
-          <div className="bg-brand-white rounded-3xl border border-brand-pale p-6 sm:p-8 shadow-sm space-y-6">
-            <span className="sm:hidden inline-block px-3 py-1 bg-brand-light text-brand-forest rounded-full text-xs font-extrabold mb-2">
+          <div className="bg-[#FFFFFF] border border-[#DDD6C7] p-5 sm:p-7 space-y-4">
+            <span className="sm:hidden inline-block px-2 py-0.5 bg-[#EDF3EE] text-[#1F4D2B] text-[11px] font-serif font-bold mb-2">
               Modern Era
             </span>
-            <h2 className="text-xl sm:text-2xl font-bold text-brand-forest">
+            <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
               Campus Renaissance &amp; University Entrants
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-              <div className="lg:col-span-5 order-2 lg:order-1 bg-slate-50 border border-brand-pale/70 rounded-2xl p-2.5 shadow-sm">
+              <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
                 <img
                   src="/assets/his10.jpg"
                   alt="Historical archival photograph 10"
-                  className="w-full max-h-[460px] object-contain rounded-xl mx-auto"
+                  className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
               </div>
-              <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-slate-700 text-sm sm:text-base leading-relaxed">
+              <div className="lg:col-span-7 order-1 lg:order-2 space-y-4 text-[#546057] text-sm sm:text-base leading-relaxed">
                 <p>
                   Under Principal Mr. N. Sivakadadcham, the Karthigesan Hall, Rajasekaram Hall, Sivasubramaniam Hall,
                   multi-faith Hindu and Christian prayer sanctuaries, and regulation courts for basketball, netball,

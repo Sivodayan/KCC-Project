@@ -74,17 +74,15 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
         aria-expanded={isOpen}
         aria-haspopup="true"
         aria-label="About menu"
-        className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 ${
-          isOpen
+        className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 ${isOpen
             ? 'text-brand-forest bg-brand-pale/70 font-semibold'
             : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 font-medium'
-        }`}
+          }`}
       >
         <span>About</span>
         <svg
-          className={`w-3.5 h-3.5 text-brand-forest transition-transform duration-200 ease-out ${
-            isOpen ? 'rotate-180' : 'rotate-0'
-          }`}
+          className={`w-3.5 h-3.5 text-brand-forest transition-transform duration-200 ease-out ${isOpen ? 'rotate-180' : 'rotate-0'
+            }`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

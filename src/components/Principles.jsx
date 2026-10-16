@@ -24,9 +24,8 @@ export default function Principles() {
               role="button"
               tabIndex={0}
               aria-label="Motto card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
-                flippedCards.motto ? 'is-flipped' : ''
-              }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.motto ? 'is-flipped' : ''
+                }`}
               onClick={() => toggleFlip('motto')}
               onKeyDown={(e) => handleKeyDown(e, 'motto')}
             >
@@ -69,9 +68,8 @@ export default function Principles() {
               role="button"
               tabIndex={0}
               aria-label="Vision card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
-                flippedCards.vision ? 'is-flipped' : ''
-              }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.vision ? 'is-flipped' : ''
+                }`}
               onClick={() => toggleFlip('vision')}
               onKeyDown={(e) => handleKeyDown(e, 'vision')}
             >
@@ -114,9 +112,8 @@ export default function Principles() {
               role="button"
               tabIndex={0}
               aria-label="Mission Statement card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${
-                flippedCards.mission ? 'is-flipped' : ''
-              }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.mission ? 'is-flipped' : ''
+                }`}
               onClick={() => toggleFlip('mission')}
               onKeyDown={(e) => handleKeyDown(e, 'mission')}
             >
