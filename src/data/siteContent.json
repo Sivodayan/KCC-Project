@@ -4,21 +4,35 @@
     "tamilTitle": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "subtitle": "A well-established mixed school in Kopay, Jaffna, dedicated to delivering holistic secondary and collegiate education.",
     "image": "/assets/hero.jpg",
-    "buttonText": "Explore History"
+    "buttonText": "Explore History ",
+    "buttonAction": "history"
   },
   "principles": {
     "motto": {
       "english": "\"Truth and Justice\"",
-      "tamil": "“உண்மைக்கும் நேர்மைக்கும்”"
+      "tamil": "“உண்மைக்கும் நேர்மைக்கும்”",
+      "description": "Standing firm in unwavering truth and moral justice since 1852."
     },
     "vision": {
-      "english": "\"THE IDEAL SCHOOL IN PENINSULA\"",
-      "tamil": "“குடாநாட்டின் முன்மாதிரிப் பாடசாலை”"
+      "english": "To cultivate disciplined, visionary leaders of intellect and character.",
+      "tamil": "ஒழுக்கமும், நுண்ணறிவும், பண்பும் கொண்ட தொலைநோக்குத் தலைவர்களை உருவாக்குதல்.",
+      "description": "Empowering students through academic mastery, spiritual fortitude, and leadership."
     },
     "mission": {
-      "english": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
-      "tamil": "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள் மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
-    }
+      "english": "Providing balanced education fostering academic brilliance, ethics, and civic responsibility.",
+      "tamil": "கல்வித் தேர்ச்சி, நற்பண்புகள் மற்றும் சமூகப் பொறுப்புணர்வுடன் கூடிய முழுமையான கல்வியை வழங்குதல்.",
+      "description": "Delivering holistic curriculum in an inclusive Christian environment."
+    },
+    "customCards": [
+      {
+        "id": "pillar_1",
+        "titleEn": "Heritage & Discipline",
+        "titleTa": "பாரம்பரியமும் ஒழுக்கமும்",
+        "descEn": "Over 170 years of steadfast discipline, nurturing generations of exemplary citizens.",
+        "descTa": "170 ஆண்டுகளுக்கு மேற்பட்ட பாரம்பரிய ஒழுக்க நெறிமுறைகளுடன் முன்மாதிரி குடிமக்களை உருவாக்குகிறது.",
+        "badge": "Heritage"
+      }
+    ]
   },
   "performance": {
     "founded": 1852,
@@ -28,65 +42,132 @@
     "alQual": 78,
     "clubs": 18,
     "houses": 4,
-    "labs": 100
+    "labs": 100,
+    "customStats": [
+      {
+        "id": "stat_smart_rooms",
+        "label": "Smart Classrooms",
+        "labelTa": "ஸ்மார்ட் வகுப்பறைகள்",
+        "value": 12,
+        "suffix": "+",
+        "description": "Equipped with interactive learning tools and high-speed multimedia."
+      },
+      {
+        "id": "stat_alumni",
+        "label": "Alumni Worldwide",
+        "labelTa": "உலகளாவிய பழைய மாணவர்கள்",
+        "value": 2500,
+        "suffix": "+",
+        "description": "Thriving global community supporting alma mater projects."
+      }
+    ]
   },
   "gallery": [
-    { "src": "/assets/gal_(1).jpeg" },
-    { "src": "/assets/gal_(2).jpeg" },
-    { "src": "/assets/gal_(3).jpeg" },
-    { "src": "/assets/gal_(4).jpeg" },
-    { "src": "/assets/gal_(5).jpeg" },
-    { "src": "/assets/gal_(6).jpeg" },
-    { "src": "/assets/gal_(7).jpeg" },
-    { "src": "/assets/gal_(8).jpeg" },
-    { "src": "/assets/gal_(9).jpeg" },
-    { "src": "/assets/gal_(10).jpeg" },
-    { "src": "/assets/gal_(11).jpeg" }
-  ],
-  "events": [
     {
-      "id": "post-1",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_1",
+      "src": "/assets/gal_(1).jpeg",
+      "caption": "Historic College Entrance Archway",
+      "category": "Campus"
     },
     {
-      "id": "post-2",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid0334nHGppar4ii9kpwojTJrsZ8jzd5xRRev34az8mcgYavz3Ff72oKgHD838z3kdXQl&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0334nHGppar4ii9kpwojTJrsZ8jzd5xRRev34az8mcgYavz3Ff72oKgHD838z3kdXQl%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_2",
+      "src": "/assets/gal_(2).jpeg",
+      "caption": "Students Gathering at Morning Assembly",
+      "category": "Collegiate Life"
     },
     {
-      "id": "post-3",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid0Kwk57DhmTE8CLEy3kx3RKV3TmXmddPzucrS2udotnHufxLprRzWnSEQivjGxLTh6l&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid0Kwk57DhmTE8CLEy3kx3RKV3TmXmddPzucrS2udotnHufxLprRzWnSEQivjGxLTh6l%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_3",
+      "src": "/assets/gal_(3).jpeg",
+      "caption": "Science & ICT Laboratory Exploration",
+      "category": "Academics"
     },
     {
-      "id": "post-4",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02hbf8TSciS8MnviyQxDAWyBASJcQ97nj96nR7FmYBvKqYYaYYjeHzG4uADevDkAv7l&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02hbf8TSciS8MnviyQxDAWyBASJcQ97nj96nR7FmYBvKqYYaYYjeHzG4uADevDkAv7l%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_4",
+      "src": "/assets/gal_(4).jpeg",
+      "caption": "Inter-House Sports Meet Celebrations",
+      "category": "Sports"
     },
     {
-      "id": "post-5",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02zujdxmeds1hkqvEgQ2929f2aav9hZ5mSD7dKE17PFFMerBQ5DjAJVTuP73iJGinTl&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02zujdxmeds1hkqvEgQ2929f2aav9hZ5mSD7dKE17PFFMerBQ5DjAJVTuP73iJGinTl%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_5",
+      "src": "/assets/gal_(5).jpeg",
+      "caption": "Campus Quadrangle & Historic Buildings",
+      "category": "Campus"
     },
     {
-      "id": "post-6",
-      "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid02xD25dwc3eikVr9poQLQ7NreZDWWzkiFcPbFJGjAaw8GeFGtNXHjpkPDPwj8bRx81l&id=61575442051109",
-      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid02xD25dwc3eikVr9poQLQ7NreZDWWzkiFcPbFJGjAaw8GeFGtNXHjpkPDPwj8bRx81l%26id%3D61575442051109&show_text=true&width=500",
-      "width": 500,
-      "height": 645
+      "id": "gal_6",
+      "src": "/assets/gal_(6).jpeg",
+      "caption": "College Library & Resource Center",
+      "category": "Academics"
+    },
+    {
+      "id": "gal_7",
+      "src": "/assets/gal_(7).jpeg",
+      "caption": "Annual Prize Giving Ceremony",
+      "category": "Events"
+    },
+    {
+      "id": "gal_8",
+      "src": "/assets/gal_(8).jpeg",
+      "caption": "Cultural & Arts Exhibition",
+      "category": "Culture"
+    },
+    {
+      "id": "gal_9",
+      "src": "/assets/gal_(9).jpeg",
+      "caption": "Track & Field Athletic Championship",
+      "category": "Sports"
+    },
+    {
+      "id": "gal_10",
+      "src": "/assets/gal_(10).jpeg",
+      "caption": "Teachers & Staff Faculty Members",
+      "category": "Collegiate Life"
+    },
+    {
+      "id": "gal_11",
+      "src": "/assets/gal_(11).jpeg",
+      "caption": "Green Campus Grounds & Gardens",
+      "category": "Campus"
     }
   ],
+  "events": {
+    "showFacebookFeed": true,
+    "customEvents": [
+      {
+        "id": "evt_sports_meet",
+        "title": "Annual Inter-House Sports Meet 2026",
+        "titleTa": "வருடாந்த இல்ல விளையாட்டுப் போட்டி 2026",
+        "date": "March 2026",
+        "category": "Sports",
+        "badge": "Annual Event",
+        "description": "Celebrating collegiate athletic prowess, house pride, and track and field competitions among our 4 houses.",
+        "image": "/assets/gal_(4).jpeg",
+        "link": "https://www.facebook.com/profile.php?id=61575442051109"
+      },
+      {
+        "id": "evt_thanksgiving",
+        "title": "Founder's Day & Thanksgiving Service",
+        "titleTa": "நிறுவுநர் தினம் & நன்றி ஆராதனை",
+        "date": "May 2026",
+        "category": "Tradition",
+        "badge": "Ceremony",
+        "description": "Commemorating 174 years of academic excellence and Christian heritage in Kopay, Jaffna.",
+        "image": "/assets/gal_(1).jpeg",
+        "link": "https://www.facebook.com/profile.php?id=61575442051109"
+      },
+      {
+        "id": "evt_science_day",
+        "title": "Collegiate Science & ICT Exhibition",
+        "titleTa": "கல்லூரி விஞ்ஞான & தகவல் தொழினுட்ப கண்காட்சி",
+        "date": "July 2026",
+        "category": "Academics",
+        "badge": "Exhibition",
+        "description": "Showcasing student-led innovations in robotics, renewable energy, and biological sciences.",
+        "image": "/assets/gal_(3).jpeg",
+        "link": ""
+      }
+    ]
+  },
   "contact": {
     "address": "J/Kopay Christian College, Kopay, Jaffna, Sri Lanka",
     "phone": "021 223 0040",
@@ -94,6 +175,39 @@
     "email": "kcckopay@gmail.com",
     "mapsUrl": "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     "facebookUrl": "https://www.facebook.com/profile.php?id=61575442051109",
-    "instagramUrl": "https://www.instagram.com/explore/tags/kopaychristiancollege/"
+    "instagramUrl": "https://www.instagram.com/explore/tags/kopaychristiancollege/",
+    "collegeName": "J/Kopay Christian College",
+    "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
+    "secondaryPhone": "+94 21 223 0040"
+  },
+  "meta": {
+    "schoolName": "J/Kopay Christian College",
+    "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
+    "foundedYear": "1852",
+    "motto": "Truth and Justice",
+    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்"
+  },
+  "announcement": {
+    "enabled": false,
+    "badge": "Admissions 2026-2027",
+    "text": "Applications are now open for collegiate G.C.E. A/L Science, Commerce, and Arts streams.",
+    "tamil": "க.பொ.த உயர்தர வகுப்புக்களுக்கான மாணவர் அனுமதி விண்ணப்பங்கள் கோரப்படுகின்றன.",
+    "link": "#contact",
+    "linkText": "Contact Office →",
+    "type": "info"
+  },
+  "anthem": {
+    "title": "School Anthem",
+    "tamilTitle": "பாடசாலைக் கீதம்",
+    "ragam": "Hamsadhwani (ஹம்சத்வனி)",
+    "composer": "Composed with collegiate pride and devotion",
+    "audioUrl": "",
+    "versesTamil": [
+      "வாழ்க வாழ்க வாழ்கவே - எங்கள்\nகோப்பாய் கிறிஸ்தவ கல்லூரி வாழ்கவே!",
+      "உண்மை நேர்மை நெறியிலே - என்றும்\nஒளிரும் அறிவின் ஜோதியாய்",
+      "கலைகள் யாவும் பயின்று நாம் - உயர்\nகருணை அன்பில் திளைக்கவே",
+      "இலங்கை நாடும் போற்றிட - இறையருளால்\nஇணையிலாது திகழவே வாழ்கவே!"
+    ],
+    "translationEn": "Long live our beloved Kopay Christian College, shining as a sacred beacon of truth and justice in Kopay, Jaffna."
   }
 }
