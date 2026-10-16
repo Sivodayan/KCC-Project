@@ -271,8 +271,6 @@ export default function AdminPage() {
       const result = await signInWithGoogle();
       const user = result.user;
       setFirebaseUser(user);
-      setIsAuthenticated(true);
-      sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
       sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
       showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
     } catch (err) {
