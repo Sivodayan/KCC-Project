@@ -2,6 +2,13 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SchoolEvents from '../components/SchoolEvents.jsx';
 
+/**
+ * EventsPage Component
+ *
+ * Dedicated route view displaying scheduled collegiate functions, prize days,
+ * and academic ceremonies. Enforces viewport reset to the scroll origin on mount
+ * and provides breadcrumb navigation back to the primary landing experience.
+ */
 export default function EventsPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -22,7 +29,6 @@ export default function EventsPage() {
         </nav>
       </div>
 
-      {/* Header Banner as in History Page */}
       <header className="text-center max-w-3xl mx-auto pt-4 pb-2 px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           School Events &amp; Updates

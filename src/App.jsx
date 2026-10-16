@@ -14,18 +14,19 @@ import AnthemModal from './components/AnthemModal.jsx';
 import AnnouncementBanner from './components/AnnouncementBanner.jsx';
 import { SiteContentProvider } from './context/SiteContentContext.jsx';
 
+/**
+ * Root Application Component
+ * Manages routing, global modals, SEO metadata sync, and SPA redirects.
+ */
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Single source of truth for language: read directly from URL query param ?lang=ta
   const historyLang = searchParams.get('lang') === 'ta' ? 'ta' : 'en';
-
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAnthemOpen, setIsAnthemOpen] = useState(false);
 
-  // Derive current page from URL pathname for clean React Router state
   const getActivePageName = () => {
     const path = location.pathname.toLowerCase();
     if (path.startsWith('/admin')) return 'admin';
@@ -40,9 +41,8 @@ export default function App() {
   const currentPage = getActivePageName();
   const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
 
-  // Backward compatibility: redirect any legacy anchor hash URLs to clean BrowserRouter paths
+  // Handle SPA redirects from static hosts (GitHub Pages 404.html) and legacy hash URLs
   useEffect(() => {
-    // 1. Check for SPA redirect from 404.html (e.g., GitHub Pages)
     const redirectPath = sessionStorage.getItem('redirect_path');
     if (redirectPath) {
       sessionStorage.removeItem('redirect_path');
@@ -50,7 +50,6 @@ export default function App() {
       return;
     }
 
-    // 2. Redirect legacy hash fragments to clean URL paths
     const hash = window.location.hash.toLowerCase();
     if (hash.startsWith('#admin')) {
       navigate('/admin', { replace: true });
@@ -79,7 +78,6 @@ export default function App() {
     }
   }, [navigate]);
 
-  // Sync historyLang with ?lang parameter when changed via Navbar
   const handleHistoryLangChange = useCallback((lang) => {
     const nextParams = new URLSearchParams(searchParams);
     if (lang === 'ta') {
@@ -90,7 +88,7 @@ export default function App() {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  // Dynamic SEO metadata updates per route
+  // Synchronize document title and OpenGraph metadata per route
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -139,7 +137,6 @@ export default function App() {
     if (ogUrl) ogUrl.setAttribute("content", canonicalUrl);
   }, [location.pathname, historyLang]);
 
-  // Clean navigation handler without '#'
   const handleNavigate = useCallback((page) => {
     if (page === 'performance') {
       if (location.pathname === '/') {
@@ -180,7 +177,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [navigate, location.pathname]);
 
-  // Global Keyboard shortcuts
+  // Global hotkeys for accessible search invocation
   useEffect(() => {
     function handleKeyDown(e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -198,7 +195,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
 
-  // If visiting /admin directly, render dedicated Admin Portal (no public header/footer)
+  // Dedicated full-screen layout for admin console
   if (isAdminRoute) {
     return (
       <SiteContentProvider>
@@ -207,14 +204,11 @@ export default function App() {
     );
   }
 
-  // Public Facing Website View (completely clean, zero clickthrough links to admin)
   return (
     <SiteContentProvider>
       <div className="min-h-screen flex flex-col bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest antialiased">
-        {/* Top Broadcast Announcement Banner (If enabled via Admin Panel) */}
         <AnnouncementBanner />
 
-        {/* Top Header Navigation (No admin link) */}
         <Navbar
           currentPage={currentPage}
           onNavigate={handleNavigate}
@@ -224,7 +218,6 @@ export default function App() {
           onChangeHistoryLang={handleHistoryLangChange}
         />
 
-        {/* Clean BrowserRouter Routes */}
         <Routes>
           <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
           <Route path="/history" element={<HistoryPage lang={historyLang} />} />
@@ -233,20 +226,16 @@ export default function App() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/anthem" element={<AnthemPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          {/* Redirect performance to index anchor */}
           <Route path="/performance" element={<Navigate to="/#performance" replace />} />
           <Route path="/academics" element={<Navigate to="/" replace />} />
-          {/* Fallback to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
-        {/* Global Footer (No admin link) */}
         <Footer
           onNavigate={handleNavigate}
           onOpenAnthem={() => setIsAnthemOpen(true)}
         />
 
-        {/* Interactive Search Modal / Command Palette (No admin link) */}
         <SearchModal
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
@@ -254,7 +243,6 @@ export default function App() {
           onOpenAnthem={() => setIsAnthemOpen(true)}
         />
 
-        {/* Tamil School Anthem Modal (பாடசாலைக் கீதம்) */}
         <AnthemModal
           isOpen={isAnthemOpen}
           onClose={() => setIsAnthemOpen(false)}

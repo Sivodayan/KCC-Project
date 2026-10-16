@@ -15,7 +15,6 @@ export default function Hero({ onExploreHistory }) {
     <section className="py-6 sm:py-8 bg-brand-white border-b border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="about">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-brand-forest shadow-md border border-brand-soft/40 min-h-[500px] lg:min-h-[560px] flex items-center">
-          {/* Background Campus Image Container */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <img
               src={image}
@@ -26,13 +25,10 @@ export default function Hero({ onExploreHistory }) {
                 e.target.src = "/assets/hero.jpg";
               }}
             />
-            {/* Horizontal Gradient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-brand-forest via-brand-forest/90 via-35% to-transparent to-60%" />
-            {/* Mobile Vignette */}
             <div className="absolute inset-0 bg-gradient-to-t from-brand-forest/95 via-brand-forest/30 to-transparent sm:hidden" />
           </div>
 
-          {/* Foreground Hero Content */}
           <div className="relative z-10 max-w-2xl px-6 sm:px-12 py-12 lg:py-16 text-left">
             <div className="space-y-3 mb-5 animate-hero-1">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-white tracking-tight leading-[1.15]">

@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
+/**
+ * AnnouncementBanner Component
+ *
+ * Global broadcast strip mounted at the apex of the application viewport.
+ * Consumes reactive announcement data from `SiteContentContext` (text, badge,
+ * multilingual Tamil subtitle, target URI).
+ *
+ * Features session-based client dismissal and smooth-scroll anchoring for `#id` targets.
+ */
 export default function AnnouncementBanner() {
   const { content } = useSiteContent();
   const [dismissed, setDismissed] = useState(false);

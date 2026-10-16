@@ -12,6 +12,21 @@ const PIN_STORAGE_KEY = 'kcc_admin_pin';
 const SESSION_AUTH_KEY = 'kcc_admin_session_auth';
 const GITHUB_TOKEN_KEY = 'kcc_github_pat_token';
 
+/**
+ * AdminPage Component
+ *
+ * Hidden management console and live CMS editor for J/Kopay Christian College.
+ *
+ * Architecture & Data Flow:
+ * - Serverless Direct-to-Git Publishing: Pushes JSON content updates directly to GitHub's
+ *   Contents API (`src/data/siteContent.json`), triggering automated GitHub Pages CI/CD rebuilds.
+ * - Reactive Local Staging: Edits are instantly reflected in React context (`SiteContentContext`)
+ *   and cached in localStorage, allowing real-time preview across all pages prior to committing.
+ * - Zero-Clickthrough Security Model: Unlinked route (`/admin`) guarded by a session-authenticated
+ *   passcode. GitHub personal access tokens (PAT) remain on the client device.
+ * - Full Unicode/Tamil Fidelity: Leverages percent-encoded byte mapping for base64 serialization
+ *   to ensure native Tamil script characters are preserved without UTF-8 corruption.
+ */
 export default function AdminPage() {
   const navigate = useNavigate();
   const {
@@ -41,7 +56,6 @@ export default function AdminPage() {
     importJson
   } = useSiteContent();
 
-  // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return sessionStorage.getItem(SESSION_AUTH_KEY) === 'true';
   });
@@ -49,17 +63,15 @@ export default function AdminPage() {
   const [pinError, setPinError] = useState('');
   const [showPin, setShowPin] = useState(false);
 
-  // Active Tab
-  const [activeTab, setActiveTab] = useState('overview'); // overview, banner, hero, principles, performance, gallery, events, contact, anthem, settings
+  const [activeTab, setActiveTab] = useState('overview');
 
-  // Notification Toast
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
   };
 
-  // GitHub Commit & Sync State
+  // GitHub API integration & remote commit state
   const [ghToken, setGhToken] = useState(() => localStorage.getItem(GITHUB_TOKEN_KEY) || '');
   const [ghUser, setGhUser] = useState(null);
   const [isVerifyingGh, setIsVerifyingGh] = useState(false);
@@ -68,9 +80,8 @@ export default function AdminPage() {
   const [ghBranch, setGhBranch] = useState('main');
   const [ghCommitMsg, setGhCommitMsg] = useState('');
   const [isCommitting, setIsCommitting] = useState(false);
-  const [commitStatus, setCommitStatus] = useState(null); // { success, commitSha, commitUrl, error }
+  const [commitStatus, setCommitStatus] = useState(null);
 
-  // Modals for adding new items
   const [isAddPrincipleOpen, setIsAddPrincipleOpen] = useState(false);
   const [newPrinciple, setNewPrinciple] = useState({ titleEn: '', titleTa: '', descEn: '', descTa: '', badge: 'Pillar' });
 
@@ -92,13 +103,12 @@ export default function AdminPage() {
     link: ''
   });
 
-  // Settings PIN Change State
   const [currentPinSetting, setCurrentPinSetting] = useState(() => {
     return localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
   });
   const [newPinInput, setNewPinInput] = useState('');
 
-  // Verify GitHub token automatically on load if present
+  // Validate stored GitHub credentials upon session activation
   useEffect(() => {
     if (ghToken && isAuthenticated) {
       handleVerifyToken(ghToken);
@@ -119,7 +129,6 @@ export default function AdminPage() {
     }
   };
 
-  // Authentication check
   const handleLogin = (e) => {
     e.preventDefault();
     const storedPin = localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
@@ -139,7 +148,10 @@ export default function AdminPage() {
     setPinInput('');
   };
 
-  // Handle Direct GitHub Commit
+  /**
+   * Serializes active content to UTF-8 encoded JSON and commits directly
+   * to the designated repository branch using the GitHub Git Contents REST API.
+   */
   const handleDirectCommit = async (e) => {
     e?.preventDefault();
     if (!ghToken.trim()) {
@@ -188,7 +200,7 @@ export default function AdminPage() {
     }
   };
 
-  // Handle JSON Import
+  // Parses and validates raw configuration JSON uploaded from local disk
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -208,7 +220,7 @@ export default function AdminPage() {
     e.target.value = '';
   };
 
-  // Handle PIN Change
+  // Persists administrative access passcode to localStorage
   const handleChangePin = (e) => {
     e.preventDefault();
     if (newPinInput.trim().length < 4) {
@@ -221,7 +233,7 @@ export default function AdminPage() {
     showToast('Admin PIN updated successfully!', 'success');
   };
 
-  // If Not Authenticated -> Show Secret Login Screen
+  // Render security gate when session credentials are absent or invalidated
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 selection:bg-brand-pale selection:text-brand-forest">
@@ -298,10 +310,8 @@ export default function AdminPage() {
     );
   }
 
-  // Authenticated Admin Dashboard Layout
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-brand-pale selection:text-brand-forest">
-      {/* Toast Notification */}
       {toast.show && (
         <div
           className={`fixed bottom-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-semibold transition-all transform animate-bounce duration-300 ${toast.type === 'error'
@@ -322,11 +332,9 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* Top Navbar */}
       <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* Left: Brand & Repo Badge */}
             <div className="flex items-center gap-3">
               <img src="/assets/logo.png" alt="KCC" className="w-9 h-9 object-contain" />
               <div>
@@ -344,9 +352,7 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Right: Quick Action Buttons */}
             <div className="flex items-center gap-2.5">
-              {/* Preview Button */}
               <button
                 type="button"
                 onClick={() => window.open('/', '_blank')}
@@ -359,7 +365,6 @@ export default function AdminPage() {
                 <span>Live Preview</span>
               </button>
 
-              {/* Direct Commit to GitHub Button */}
               <button
                 type="button"
                 onClick={handleDirectCommit}
@@ -384,7 +389,6 @@ export default function AdminPage() {
                 )}
               </button>
 
-              {/* Logout / Lock */}
               <button
                 type="button"
                 onClick={handleLogout}
@@ -398,7 +402,6 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Navigation Tabs */}
           <div className="flex items-center gap-1 overflow-x-auto py-2.5 border-t border-slate-800/80 no-scrollbar text-xs font-semibold">
             {[
               { id: 'overview', label: '⚡ GitHub Sync', icon: '🚀' },
@@ -428,12 +431,9 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {/* Main Admin Content Body */}
       <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* TAB 1: OVERVIEW & GITHUB DIRECT COMMIT HUB */}
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* Direct Commit Banner */}
             <div className="bg-gradient-to-br from-slate-900 to-slate-850 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
                 <div>
@@ -471,7 +471,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Commit Status Feedback */}
               {commitStatus && (
                 <div
                   className={`mt-6 p-4 rounded-2xl border text-sm flex items-start gap-3.5 ${commitStatus.success
@@ -520,9 +519,7 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {/* GitHub Credentials & Connection Settings */}
               <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                {/* Personal Access Token Config */}
                 <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
@@ -567,7 +564,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Repository Target Config */}
                 <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
                   <span className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
                     Target Repository &amp; Branch
@@ -616,7 +612,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Quick Summary Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div
                 onClick={() => setActiveTab('hero')}
@@ -665,7 +660,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 2: ANNOUNCEMENT BANNER & GENERAL META */}
         {activeTab === 'banner' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -752,7 +746,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* School Core Metadata */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <h2 className="text-xl font-bold text-white mb-5">School Core Identity</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -797,7 +790,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 3: HERO SECTION */}
         {activeTab === 'hero' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -859,7 +851,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Live Preview of Hero Card */}
               <div className="mt-8 pt-6 border-t border-slate-800">
                 <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Card Preview</span>
                 <div className="relative rounded-2xl overflow-hidden bg-brand-forest border border-brand-soft/40 p-6 sm:p-8 text-white min-h-[220px] flex items-center">
@@ -879,15 +870,12 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 4: MOTTO, VISION & PRINCIPLES */}
         {activeTab === 'principles' && (
           <div className="space-y-6">
-            {/* Core 3 Cards: Motto, Vision, Mission */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <h2 className="text-xl font-bold text-white mb-6">Core Institutional Principles</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Motto */}
                 <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Motto (மகுடவாசகம்)</div>
                   <div>
@@ -910,7 +898,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Vision */}
                 <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Vision (தரிசனம்)</div>
                   <div>
@@ -933,7 +920,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Mission */}
                 <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Mission (பணி இலக்கு)</div>
                   <div>
@@ -958,7 +944,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Custom Pillars / Principles */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -976,7 +961,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* List of Custom Principles */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {(content.principles?.customCards || []).map((card) => (
                   <div key={card.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex justify-between items-start">
@@ -1005,7 +989,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Modal: Add New Principle */}
             {isAddPrincipleOpen && (
               <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
                 <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
@@ -1070,7 +1053,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 5: STATS & PERFORMANCE */}
         {activeTab === 'performance' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -1104,7 +1086,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Custom Metrics */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <div className="flex items-center justify-between mb-6">
                 <div>
@@ -1146,7 +1127,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Modal: Add Custom Stat */}
             {isAddStatOpen && (
               <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
                 <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl">
@@ -1223,7 +1203,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 6: PHOTO GALLERY */}
         {activeTab === 'gallery' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -1243,7 +1222,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* Gallery Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {(content.gallery || []).map((img, idx) => (
                   <div key={img.id || idx} className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden group">
@@ -1290,7 +1268,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Modal: Add New Gallery Image */}
             {isAddGalleryOpen && (
               <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
                 <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl">
@@ -1362,7 +1339,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 7: EVENTS & NEWS */}
         {activeTab === 'events' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -1382,7 +1358,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* Custom Events Cards List */}
               <div className="space-y-4">
                 {(content.events?.customEvents || []).map(event => (
                   <div key={event.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -1415,7 +1390,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* Modal: Add New Event */}
             {isAddEventOpen && (
               <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
                 <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
@@ -1515,7 +1489,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 8: CONTACT INFORMATION */}
         {activeTab === 'contact' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -1579,7 +1552,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 9: SCHOOL ANTHEM */}
         {activeTab === 'anthem' && (
           <div className="space-y-6">
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
@@ -1638,10 +1610,8 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* TAB 10: SETTINGS, PASSCODE & BACKUP */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
-            {/* Change Admin PIN */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <h2 className="text-xl font-bold text-white mb-2">Security &amp; Passcode Settings</h2>
               <p className="text-xs text-slate-400 mb-6">
@@ -1681,7 +1651,6 @@ export default function AdminPage() {
               </form>
             </div>
 
-            {/* Backup & Restore */}
             <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
               <h2 className="text-xl font-bold text-white mb-2">Backup &amp; Configuration Export</h2>
               <p className="text-xs text-slate-400 mb-6">

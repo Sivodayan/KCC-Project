@@ -23,16 +23,12 @@ export default function Contact() {
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-brand-forest rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 text-brand-white shadow-lg border border-brand-soft/40">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-
-            {/* Left Column: Contact Information & Social Channels (5 cols) */}
             <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
               <div>
                 <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
                   College Office
                 </h2>
-                {/* Details List */}
                 <div className="space-y-3 pt-3 text-xs">
-                  {/* Address */}
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-brand-pale mt-0.5 shadow-2xs">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -58,7 +54,6 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  {/* Phone */}
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-brand-pale mt-0.5 shadow-2xs">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -76,7 +71,6 @@ export default function Contact() {
                     </div>
                   </div>
 
-                  {/* Email */}
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0 text-brand-pale mt-0.5 shadow-2xs">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,12 +89,9 @@ export default function Contact() {
                 </div>
               </div>
 
-              {/* Social Channels: Facebook & Instagram Logos Only */}
               <div className="pt-1 flex items-center gap-3">
-
-                {/* Facebook Logo Button */}
                 <a
-                  href={FACEBOOK_URL}
+                  href={facebookUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white flex items-center justify-center transition-all duration-200 shadow-sm hover:scale-110 active:scale-95 cursor-pointer"
@@ -112,9 +103,8 @@ export default function Contact() {
                   </svg>
                 </a>
 
-                {/* Instagram Logo Button */}
                 <a
-                  href={INSTAGRAM_URL}
+                  href={instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF] hover:opacity-95 text-white flex items-center justify-center transition-all duration-200 shadow-sm hover:scale-110 active:scale-95 cursor-pointer"
@@ -128,7 +118,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Middle Column: Useful Links (4 cols) */}
             <div className="lg:col-span-4 flex flex-col justify-between space-y-3">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
@@ -189,10 +178,8 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Right Column: Small Compact Map (3 cols) */}
             <div className="lg:col-span-3 flex flex-col items-center lg:items-end justify-center">
               <div className="w-full max-w-sm rounded-xl overflow-hidden bg-brand-white text-slate-800 shadow-md border border-brand-pale">
-                {/* Map Header Bar */}
                 <div className="px-3 py-2 bg-brand-light/80 border-b border-brand-pale flex items-center justify-between gap-2">
                   <span className="text-[11px] font-bold text-slate-900 leading-tight flex items-center gap-1.5">
                     <svg className="w-3.5 h-3.5 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -203,7 +190,6 @@ export default function Contact() {
                   </span>
                 </div>
 
-                {/* Embedded Map (Small & Compact) */}
                 <div className="relative w-full h-[155px] bg-slate-100">
                   <iframe
                     title="J/Kopay Christian College Location Map"
@@ -218,11 +204,10 @@ export default function Contact() {
                   />
                 </div>
 
-                {/* Map Footer Note (Compact) */}
                 <div className="px-3 py-1.5 bg-brand-white border-t border-brand-pale/70 flex items-center justify-between gap-2 text-[10px] text-slate-600">
                   <span className="truncate">Point Pedro Rd, Kopay</span>
                   <a
-                    href={MAPS_LOCATION_URL}
+                    href={mapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-brand-forest font-semibold hover:underline shrink-0"
@@ -232,7 +217,6 @@ export default function Contact() {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

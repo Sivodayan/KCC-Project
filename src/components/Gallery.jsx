@@ -15,6 +15,11 @@ const defaultJournalGallery = [
   { src: "/assets/gal_(11).jpeg" }
 ];
 
+/**
+ * Interactive 3D Cylindrical Gallery Carousel
+ * Computes angular offsets and perspective depth matrices dynamically
+ * based on distance from the active center index.
+ */
 export default function Gallery() {
   const { content } = useSiteContent();
   const journalGallery = (content?.gallery && content.gallery.length > 0) ? content.gallery : defaultJournalGallery;
@@ -29,12 +34,11 @@ export default function Gallery() {
   const [isEntering, setIsEntering] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
   const [isInView, setIsInView] = useState(false);
-  const [hoveredSide, setHoveredSide] = useState(null); // 'prev' | 'next' | null
+  const [hoveredSide, setHoveredSide] = useState(null);
 
   const stageRef = useRef(null);
   const sectionRef = useRef(null);
   const initialSlideTimerRef = useRef(null);
-
   const total = journalGallery.length;
 
   const focusIndex = useCallback((targetIndex) => {
@@ -46,7 +50,6 @@ export default function Gallery() {
     setCurrentIndex(safeIndex);
   }, [hasEntered, total]);
 
-  // Entrance & In-View Observer: Triggers when visitor enters the gallery section
   useEffect(() => {
     if (!sectionRef.current) return;
 
@@ -59,12 +62,10 @@ export default function Gallery() {
             setHasEntered(true);
             setIsEntering(true);
 
-            // 3D Fan-in entrance animation duration
             setTimeout(() => {
               setIsEntering(false);
             }, 700);
 
-            // Start slideshow shortly after entering section
             if (initialSlideTimerRef.current) clearTimeout(initialSlideTimerRef.current);
             initialSlideTimerRef.current = setTimeout(() => {
               setCurrentIndex(prev => (prev + 1) % total);
@@ -84,7 +85,6 @@ export default function Gallery() {
     };
   }, [hasEntered, total]);
 
-  // Continuous Auto-rotation (runs when entered and in view; does not pause on hover)
   useEffect(() => {
     if (!hasEntered || !isInView || isPaused) return;
 
@@ -95,20 +95,14 @@ export default function Gallery() {
     return () => clearInterval(interval);
   }, [hasEntered, isInView, isPaused, total]);
 
-  // Pause when tab is not active
   useEffect(() => {
     function handleVisibility() {
-      if (document.hidden) {
-        setIsPaused(true);
-      } else {
-        setIsPaused(false);
-      }
+      setIsPaused(document.hidden);
     }
     document.addEventListener('visibilitychange', handleVisibility);
     return () => document.removeEventListener('visibilitychange', handleVisibility);
   }, []);
 
-  // Keyboard navigation for Left/Right arrows
   useEffect(() => {
     function handleKeyDown(e) {
       if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
@@ -122,7 +116,6 @@ export default function Gallery() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, focusIndex]);
 
-  // Touch Swipe
   useEffect(() => {
     const stage = stageRef.current;
     if (!stage) return;
@@ -155,7 +148,6 @@ export default function Gallery() {
     };
   }, [currentIndex, focusIndex]);
 
-  // Mouse Move on Stage for Hover-to-Zoom on Prev/Next zones
   const handleStageMouseMove = (e) => {
     if (!stageRef.current) return;
     const stageRect = stageRef.current.getBoundingClientRect();
@@ -179,13 +171,12 @@ export default function Gallery() {
   const handleStageClick = (e) => {
     if (!stageRef.current) return;
     const stageRect = stageRef.current.getBoundingClientRect();
-    const centerX = stageRect.left + stageRect.width / 2;
-    const clickX = e.clientX;
-    const cardHalfWidth = 260;
+    const clickX = e.clientX - stageRect.left;
+    const width = stageRect.width;
 
-    if (clickX < centerX - cardHalfWidth + 50) {
+    if (clickX < width * 0.35) {
       focusIndex(currentIndex - 1);
-    } else if (clickX > centerX + cardHalfWidth - 50) {
+    } else if (clickX > width * 0.65) {
       focusIndex(currentIndex + 1);
     }
   };
@@ -193,19 +184,20 @@ export default function Gallery() {
   return (
     <section
       ref={sectionRef}
-      className="py-8 sm:py-12 bg-[#0a1c11] text-brand-white relative overflow-hidden select-none border-t border-b border-brand-forest/40 scroll-mt-20 sm:scroll-mt-24"
+      className="py-12 sm:py-16 bg-brand-light border-b border-brand-pale overflow-hidden scroll-mt-20 sm:scroll-mt-24 select-none"
       id="gallery"
     >
-      {/* Ambient Lighting Glows */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[350px] bg-brand-forest/25 rounded-full blur-[120px]" />
-        <div className="absolute -bottom-24 left-1/2 -translate-x-1/2 w-[900px] h-[250px] bg-brand-forest/20 rounded-full blur-[100px]" />
-      </div>
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 reveal-item">
+          <h2 className="text-3xl font-extrabold text-brand-forest mt-1 tracking-tight">
+            Campus Life &amp; Historic Moments
+          </h2>
+          <p className="text-slate-600 text-sm mt-2">
+            Archival captures and vibrant collegiate activity reflecting the heritage of Kopay Christian College.
+          </p>
+        </div>
 
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* 3D Carousel Stage Area */}
-        <div className="relative w-full flex flex-col items-center justify-center">
-          {/* 3D Perspective Viewport */}
+        <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden">
           <div
             ref={stageRef}
             onClick={handleStageClick}
@@ -223,7 +215,6 @@ export default function Gallery() {
               let extraClasses = '';
 
               if (!hasEntered) {
-                // Collapsed initial layout before fan-in
                 const dir = offset > 0 ? 1 : (offset < 0 ? -1 : 0);
                 if (offset === 0) {
                   style = {
@@ -239,7 +230,6 @@ export default function Gallery() {
                   };
                 }
               } else {
-                // 3D curved layout
                 if (offset === 0) {
                   extraClasses += ' is-active-center';
                   style = {
@@ -301,7 +291,7 @@ export default function Gallery() {
                 } else {
                   const dir = offset > 0 ? 1 : -1;
                   style = {
-                    transform: `translateX(${dir * 180}%) scale(0.4) rotateY(${dir * -60}deg) translateZ(-350px)`,
+                    transform: `translateX(${dir * 18}%) scale(0.4) rotateY(${dir * -60}deg) translateZ(-350px)`,
                     zIndex: 1,
                     opacity: 0,
                     pointerEvents: 'none',
@@ -322,49 +312,62 @@ export default function Gallery() {
                     focusIndex(index);
                   }}
                   style={style}
-                  className={`journal-card rounded-3xl overflow-hidden shadow-2xl border-2 border-white/20 bg-slate-900 group ${extraClasses}`}
-                  title={
-                    offset === 0
-                      ? `Current image (${index + 1} of ${total})`
-                      : offset === 1
-                        ? 'Next image (Click to focus)'
-                        : offset === -1
-                          ? 'Previous image (Click to focus)'
-                          : 'Click to focus this image'
-                  }
+                  className={`journal-card absolute w-[260px] sm:w-[320px] lg:w-[350px] h-[310px] sm:h-[350px] lg:h-[370px] rounded-2xl sm:rounded-3xl shadow-lg border border-brand-soft/30 overflow-hidden bg-brand-white transition-all duration-500 ease-out flex flex-col ${extraClasses}`}
                 >
-                  <div className="relative w-full h-full overflow-hidden rounded-3xl">
+                  <div className="w-full h-full relative overflow-hidden bg-slate-900">
                     <img
                       src={item.src}
-                      alt={`Campus Gallery Photo ${index + 1}`}
-                      className="journal-img"
+                      alt={item.caption || `Campus moment ${index + 1}`}
+                      className="w-full h-full object-cover object-center pointer-events-none"
                       loading="lazy"
                     />
+                    {item.category && (
+                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-sm text-[10px] font-semibold text-emerald-300 border border-slate-700/60">
+                        {item.category}
+                      </span>
+                    )}
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Floor Shadow beneath curved cards */}
-          <div className="w-[85%] max-w-3xl h-8 mx-auto -mt-4 bg-black/60 rounded-full blur-xl pointer-events-none" />
+          <button
+            type="button"
+            onClick={() => focusIndex(currentIndex - 1)}
+            aria-label="Previous image"
+            className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
 
-          {/* Single Clean Interactive Indicator Dots */}
-          <div className="mt-5 sm:mt-6 flex items-center justify-center gap-2 flex-wrap max-w-md mx-auto" id="journalDots">
-            {journalGallery.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => focusIndex(i)}
-                title={`Moment ${i + 1} of ${total}`}
-                aria-label={`Go to image ${i + 1}`}
-                className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${i === currentIndex
-                    ? 'bg-white w-8 shadow-md'
-                    : 'bg-white/35 hover:bg-white/70 w-2.5'
-                  }`}
-              />
-            ))}
-          </div>
+          <button
+            type="button"
+            onClick={() => focusIndex(currentIndex + 1)}
+            aria-label="Next image"
+            className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex items-center justify-center gap-1.5 mt-4 sm:mt-6">
+          {journalGallery.map((_, dotIdx) => (
+            <button
+              key={dotIdx}
+              type="button"
+              onClick={() => focusIndex(dotIdx)}
+              aria-label={`Go to slide ${dotIdx + 1}`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${dotIdx === currentIndex
+                ? 'w-6 bg-brand-forest'
+                : 'w-2 bg-brand-pale hover:bg-brand-soft'
+                }`}
+            />
+          ))}
         </div>
       </div>
     </section>

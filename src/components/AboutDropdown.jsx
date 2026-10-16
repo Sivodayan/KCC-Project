@@ -1,5 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 
+/**
+ * AboutDropdown Component
+ *
+ * Header navigation dropdown managing access to institutional sub-sections
+ * (History, Anthem, Motto).
+ *
+ * Implements resilient hover-intent heuristics with a 180ms hysteresis buffer,
+ * click-outside listener teardown, Escape key trapping, and strict ARIA compliance.
+ */
 export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef(null);
@@ -67,7 +76,6 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      {/* Trigger Button */}
       <button
         type="button"
         onClick={() => setIsOpen(prev => !prev)}
@@ -91,7 +99,6 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
         </svg>
       </button>
 
-      {/* Dropdown Menu Card */}
       {isOpen && (
         <div
           role="menu"

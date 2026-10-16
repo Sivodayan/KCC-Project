@@ -2,6 +2,13 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Gallery from '../components/Gallery.jsx';
 
+/**
+ * GalleryPage Component
+ *
+ * Dedicated route view presenting the collegiate visual archive.
+ * Features categorized media filter tabs (All, Campus, Academics, Sports, Culture)
+ * and full-resolution lightbox inspection.
+ */
 export default function GalleryPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -22,7 +29,6 @@ export default function GalleryPage() {
         </nav>
       </div>
 
-      {/* Header Banner as in History Page */}
       <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           Photo Gallery

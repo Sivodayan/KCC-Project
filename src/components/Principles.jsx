@@ -21,7 +21,6 @@ export default function Principles() {
   };
 
   const customCards = principles.customCards || [];
-
   const [flippedCards, setFlippedCards] = useState({});
 
   const toggleFlip = (cardKey) => {
@@ -39,19 +38,16 @@ export default function Principles() {
     <section className="py-12 sm:py-16 bg-brand-light border-b border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Card 1: Motto */}
           <div className="reveal-item stagger-1 h-[290px] sm:h-[310px] lg:h-[300px]">
             <div
               role="button"
               tabIndex={0}
               aria-label="Motto card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.motto ? 'is-flipped' : ''
-                }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.motto ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('motto')}
               onKeyDown={(e) => handleKeyDown(e, 'motto')}
             >
               <div className="flip-card-inner">
-                {/* Front (English - Default) */}
                 <div className="flip-card-front bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale">
@@ -65,7 +61,6 @@ export default function Principles() {
                   </div>
                 </div>
 
-                {/* Back (Tamil - on Hover/Flip) */}
                 <div className="flip-card-back bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest font-tamil">
@@ -82,19 +77,16 @@ export default function Principles() {
             </div>
           </div>
 
-          {/* Card 2: Vision */}
           <div className="reveal-item stagger-2 h-[290px] sm:h-[310px] lg:h-[300px]">
             <div
               role="button"
               tabIndex={0}
               aria-label="Vision card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.vision ? 'is-flipped' : ''
-                }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.vision ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('vision')}
               onKeyDown={(e) => handleKeyDown(e, 'vision')}
             >
               <div className="flip-card-inner">
-                {/* Front (English - Default) */}
                 <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
@@ -108,7 +100,6 @@ export default function Principles() {
                   </div>
                 </div>
 
-                {/* Back (Tamil - on Hover/Flip) */}
                 <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
@@ -125,19 +116,16 @@ export default function Principles() {
             </div>
           </div>
 
-          {/* Card 3: Mission Statement */}
           <div className="reveal-item stagger-3 h-[290px] sm:h-[310px] lg:h-[300px]">
             <div
               role="button"
               tabIndex={0}
               aria-label="Mission Statement card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.mission ? 'is-flipped' : ''
-                }`}
+              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.mission ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('mission')}
               onKeyDown={(e) => handleKeyDown(e, 'mission')}
             >
               <div className="flip-card-inner">
-                {/* Front (English - Default) */}
                 <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
@@ -151,7 +139,6 @@ export default function Principles() {
                   </div>
                 </div>
 
-                {/* Back (Tamil - on Hover/Flip) */}
                 <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
@@ -169,7 +156,6 @@ export default function Principles() {
           </div>
         </div>
 
-        {/* Dynamic Custom Principle Cards Added by Admin */}
         {customCards.length > 0 && (
           <div className="mt-8 pt-6 border-t border-brand-pale/60">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -182,8 +168,7 @@ export default function Principles() {
                       tabIndex={0}
                       onClick={() => toggleFlip(cardKey)}
                       onKeyDown={(e) => handleKeyDown(e, cardKey)}
-                      className={`flip-card w-full h-full cursor-pointer select-none rounded-3xl shadow-sm hover:shadow-lg transition-shadow duration-300 ${flippedCards[cardKey] ? 'is-flipped' : ''
-                        }`}
+                      className={`flip-card w-full h-full cursor-pointer select-none rounded-3xl shadow-sm hover:shadow-lg transition-shadow duration-300 ${flippedCards[cardKey] ? 'is-flipped' : ''}`}
                     >
                       <div className="flip-card-inner">
                         <div className="flip-card-front bg-brand-white text-slate-800 p-6 border border-brand-pale rounded-3xl flex flex-col">

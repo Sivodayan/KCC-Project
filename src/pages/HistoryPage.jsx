@@ -3,6 +3,14 @@ import { Link } from 'react-router-dom';
 import HistoryTimeline from '../components/HistoryTimeline.jsx';
 import LeadershipDirectory from '../components/LeadershipDirectory.jsx';
 
+/**
+ * HistoryPage Component
+ *
+ * Dedicated archival history portal for J/Kopay Christian College.
+ * Dynamically switches between English and Tamil historical treatises,
+ * re-mounting child timeline and leadership directory components via keyed instances.
+ * Automatically scrolls to top on language toggle or route entry.
+ */
 export default function HistoryPage({ lang = 'en' }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

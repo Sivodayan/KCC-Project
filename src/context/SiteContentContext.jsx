@@ -1,11 +1,18 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 import defaultSiteContent from '../data/siteContent.json';
 
 const STORAGE_KEY = 'kcc_site_content_v1';
 const SiteContentContext = createContext(null);
 
+/**
+ * SiteContentProvider
+ * Centralized content state provider for user-customizable text, stats, gallery, and events.
+ * Implements a 3-tier resolution strategy:
+ * 1. Active React component state (in-memory)
+ * 2. Browser localStorage overrides (persists unpublished drafts across reloads)
+ * 3. Packaged JSON defaults from siteContent.json (production fallback)
+ */
 export function SiteContentProvider({ children }) {
-  // Load initially from localStorage if present, else fallback to defaultSiteContent
   const [content, setContent] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -38,7 +45,7 @@ export function SiteContentProvider({ children }) {
         };
       }
     } catch (e) {
-      console.warn('Failed to parse saved site content from localStorage:', e);
+      console.warn('Failed to parse cached site content:', e);
     }
     return defaultSiteContent;
   });
@@ -51,7 +58,6 @@ export function SiteContentProvider({ children }) {
     }
   });
 
-  // Keep localStorage updated with any changes
   const saveContent = useCallback((updater) => {
     setContent(prev => {
       const next = typeof updater === 'function' ? updater(prev) : updater;
@@ -59,13 +65,12 @@ export function SiteContentProvider({ children }) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
         setHasLocalOverrides(true);
       } catch (err) {
-        console.error('Error saving to localStorage:', err);
+        console.error('LocalStorage write error:', err);
       }
       return next;
     });
   }, []);
 
-  // Update specific top-level section
   const updateSection = useCallback((section, data) => {
     saveContent(prev => ({
       ...prev,
@@ -76,14 +81,11 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  // Section specific convenience setters
   const updateMeta = useCallback((meta) => updateSection('meta', meta), [updateSection]);
   const updateAnnouncement = useCallback((announcement) => updateSection('announcement', announcement), [updateSection]);
   const updateHero = useCallback((hero) => updateSection('hero', hero), [updateSection]);
   const updateContact = useCallback((contact) => updateSection('contact', contact), [updateSection]);
   const updateAnthem = useCallback((anthem) => updateSection('anthem', anthem), [updateSection]);
-
-  // Principles & Pillars
   const updatePrinciples = useCallback((principles) => updateSection('principles', principles), [updateSection]);
 
   const addPrincipleCard = useCallback((newCard) => {
@@ -117,7 +119,6 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  // Performance & Stats
   const updatePerformance = useCallback((performanceData) => {
     saveContent(prev => ({
       ...prev,
@@ -159,7 +160,6 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  // Gallery
   const addGalleryImage = useCallback((newImg) => {
     saveContent(prev => {
       const item = {
@@ -194,7 +194,6 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  // Events
   const addEvent = useCallback((newEvent) => {
     saveContent(prev => {
       const item = {
@@ -241,7 +240,6 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  // Reset to default
   const resetToDefaults = useCallback(() => {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -249,12 +247,11 @@ export function SiteContentProvider({ children }) {
       setHasLocalOverrides(false);
       return true;
     } catch (e) {
-      console.error('Reset failed:', e);
+      console.error('Failed to reset content defaults:', e);
       return false;
     }
   }, []);
 
-  // Export content as JSON
   const exportJson = useCallback(() => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(content, null, 2));
     const downloadAnchor = document.createElement('a');
@@ -265,7 +262,6 @@ export function SiteContentProvider({ children }) {
     downloadAnchor.remove();
   }, [content]);
 
-  // Import JSON content
   const importJson = useCallback((jsonString) => {
     try {
       const parsed = JSON.parse(jsonString);
@@ -273,7 +269,7 @@ export function SiteContentProvider({ children }) {
         saveContent(parsed);
         return { success: true };
       }
-      return { success: false, error: 'Invalid JSON format' };
+      return { success: false, error: 'Malformed JSON payload' };
     } catch (err) {
       return { success: false, error: err.message };
     }

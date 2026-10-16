@@ -1,5 +1,9 @@
-import React from 'react';
-
+/**
+ * Footer Component
+ *
+ * Institutional footer displaying college identity, bilingual geographic metadata,
+ * and copyright credentials across all application routes.
+ */
 export default function Footer() {
   return (
     <footer className="bg-brand-white border-t border-brand-pale py-4 sm:py-5 text-xs text-slate-500">

@@ -1,10 +1,21 @@
-import React from 'react';
-
+/**
+ * HistoryTimeline Component
+ *
+ * Primary archival chronology presentation for J/Kopay Christian College.
+ * Dynamically switches between:
+ *  - Tamil Treatise (`lang === 'ta'`): 12 distinct chronological milestones
+ *    referencing historical treatises by Rev. J. S. Ratnathikkam & Rev. A. M. Nathaniel,
+ *    archival photographs (his1.jpg - his12.jpg), and missionary records from 1849.
+ *  - English Treatise (`lang === 'en'`): 10 sequential chapters tracing foundational
+ *    origins, governance under CMS and St. John's College boards, co-education unification,
+ *    and collegiate status.
+ *
+ * Implements a responsive vertical milestone spine with year gutter positioning.
+ */
 export default function HistoryTimeline({ lang = 'en' }) {
   if (lang === 'ta') {
     return (
       <article className="space-y-10 font-tamil">
-        {/* Header Banner */}
         <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-snug">
             CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்
@@ -16,9 +27,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </p>
         </header>
 
-        {/* Timeline Section (Tamil: 12 Distinct Milestones) */}
         <div className="relative border-l border-[#DDD6C7] ml-3 sm:ml-28 space-y-8">
-          {/* Section 1 (Ta) -> his1.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -60,7 +69,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 2 (Ta) -> his2.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -98,7 +106,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 3 (Ta) -> his3.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -135,7 +142,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 4 (Ta) -> his4.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -173,7 +179,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 5 (Ta) -> his5.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -211,7 +216,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 6 (Ta) -> his6.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -248,7 +252,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 7 (Ta) -> his7.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -283,7 +286,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 8 (Ta) -> his8.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -319,7 +321,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 9 (Ta) -> his9.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -360,7 +361,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 10 (Ta) -> his10.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -404,7 +404,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 11 (Ta) -> his11.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -448,7 +447,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </div>
           </div>
 
-          {/* Section 12 (Ta) -> his12.jpg */}
           <div className="relative pl-6 sm:pl-10 group">
             <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
             <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -496,7 +494,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
 
   return (
     <article className="space-y-10">
-      {/* Header Banner */}
       <header className="text-center max-w-3xl mx-auto space-y-3 pb-6 border-b border-[#DDD6C7] mb-8">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#1F4D2B] tracking-tight leading-tight">
           CMS English School &amp; Today’s Christian College
@@ -507,9 +504,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
         </p>
       </header>
 
-      {/* Timeline Section */}
       <div className="relative border-l border-[#DDD6C7] ml-3 sm:ml-28 space-y-8">
-        {/* Section 1 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -547,7 +542,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 2 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -585,7 +579,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 3 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -620,7 +613,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 4 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -655,7 +647,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 5 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -690,7 +681,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 6 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -726,7 +716,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 7 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -766,7 +755,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 8 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -807,7 +795,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 9 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">
@@ -850,7 +837,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </div>
         </div>
 
-        {/* Section 10 */}
         <div className="relative pl-6 sm:pl-10 group">
           <span className="absolute -left-[5px] top-3 w-2.5 h-2.5 bg-[#1F4D2B] border border-[#FAF6EE]" />
           <span className="hidden sm:block absolute -left-28 top-2 w-20 text-right font-serif font-bold text-[#1F4D2B] text-xs">

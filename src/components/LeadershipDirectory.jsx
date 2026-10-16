@@ -1,5 +1,12 @@
-import React from 'react';
-
+/**
+ * LeadershipDirectory Component
+ *
+ * Archival record detailing the institutional leadership lineage of J/Kopay Christian College,
+ * including historical Headmasters (தலைமையாசிரியர்கள்), Managers (முகாமையாளர்கள்),
+ * Principals (அதிபர்கள்), and Vice Principals (உப அதிபர்கள்) from 1880 through the modern era.
+ *
+ * Supports bilingual rendering (`lang === 'ta'` vs English default).
+ */
 export default function LeadershipDirectory({ lang = 'en' }) {
   if (lang === 'ta') {
     return (

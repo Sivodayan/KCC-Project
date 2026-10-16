@@ -1,5 +1,14 @@
 import React, { useEffect } from 'react';
 
+/**
+ * AnthemModal Component
+ *
+ * Ephemeral dialog providing instant access to the college anthem lyrics
+ * without unmounting the current active page context.
+ *
+ * Features Escape key listening, backdrop backdrop-blur overlay dismiss,
+ * and semantic Tamil typographic styling.
+ */
 export default function AnthemModal({ isOpen, onClose }) {
   useEffect(() => {
     function handleKeyDown(e) {
@@ -21,7 +30,6 @@ export default function AnthemModal({ isOpen, onClose }) {
       }}
     >
       <div className="bg-brand-white max-w-lg w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col max-h-[85vh] shadow-2xl animate-modal-content">
-        {/* Anthem Header */}
         <div className="bg-brand-forest p-5 text-brand-white flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold font-tamil">பாடசாலைக் கீதம்</h3>
@@ -38,11 +46,10 @@ export default function AnthemModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        {/* Anthem Verses in Tamil */}
         <div className="p-6 overflow-y-auto space-y-4 text-slate-800 font-tamil leading-loose text-center text-sm sm:text-base bg-brand-light">
           <div className="p-4 bg-brand-white rounded-xl border border-brand-pale shadow-2xs">
-            <p >வாழிய நம் கலைக்கூடமே வாழ்க</p>
-            <p >வாழிய வாழிய வாழியவே</p>
+            <p>வாழிய நம் கலைக்கூடமே வாழ்க</p>
+            <p>வாழிய வாழிய வாழியவே</p>
             <p>கழனிகள் சூழ்ந்திடு கோவையம் பதியில்</p>
             <p>விளங்குநற் சிறந்தவக் கல்லூரி</p>
             <p>உண்மையும் நேர்மையும்</p>
@@ -72,7 +79,6 @@ export default function AnthemModal({ isOpen, onClose }) {
           </div>
         </div>
 
-        {/* Modal Footer */}
         <div className="p-3 border-t border-brand-pale bg-brand-white flex justify-end">
           <button
             onClick={onClose}

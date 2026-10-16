@@ -21,7 +21,6 @@ export default function Navbar({
     <header className="w-full border-b border-brand-pale bg-brand-white sticky top-0 z-40" id="mainHeader">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between py-3.5" aria-label="Main Navigation">
-          {/* School Crest/Logo & Brand */}
           <button
             onClick={() => handleNavLink('home')}
             aria-label="J/Kopay Christian College Home"
@@ -43,10 +42,8 @@ export default function Navbar({
             </div>
           </button>
 
-          {/* Desktop Navigation - Always Available on ALL Pages */}
           <div className="hidden md:flex items-center gap-2">
             <div className="flex items-center bg-brand-light border border-brand-pale px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
-              {/* Home Pill */}
               <button
                 onClick={() => handleNavLink('home')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'home'
@@ -57,7 +54,6 @@ export default function Navbar({
                 Home
               </button>
 
-              {/* Performance Pill - Redirects/scrolls to Performance on index */}
               <button
                 onClick={() => handleNavLink('performance')}
                 className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60"
@@ -65,11 +61,6 @@ export default function Navbar({
                 Performance
               </button>
 
-
-
-
-
-              {/* Events Pill */}
               <button
                 onClick={() => handleNavLink('events')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'events'
@@ -80,7 +71,6 @@ export default function Navbar({
                 Events
               </button>
 
-              {/* Gallery Pill */}
               <button
                 onClick={() => handleNavLink('gallery')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'gallery'
@@ -91,14 +81,11 @@ export default function Navbar({
                 Gallery
               </button>
 
-              {/* About Dropdown (History, Anthem, Motto) */}
               <AboutDropdown
                 onNavigate={handleNavLink}
                 onOpenAnthem={onOpenAnthem}
               />
 
-
-              {/* Language Switcher (Visible when on History Page) */}
               {currentPage === 'history' && (
                 <div className="inline-flex items-center bg-brand-white border border-brand-pale p-0.5 rounded-full text-xs font-semibold ml-1">
                   <button
@@ -126,12 +113,11 @@ export default function Navbar({
                 </div>
               )}
 
-              {/* Search Button in Nav */}
               <button
                 onClick={onOpenSearch}
                 type="button"
                 className="inline-flex items-center gap-1.5 bg-brand-white border border-brand-pale hover:border-brand-soft text-slate-700 hover:text-brand-forest px-3 py-1.5 rounded-full text-xs font-medium transition-all group shadow-2xs ml-1 cursor-pointer"
-                aria-label="Search website (Ctrl+K)"
+                aria-label="Search website"
               >
                 <svg
                   className="w-3.5 h-3.5 text-brand-forest transition-transform group-hover:scale-110"
@@ -147,12 +133,8 @@ export default function Navbar({
                   />
                 </svg>
                 <span>Search</span>
-                <kbd className="text-[10px] bg-brand-light px-1.5 py-0.5 rounded text-slate-400 font-mono border border-brand-pale/80">
-                  Ctrl K
-                </kbd>
               </button>
 
-              {/* Contact Us Button */}
               <button
                 onClick={() => handleNavLink('contact')}
                 className={`ml-2 inline-flex items-center px-4 py-1.5 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${currentPage === 'contact'
@@ -165,41 +147,24 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* Mobile Header Controls */}
-          <div className="md:hidden flex items-center gap-2">
-            {currentPage === 'history' && (
-              <div className="inline-flex items-center bg-brand-light border border-brand-pale p-0.5 rounded-full text-xs font-semibold">
-                <button
-                  type="button"
-                  onClick={() => onChangeHistoryLang('en')}
-                  className={`px-2 py-1 rounded-full text-[11px] font-bold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'text-slate-600'
-                    }`}
-                >
-                  EN
-                </button>
-                <button
-                  type="button"
-                  onClick={() => onChangeHistoryLang('ta')}
-                  className={`px-2 py-1 rounded-full text-[11px] font-bold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'text-slate-600'
-                    }`}
-                >
-                  தமிழ்
-                </button>
-              </div>
-            )}
+          <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={onOpenSearch}
-              aria-label="Search website"
-              className="p-2.5 rounded-xl bg-brand-light border border-brand-pale text-brand-forest transition-colors hover:bg-brand-pale cursor-pointer"
+              type="button"
+              className="p-2 rounded-xl bg-brand-light border border-brand-pale text-slate-700 hover:text-brand-forest transition-colors cursor-pointer"
+              aria-label="Search"
             >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg className="w-5 h-5 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
+
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle Navigation"
-              className="p-2.5 rounded-xl bg-brand-light border border-brand-pale text-brand-forest transition-colors hover:bg-brand-pale cursor-pointer"
+              onClick={() => setMobileMenuOpen(prev => !prev)}
+              type="button"
+              className="p-2 rounded-xl bg-brand-light border border-brand-pale text-slate-700 hover:text-brand-forest transition-colors cursor-pointer"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle navigation menu"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
@@ -213,10 +178,8 @@ export default function Navbar({
         </nav>
       </div>
 
-      {/* Mobile Drawer Menu - Consistent Navigation on ALL Pages */}
       {mobileMenuOpen && (
         <div className="md:hidden bg-brand-white border-t border-brand-pale px-6 py-4 space-y-3 shadow-lg">
-          {/* Mobile Search Bar Trigger */}
           <button
             onClick={() => {
               setMobileMenuOpen(false);
@@ -231,7 +194,6 @@ export default function Navbar({
             <span>Search KCC portal...</span>
           </button>
 
-          {/* Home Link */}
           <button
             onClick={() => handleNavLink('home')}
             className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
@@ -240,7 +202,6 @@ export default function Navbar({
             Home
           </button>
 
-          {/* Mobile About Accordion */}
           <div className="border border-brand-pale rounded-xl overflow-hidden bg-brand-light/40">
             <button
               type="button"
@@ -316,7 +277,6 @@ export default function Navbar({
             Contact Us
           </button>
 
-          {/* Language Switcher in Mobile Drawer when on History Page */}
           {currentPage === 'history' && (
             <div className="flex items-center justify-between pt-2 border-t border-brand-pale">
               <span className="text-xs text-slate-500 font-medium">History Language:</span>

@@ -5,6 +5,16 @@ import Performance from '../components/Performance.jsx';
 import Gallery from '../components/Gallery.jsx';
 import Contact from '../components/Contact.jsx';
 
+/**
+ * HomePage Component
+ *
+ * Primary landing view composing the core promotional and informational sections:
+ * Hero banner, institutional pillars/motto, performance statistics, highlights gallery,
+ * and regional contact details.
+ *
+ * Coordinates DOM element scroll-reveal classes and smooth-scroll resolution for
+ * deeplink hash fragments (e.g., `#performance`, `#contact`) across browser history navigations.
+ */
 export default function HomePage({ onNavigate }) {
   useEffect(() => {
     function revealInView() {
@@ -18,13 +28,13 @@ export default function HomePage({ onNavigate }) {
       });
     }
 
-    // Run immediately and after mounting ticks
+    // Initial viewport evaluations staggered to ensure elements rendered post-hydration are captured
     revealInView();
     const rafId = requestAnimationFrame(revealInView);
     const t1 = setTimeout(revealInView, 150);
     const t2 = setTimeout(revealInView, 400);
 
-    // Handle hash scroll (e.g. #performance) when redirected or linked
+    // Resolve anchor scroll target if navigated via URI fragment (e.g., #performance)
     if (window.location.hash) {
       const targetId = window.location.hash.replace('#', '');
       setTimeout(() => {

@@ -2,6 +2,13 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SchoolAnthem from '../components/SchoolAnthem.jsx';
 
+/**
+ * AnthemPage Component
+ *
+ * Dedicated route view for the college anthem (பாடசாலைக் கீதம்).
+ * Renders the full Tamil stanzas set to the traditional Hamsadhvani raga,
+ * along with print formatting controls and links to collegiate history.
+ */
 export default function AnthemPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -9,7 +16,6 @@ export default function AnthemPage() {
 
   return (
     <main className="flex-grow py-4 sm:py-6 bg-brand-white">
-      {/* Breadcrumb Navigation */}
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 font-medium">
           <Link
@@ -23,7 +29,6 @@ export default function AnthemPage() {
         </nav>
       </div>
 
-      {/* Standalone Anthem Content */}
       <SchoolAnthem />
     </main>
   );

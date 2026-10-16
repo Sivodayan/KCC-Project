@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+/**
+ * SchoolAnthem Component
+ *
+ * Primary archival presentation of the J/Kopay Christian College Anthem (பாடசாலைக் கீதம்).
+ * Rendered in Tamil typography with Hamsadhvani melodic arrangement context.
+ *
+ * Provides native print dialog invocation (`window.print()`), copy-to-clipboard
+ * with transient UI confirmation, and navigational links to the heritage timeline.
+ */
 export default function SchoolAnthem() {
   const [copied, setCopied] = useState(false);
 
@@ -43,18 +52,12 @@ export default function SchoolAnthem() {
 
   return (
     <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6">
-      {/* Header Badge & Crest */}
       <div className="text-center mb-10">
-
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
 
-
-        {/* Action Toolbar */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-
-
           <button
             type="button"
             onClick={handlePrint}
@@ -75,17 +78,13 @@ export default function SchoolAnthem() {
         </div>
       </div>
 
-      {/* Main Anthem Lyrics Container */}
       <div className="bg-gradient-to-b from-brand-light via-brand-white to-brand-light/60 rounded-3xl border border-brand-pale p-6 sm:p-12 shadow-sm relative overflow-hidden">
-        {/* Subtle Watermark Crest Background */}
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
           <img src="/assets/logo.png" alt="" className="w-96 h-96 object-contain" />
         </div>
 
         <div className="relative z-10 space-y-8 text-center font-tamil">
-          {/* Stanza 1 - Pallavi */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-
             <div className="text-lg sm:text-2xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
               <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
@@ -97,9 +96,7 @@ export default function SchoolAnthem() {
             </div>
           </div>
 
-          {/* Stanza 2 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்</p>
               <p>படைத்து நற்பணிபுரிந்தாய்</p>
@@ -108,9 +105,7 @@ export default function SchoolAnthem() {
             </div>
           </div>
 
-          {/* Stanza 3 */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-
             <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>மனதினில் உள் திறம் மதிப் பொறிவைத்திட</p>
               <p>மகிழ்வொடு நாம் முயல்வோம்</p>
@@ -119,9 +114,7 @@ export default function SchoolAnthem() {
             </div>
           </div>
 
-          {/* Stanza 4 - Conclusion */}
           <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-
             <div className="text-base sm:text-xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
               <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>
@@ -132,16 +125,14 @@ export default function SchoolAnthem() {
         </div>
       </div>
 
-      {/* College Values Banner */}
-
-
-      <Link
-        to="/"
-        className="shrink-0 px-5 py-2 rounded-full bg-white text-brand-forest hover:bg-brand-light font-bold text-xs shadow-xs transition-colors center-align "
-      >
-        ← Return to Home
-      </Link>
-
+      <div className="mt-8 flex justify-center">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-1.5 px-5 py-2 rounded-full bg-brand-forest text-brand-white hover:bg-brand-forestHover font-bold text-xs shadow-xs transition-colors"
+        >
+          ← Return to Home
+        </Link>
+      </div>
     </article>
   );
 }

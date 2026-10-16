@@ -2,6 +2,12 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Contact from '../components/Contact.jsx';
 
+/**
+ * ContactPage Component
+ *
+ * Dedicated route view displaying institutional contact coordinates,
+ * administrative office hours, location map links, and the general inquiry form.
+ */
 export default function ContactPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

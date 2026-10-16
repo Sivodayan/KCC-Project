@@ -34,7 +34,6 @@ function EventCard({ post }) {
           : 'shadow-sm border-slate-200/90 hover:shadow-md'
         }`}
     >
-      {/* Full-card overlay ensuring cursor is pointer across the entire card */}
       <a
         href={postUrl}
         target="_blank"
@@ -44,7 +43,6 @@ function EventCard({ post }) {
         title="Open post on Facebook"
       />
 
-      {/* Dynamic Cursor Spotlight Glow following mouse coordinates */}
       <div
         className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
         style={{
@@ -53,13 +51,11 @@ function EventCard({ post }) {
         }}
       />
 
-      {/* Top Emerald Accent Shimmer on Hover */}
       <div
         className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${isHovered ? 'opacity-100' : 'opacity-0'
           }`}
       />
 
-      {/* Card Content container with Facebook iframe */}
       <div
         className={`w-full h-full overflow-y-auto overflow-x-hidden flex justify-center relative z-0 transition-transform duration-300 pointer-events-none ${post.height <= 300 ? 'items-center' : 'items-start'
           }`}
@@ -160,7 +156,6 @@ export default function SchoolEvents() {
   return (
     <section className="py-6 sm:py-10 bg-brand-white" id="events-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Custom Events Added via Admin */}
         {customEvents.length > 0 && (
           <div className="mb-12">
             <div className="flex items-center gap-2 mb-6">
@@ -175,7 +170,6 @@ export default function SchoolEvents() {
           </div>
         )}
 
-        {/* Facebook Community Feed */}
         {showFacebookFeed && (
           <div>
             {customEvents.length > 0 && (

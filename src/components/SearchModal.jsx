@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const searchItems = [
-  // Events & Facebook Updates
   {
     title: "School Events & Facebook Community Updates",
     tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
@@ -38,8 +37,6 @@ const searchItems = [
     url: "https://www.facebook.com/profile.php?id=61575442051109",
     action: "external"
   },
-
-  // Campus Life & Gallery
   {
     title: "Campus Life Journal & 3D Digital Gallery",
     tamil: "கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு",
@@ -47,8 +44,6 @@ const searchItems = [
     url: "gallery",
     action: "navigate"
   },
-
-  // History & Heritage
   {
     title: "College History Timeline (1849 - Present)",
     tamil: "கல்லூரி வரலாறு (1849 - இன்று வரை)",
@@ -91,8 +86,6 @@ const searchItems = [
     url: "motto",
     action: "navigate"
   },
-
-  // School Anthem
   {
     title: "School Anthem (பாடசாலைக் கீதம்)",
     tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
@@ -100,8 +93,6 @@ const searchItems = [
     url: "anthem",
     action: "navigate"
   },
-
-  // Academics & Key Metrics
   {
     title: "Key Performance & Enrolment Metrics",
     tamil: "செயற்திறன் புள்ளிவிபரங்கள்",
@@ -137,8 +128,6 @@ const searchItems = [
     url: "performance",
     action: "navigate"
   },
-
-  // Contact & Location
   {
     title: "College Administrative Office",
     tamil: "கல்லூரி அலுவலகம் & தொடர்புகள்",
@@ -193,8 +182,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   useEffect(() => {
     if (isOpen) {
-      setQuery('');
-      setSelectedIndex(0);
       setTimeout(() => {
         if (inputRef.current) inputRef.current.focus();
       }, 50);
@@ -281,7 +268,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
       }}
     >
       <div className="bg-brand-white max-w-2xl w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
-        {/* Search Input Header */}
         <div className="p-4 sm:p-5 border-b border-brand-pale bg-brand-white flex items-center gap-3">
           <svg className="w-5 h-5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -310,12 +296,8 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               </svg>
             </button>
           )}
-          <kbd className="hidden sm:inline-block text-[11px] bg-brand-light border border-brand-pale px-2 py-0.5 rounded text-slate-500 font-mono">
-            ESC
-          </kbd>
         </div>
 
-        {/* Quick Category Filter Chips */}
         <div className="px-4 py-2.5 bg-brand-light/70 border-b border-brand-pale/70 flex items-center gap-2 overflow-x-auto text-xs">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Quick:</span>
           <button
@@ -370,7 +352,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           </button>
         </div>
 
-        {/* Results List Container */}
         <div className="overflow-y-auto divide-y divide-brand-pale/60 p-2 text-sm max-h-[50vh]">
           {filteredItems.length === 0 ? (
             <div className="py-12 text-center text-slate-500">
@@ -432,7 +413,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           )}
         </div>
 
-        {/* Modal Footer */}
         <div className="p-3 bg-brand-light/50 border-t border-brand-pale flex items-center justify-between text-[11px] text-slate-500 px-4">
           <div className="flex items-center gap-3">
             <span>
@@ -441,9 +421,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             </span>
             <span>
               <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↵</kbd> select
-            </span>
-            <span>
-              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">esc</kbd> close
             </span>
           </div>
           <span className="font-medium text-brand-forest">

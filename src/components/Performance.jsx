@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
+/**
+ * Exponential easing out curve for fluid numeral interpolation.
+ */
 function easeOutExpo(x) {
   return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
 }
@@ -21,7 +24,6 @@ export default function Performance() {
   };
 
   const customStats = perf.customStats || [];
-
   const [statsAnimated, setStatsAnimated] = useState(false);
   const [counterValues, setCounterValues] = useState({
     founded: 0,
@@ -36,6 +38,7 @@ export default function Performance() {
 
   const performanceRef = useRef(null);
 
+  // Trigger smooth counter animation when section enters viewport
   useEffect(() => {
     if (!performanceRef.current) return;
 
@@ -99,9 +102,7 @@ export default function Performance() {
           </p>
         </div>
 
-        {/* Primary Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {/* Founded Year (without comma) */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.founded}
@@ -110,7 +111,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Peninsula Heritage</p>
           </div>
 
-          {/* Total Students */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.students}+
@@ -119,7 +119,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Primary to Collegiate</p>
           </div>
 
-          {/* Teaching Staff */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.staff}
@@ -128,7 +127,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Dedicated Faculty</p>
           </div>
 
-          {/* G.C.E. O/L Pass Rate */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.olPass}%
@@ -137,7 +135,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">National Examination</p>
           </div>
 
-          {/* University Qualifying */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.alQual}%
@@ -146,7 +143,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">G.C.E. A/L Streams</p>
           </div>
 
-          {/* Clubs & Societies */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.clubs}
@@ -155,7 +151,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Co-Curricular Groups</p>
           </div>
 
-          {/* Houses */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.houses}
@@ -164,7 +159,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Annual Sports Division</p>
           </div>
 
-          {/* Lab Coverage */}
           <div className="p-6 rounded-2xl bg-brand-light border border-brand-pale text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft hover:-translate-y-1">
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
               {counterValues.labs}%
@@ -174,7 +168,6 @@ export default function Performance() {
           </div>
         </div>
 
-        {/* Dynamic Custom Metric Cards Added via Admin */}
         {customStats.length > 0 && (
           <div className="mt-8 pt-6 border-t border-brand-pale/60">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
