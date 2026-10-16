@@ -1,11 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
-import { processImageFile } from '../utils/imageUpload.js';
+import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
 
 const DEFAULT_PIN = 'kcc1852';
 const PIN_STORAGE_KEY = 'kcc_admin_pin';
 const SESSION_AUTH_KEY = 'kcc_admin_session_auth';
+const LAST_ACTIVE_KEY = 'kcc_admin_last_active';
+const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
 const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
 /**
@@ -42,7 +44,16 @@ export default function AdminPage() {
   } = useSiteContent();
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return sessionStorage.getItem(SESSION_AUTH_KEY) === 'true';
+    const isAuth = sessionStorage.getItem(SESSION_AUTH_KEY) === 'true';
+    if (!isAuth) return false;
+    const lastActive = Number(sessionStorage.getItem(LAST_ACTIVE_KEY) || '0');
+    // If last active timestamp is older than timeout duration, expire session
+    if (lastActive && Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS) {
+      sessionStorage.removeItem(SESSION_AUTH_KEY);
+      sessionStorage.removeItem(LAST_ACTIVE_KEY);
+      return false;
+    }
+    return true;
   });
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState('');
@@ -60,6 +71,9 @@ export default function AdminPage() {
   const [newGallerySrc, setNewGallerySrc] = useState('');
   const [isProcessingPhoto, setIsProcessingPhoto] = useState(false);
   const [photoUploadError, setPhotoUploadError] = useState('');
+  const [compressOption, setCompressOption] = useState(true);
+  const [photoStats, setPhotoStats] = useState(null);
+  const [modalFile, setModalFile] = useState(null);
   const [replaceCardIndex, setReplaceCardIndex] = useState(null);
 
   const multiFileInputRef = useRef(null);
@@ -82,6 +96,7 @@ export default function AdminPage() {
     if (pinInput.trim() === storedPin) {
       setIsAuthenticated(true);
       sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
+      sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
       setPinError('');
       showToast('Welcome to KCC Admin Panel', 'success');
     } else {
@@ -89,11 +104,78 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = (reason = '') => {
     setIsAuthenticated(false);
     sessionStorage.removeItem(SESSION_AUTH_KEY);
+    sessionStorage.removeItem(LAST_ACTIVE_KEY);
     setPinInput('');
+    if (reason) {
+      setPinError(reason);
+    }
   };
+
+  // Inactivity auto-logout watcher (15 minutes idle timeout)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let timeoutId = null;
+    let warningTimeoutId = null;
+
+    const resetInactivityTimer = () => {
+      sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+
+      if (timeoutId) clearTimeout(timeoutId);
+      if (warningTimeoutId) clearTimeout(warningTimeoutId);
+
+      // Warning 1 minute before timeout
+      const warningDelay = Math.max(INACTIVITY_TIMEOUT_MS - 60 * 1000, 1000);
+      warningTimeoutId = setTimeout(() => {
+        showToast('Session warning: Inactive for 14 minutes. Auto-lock will occur in 1 minute.', 'error');
+      }, warningDelay);
+
+      // Automatic logout on full timeout
+      timeoutId = setTimeout(() => {
+        handleLogout('Session expired due to 15 minutes of inactivity.');
+        showToast('Logged out due to inactivity', 'error');
+      }, INACTIVITY_TIMEOUT_MS);
+    };
+
+    let lastRecorded = 0;
+    const handleUserActivity = () => {
+      const now = Date.now();
+      // Throttle activity recording to at most once every 2 seconds
+      if (now - lastRecorded > 2000) {
+        lastRecorded = now;
+        resetInactivityTimer();
+      }
+    };
+
+    const handleVisibilityOrFocus = () => {
+      const lastActive = Number(sessionStorage.getItem(LAST_ACTIVE_KEY) || '0');
+      if (lastActive && Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS) {
+        handleLogout('Session expired due to inactivity while away.');
+        showToast('Logged out due to inactivity', 'error');
+      } else {
+        resetInactivityTimer();
+      }
+    };
+
+    // Initialize timer on mount
+    resetInactivityTimer();
+
+    const activityEvents = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
+    activityEvents.forEach((ev) => window.addEventListener(ev, handleUserActivity, { passive: true }));
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    window.addEventListener('focus', handleVisibilityOrFocus);
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      if (warningTimeoutId) clearTimeout(warningTimeoutId);
+      activityEvents.forEach((ev) => window.removeEventListener(ev, handleUserActivity));
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
+    };
+  }, [isAuthenticated]);
 
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
@@ -114,21 +196,32 @@ export default function AdminPage() {
     e.target.value = '';
   };
 
-  const handleModalFileChange = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const processAndSetModalPhoto = async (file, shouldCompress) => {
     try {
       setIsProcessingPhoto(true);
       setPhotoUploadError('');
-      const dataUrl = await processImageFile(file);
-      setNewGallerySrc(dataUrl);
-      showToast('Photo retrieved from PC successfully!', 'success');
+      const result = await processImageFile(file, { compress: shouldCompress });
+      setNewGallerySrc(result.dataUrl);
+      setPhotoStats(result);
+      if (shouldCompress) {
+        showToast(`Photo converted to WebP (${formatBytes(result.compressedSize)})!`, 'success');
+      } else {
+        showToast(`Photo loaded original format (${formatBytes(result.originalSize)})!`, 'success');
+      }
     } catch (err) {
       setPhotoUploadError(err.message || 'Failed to process image');
+      showToast(err.message, 'error');
     } finally {
       setIsProcessingPhoto(false);
-      e.target.value = '';
     }
+  };
+
+  const handleModalFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setModalFile(file);
+    await processAndSetModalPhoto(file, compressOption);
+    e.target.value = '';
   };
 
   const handleModalDrop = async (e) => {
@@ -136,16 +229,14 @@ export default function AdminPage() {
     e.stopPropagation();
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
-    try {
-      setIsProcessingPhoto(true);
-      setPhotoUploadError('');
-      const dataUrl = await processImageFile(file);
-      setNewGallerySrc(dataUrl);
-      showToast('Photo retrieved from PC successfully!', 'success');
-    } catch (err) {
-      setPhotoUploadError(err.message || 'Failed to process image');
-    } finally {
-      setIsProcessingPhoto(false);
+    setModalFile(file);
+    await processAndSetModalPhoto(file, compressOption);
+  };
+
+  const handleToggleCompressOption = async (newValue) => {
+    setCompressOption(newValue);
+    if (modalFile) {
+      await processAndSetModalPhoto(modalFile, newValue);
     }
   };
 
@@ -155,12 +246,26 @@ export default function AdminPage() {
     try {
       setIsProcessingPhoto(true);
       const urls = [];
+      const skipped = [];
       for (const file of files) {
-        const dataUrl = await processImageFile(file);
-        urls.push(dataUrl);
+        if (file.size > 5 * 1024 * 1024) {
+          skipped.push(file.name);
+          continue;
+        }
+        try {
+          const result = await processImageFile(file, { compress: true });
+          urls.push(result.dataUrl);
+        } catch {
+          skipped.push(file.name);
+        }
       }
-      addGalleryImage(urls);
-      showToast(`${urls.length} photo(s) uploaded from PC to gallery!`, 'success');
+      if (urls.length > 0) {
+        addGalleryImage(urls);
+        showToast(`${urls.length} WebP photo(s) added to gallery!`, 'success');
+      }
+      if (skipped.length > 0) {
+        showToast(`${skipped.length} file(s) exceeded 5MB limit and were skipped.`, 'error');
+      }
     } catch (err) {
       showToast('Upload error: ' + err.message, 'error');
     } finally {
@@ -174,11 +279,11 @@ export default function AdminPage() {
     if (!file || replaceCardIndex === null) return;
     try {
       setIsProcessingPhoto(true);
-      const dataUrl = await processImageFile(file);
-      updateGalleryImage(replaceCardIndex, dataUrl);
-      showToast('Photo updated from PC!', 'success');
+      const result = await processImageFile(file, { compress: true });
+      updateGalleryImage(replaceCardIndex, result.dataUrl);
+      showToast(`Photo updated to WebP (${formatBytes(result.compressedSize)})!`, 'success');
     } catch (err) {
-      showToast('Update error: ' + err.message, 'error');
+      showToast(err.message, 'error');
     } finally {
       setIsProcessingPhoto(false);
       setReplaceCardIndex(null);
@@ -298,9 +403,8 @@ export default function AdminPage() {
                   <span className="font-extrabold text-brand-forest text-sm sm:text-base tracking-tight">
                     J/Kopay Christian College
                   </span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-light text-brand-forest border border-brand-pale font-bold uppercase tracking-wider">
-                    Admin Panel
-                  </span>
+
+
                 </div>
                 <div className="text-[11px] text-slate-500 font-tamil flex items-center gap-1.5">
                   <span>யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி</span>
@@ -351,7 +455,7 @@ export default function AdminPage() {
 
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={() => handleLogout()}
                 className="p-2 rounded-full bg-brand-white border border-brand-pale text-slate-500 hover:text-rose-600 hover:bg-brand-light transition cursor-pointer shadow-2xs"
                 title="Lock Admin Panel"
               >
@@ -632,6 +736,8 @@ export default function AdminPage() {
                     onClick={() => {
                       setNewGallerySrc('');
                       setPhotoUploadError('');
+                      setPhotoStats(null);
+                      setModalFile(null);
                       setIsAddGalleryOpen(true);
                     }}
                     className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
@@ -741,7 +847,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-bold">Add Photo to Gallery</h3>
-                        <p className="text-[11px] text-brand-pale">Upload from PC or Enter Image URL</p>
+                        <p className="text-[11px] text-brand-pale">Max 5MB • WebP Quality Optimization</p>
                       </div>
                     </div>
                     <button
@@ -750,6 +856,8 @@ export default function AdminPage() {
                         setIsAddGalleryOpen(false);
                         setNewGallerySrc('');
                         setPhotoUploadError('');
+                        setPhotoStats(null);
+                        setModalFile(null);
                       }}
                       className="text-white/80 hover:text-white p-1 cursor-pointer"
                     >
@@ -758,11 +866,46 @@ export default function AdminPage() {
                   </div>
 
                   <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                    {/* Compression Options Toggle Card */}
+                    <div className="bg-brand-light/30 border border-brand-pale rounded-xl p-3.5 flex items-center justify-between gap-3">
+                      <div className="flex-1 pr-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-bold text-slate-800">Convert to WebP & Optimize</span>
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                            Recommended
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 leading-relaxed">
+                          Converts to modern WebP format while preserving ultra-high sharpness with zero pixelation and rapid loading.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        role="switch"
+                        aria-checked={compressOption}
+                        onClick={() => handleToggleCompressOption(!compressOption)}
+                        className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          compressOption ? 'bg-brand-forest' : 'bg-slate-300'
+                        }`}
+                      >
+                        <span
+                          className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-md ring-0 transition duration-200 ease-in-out ${
+                            compressOption ? 'translate-x-5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
+                    </div>
+
                     {/* PC File Upload Dropzone */}
                     <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                        1. Upload Picture from PC
-                      </label>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          1. Upload Picture from PC
+                        </label>
+                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                          Max size: 5 MB
+                        </span>
+                      </div>
                       <div
                         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                         onDrop={handleModalDrop}
@@ -790,29 +933,44 @@ export default function AdminPage() {
 
                         <div className="space-y-1">
                           <p className="text-xs font-bold text-slate-800">
-                            {isProcessingPhoto ? 'Optimizing & Retrieving Image URL...' : 'Click to choose image from PC or drag & drop here'}
+                            {isProcessingPhoto
+                              ? 'Optimizing to WebP & Preserving Quality...'
+                              : 'Click to choose image from PC or drag & drop here'}
                           </p>
                           <p className="text-[11px] text-slate-500">
-                            Supports JPG, PNG, WEBP, GIF. Automatically optimized for fast web rendering.
+                            Supports JPG, PNG, WEBP, GIF. Strict 5MB limit.
                           </p>
                         </div>
                       </div>
                     </div>
 
+                    {/* Error Banner */}
                     {photoUploadError && (
-                      <p className="text-xs text-rose-600 font-medium">{photoUploadError}</p>
+                      <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 font-medium flex items-center gap-2">
+                        <svg className="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <span>{photoUploadError}</span>
+                      </div>
                     )}
 
-                    {/* Live Preview If Image Loaded */}
+                    {/* Live Preview & Compression Analytics */}
                     {newGallerySrc && (
-                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3 space-y-2">
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3.5 space-y-3">
                         <div className="flex items-center justify-between">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
-                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Photo Successfully Loaded</span>
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                              </svg>
+                              <span>Image Ready</span>
+                            </span>
+                            {photoStats?.format && (
+                              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-white text-[10px] font-mono uppercase">
+                                {photoStats.format.replace('image/', '')}
+                              </span>
+                            )}
+                          </div>
                           <button
                             type="button"
                             onClick={() => modalFileInputRef.current?.click()}
@@ -822,30 +980,62 @@ export default function AdminPage() {
                           </button>
                         </div>
 
-                        <div className="h-44 w-full rounded-lg overflow-hidden bg-slate-100 border border-emerald-200 relative">
+                        <div className="h-44 w-full rounded-lg overflow-hidden bg-slate-900/5 border border-emerald-200 relative flex items-center justify-center">
                           <img
                             src={newGallerySrc}
                             alt="Uploaded preview"
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-contain"
                           />
                         </div>
+
+                        {/* Live Compression Metrics */}
+                        {photoStats && (
+                          <div className="bg-brand-white border border-emerald-200/80 rounded-xl p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                            <div className="p-1.5 bg-slate-50 rounded-lg">
+                              <span className="block text-[10px] text-slate-500 uppercase tracking-wider">Original</span>
+                              <span className="font-bold text-slate-700">{formatBytes(photoStats.originalSize)}</span>
+                            </div>
+                            <div className="p-1.5 bg-emerald-50 rounded-lg">
+                              <span className="block text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">
+                                {compressOption ? 'Optimized' : 'Size'}
+                              </span>
+                              <span className="font-bold text-emerald-700">{formatBytes(photoStats.compressedSize)}</span>
+                            </div>
+                            <div className="p-1.5 bg-emerald-50 rounded-lg">
+                              <span className="block text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Saved</span>
+                              <span className="font-bold text-emerald-700">
+                                {photoStats.savedPercent > 0 ? `-${photoStats.savedPercent}%` : 'Original'}
+                              </span>
+                            </div>
+                            <div className="p-1.5 bg-slate-50 rounded-lg">
+                              <span className="block text-[10px] text-slate-500 uppercase tracking-wider">Dimensions</span>
+                              <span className="font-bold text-slate-700">{photoStats.width}×{photoStats.height}</span>
+                            </div>
+                          </div>
+                        )}
+                        <p className="text-[10px] text-emerald-800 text-center font-medium">
+                          ✓ High-quality rendering guaranteed • Zero pixelation • Smooth web performance
+                        </p>
                       </div>
                     )}
 
                     {/* Fetched URL Input */}
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        2. Fetched Image URL / File Path
+                        2. Fetched Image URL / Data URL
                       </label>
                       <input
                         type="text"
                         value={newGallerySrc}
-                        onChange={(e) => setNewGallerySrc(e.target.value)}
-                        placeholder="Automatically populated upon PC upload or enter /assets/photo.jpg"
+                        onChange={(e) => {
+                          setNewGallerySrc(e.target.value);
+                          setPhotoStats(null);
+                        }}
+                        placeholder="Automatically populated upon PC upload or enter /assets/photo.webp"
                         className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                       />
                       <p className="text-[11px] text-slate-500 mt-1">
-                        When you select a picture from your PC, the URL is automatically retrieved and inserted above.
+                        When you select a picture from your PC, the optimized WebP Data URL is automatically retrieved and placed here.
                       </p>
                     </div>
                   </div>
@@ -857,6 +1047,8 @@ export default function AdminPage() {
                         setIsAddGalleryOpen(false);
                         setNewGallerySrc('');
                         setPhotoUploadError('');
+                        setPhotoStats(null);
+                        setModalFile(null);
                       }}
                       className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer"
                     >
@@ -870,6 +1062,8 @@ export default function AdminPage() {
                         addGalleryImage(newGallerySrc.trim());
                         setNewGallerySrc('');
                         setPhotoUploadError('');
+                        setPhotoStats(null);
+                        setModalFile(null);
                         setIsAddGalleryOpen(false);
                         showToast('Photo added to gallery!', 'success');
                       }}
