@@ -1,17 +1,19 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { Routes, Route, useNavigate, useLocation, useSearchParams, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
-import HomePage from './pages/HomePage.jsx';
-import HistoryPage from './pages/HistoryPage.jsx';
-import EventsPage from './pages/EventsPage.jsx';
-import GalleryPage from './pages/GalleryPage.jsx';
-import ContactPage from './pages/ContactPage.jsx';
-import AnthemPage from './pages/AnthemPage.jsx';
-import AdminPage from './pages/AdminPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
 import { SiteContentProvider } from './context/SiteContentContext.jsx';
+import { GlassRouteLoader } from './components/GlassSkeleton.jsx';
+
+const HomePage = lazy(() => import('./pages/HomePage.jsx'));
+const HistoryPage = lazy(() => import('./pages/HistoryPage.jsx'));
+const EventsPage = lazy(() => import('./pages/EventsPage.jsx'));
+const GalleryPage = lazy(() => import('./pages/GalleryPage.jsx'));
+const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
+const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
+const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
 
 /**
  * Root Application Component
@@ -187,7 +189,9 @@ export default function App() {
   if (isAdminRoute) {
     return (
       <SiteContentProvider>
-        <AdminPage />
+        <Suspense fallback={<GlassRouteLoader />}>
+          <AdminPage />
+        </Suspense>
       </SiteContentProvider>
     );
   }
@@ -204,18 +208,20 @@ export default function App() {
           onChangeHistoryLang={handleHistoryLangChange}
         />
 
-        <Routes>
-          <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
-          <Route path="/history" element={<HistoryPage lang={historyLang} />} />
-          <Route path="/events" element={<EventsPage />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/anthem" element={<AnthemPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-          <Route path="/performance" element={<Navigate to="/#performance" replace />} />
-          <Route path="/academics" element={<Navigate to="/" replace />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <Suspense fallback={<GlassRouteLoader />}>
+          <Routes>
+            <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+            <Route path="/history" element={<HistoryPage lang={historyLang} />} />
+            <Route path="/events" element={<EventsPage />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/anthem" element={<AnthemPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/performance" element={<Navigate to="/#performance" replace />} />
+            <Route path="/academics" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Suspense>
 
         <Footer
           onNavigate={handleNavigate}

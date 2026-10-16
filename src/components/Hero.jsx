@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
+import GlassImage from './GlassImage.jsx';
 
 export default function Hero({ onExploreHistory }) {
   const { content } = useSiteContent();
@@ -16,14 +17,14 @@ export default function Hero({ onExploreHistory }) {
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-brand-forest shadow-md border border-brand-soft/40 min-h-[500px] lg:min-h-[560px] flex items-center">
           <div className="absolute inset-0 z-0 overflow-hidden">
-            <img
+            <GlassImage
               src={image}
               alt={`${title} School`}
-              className="w-full h-full object-cover object-top scale-110 sm:scale-115 lg:scale-100 origin-top translate-x-[10%] sm:translate-x-[13%] lg:translate-x-[25%]"
+              variant="dark"
               loading="eager"
-              onError={(e) => {
-                e.target.src = "/assets/hero.jpg";
-              }}
+              containerClassName="w-full h-full"
+              className="w-full h-full object-cover object-top scale-110 sm:scale-115 lg:scale-100 origin-top translate-x-[10%] sm:translate-x-[13%] lg:translate-x-[25%]"
+              fallbackSrc="/assets/hero.jpg"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-brand-forest via-brand-forest/90 via-35% to-transparent to-60%" />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-forest/95 via-brand-forest/30 to-transparent sm:hidden" />

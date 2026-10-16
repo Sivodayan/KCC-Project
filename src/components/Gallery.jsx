@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
+import GlassImage from './GlassImage.jsx';
 
 const defaultJournalGallery = [
   { src: "/assets/gal_(1).jpeg" },
@@ -197,7 +198,7 @@ export default function Gallery() {
             onClick={handleStageClick}
             onMouseMove={handleStageMouseMove}
             onMouseLeave={handleStageMouseLeave}
-            className="journal-stage relative w-full max-w-6xl h-[340px] sm:h-[380px] lg:h-[400px] flex items-center justify-center cursor-pointer"
+            className="journal-stage relative w-full max-w-6xl h-[340px] sm:h-[430px] lg:h-[500px] flex items-center justify-center cursor-pointer"
           >
             {journalGallery.map((item, index) => {
               let offset = index - currentIndex;
@@ -285,7 +286,7 @@ export default function Gallery() {
                 } else {
                   const dir = offset > 0 ? 1 : -1;
                   style = {
-                    transform: `translateX(${dir * 18}%) scale(0.4) rotateY(${dir * -60}deg) translateZ(-350px)`,
+                    transform: `translateX(${dir * 180}%) scale(0.4) rotateY(${dir * -60}deg) translateZ(-350px)`,
                     zIndex: 1,
                     opacity: 0,
                     pointerEvents: 'none',
@@ -306,12 +307,14 @@ export default function Gallery() {
                     focusIndex(index);
                   }}
                   style={style}
-                  className={`journal-card absolute w-[260px] sm:w-[320px] lg:w-[350px] h-[310px] sm:h-[350px] lg:h-[370px] rounded-2xl sm:rounded-3xl shadow-lg border border-brand-soft/30 overflow-hidden bg-brand-white transition-all duration-500 ease-out flex flex-col ${extraClasses}`}
+                  className={`journal-card rounded-2xl sm:rounded-3xl shadow-xl border border-brand-soft/30 overflow-hidden bg-brand-white transition-all duration-500 ease-out flex flex-col ${extraClasses}`}
                 >
                   <div className="w-full h-full relative overflow-hidden bg-slate-900">
-                    <img
+                    <GlassImage
                       src={item.src}
                       alt={item.caption || `School moment ${index + 1}`}
+                      variant="emerald"
+                      containerClassName="w-full h-full"
                       className="w-full h-full object-cover object-center pointer-events-none"
                       loading="lazy"
                     />

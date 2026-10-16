@@ -1,11 +1,21 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 import { FACEBOOK_POSTS } from '../data/facebookEvents.js';
+import { GlassEventSkeleton } from './GlassSkeleton.jsx';
 
 function EventCard({ post }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
+  const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const cardRef = useRef(null);
+
+  // Safety fallback: if iframe load event is delayed or tracking blocker suppresses onLoad
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsIframeLoaded(true);
+    }, 4500);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return;
@@ -43,6 +53,9 @@ function EventCard({ post }) {
         title="Open post on Facebook"
       />
 
+      {/* Glassy loading skeleton placeholder until iframe completes loading */}
+      {!isIframeLoaded && <GlassEventSkeleton />}
+
       <div
         className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
         style={{
@@ -57,8 +70,9 @@ function EventCard({ post }) {
       />
 
       <div
-        className={`w-full h-full overflow-y-auto overflow-x-hidden flex justify-center relative z-0 transition-transform duration-300 pointer-events-none ${post.height <= 300 ? 'items-center' : 'items-start'
-          }`}
+        className={`w-full h-full overflow-y-auto overflow-x-hidden flex justify-center relative z-0 transition-opacity duration-500 pointer-events-none ${
+          isIframeLoaded ? 'opacity-100' : 'opacity-0'
+        } ${post.height <= 300 ? 'items-center' : 'items-start'}`}
       >
         <div
           className="shrink-0 flex justify-center origin-top transition-transform duration-300 pointer-events-none"
@@ -71,6 +85,7 @@ function EventCard({ post }) {
         >
           <iframe
             src={post.iframeSrc}
+            onLoad={() => setIsIframeLoaded(true)}
             width={post.width || 500}
             height={post.height}
             style={{ border: 'none', overflow: 'hidden' }}

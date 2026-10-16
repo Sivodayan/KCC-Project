@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import AboutDropdown from './AboutDropdown.jsx';
+import GlassImage from './GlassImage.jsx';
 
 export default function Navbar({
   currentPage,
@@ -26,11 +27,14 @@ export default function Navbar({
             aria-label="J/Kopay Christian College Home"
             className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
-            <img
+            <GlassImage
               src="/assets/logo.png"
               alt="Logo"
               style={{ width: '44px', height: '44px', minWidth: '44px', minHeight: '44px' }}
-              className="transition-transform duration-300 group-hover:scale-105 shrink-0"
+              containerClassName="w-11 h-11 shrink-0 rounded-full"
+              className="transition-transform duration-300 group-hover:scale-105 shrink-0 object-contain"
+              showIcon={false}
+              loading="eager"
             />
             <div className="hidden sm:block">
               <span className="block text-xs font-bold text-brand-forest uppercase tracking-wider">

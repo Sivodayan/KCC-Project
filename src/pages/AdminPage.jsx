@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
 import { commitFileToGitHub, verifyGitHubToken } from '../utils/githubSync.js';
+import GlassImage from '../components/GlassImage.jsx';
 
 const DEFAULT_PIN = 'kcc1852';
 const PIN_STORAGE_KEY = 'kcc_admin_pin';
@@ -961,13 +962,12 @@ export default function AdminPage() {
                 {(content.gallery || []).map((img, idx) => (
                   <div key={idx} className="bg-brand-light/20 border border-brand-pale rounded-2xl overflow-hidden group shadow-2xs flex flex-col">
                     <div className="h-32 w-full overflow-hidden bg-slate-100 relative">
-                      <img
+                      <GlassImage
                         src={img.src}
                         alt={`Photo ${idx + 1}`}
+                        containerClassName="w-full h-full"
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                        onError={(e) => {
-                          e.target.src = '/assets/hero.jpg';
-                        }}
+                        fallbackSrc="/assets/hero.jpg"
                       />
                       <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-brand-forest/90 text-white text-[10px] font-bold">
                         #{idx + 1}
@@ -1188,9 +1188,10 @@ export default function AdminPage() {
                         </div>
 
                         <div className="h-44 w-full rounded-lg overflow-hidden bg-slate-900/5 border border-emerald-200 relative flex items-center justify-center">
-                          <img
+                          <GlassImage
                             src={newGallerySrc}
                             alt="Uploaded preview"
+                            containerClassName="w-full h-full flex items-center justify-center"
                             className="w-full h-full object-contain"
                           />
                         </div>
@@ -1888,7 +1889,13 @@ export default function AdminPage() {
                 {verifiedUser && (
                   <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-3">
                     {verifiedUser.avatarUrl && (
-                      <img src={verifiedUser.avatarUrl} alt={verifiedUser.login} className="w-8 h-8 rounded-full border border-emerald-300" />
+                      <GlassImage
+                        src={verifiedUser.avatarUrl}
+                        alt={verifiedUser.login}
+                        containerClassName="w-8 h-8 rounded-full shrink-0"
+                        className="w-8 h-8 rounded-full border border-emerald-300 object-cover"
+                        showIcon={false}
+                      />
                     )}
                     <div>
                       <span className="font-bold block">Verified GitHub Identity: @{verifiedUser.login}</span>

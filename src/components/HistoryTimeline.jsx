@@ -1,3 +1,6 @@
+import React from 'react';
+import GlassImage from './GlassImage.jsx';
+
 /**
  * HistoryTimeline Component
  *
@@ -58,9 +61,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </blockquote>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his1.jpg"
                     alt="வரலாற்றுப் பின்னணி"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -84,9 +88,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his2.jpg"
                     alt="CMS கட்டமைப்பு"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -131,9 +136,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </p>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his3.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -157,9 +163,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his4.jpg"
                     alt="கைத்தொழில் மற்றும் சந்தை"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -205,9 +212,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </p>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his5.jpg"
                     alt="சீருடை மற்றும் போட்டிகள்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -231,9 +239,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his6.jpg"
                     alt="பாக்கியம் வில்லியம்ஸ் கட்டிடம் மற்றும் விளையாட்டு"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -275,9 +284,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </p>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his7.jpg"
                     alt="சண்முகநாதன் மண்டபம் மற்றும் சங்கங்கள்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -301,9 +311,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his8.jpg"
                     alt="125ஆவது நினைவு மண்டபம் மற்றும் ஆய்வுகூடங்கள்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -350,9 +361,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </p>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his9.jpg"
                     alt="பாடசாலை மறுசீரமைப்பு"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -376,9 +388,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his10.jpg"
                     alt="புனரமைப்பு மற்றும் கட்டிடங்கள்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -436,9 +449,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   </p>
                 </div>
                 <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his11.jpg"
                     alt="பல்கலைக்கழக சாதனையாளர்கள் மற்றும் மண்டபங்கள்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -462,9 +476,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
               </h2>
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                 <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                  <img
+                  <GlassImage
                     src="/assets/his12.jpg"
                     alt="150ஆவது ஆண்டு விழாச்சபை மற்றும் பழைய மாணவர் சங்கம்"
+                    containerClassName="w-full min-h-[220px] flex items-center justify-center"
                     className="w-full max-h-[460px] object-contain mx-auto"
                     loading="lazy"
                   />
@@ -531,9 +546,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </blockquote>
               </div>
               <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his1.jpg"
                   alt="Historical archival photograph 1"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -557,9 +573,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his2.jpg"
                   alt="Historical archival photograph 2"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -602,9 +619,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </p>
               </div>
               <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his3.jpg"
                   alt="Historical archival photograph 3"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -626,9 +644,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
             <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">The Annual "Sale" &amp; Early Athletics</h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his4.jpg"
                   alt="Historical archival photograph 4"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -670,9 +689,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </p>
               </div>
               <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his5.jpg"
                   alt="Historical archival photograph 5"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -696,9 +716,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his6.jpg"
                   alt="Historical archival photograph 6"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -744,9 +765,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </p>
               </div>
               <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his7.jpg"
                   alt="Historical archival photograph 7"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -770,9 +792,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his8.jpg"
                   alt="Historical archival photograph 8"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -826,9 +849,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
                 </p>
               </div>
               <div className="lg:col-span-5 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his9.jpg"
                   alt="Historical archival photograph 9"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
@@ -852,9 +876,10 @@ export default function HistoryTimeline({ lang = 'en' }) {
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
-                <img
+                <GlassImage
                   src="/assets/his10.jpg"
                   alt="Historical archival photograph 10"
+                  containerClassName="w-full min-h-[220px] flex items-center justify-center"
                   className="w-full max-h-[460px] object-contain mx-auto"
                   loading="lazy"
                 />
