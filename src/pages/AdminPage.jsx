@@ -2,11 +2,13 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
+import { commitFileToGitHub, verifyGitHubToken } from '../utils/githubSync.js';
 
 const DEFAULT_PIN = 'kcc1852';
 const PIN_STORAGE_KEY = 'kcc_admin_pin';
 const SESSION_AUTH_KEY = 'kcc_admin_session_auth';
 const LAST_ACTIVE_KEY = 'kcc_admin_last_active';
+const GITHUB_TOKEN_STORAGE_KEY = 'kcc_admin_github_token';
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
 const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
@@ -142,6 +144,94 @@ export default function AdminPage() {
     return localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
   });
   const [newPinInput, setNewPinInput] = useState('');
+
+  // GitHub Direct Commit State
+  const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
+  const [githubToken, setGithubToken] = useState(() => {
+    return localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
+  });
+  const [showGithubToken, setShowGithubToken] = useState(false);
+  const [commitMessage, setCommitMessage] = useState('');
+  const [isCommitting, setIsCommitting] = useState(false);
+  const [commitResult, setCommitResult] = useState(null);
+  const [commitError, setCommitError] = useState('');
+  const [saveTokenChoice, setSaveTokenChoice] = useState(true);
+
+  // GitHub User Profile Verification (for Settings tab)
+  const [verifiedUser, setVerifiedUser] = useState(null);
+  const [isVerifyingToken, setIsVerifyingToken] = useState(false);
+  const [tokenVerifyError, setTokenVerifyError] = useState('');
+
+  const handleOpenCommitModal = () => {
+    commitContinuous();
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    setCommitMessage(`Update website content via KCC Admin Panel [${dateStr}]`);
+    setCommitResult(null);
+    setCommitError('');
+    setIsCommitModalOpen(true);
+  };
+
+  const handleCommitToGitHub = async (e) => {
+    if (e) e.preventDefault();
+    if (!githubToken.trim()) {
+      setCommitError('GitHub Personal Access Token (PAT) is required.');
+      return;
+    }
+
+    setIsCommitting(true);
+    setCommitError('');
+    setCommitResult(null);
+
+    try {
+      if (saveTokenChoice) {
+        localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
+      } else {
+        localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+      }
+
+      const contentString = JSON.stringify(content, null, 2);
+      const result = await commitFileToGitHub({
+        owner: 'Sivodayan',
+        repo: 'KCC-Project',
+        path: 'src/data/siteContent.json',
+        branch: 'main',
+        token: githubToken.trim(),
+        contentString,
+        commitMessage: commitMessage.trim() || undefined
+      });
+
+      setCommitResult(result);
+      showToast(`Committed to GitHub! (${result.commitSha})`, 'success');
+    } catch (err) {
+      console.error('GitHub Commit Error:', err);
+      setCommitError(err.message || 'Failed to commit changes to GitHub.');
+      showToast(err.message || 'Commit failed', 'error');
+    } finally {
+      setIsCommitting(false);
+    }
+  };
+
+  const handleVerifyToken = async () => {
+    if (!githubToken.trim()) {
+      setTokenVerifyError('Please enter a Personal Access Token first.');
+      return;
+    }
+    setIsVerifyingToken(true);
+    setTokenVerifyError('');
+    try {
+      const user = await verifyGitHubToken(githubToken.trim());
+      setVerifiedUser(user);
+      localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
+      showToast(`Verified GitHub identity: @${user.login}`, 'success');
+    } catch (err) {
+      setVerifiedUser(null);
+      setTokenVerifyError(err.message || 'Verification failed');
+      showToast(err.message || 'Verification failed', 'error');
+    } finally {
+      setIsVerifyingToken(false);
+    }
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -554,13 +644,17 @@ export default function AdminPage() {
 
               <button
                 type="button"
-                onClick={() => window.open('/', '_blank')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer shadow-2xs"
+                onClick={handleOpenCommitModal}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs"
+                title="Commit changes directly to GitHub repository (Triggers automated site rebuild)"
               >
-                <span>Save & Preview</span>
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
+                <span>Commit to GitHub</span>
+                {hasLocalOverrides && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" title="Changes ready to commit" />
+                )}
               </button>
 
               <button
@@ -1732,6 +1826,118 @@ export default function AdminPage() {
 
             <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <h2 className="text-lg font-bold text-brand-forest">GitHub Publishing Token &amp; Repository Sync</h2>
+                {githubToken ? (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto">
+                    Token Saved
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 self-start sm:self-auto">
+                    No Token Saved
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-slate-600 mb-4">
+                Save your GitHub Personal Access Token (PAT) with <span className="font-mono font-bold text-slate-800">repo</span> permission to commit website updates directly from this console. Commits trigger automated GitHub Actions deployment.
+              </p>
+
+              <div className="space-y-4 max-w-xl">
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-slate-700">
+                      Personal Access Token (PAT)
+                    </label>
+                    <a
+                      href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1"
+                    >
+                      <span>Create Token on GitHub (needs 'repo' scope)</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+                  <div className="flex gap-2">
+                    <input
+                      type={showGithubToken ? 'text' : 'password'}
+                      value={githubToken}
+                      onChange={(e) => setGithubToken(e.target.value)}
+                      placeholder="ghp_... or github_pat_..."
+                      className="flex-1 px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowGithubToken(prev => !prev)}
+                      className="px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
+                    >
+                      {showGithubToken ? 'Hide' : 'Show'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isVerifyingToken || !githubToken.trim()}
+                      onClick={handleVerifyToken}
+                      className="px-3.5 py-2 rounded-xl bg-brand-light border border-brand-pale hover:bg-brand-pale/70 text-brand-forest text-xs font-bold transition cursor-pointer"
+                    >
+                      {isVerifyingToken ? 'Verifying...' : 'Verify'}
+                    </button>
+                  </div>
+                </div>
+
+                {verifiedUser && (
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-3">
+                    {verifiedUser.avatarUrl && (
+                      <img src={verifiedUser.avatarUrl} alt={verifiedUser.login} className="w-8 h-8 rounded-full border border-emerald-300" />
+                    )}
+                    <div>
+                      <span className="font-bold block">Verified GitHub Identity: @{verifiedUser.login}</span>
+                      <span className="text-[11px] text-emerald-700">{verifiedUser.name || verifiedUser.login} • Authenticated with repository write access</span>
+                    </div>
+                  </div>
+                )}
+
+                {tokenVerifyError && (
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
+                    {tokenVerifyError}
+                  </div>
+                )}
+
+                <div className="flex items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (githubToken.trim()) {
+                        localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
+                        showToast('GitHub token saved successfully!', 'success');
+                      } else {
+                        showToast('Token field is empty', 'error');
+                      }
+                    }}
+                    className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs"
+                  >
+                    Save Token
+                  </button>
+                  {githubToken && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+                        setGithubToken('');
+                        setVerifiedUser(null);
+                        showToast('GitHub token removed from storage', 'info');
+                      }}
+                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold transition cursor-pointer"
+                    >
+                      Clear Token
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                 <h2 className="text-lg font-bold text-brand-forest">Workflow &amp; Keyboard Shortcuts</h2>
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-light text-brand-forest border border-brand-pale">
@@ -1786,6 +1992,252 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {/* COMMIT DIRECTLY TO GITHUB MODAL */}
+        {isCommitModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl my-8 animate-modal-content">
+            {/* Modal Header */}
+            <div className="bg-slate-900 px-5 py-4 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm text-white">Commit to GitHub</h3>
+                  <p className="text-[11px] text-slate-400 font-mono">Sivodayan/KCC-Project • branch: main</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isCommitting) {
+                    setIsCommitModalOpen(false);
+                    setCommitResult(null);
+                    setCommitError('');
+                  }
+                }}
+                disabled={isCommitting}
+                className="text-slate-400 hover:text-white p-1 rounded-lg transition cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 sm:p-6 space-y-4">
+              {commitResult ? (
+                <div className="text-center py-3 space-y-4">
+                  <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="text-base font-bold text-slate-900">Committed Successfully!</h4>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Changes pushed directly to <span className="font-mono font-bold text-brand-forest">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span>.
+                    </p>
+                  </div>
+
+                  <div className="bg-brand-light/40 border border-brand-pale rounded-xl p-3 text-xs space-y-1.5 text-left">
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 font-semibold">Commit SHA:</span>
+                      <span className="font-mono font-bold text-slate-800">{commitResult.commitSha}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-500 font-semibold">Automated Action:</span>
+                      <span className="font-semibold text-emerald-700 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                        GitHub Actions deploying to Pages
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                    <a
+                      href={commitResult.commitUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full sm:w-auto px-4 py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-2xs"
+                    >
+                      <span>View Commit on GitHub</span>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCommitModalOpen(false);
+                        setCommitResult(null);
+                      }}
+                      className="w-full sm:w-auto px-5 py-2 rounded-full bg-brand-light border border-brand-pale hover:bg-brand-pale/60 text-brand-forest text-xs font-bold transition cursor-pointer"
+                    >
+                      Done
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleCommitToGitHub} className="space-y-4">
+                  <div className="bg-brand-light/30 border border-brand-pale rounded-xl p-3 text-xs text-slate-600 flex items-start gap-2.5">
+                    <svg className="w-4 h-4 text-brand-forest shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <div>
+                      <p className="font-semibold text-slate-800">Direct Git Push &amp; Automated Deployment</p>
+                      <p className="text-[11px] text-slate-500 mt-0.5">
+                        This atomic commit updates <span className="font-mono text-brand-forest font-bold">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span>, which immediately triggers the GitHub Pages build workflow.
+                      </p>
+                    </div>
+                  </div>
+
+                  {commitError && (
+                    <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-start gap-2">
+                      <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div>
+                        <span className="font-bold block">Commit Failed</span>
+                        <span>{commitError}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-semibold text-slate-700">
+                        GitHub Personal Access Token (PAT)
+                      </label>
+                      <a
+                        href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1"
+                      >
+                        <span>Create Token on GitHub</span>
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showGithubToken ? 'text' : 'password'}
+                        value={githubToken}
+                        onChange={(e) => setGithubToken(e.target.value)}
+                        placeholder="ghp_... or github_pat_..."
+                        required
+                        className="w-full px-3.5 py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowGithubToken(prev => !prev)}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                        title={showGithubToken ? 'Hide token' : 'Show token'}
+                      >
+                        {showGithubToken ? (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                          </svg>
+                        ) : (
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          </svg>
+                        )}
+                      </button>
+                    </div>
+                    <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
+                      <input
+                        type="checkbox"
+                        checked={saveTokenChoice}
+                        onChange={(e) => setSaveTokenChoice(e.target.checked)}
+                        className="rounded border-brand-pale text-brand-forest focus:ring-brand-forest/20"
+                      />
+                      <span className="text-[11px] text-slate-500">Save token in browser localStorage for future commits</span>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                      Commit Message
+                    </label>
+                    <input
+                      type="text"
+                      value={commitMessage}
+                      onChange={(e) => setCommitMessage(e.target.value)}
+                      placeholder="Update website content via KCC Admin Panel"
+                      className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    />
+                  </div>
+
+                  <div className="p-3 bg-brand-light/20 border border-brand-pale/70 rounded-xl">
+                    <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">Summary of Payload</span>
+                    <div className="flex flex-wrap gap-1.5 text-[11px]">
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        {content.gallery?.length || 0} Gallery Photos
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        {content.events?.length || 0} School Events
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        8 Key Metrics
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        Hero &amp; Principles
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        Contact Details
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-brand-pale">
+                    <button
+                      type="button"
+                      disabled={isCommitting}
+                      onClick={() => setIsCommitModalOpen(false)}
+                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={isCommitting || !githubToken.trim()}
+                      className={`inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
+                        isCommitting || !githubToken.trim() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                      }`}
+                    >
+                      {isCommitting ? (
+                        <>
+                          <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                          </svg>
+                          <span>Committing to GitHub...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                            <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                          </svg>
+                          <span>Commit &amp; Publish</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       </main>
 
       <footer className="py-6 border-t border-brand-pale bg-brand-white text-center text-xs text-slate-500 mt-auto">
