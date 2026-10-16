@@ -1,7 +1,28 @@
 import React, { useState } from 'react';
+import { useSiteContent } from '../context/SiteContentContext.jsx';
 
 export default function Principles() {
-  const [flippedCards, setFlippedCards] = useState({ motto: false, vision: false, mission: false });
+  const { content } = useSiteContent();
+  const principles = content?.principles || {};
+
+  const motto = principles.motto || {
+    english: "\"Truth and Justice\"",
+    tamil: "“உண்மைக்கும் நேர்மைக்கும்”"
+  };
+
+  const vision = principles.vision || {
+    english: "\"THE IDEAL SCHOOL IN PENINSULA\"",
+    tamil: "“குடாநாட்டின் முன்மாதிரிப் பாடசாலை”"
+  };
+
+  const mission = principles.mission || {
+    english: "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
+    tamil: "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள் மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
+  };
+
+  const customCards = principles.customCards || [];
+
+  const [flippedCards, setFlippedCards] = useState({});
 
   const toggleFlip = (cardKey) => {
     setFlippedCards(prev => ({ ...prev, [cardKey]: !prev[cardKey] }));
@@ -39,7 +60,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center">
                     <h3 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold tracking-tight text-white leading-tight">
-                      "Truth and Justice"
+                      {motto.english}
                     </h3>
                   </div>
                 </div>
@@ -53,8 +74,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center">
                     <h3 className="text-3xl sm:text-4xl lg:text-[36px] font-extrabold text-brand-forest font-tamil leading-[1.6]">
-                      <span className="block">“உண்மைக்கும்</span>
-                      <span className="block mt-2">நேர்மைக்கும்”</span>
+                      <span className="block">{motto.tamil}</span>
                     </h3>
                   </div>
                 </div>
@@ -83,7 +103,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center">
                     <h3 className="text-2xl sm:text-3xl lg:text-[32px] font-extrabold text-brand-forest tracking-tight leading-snug">
-                      "THE IDEAL SCHOOL IN PENINSULA"
+                      {vision.english}
                     </h3>
                   </div>
                 </div>
@@ -97,8 +117,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center">
                     <h3 className="text-2xl sm:text-3xl lg:text-[30px] font-bold font-tamil text-white leading-[1.65]">
-                      <span className="block">“குடாநாட்டின்</span>
-                      <span className="block mt-1 sm:mt-1.5">முன்மாதிரிப் பாடசாலை”</span>
+                      <span className="block">{vision.tamil}</span>
                     </h3>
                   </div>
                 </div>
@@ -127,9 +146,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center pt-1">
                     <p className="text-sm sm:text-[14.5px] lg:text-[15px] text-slate-700 leading-relaxed font-normal">
-                      To foster self respect, values, character, patriotism and Social Justice to lead the school
-                      community towards the global frontiers in education and to work for the optimum use of all the
-                      available resources skills and abilities.
+                      {mission.english}
                     </p>
                   </div>
                 </div>
@@ -143,9 +160,7 @@ export default function Principles() {
                   </div>
                   <div className="flex-1 flex items-center pt-1">
                     <p className="text-xs sm:text-[13.5px] lg:text-[14px] text-brand-light font-tamil leading-[1.85] font-normal">
-                      சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப்
-                      பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள் மற்றும் திறமைகளைப்
-                      பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்.
+                      {mission.tamil}
                     </p>
                   </div>
                 </div>
@@ -153,6 +168,52 @@ export default function Principles() {
             </div>
           </div>
         </div>
+
+        {/* Dynamic Custom Principle Cards Added by Admin */}
+        {customCards.length > 0 && (
+          <div className="mt-8 pt-6 border-t border-brand-pale/60">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {customCards.map((card, idx) => {
+                const cardKey = card.id || `custom_${idx}`;
+                return (
+                  <div key={cardKey} className="reveal-item h-[240px]">
+                    <div
+                      role="button"
+                      tabIndex={0}
+                      onClick={() => toggleFlip(cardKey)}
+                      onKeyDown={(e) => handleKeyDown(e, cardKey)}
+                      className={`flip-card w-full h-full cursor-pointer select-none rounded-3xl shadow-sm hover:shadow-lg transition-shadow duration-300 ${flippedCards[cardKey] ? 'is-flipped' : ''
+                        }`}
+                    >
+                      <div className="flip-card-inner">
+                        <div className="flip-card-front bg-brand-white text-slate-800 p-6 border border-brand-pale rounded-3xl flex flex-col">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-[10px] font-extrabold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-brand-light text-brand-forest border border-brand-pale">
+                              {card.badge || 'Pillar'}
+                            </span>
+                            <span className="text-[10px] text-slate-400">Tap to flip</span>
+                          </div>
+                          <h4 className="text-xl font-bold text-brand-forest mt-1">{card.titleEn}</h4>
+                          <p className="text-xs text-slate-600 mt-2 leading-relaxed flex-1">{card.descEn}</p>
+                        </div>
+
+                        <div className="flip-card-back bg-brand-forest text-brand-white p-6 rounded-3xl border border-brand-soft/40 flex flex-col">
+                          <span className="text-[10px] font-extrabold tracking-widest uppercase text-brand-pale">
+                            {card.badge || 'மதிப்பீடு'}
+                          </span>
+                          <h4 className="text-lg font-bold text-white font-tamil mt-2">{card.titleTa || card.titleEn}</h4>
+                          <p className="text-xs text-brand-light/90 font-tamil mt-2 leading-relaxed flex-1">
+                            {card.descTa || card.descEn}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </section>
   );

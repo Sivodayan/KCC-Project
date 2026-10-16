@@ -1,53 +1,24 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSiteContent } from '../context/SiteContentContext.jsx';
 
-const journalGallery = [
-  {
-    src: "/assets/gal_(1).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(2).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(3).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(4).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(5).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(6).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(7).jpeg",
-
-
-  },
-  {
-    src: "/assets/gal_(8).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(9).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(10).jpeg",
-
-  },
-  {
-    src: "/assets/gal_(11).jpeg",
-  }
+const defaultJournalGallery = [
+  { src: "/assets/gal_(1).jpeg" },
+  { src: "/assets/gal_(2).jpeg" },
+  { src: "/assets/gal_(3).jpeg" },
+  { src: "/assets/gal_(4).jpeg" },
+  { src: "/assets/gal_(5).jpeg" },
+  { src: "/assets/gal_(6).jpeg" },
+  { src: "/assets/gal_(7).jpeg" },
+  { src: "/assets/gal_(8).jpeg" },
+  { src: "/assets/gal_(9).jpeg" },
+  { src: "/assets/gal_(10).jpeg" },
+  { src: "/assets/gal_(11).jpeg" }
 ];
 
 export default function Gallery() {
+  const { content } = useSiteContent();
+  const journalGallery = (content?.gallery && content.gallery.length > 0) ? content.gallery : defaultJournalGallery;
+
   const [currentIndex, setCurrentIndex] = useState(0);
   const [hasEntered, setHasEntered] = useState(() => {
     if (typeof window !== 'undefined') {

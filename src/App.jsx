@@ -8,8 +8,11 @@ import EventsPage from './pages/EventsPage.jsx';
 import GalleryPage from './pages/GalleryPage.jsx';
 import ContactPage from './pages/ContactPage.jsx';
 import AnthemPage from './pages/AnthemPage.jsx';
+import AdminPage from './pages/AdminPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
+import AnnouncementBanner from './components/AnnouncementBanner.jsx';
+import { SiteContentProvider } from './context/SiteContentContext.jsx';
 
 export default function App() {
   const navigate = useNavigate();
@@ -25,6 +28,7 @@ export default function App() {
   // Derive current page from URL pathname for clean React Router state
   const getActivePageName = () => {
     const path = location.pathname.toLowerCase();
+    if (path.startsWith('/admin')) return 'admin';
     if (path.startsWith('/history')) return 'history';
     if (path.startsWith('/events')) return 'events';
     if (path.startsWith('/gallery')) return 'gallery';
@@ -34,6 +38,7 @@ export default function App() {
   };
 
   const currentPage = getActivePageName();
+  const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
 
   // Backward compatibility: redirect any legacy anchor hash URLs to clean BrowserRouter paths
   useEffect(() => {
@@ -47,7 +52,9 @@ export default function App() {
 
     // 2. Redirect legacy hash fragments to clean URL paths
     const hash = window.location.hash.toLowerCase();
-    if (hash.startsWith('#history')) {
+    if (hash.startsWith('#admin')) {
+      navigate('/admin', { replace: true });
+    } else if (hash.startsWith('#history')) {
       navigate('/history', { replace: true });
     } else if (hash.startsWith('#events')) {
       navigate('/events', { replace: true });
@@ -83,7 +90,7 @@ export default function App() {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  // Dynamic SEO metadata updates per route for Google Search discovery
+  // Dynamic SEO metadata updates per route
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -96,7 +103,11 @@ export default function App() {
     let descContent = "Official portal of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, history, traditions, and collegiate education.";
     let canonicalUrl = "https://kcc-project.vercel.app/";
 
-    if (path.startsWith('/history')) {
+    if (path.startsWith('/admin')) {
+      pageTitle = "Admin Portal | J/Kopay Christian College";
+      descContent = "Administration portal for J/Kopay Christian College.";
+      canonicalUrl = "https://kcc-project.vercel.app/admin";
+    } else if (path.startsWith('/history')) {
       pageTitle = historyLang === 'ta'
         ? "கல்லூரி வரலாறு | J/Kopay Christian College (1849 - இன்று வரை)"
         : "History & Heritage | J/Kopay Christian College (Est. 1852)";
@@ -187,52 +198,68 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
 
+  // If visiting /admin directly, render dedicated Admin Portal (no public header/footer)
+  if (isAdminRoute) {
+    return (
+      <SiteContentProvider>
+        <AdminPage />
+      </SiteContentProvider>
+    );
+  }
+
+  // Public Facing Website View (completely clean, zero clickthrough links to admin)
   return (
-    <div className="min-h-screen flex flex-col bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest antialiased">
-      {/* Top Header Navigation */}
-      <Navbar
-        currentPage={currentPage}
-        onNavigate={handleNavigate}
-        onOpenSearch={() => setIsSearchOpen(true)}
-        onOpenAnthem={() => setIsAnthemOpen(true)}
-        historyLang={historyLang}
-        onChangeHistoryLang={handleHistoryLangChange}
-      />
+    <SiteContentProvider>
+      <div className="min-h-screen flex flex-col bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest antialiased">
+        {/* Top Broadcast Announcement Banner (If enabled via Admin Panel) */}
+        <AnnouncementBanner />
 
-      {/* Clean BrowserRouter Routes (NO '#' in URLs) */}
-      <Routes>
-        <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
-        <Route path="/history" element={<HistoryPage lang={historyLang} />} />
-        <Route path="/events" element={<EventsPage />} />
-        <Route path="/gallery" element={<GalleryPage />} />
-        <Route path="/contact" element={<ContactPage />} />
-        <Route path="/anthem" element={<AnthemPage />} />
-        {/* Redirect performance to index anchor */}
-        <Route path="/performance" element={<Navigate to="/#performance" replace />} />
-        <Route path="/academics" element={<Navigate to="/" replace />} />
-        {/* Fallback to Home */}
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
+        {/* Top Header Navigation (No admin link) */}
+        <Navbar
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAnthem={() => setIsAnthemOpen(true)}
+          historyLang={historyLang}
+          onChangeHistoryLang={handleHistoryLangChange}
+        />
 
-      {/* Global Footer */}
-      <Footer
-        onNavigate={handleNavigate}
-        onOpenAnthem={() => setIsAnthemOpen(true)}
-      />
+        {/* Clean BrowserRouter Routes */}
+        <Routes>
+          <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+          <Route path="/history" element={<HistoryPage lang={historyLang} />} />
+          <Route path="/events" element={<EventsPage />} />
+          <Route path="/gallery" element={<GalleryPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/anthem" element={<AnthemPage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          {/* Redirect performance to index anchor */}
+          <Route path="/performance" element={<Navigate to="/#performance" replace />} />
+          <Route path="/academics" element={<Navigate to="/" replace />} />
+          {/* Fallback to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
 
-      {/* Interactive Search Modal / Command Palette */}
-      <SearchModal
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
-        onNavigate={handleNavigate}
-        onOpenAnthem={() => setIsAnthemOpen(true)}
-      />
+        {/* Global Footer (No admin link) */}
+        <Footer
+          onNavigate={handleNavigate}
+          onOpenAnthem={() => setIsAnthemOpen(true)}
+        />
 
-      {/* Tamil School Anthem Modal (பாடசாலைக் கீதம்) */}
-      <AnthemModal
-        isOpen={isAnthemOpen}
-        onClose={() => setIsAnthemOpen(false)}
-      />
-    </div>
+        {/* Interactive Search Modal / Command Palette (No admin link) */}
+        <SearchModal
+          isOpen={isSearchOpen}
+          onClose={() => setIsSearchOpen(false)}
+          onNavigate={handleNavigate}
+          onOpenAnthem={() => setIsAnthemOpen(true)}
+        />
+
+        {/* Tamil School Anthem Modal (பாடசாலைக் கீதம்) */}
+        <AnthemModal
+          isOpen={isAnthemOpen}
+          onClose={() => setIsAnthemOpen(false)}
+        />
+      </div>
+    </SiteContentProvider>
   );
 }

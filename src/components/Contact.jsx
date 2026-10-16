@@ -1,11 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useSiteContent } from '../context/SiteContentContext.jsx';
 
 export const MAPS_LOCATION_URL = "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8";
 export const FACEBOOK_URL = "https://www.facebook.com/profile.php?id=61575442051109";
 export const INSTAGRAM_URL = "https://www.instagram.com/explore/tags/kopaychristiancollege/";
 
 export default function Contact() {
+  const { content } = useSiteContent();
+  const contact = content?.contact || {};
+
+  const address = contact.address || "J/Kopay Christian College, Kopay, Jaffna, Sri Lanka";
+  const phone = contact.phone || "021 223 0040";
+  const officeHours = contact.officeHours || "Mon – Fri, 8:00 AM – 3:30 PM";
+  const email = contact.email || "kcckopay@gmail.com";
+  const mapsUrl = contact.mapsUrl || MAPS_LOCATION_URL;
+  const facebookUrl = contact.facebookUrl || FACEBOOK_URL;
+  const instagramUrl = contact.instagramUrl || INSTAGRAM_URL;
+
   return (
     <section className="py-6 sm:py-8 bg-brand-white border-t border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="contact">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,12 +45,12 @@ export default function Contact() {
                         Address
                       </span>
                       <a
-                        href={MAPS_LOCATION_URL}
+                        href={mapsUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="font-medium text-white hover:text-brand-pale transition-colors inline-flex items-center gap-1 truncate text-xs group"
                       >
-                        <span className="truncate">J/Kopay Christian College, Kopay, Jaffna</span>
+                        <span className="truncate">{address}</span>
                         <svg className="w-3 h-3 text-brand-pale/70 shrink-0 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
@@ -57,10 +69,10 @@ export default function Contact() {
                       <span className="block text-[10px] font-semibold text-brand-pale uppercase tracking-wider">
                         Phone
                       </span>
-                      <a href="tel:0212230040" className="font-semibold text-white hover:text-brand-pale transition-colors text-xs sm:text-sm">
-                        021 223 0040
+                      <a href={`tel:${phone.replace(/\s+/g, '')}`} className="font-semibold text-white hover:text-brand-pale transition-colors text-xs sm:text-sm">
+                        {phone}
                       </a>
-                      <span className="text-[10px] text-brand-light/70 ml-2">Mon – Fri, 8:00 AM – 3:30 PM</span>
+                      <span className="text-[10px] text-brand-light/70 ml-2">{officeHours}</span>
                     </div>
                   </div>
 
@@ -75,8 +87,8 @@ export default function Contact() {
                       <span className="block text-[10px] font-semibold text-brand-pale uppercase tracking-wider">
                         Email
                       </span>
-                      <a href="mailto:kcckopay@gmail.com" className="font-semibold text-white hover:text-brand-pale transition-colors text-xs">
-                        kcckopay@gmail.com
+                      <a href={`mailto:${email}`} className="font-semibold text-white hover:text-brand-pale transition-colors text-xs">
+                        {email}
                       </a>
                     </div>
                   </div>
