@@ -6,6 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
 
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -36,9 +39,18 @@ dist-ssr/
 # Local env files
 .env
 .env.local
+.env.*.local
 .env.development.local
 .env.test.local
 .env.production.local
+!.env.example
+
+# Firebase cache
+.firebase/
+
+# Agent skills and lockfiles
+.agents/
+skills-lock.json
 
 # Editor directories and files
 .vscode/*
@@ -52,4 +64,5 @@ dist-ssr/
 .DS_Store
 Thumbs.db
 
+# Hosting platforms
 .vercel

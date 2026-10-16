@@ -87,7 +87,13 @@ export default function SchoolAnthem() {
         </div>
 
         <div className="relative z-10 space-y-8 text-center font-tamil">
-          <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
+          <div className="relative pt-12 pb-6 px-6 sm:py-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-brand-forest text-xs font-semibold shadow-2xs">
+              <svg className="w-3.5 h-3.5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+              </svg>
+              <span>இராகம்: ஹம்சத்வனி (Hamsadhvani)</span>
+            </div>
             <div className="text-lg sm:text-2xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
               <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
