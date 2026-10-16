@@ -11,7 +11,6 @@ import AnthemPage from './pages/AnthemPage.jsx';
 import AdminPage from './pages/AdminPage.jsx';
 import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
-import AnnouncementBanner from './components/AnnouncementBanner.jsx';
 import { SiteContentProvider } from './context/SiteContentContext.jsx';
 
 /**
@@ -207,8 +206,6 @@ export default function App() {
   return (
     <SiteContentProvider>
       <div className="min-h-screen flex flex-col bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest antialiased">
-        <AnnouncementBanner />
-
         <Navbar
           currentPage={currentPage}
           onNavigate={handleNavigate}

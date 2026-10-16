@@ -23,7 +23,6 @@ export default function Performance() {
     labs: perf.labs ?? 100
   };
 
-  const customStats = perf.customStats || [];
   const [statsAnimated, setStatsAnimated] = useState(false);
   const [counterValues, setCounterValues] = useState({
     founded: 0,
@@ -167,27 +166,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 mt-0.5">Science &amp; ICT Units</p>
           </div>
         </div>
-
-        {customStats.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-brand-pale/60">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {customStats.map((stat, idx) => (
-                <div
-                  key={stat.id || idx}
-                  className="p-6 rounded-2xl bg-brand-white border border-brand-pale text-center shadow-xs transition-all duration-200 hover:border-brand-soft hover:-translate-y-1"
-                >
-                  <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest font-sans">
-                    {stat.value}{stat.suffix || '+'}
-                  </p>
-                  <p className="text-xs uppercase font-bold text-brand-sage mt-2">{stat.label}</p>
-                  {stat.description && (
-                    <p className="text-xs text-slate-500 mt-0.5">{stat.description}</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

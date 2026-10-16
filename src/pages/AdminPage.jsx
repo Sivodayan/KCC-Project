@@ -1,56 +1,41 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSiteContent } from '../context/SiteContentContext.jsx';
-import {
-  verifyGitHubToken,
-  commitFileToGitHub,
-  fetchFileFromGitHub
-} from '../utils/githubSync.js';
+import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
+import { processImageFile } from '../utils/imageUpload.js';
 
 const DEFAULT_PIN = 'kcc1852';
 const PIN_STORAGE_KEY = 'kcc_admin_pin';
 const SESSION_AUTH_KEY = 'kcc_admin_session_auth';
-const GITHUB_TOKEN_KEY = 'kcc_github_pat_token';
+const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
 /**
  * AdminPage Component
  *
- * Hidden management console and live CMS editor for J/Kopay Christian College.
- *
- * Architecture & Data Flow:
- * - Serverless Direct-to-Git Publishing: Pushes JSON content updates directly to GitHub's
- *   Contents API (`src/data/siteContent.json`), triggering automated GitHub Pages CI/CD rebuilds.
- * - Reactive Local Staging: Edits are instantly reflected in React context (`SiteContentContext`)
- *   and cached in localStorage, allowing real-time preview across all pages prior to committing.
- * - Zero-Clickthrough Security Model: Unlinked route (`/admin`) guarded by a session-authenticated
- *   passcode. GitHub personal access tokens (PAT) remain on the client device.
- * - Full Unicode/Tamil Fidelity: Leverages percent-encoded byte mapping for base64 serialization
- *   to ensure native Tamil script characters are preserved without UTF-8 corruption.
+ * Hidden management console for J/Kopay Christian College.
+ * Contains only the actual customizable sections from the real website:
+ * 1. Hero Section
+ * 2. Motto, Vision & Mission
+ * 3. Key Numbers & Performance
+ * 4. Photo Gallery (PC file upload & URL management)
+ * 5. School Events (Facebook iframe embeds)
+ * 6. Contact Information
+ * 7. Settings & Repository Backup
  */
 export default function AdminPage() {
   const navigate = useNavigate();
   const {
     content,
     hasLocalOverrides,
-    saveContent,
-    updateSection,
-    updateMeta,
-    updateAnnouncement,
     updateHero,
     updatePrinciples,
-    addPrincipleCard,
-    deletePrincipleCard,
     updatePerformance,
-    addCustomStat,
-    deleteCustomStat,
     addGalleryImage,
     deleteGalleryImage,
     updateGalleryImage,
     addEvent,
-    updateEvent,
     deleteEvent,
+    updateEvent,
     updateContact,
-    updateAnthem,
     resetToDefaults,
     exportJson,
     importJson
@@ -63,7 +48,7 @@ export default function AdminPage() {
   const [pinError, setPinError] = useState('');
   const [showPin, setShowPin] = useState(false);
 
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('hero');
 
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const showToast = (message, type = 'success') => {
@@ -71,63 +56,25 @@ export default function AdminPage() {
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
   };
 
-  // GitHub API integration & remote commit state
-  const [ghToken, setGhToken] = useState(() => localStorage.getItem(GITHUB_TOKEN_KEY) || '');
-  const [ghUser, setGhUser] = useState(null);
-  const [isVerifyingGh, setIsVerifyingGh] = useState(false);
-  const [ghRepoOwner, setGhRepoOwner] = useState('Sivodayan');
-  const [ghRepoName, setGhRepoName] = useState('KCC-Project');
-  const [ghBranch, setGhBranch] = useState('main');
-  const [ghCommitMsg, setGhCommitMsg] = useState('');
-  const [isCommitting, setIsCommitting] = useState(false);
-  const [commitStatus, setCommitStatus] = useState(null);
-
-  const [isAddPrincipleOpen, setIsAddPrincipleOpen] = useState(false);
-  const [newPrinciple, setNewPrinciple] = useState({ titleEn: '', titleTa: '', descEn: '', descTa: '', badge: 'Pillar' });
-
-  const [isAddStatOpen, setIsAddStatOpen] = useState(false);
-  const [newStat, setNewStat] = useState({ label: '', labelTa: '', value: '', suffix: '+', description: '' });
-
   const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
-  const [newGallery, setNewGallery] = useState({ src: '', caption: '', category: 'Campus' });
+  const [newGallerySrc, setNewGallerySrc] = useState('');
+  const [isProcessingPhoto, setIsProcessingPhoto] = useState(false);
+  const [photoUploadError, setPhotoUploadError] = useState('');
+  const [replaceCardIndex, setReplaceCardIndex] = useState(null);
+
+  const multiFileInputRef = useRef(null);
+  const modalFileInputRef = useRef(null);
+  const cardFileInputRef = useRef(null);
 
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
-  const [newEvent, setNewEvent] = useState({
-    title: '',
-    titleTa: '',
-    date: '',
-    category: 'General',
-    badge: 'Upcoming',
-    description: '',
-    image: '/assets/hero.jpg',
-    link: ''
-  });
+  const [newEventInput, setNewEventInput] = useState('');
+  const [newEventHeight, setNewEventHeight] = useState(645);
+  const parsedNewEvent = parseFacebookInput(newEventInput);
 
   const [currentPinSetting, setCurrentPinSetting] = useState(() => {
     return localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
   });
   const [newPinInput, setNewPinInput] = useState('');
-
-  // Validate stored GitHub credentials upon session activation
-  useEffect(() => {
-    if (ghToken && isAuthenticated) {
-      handleVerifyToken(ghToken);
-    }
-  }, [isAuthenticated]);
-
-  const handleVerifyToken = async (tokenToVerify) => {
-    if (!tokenToVerify) return;
-    setIsVerifyingGh(true);
-    try {
-      const user = await verifyGitHubToken(tokenToVerify);
-      setGhUser(user);
-      localStorage.setItem(GITHUB_TOKEN_KEY, tokenToVerify.trim());
-    } catch (err) {
-      setGhUser(null);
-    } finally {
-      setIsVerifyingGh(false);
-    }
-  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -138,7 +85,7 @@ export default function AdminPage() {
       setPinError('');
       showToast('Welcome to KCC Admin Panel', 'success');
     } else {
-      setPinError('Incorrect passcode. Please check and try again.');
+      setPinError('Incorrect passcode. Please try again.');
     }
   };
 
@@ -148,59 +95,6 @@ export default function AdminPage() {
     setPinInput('');
   };
 
-  /**
-   * Serializes active content to UTF-8 encoded JSON and commits directly
-   * to the designated repository branch using the GitHub Git Contents REST API.
-   */
-  const handleDirectCommit = async (e) => {
-    e?.preventDefault();
-    if (!ghToken.trim()) {
-      showToast('Please enter your GitHub Personal Access Token in the GitHub Sync tab.', 'error');
-      setActiveTab('overview');
-      return;
-    }
-
-    setIsCommitting(true);
-    setCommitStatus(null);
-
-    try {
-      const defaultMsg = `Update website content via KCC Admin Panel [${new Date().toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric'
-      })} - ${new Date().toLocaleTimeString('en-US')}]`;
-
-      const result = await commitFileToGitHub({
-        owner: ghRepoOwner.trim(),
-        repo: ghRepoName.trim(),
-        path: 'src/data/siteContent.json',
-        branch: ghBranch.trim(),
-        token: ghToken.trim(),
-        contentString: JSON.stringify(content, null, 2),
-        commitMessage: ghCommitMsg.trim() || defaultMsg
-      });
-
-      setCommitStatus({
-        success: true,
-        commitSha: result.commitSha,
-        commitUrl: result.commitUrl,
-        timestamp: new Date().toLocaleTimeString()
-      });
-
-      showToast(`Successfully committed ${result.commitSha} to GitHub!`, 'success');
-    } catch (err) {
-      console.error('Commit failed:', err);
-      setCommitStatus({
-        success: false,
-        error: err.message
-      });
-      showToast('GitHub commit failed: ' + err.message, 'error');
-    } finally {
-      setIsCommitting(false);
-    }
-  };
-
-  // Parses and validates raw configuration JSON uploaded from local disk
   const handleFileUpload = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -220,111 +114,173 @@ export default function AdminPage() {
     e.target.value = '';
   };
 
-  // Persists administrative access passcode to localStorage
+  const handleModalFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      setIsProcessingPhoto(true);
+      setPhotoUploadError('');
+      const dataUrl = await processImageFile(file);
+      setNewGallerySrc(dataUrl);
+      showToast('Photo retrieved from PC successfully!', 'success');
+    } catch (err) {
+      setPhotoUploadError(err.message || 'Failed to process image');
+    } finally {
+      setIsProcessingPhoto(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleModalDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const file = e.dataTransfer?.files?.[0];
+    if (!file) return;
+    try {
+      setIsProcessingPhoto(true);
+      setPhotoUploadError('');
+      const dataUrl = await processImageFile(file);
+      setNewGallerySrc(dataUrl);
+      showToast('Photo retrieved from PC successfully!', 'success');
+    } catch (err) {
+      setPhotoUploadError(err.message || 'Failed to process image');
+    } finally {
+      setIsProcessingPhoto(false);
+    }
+  };
+
+  const handleDirectMultiUpload = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+    try {
+      setIsProcessingPhoto(true);
+      const urls = [];
+      for (const file of files) {
+        const dataUrl = await processImageFile(file);
+        urls.push(dataUrl);
+      }
+      addGalleryImage(urls);
+      showToast(`${urls.length} photo(s) uploaded from PC to gallery!`, 'success');
+    } catch (err) {
+      showToast('Upload error: ' + err.message, 'error');
+    } finally {
+      setIsProcessingPhoto(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleReplaceCardFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || replaceCardIndex === null) return;
+    try {
+      setIsProcessingPhoto(true);
+      const dataUrl = await processImageFile(file);
+      updateGalleryImage(replaceCardIndex, dataUrl);
+      showToast('Photo updated from PC!', 'success');
+    } catch (err) {
+      showToast('Update error: ' + err.message, 'error');
+    } finally {
+      setIsProcessingPhoto(false);
+      setReplaceCardIndex(null);
+      e.target.value = '';
+    }
+  };
+
   const handleChangePin = (e) => {
     e.preventDefault();
     if (newPinInput.trim().length < 4) {
-      showToast('PIN must be at least 4 characters long', 'error');
+      showToast('Passcode must be at least 4 characters long', 'error');
       return;
     }
     localStorage.setItem(PIN_STORAGE_KEY, newPinInput.trim());
     setCurrentPinSetting(newPinInput.trim());
     setNewPinInput('');
-    showToast('Admin PIN updated successfully!', 'success');
+    showToast('Passcode updated successfully!', 'success');
   };
 
-  // Render security gate when session credentials are absent or invalidated
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4 selection:bg-brand-pale selection:text-brand-forest">
-        <div className="w-full max-w-md bg-slate-800/90 backdrop-blur-xl border border-slate-700/80 rounded-3xl p-8 shadow-2xl text-slate-100">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-forest/20 border border-brand-forest/40 flex items-center justify-center p-2.5 shadow-lg">
-              <img src="/assets/logo.png" alt="KCC Crest" className="w-full h-full object-contain" />
+      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-4 selection:bg-brand-pale selection:text-brand-forest">
+        <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-3xl p-8 shadow-xl text-slate-800">
+          <div className="text-center mb-6">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 shadow-2xs">
+              <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-white">
-              KCC Administrator Portal
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-brand-forest">
+              J/Kopay Christian College
             </h1>
-            <p className="text-xs text-slate-400 mt-1.5 font-medium">
-              J/Kopay Christian College Management Console
+            <p className="text-xs text-slate-500 font-tamil mt-1">
+              யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
             </p>
-            <div className="mt-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-700/60 border border-slate-600/50 text-[11px] text-brand-pale">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              Protected Administrative Route
-            </div>
+            <span className="mt-3 inline-block px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-[11px] font-bold text-brand-forest">
+              Admin Panel
+            </span>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-5">
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
-                Security Passcode
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                Passcode
               </label>
               <div className="relative">
                 <input
                   type={showPin ? 'text' : 'password'}
                   value={pinInput}
-                  onChange={(e) => {
-                    setPinInput(e.target.value);
-                    if (pinError) setPinError('');
-                  }}
+                  onChange={(e) => setPinInput(e.target.value)}
                   placeholder="Enter passcode"
                   autoFocus
-                  className="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-slate-700 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-forest focus:border-transparent text-sm transition-all pr-12"
+                  className="w-full px-4 py-2.5 pr-11 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest font-mono tracking-wider"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPin(!showPin)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 transition-colors cursor-pointer text-xs font-semibold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                  aria-label={showPin ? 'Hide passcode' : 'Show passcode'}
                 >
-                  {showPin ? 'Hide' : 'Show'}
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {showPin ? (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                    ) : (
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    )}
+                  </svg>
                 </button>
               </div>
               {pinError && (
-                <p className="text-xs text-rose-400 mt-2 flex items-center gap-1.5 font-medium">
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  {pinError}
-                </p>
+                <p className="text-xs text-rose-600 mt-2 font-medium">{pinError}</p>
               )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover active:scale-[0.99] text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-brand-forest/20 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>Authenticate &amp; Enter</span>
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span>Enter Admin Panel</span>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </button>
           </form>
-
-          <div className="mt-8 pt-5 border-t border-slate-700/60 text-center">
-            <span className="text-[11px] text-slate-500">
-              Default passcode: <span className="font-mono text-slate-400 font-semibold">kcc1852</span> (can be customized once inside)
-            </span>
-          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-brand-pale selection:text-brand-forest">
+    <div className="min-h-screen bg-brand-light/30 text-slate-800 flex flex-col font-sans selection:bg-brand-pale selection:text-brand-forest">
       {toast.show && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-semibold transition-all transform animate-bounce duration-300 ${toast.type === 'error'
-              ? 'bg-rose-900 border border-rose-700 text-rose-100'
-              : 'bg-emerald-900 border border-emerald-600 text-emerald-100'
+          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all transform animate-bounce duration-300 ${toast.type === 'error'
+              ? 'bg-rose-50 border border-rose-300 text-rose-800'
+              : 'bg-brand-light border border-brand-pale text-brand-forest'
             }`}
         >
           {toast.type === 'error' ? (
-            <svg className="w-5 h-5 text-rose-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           ) : (
-            <svg className="w-5 h-5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
             </svg>
           )}
@@ -332,534 +288,174 @@ export default function AdminPage() {
         </div>
       )}
 
-      <header className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
+      <header className="sticky top-0 z-40 bg-brand-white border-b border-brand-pale shadow-2xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
-              <img src="/assets/logo.png" alt="KCC" className="w-9 h-9 object-contain" />
+              <img src="/assets/logo.png" alt="Logo" className="w-10 h-10 object-contain" />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-extrabold text-white text-base tracking-tight">KCC Admin Panel</span>
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-forest/30 text-emerald-300 border border-brand-forest/50 font-bold uppercase tracking-wider">
-                    Live Editor
+                  <span className="font-extrabold text-brand-forest text-sm sm:text-base tracking-tight">
+                    J/Kopay Christian College
+                  </span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-light text-brand-forest border border-brand-pale font-bold uppercase tracking-wider">
+                    Admin Panel
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-400 font-mono flex items-center gap-1.5">
-                  <span>github: {ghRepoOwner}/{ghRepoName}</span>
-                  <span className="text-slate-600">•</span>
-                  <span className="text-emerald-400 font-semibold">{ghBranch}</span>
+                <div className="text-[11px] text-slate-500 font-tamil flex items-center gap-1.5">
+                  <span>யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி</span>
+                  <span className="text-slate-300">•</span>
+                  <a
+                    href={GITHUB_REPO_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-sans text-slate-500 hover:text-brand-forest hover:underline flex items-center gap-1"
+                    title="Open GitHub Repository"
+                  >
+                    <span>Sivodayan/KCC-Project</span>
+                    <svg className="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2.5">
-              <button
-                type="button"
-                onClick={() => window.open('/', '_blank')}
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition cursor-pointer"
-                title="View live site in a new tab"
+            <div className="flex items-center gap-2 sm:gap-3">
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer"
+                title="View GitHub Repository"
               >
-                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
-                <span>Live Preview</span>
-              </button>
+                <span>GitHub Repository</span>
+                <svg className="w-3 h-3 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
 
               <button
                 type="button"
-                onClick={handleDirectCommit}
-                disabled={isCommitting}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-brand-forest hover:from-emerald-500 hover:to-emerald-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-emerald-900/30 transition-all duration-200 active:scale-95 disabled:opacity-50 cursor-pointer"
+                onClick={() => window.open('/', '_blank')}
+                className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer shadow-2xs"
               >
-                {isCommitting ? (
-                  <>
-                    <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    <span>Committing...</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                    </svg>
-                    <span>Commit to GitHub</span>
-                  </>
-                )}
+                <span>Live Preview</span>
+                <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
               </button>
 
               <button
                 type="button"
                 onClick={handleLogout}
-                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-slate-200 transition cursor-pointer"
-                title="Lock Dashboard"
+                className="p-2 rounded-full bg-brand-white border border-brand-pale text-slate-500 hover:text-rose-600 hover:bg-brand-light transition cursor-pointer shadow-2xs"
+                title="Lock Admin Panel"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                 </svg>
               </button>
             </div>
           </div>
 
-          <div className="flex items-center gap-1 overflow-x-auto py-2.5 border-t border-slate-800/80 no-scrollbar text-xs font-semibold">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-brand-pale/70 no-scrollbar text-xs">
             {[
-              { id: 'overview', label: '⚡ GitHub Sync', icon: '🚀' },
-              { id: 'banner', label: 'Announcement & Meta', icon: '📢' },
-              { id: 'hero', label: 'Hero Section', icon: '🏛️' },
-              { id: 'principles', label: 'Motto & Principles', icon: '🧭' },
-              { id: 'performance', label: 'Stats & Metrics', icon: '📊' },
-              { id: 'gallery', label: 'Photo Gallery', icon: '🖼️' },
-              { id: 'events', label: 'Events & News', icon: '📅' },
-              { id: 'contact', label: 'Contact Info', icon: '📞' },
-              { id: 'anthem', label: 'School Anthem', icon: '🎵' },
-              { id: 'settings', label: 'Settings & Backup', icon: '⚙️' }
+              { id: 'hero', label: 'Hero Section' },
+              { id: 'principles', label: 'Motto, Vision & Mission' },
+              { id: 'performance', label: 'Performance' },
+              { id: 'gallery', label: 'Photo Gallery' },
+              { id: 'events', label: 'School Events' },
+              { id: 'contact', label: 'Contact' },
+              { id: 'settings', label: 'Settings' }
             ].map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${activeTab === tab.id
-                    ? 'bg-brand-forest text-white shadow-sm font-bold'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                className={`px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer font-semibold ${activeTab === tab.id
+                    ? 'bg-brand-forest text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60 bg-brand-white border border-brand-pale/60'
                   }`}
               >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
+                {tab.label}
               </button>
             ))}
           </div>
         </div>
       </header>
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {activeTab === 'overview' && (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-br from-slate-900 to-slate-850 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
-              <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-slate-800">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-300 text-xs font-semibold mb-3">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    Direct GitHub Commits Ready
-                  </div>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    Publish Changes Directly to GitHub
-                  </h2>
-                  <p className="text-sm text-slate-400 mt-2 max-w-2xl leading-relaxed">
-                    Any edits you make in this panel are active in your browser. When you are ready to publish them to the live school website, simply click below to create a direct commit on branch <code className="text-emerald-400 font-mono bg-slate-800 px-1.5 py-0.5 rounded font-bold">main</code>.
-                  </p>
-                </div>
-
-                <div className="shrink-0 flex flex-col sm:flex-row gap-3">
-                  <button
-                    type="button"
-                    onClick={handleDirectCommit}
-                    disabled={isCommitting}
-                    className="px-6 py-3.5 rounded-2xl bg-brand-forest hover:bg-brand-forestHover active:scale-98 text-white font-bold text-sm shadow-xl shadow-brand-forest/30 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isCommitting ? 'Pushing Commit...' : '🚀 Commit & Publish Changes'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => window.open('/', '_blank')}
-                    className="px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>View Live Site</span>
-                    <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-
-              {commitStatus && (
-                <div
-                  className={`mt-6 p-4 rounded-2xl border text-sm flex items-start gap-3.5 ${commitStatus.success
-                      ? 'bg-emerald-950/60 border-emerald-700/80 text-emerald-200'
-                      : 'bg-rose-950/60 border-rose-800 text-rose-200'
-                    }`}
-                >
-                  {commitStatus.success ? (
-                    <>
-                      <div className="w-8 h-8 rounded-xl bg-emerald-800/80 flex items-center justify-center shrink-0 text-emerald-200 font-bold">
-                        ✓
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-emerald-300">
-                          Commit Created Successfully! (SHA: {commitStatus.commitSha})
-                        </div>
-                        <div className="text-xs text-emerald-200/80 mt-1">
-                          Changes pushed to <code className="font-mono">{ghBranch}</code> branch. Vercel and GitHub Pages will automatically deploy the changes.
-                        </div>
-                        {commitStatus.commitUrl && (
-                          <a
-                            href={commitStatus.commitUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-300 underline hover:text-white mt-2"
-                          >
-                            <span>View commit on GitHub ({commitStatus.commitSha})</span>
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        )}
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="w-8 h-8 rounded-xl bg-rose-800/80 flex items-center justify-center shrink-0 text-rose-200 font-bold">
-                        ✕
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="font-bold text-rose-300">Commit Failed</div>
-                        <div className="text-xs text-rose-200/90 mt-1">{commitStatus.error}</div>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
-                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs font-bold text-slate-300 uppercase tracking-wider">
-                      GitHub Personal Access Token (PAT)
-                    </label>
-                    {ghUser && (
-                      <span className="text-[11px] text-emerald-400 font-medium flex items-center gap-1">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        Connected as @{ghUser.login}
-                      </span>
-                    )}
-                  </div>
-
-                  <div className="flex gap-2">
-                    <input
-                      type="password"
-                      value={ghToken}
-                      onChange={(e) => setGhToken(e.target.value)}
-                      placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-                      className="flex-1 px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest font-mono"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => handleVerifyToken(ghToken)}
-                      disabled={isVerifyingGh || !ghToken}
-                      className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition cursor-pointer disabled:opacity-50"
-                    >
-                      {isVerifyingGh ? 'Verifying...' : 'Test & Save'}
-                    </button>
-                  </div>
-
-                  <div className="mt-3 text-[11px] text-slate-400 leading-relaxed">
-                    Need a token?{' '}
-                    <a
-                      href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-emerald-400 hover:underline font-semibold"
-                    >
-                      Generate GitHub Token (with repo scope) →
-                    </a>
-                  </div>
-                </div>
-
-                <div className="bg-slate-950/60 border border-slate-800 rounded-2xl p-5">
-                  <span className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
-                    Target Repository &amp; Branch
-                  </span>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div>
-                      <span className="block text-[10px] text-slate-400 mb-1">Owner</span>
-                      <input
-                        type="text"
-                        value={ghRepoOwner}
-                        onChange={(e) => setGhRepoOwner(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono"
-                      />
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-slate-400 mb-1">Repo</span>
-                      <input
-                        type="text"
-                        value={ghRepoName}
-                        onChange={(e) => setGhRepoName(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono"
-                      />
-                    </div>
-                    <div>
-                      <span className="block text-[10px] text-slate-400 mb-1">Branch</span>
-                      <input
-                        type="text"
-                        value={ghBranch}
-                        onChange={(e) => setGhBranch(e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs font-mono"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-3">
-                    <span className="block text-[10px] text-slate-400 mb-1">Commit Message (Optional)</span>
-                    <input
-                      type="text"
-                      value={ghCommitMsg}
-                      onChange={(e) => setGhCommitMsg(e.target.value)}
-                      placeholder="e.g. Update admission dates and sports meet info"
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div
-                onClick={() => setActiveTab('hero')}
-                className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-brand-forest/60 transition cursor-pointer group"
-              >
-                <div className="text-2xl mb-2">🏛️</div>
-                <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Hero Section</div>
-                <div className="text-base font-bold text-white mt-1 group-hover:text-emerald-300 transition">
-                  {content.hero?.title || 'J/Kopay Christian College'}
-                </div>
-              </div>
-
-              <div
-                onClick={() => setActiveTab('principles')}
-                className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-brand-forest/60 transition cursor-pointer group"
-              >
-                <div className="text-2xl mb-2">🧭</div>
-                <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Principles</div>
-                <div className="text-base font-bold text-white mt-1 group-hover:text-emerald-300 transition">
-                  3 Core + {content.principles?.customCards?.length || 0} Custom
-                </div>
-              </div>
-
-              <div
-                onClick={() => setActiveTab('gallery')}
-                className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-brand-forest/60 transition cursor-pointer group"
-              >
-                <div className="text-2xl mb-2">🖼️</div>
-                <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Gallery Images</div>
-                <div className="text-base font-bold text-white mt-1 group-hover:text-emerald-300 transition">
-                  {content.gallery?.length || 0} Photos
-                </div>
-              </div>
-
-              <div
-                onClick={() => setActiveTab('events')}
-                className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5 hover:border-brand-forest/60 transition cursor-pointer group"
-              >
-                <div className="text-2xl mb-2">📅</div>
-                <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider">Custom Events</div>
-                <div className="text-base font-bold text-white mt-1 group-hover:text-emerald-300 transition">
-                  {content.events?.customEvents?.length || 0} Announcements
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {activeTab === 'banner' && (
-          <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div>
-                  <h2 className="text-xl font-bold text-white">Broadcast Announcement Banner</h2>
-                  <p className="text-xs text-slate-400 mt-1">
-                    Display an urgent or featured announcement bar across the very top of the website.
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(content.announcement?.enabled)}
-                    onChange={(e) => updateAnnouncement({ enabled: e.target.checked })}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-emerald-600"></div>
-                  <span className="ml-3 text-xs font-semibold text-slate-300">
-                    {content.announcement?.enabled ? 'Active / Visible' : 'Hidden'}
-                  </span>
-                </label>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Banner Tag / Badge
-                  </label>
-                  <input
-                    type="text"
-                    value={content.announcement?.badge || ''}
-                    onChange={(e) => updateAnnouncement({ badge: e.target.value })}
-                    placeholder="e.g. Admissions 2026-2027"
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Action Button Text &amp; Link
-                  </label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={content.announcement?.linkText || ''}
-                      onChange={(e) => updateAnnouncement({ linkText: e.target.value })}
-                      placeholder="Learn More →"
-                      className="w-1/2 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                    />
-                    <input
-                      type="text"
-                      value={content.announcement?.link || ''}
-                      onChange={(e) => updateAnnouncement({ link: e.target.value })}
-                      placeholder="#contact or /events"
-                      className="w-1/2 px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Announcement Message (English)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={content.announcement?.text || ''}
-                    onChange={(e) => updateAnnouncement({ text: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                    Announcement Message (Tamil)
-                  </label>
-                  <textarea
-                    rows={2}
-                    value={content.announcement?.tamil || ''}
-                    onChange={(e) => updateAnnouncement({ tamil: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-tamil"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-5">School Core Identity</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">School Name (English)</label>
-                  <input
-                    type="text"
-                    value={content.meta?.schoolName || ''}
-                    onChange={(e) => updateMeta({ schoolName: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">School Name (Tamil)</label>
-                  <input
-                    type="text"
-                    value={content.meta?.tamilName || ''}
-                    onChange={(e) => updateMeta({ tamilName: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-tamil"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Founding Year</label>
-                  <input
-                    type="text"
-                    value={content.meta?.foundedYear || ''}
-                    onChange={(e) => updateMeta({ foundedYear: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">School Motto</label>
-                  <input
-                    type="text"
-                    value={content.meta?.motto || ''}
-                    onChange={(e) => updateMeta({ motto: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
+      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+        {/* HERO SECTION */}
         {activeTab === 'hero' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">Customize Hero Section</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Edit the main visual entrance banner, headlines, and background imagery of the homepage.
-              </p>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-5">Hero Section</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Hero Title (English)</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">School Name (English)</label>
                   <input
                     type="text"
                     value={content.hero?.title || ''}
                     onChange={(e) => updateHero({ title: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Hero Title (Tamil)</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">School Name (Tamil)</label>
                   <input
                     type="text"
                     value={content.hero?.tamilTitle || ''}
                     onChange={(e) => updateHero({ tamilTitle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-tamil"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-tamil focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Hero Description / Tagline</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Hero Subtitle</label>
                   <textarea
                     rows={3}
                     value={content.hero?.subtitle || ''}
                     onChange={(e) => updateHero({ subtitle: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Hero Background Image URL / Asset Path</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Background Image Path</label>
                   <input
                     type="text"
                     value={content.hero?.image || ''}
                     onChange={(e) => updateHero({ image: e.target.value })}
-                    placeholder="/assets/hero.jpg or https://..."
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono"
+                    placeholder="/assets/hero.jpg"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Button Text</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Button Text</label>
                   <input
                     type="text"
                     value={content.hero?.buttonText || ''}
                     onChange={(e) => updateHero({ buttonText: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-slate-800">
-                <span className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Live Card Preview</span>
-                <div className="relative rounded-2xl overflow-hidden bg-brand-forest border border-brand-soft/40 p-6 sm:p-8 text-white min-h-[220px] flex items-center">
+              <div className="mt-8 pt-6 border-t border-brand-pale">
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Live Card Preview</span>
+                <div className="relative rounded-2xl overflow-hidden bg-brand-forest border border-brand-soft/40 p-6 sm:p-8 text-white min-h-[180px] flex items-center shadow-md">
                   <div className="relative z-10 max-w-xl">
                     <h3 className="text-2xl font-extrabold text-white">{content.hero?.title}</h3>
                     <h4 className="text-lg font-bold text-brand-pale font-tamil mt-1">{content.hero?.tamilTitle}</h4>
-                    <p className="text-xs sm:text-sm text-brand-light/90 mt-3">{content.hero?.subtitle}</p>
-                    <div className="mt-5">
-                      <span className="inline-block px-5 py-2 rounded-full bg-white text-brand-forest font-bold text-xs shadow">
+                    <p className="text-xs sm:text-sm text-brand-light/90 mt-2 leading-relaxed">{content.hero?.subtitle}</p>
+                    <div className="mt-4">
+                      <span className="inline-block px-5 py-2 rounded-full bg-white text-brand-forest font-bold text-xs shadow-2xs">
                         {content.hero?.buttonText} →
                       </span>
                     </div>
@@ -870,396 +466,251 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* MOTTO, VISION & MISSION */}
         {activeTab === 'principles' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-6">Core Institutional Principles</h2>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-2">Motto, Vision &amp; Mission</h2>
+              <p className="text-xs text-slate-600 mb-6">
+                Customize the three core institutional pillars displayed in the interactive flip cards on the home page.
+              </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
-                  <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Motto (மகுடவாசகம்)</div>
+                {/* Motto */}
+                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                  <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Motto (மகுடவாசகம்)</div>
                   <div>
-                    <span className="text-[10px] text-slate-400">English</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
                     <input
                       type="text"
                       value={content.principles?.motto?.english || ''}
                       onChange={(e) => updatePrinciples({ motto: { ...content.principles?.motto, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-bold"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold focus:outline-none focus:border-brand-forest"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400">Tamil</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">Tamil</label>
                     <input
                       type="text"
                       value={content.principles?.motto?.tamil || ''}
                       onChange={(e) => updatePrinciples({ motto: { ...content.principles?.motto, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-bold font-tamil"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold font-tamil focus:outline-none focus:border-brand-forest"
                     />
                   </div>
                 </div>
 
-                <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
-                  <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Vision (தரிசனம்)</div>
+                {/* Vision */}
+                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                  <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Vision (தூரநோக்கு)</div>
                   <div>
-                    <span className="text-[10px] text-slate-400">English</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
                     <textarea
-                      rows={2}
+                      rows={3}
                       value={content.principles?.vision?.english || ''}
                       onChange={(e) => updatePrinciples({ vision: { ...content.principles?.vision, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400">Tamil</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">Tamil</label>
                     <textarea
-                      rows={2}
+                      rows={3}
                       value={content.principles?.vision?.tamil || ''}
                       onChange={(e) => updatePrinciples({ vision: { ...content.principles?.vision, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-tamil"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                 </div>
 
-                <div className="bg-slate-950/70 border border-slate-800 rounded-2xl p-5 space-y-3">
-                  <div className="text-xs font-bold text-brand-pale uppercase tracking-wider">Mission (பணி இலக்கு)</div>
+                {/* Mission */}
+                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                  <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Mission (பணி இலக்கு)</div>
                   <div>
-                    <span className="text-[10px] text-slate-400">English</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
                     <textarea
-                      rows={2}
+                      rows={4}
                       value={content.principles?.mission?.english || ''}
                       onChange={(e) => updatePrinciples({ mission: { ...content.principles?.mission, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                   <div>
-                    <span className="text-[10px] text-slate-400">Tamil</span>
+                    <label className="block text-[10px] font-semibold text-slate-500 mb-1">Tamil</label>
                     <textarea
-                      rows={2}
+                      rows={4}
                       value={content.principles?.mission?.tamil || ''}
                       onChange={(e) => updatePrinciples({ mission: { ...content.principles?.mission, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white text-xs font-tamil"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                 </div>
               </div>
             </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-bold text-white">Custom Principles &amp; School Values</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Add new value cards (e.g. Discipline, Faith, Service, Excellence) to display on the homepage.
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsAddPrincipleOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  <span>+ Add New Principle</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(content.principles?.customCards || []).map((card) => (
-                  <div key={card.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex justify-between items-start">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] px-2 py-0.5 rounded bg-brand-forest/30 text-emerald-300 font-bold uppercase">
-                          {card.badge || 'Pillar'}
-                        </span>
-                        <h4 className="text-sm font-bold text-white">{card.titleEn}</h4>
-                      </div>
-                      <div className="text-xs text-emerald-400 font-tamil mt-1">{card.titleTa}</div>
-                      <p className="text-xs text-slate-400 mt-2">{card.descEn}</p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => deletePrincipleCard(card.id)}
-                      className="text-slate-500 hover:text-rose-400 p-1.5 rounded-lg hover:bg-slate-900 transition cursor-pointer ml-3 shrink-0"
-                      title="Delete Principle Card"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {isAddPrincipleOpen && (
-              <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
-                  <h3 className="text-lg font-bold text-white mb-4">Add New School Principle</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Title (English)</label>
-                      <input
-                        type="text"
-                        value={newPrinciple.titleEn}
-                        onChange={(e) => setNewPrinciple({ ...newPrinciple, titleEn: e.target.value })}
-                        placeholder="e.g. Integrity & Leadership"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Title (Tamil)</label>
-                      <input
-                        type="text"
-                        value={newPrinciple.titleTa}
-                        onChange={(e) => setNewPrinciple({ ...newPrinciple, titleTa: e.target.value })}
-                        placeholder="e.g. நேர்மையும் தலைமைத்துவமும்"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-tamil"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Description</label>
-                      <textarea
-                        rows={2}
-                        value={newPrinciple.descEn}
-                        onChange={(e) => setNewPrinciple({ ...newPrinciple, descEn: e.target.value })}
-                        placeholder="Brief explanation of this principle..."
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsAddPrincipleOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold hover:bg-slate-700 cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!newPrinciple.titleEn) return;
-                        addPrincipleCard(newPrinciple);
-                        setNewPrinciple({ titleEn: '', titleTa: '', descEn: '', descTa: '', badge: 'Pillar' });
-                        setIsAddPrincipleOpen(false);
-                        showToast('Principle added successfully!', 'success');
-                      }}
-                      className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold cursor-pointer"
-                    >
-                      Add Principle
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
+        {/* PERFORMANCE */}
         {activeTab === 'performance' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">Academic &amp; Campus Statistics</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Update core numerical figures that animate dynamically on the homepage.
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-2">Key Numbers &amp; Performance</h2>
+              <p className="text-xs text-slate-600 mb-6">
+                Update the 8 official statistics displayed on the Key Numbers &amp; Performance grid.
               </p>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {[
                   { key: 'founded', label: 'Founded Year', val: content.performance?.founded },
-                  { key: 'students', label: 'Total Students', val: content.performance?.students },
-                  { key: 'staff', label: 'Academic Staff', val: content.performance?.staff },
-                  { key: 'olPass', label: 'O/L Pass Rate (%)', val: content.performance?.olPass },
-                  { key: 'alQual', label: 'A/L University Eligibility (%)', val: content.performance?.alQual },
+                  { key: 'students', label: 'Enrolled Students', val: content.performance?.students },
+                  { key: 'staff', label: 'Teaching Staff', val: content.performance?.staff },
+                  { key: 'olPass', label: 'G.C.E. O/L Pass Rate (%)', val: content.performance?.olPass },
+                  { key: 'alQual', label: 'University Qualifying (%)', val: content.performance?.alQual },
                   { key: 'clubs', label: 'Clubs & Societies', val: content.performance?.clubs },
-                  { key: 'houses', label: 'College Houses', val: content.performance?.houses },
-                  { key: 'labs', label: 'Labs / Equip (%)', val: content.performance?.labs }
+                  { key: 'houses', label: 'Competitive Houses', val: content.performance?.houses },
+                  { key: 'labs', label: 'Lab Coverage (%)', val: content.performance?.labs }
                 ].map(stat => (
-                  <div key={stat.key} className="bg-slate-950 border border-slate-800 rounded-2xl p-4">
-                    <span className="block text-[11px] font-semibold text-slate-400 mb-1">{stat.label}</span>
+                  <div key={stat.key} className="bg-brand-light/30 border border-brand-pale rounded-2xl p-4">
+                    <span className="block text-[11px] font-semibold text-slate-600 mb-1">{stat.label}</span>
                     <input
                       type="number"
                       step="any"
                       value={stat.val ?? ''}
                       onChange={(e) => updatePerformance({ [stat.key]: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white font-mono font-bold text-base focus:ring-1 focus:ring-brand-forest"
+                      className="w-full px-3 py-1.5 rounded-xl bg-brand-white border border-brand-pale text-brand-forest font-mono font-bold text-base focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                     />
                   </div>
                 ))}
               </div>
             </div>
-
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-lg font-bold text-white">Additional Custom Metrics</h3>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Add new highlight counters (e.g. Smart Classrooms, Scholarships, Alumni Network).
-                  </p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsAddStatOpen(true)}
-                  className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
-                >
-                  <span>+ Add New Metric</span>
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {(content.performance?.customStats || []).map(stat => (
-                  <div key={stat.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
-                    <div>
-                      <div className="text-2xl font-black text-emerald-400 font-mono">
-                        {stat.value}{stat.suffix}
-                      </div>
-                      <div className="text-xs font-bold text-white mt-0.5">{stat.label}</div>
-                      {stat.description && <div className="text-[11px] text-slate-400 mt-1">{stat.description}</div>}
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => deleteCustomStat(stat.id)}
-                      className="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition cursor-pointer"
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {isAddStatOpen && (
-              <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl">
-                  <h3 className="text-lg font-bold text-white mb-4">Add Custom Statistic</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Metric Label</label>
-                      <input
-                        type="text"
-                        value={newStat.label}
-                        onChange={(e) => setNewStat({ ...newStat, label: e.target.value })}
-                        placeholder="e.g. Smart Classrooms"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-300 mb-1">Value</label>
-                        <input
-                          type="number"
-                          value={newStat.value}
-                          onChange={(e) => setNewStat({ ...newStat, value: e.target.value })}
-                          placeholder="e.g. 15"
-                          className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-300 mb-1">Suffix</label>
-                        <input
-                          type="text"
-                          value={newStat.suffix}
-                          onChange={(e) => setNewStat({ ...newStat, suffix: e.target.value })}
-                          placeholder="e.g. + or %"
-                          className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Short Description</label>
-                      <input
-                        type="text"
-                        value={newStat.description}
-                        onChange={(e) => setNewStat({ ...newStat, description: e.target.value })}
-                        placeholder="Brief note about this metric"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setIsAddStatOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold cursor-pointer"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (!newStat.label) return;
-                        addCustomStat(newStat);
-                        setNewStat({ label: '', labelTa: '', value: '', suffix: '+', description: '' });
-                        setIsAddStatOpen(false);
-                        showToast('Metric added!', 'success');
-                      }}
-                      className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold cursor-pointer"
-                    >
-                      Add Metric
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
+        {/* PHOTO GALLERY */}
         {activeTab === 'gallery' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+            {/* Hidden file pickers for PC image uploads */}
+            <input
+              type="file"
+              ref={multiFileInputRef}
+              multiple
+              accept="image/*"
+              onChange={handleDirectMultiUpload}
+              className="hidden"
+            />
+            <input
+              type="file"
+              ref={cardFileInputRef}
+              accept="image/*"
+              onChange={handleReplaceCardFileChange}
+              className="hidden"
+            />
+
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Photo Gallery Management</h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Manage images displayed in the 3D interactive gallery and campus life portfolio.
+                  <h2 className="text-lg font-bold text-brand-forest">Photo Gallery</h2>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Manage the 3D gallery images displayed in the interactive carousel. Upload photos directly from your PC or enter image links.
                   </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => setIsAddGalleryOpen(true)}
-                  className="px-4 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 self-start sm:self-auto"
-                >
-                  <span>+ Add New Photo</span>
-                </button>
+                <div className="flex items-center gap-2 self-start sm:self-auto">
+                  <button
+                    type="button"
+                    disabled={isProcessingPhoto}
+                    onClick={() => multiFileInputRef.current?.click()}
+                    className="px-4 py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                    title="Choose one or multiple pictures from your computer"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                    </svg>
+                    <span>{isProcessingPhoto ? 'Processing...' : 'Upload from PC'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewGallerySrc('');
+                      setPhotoUploadError('');
+                      setIsAddGalleryOpen(true);
+                    }}
+                    className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Add Photo</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {(content.gallery || []).map((img, idx) => (
-                  <div key={img.id || idx} className="bg-slate-950 border border-slate-800 rounded-2xl overflow-hidden group">
-                    <div className="h-40 w-full overflow-hidden bg-slate-900 relative">
+                  <div key={idx} className="bg-brand-light/20 border border-brand-pale rounded-2xl overflow-hidden group shadow-2xs flex flex-col">
+                    <div className="h-32 w-full overflow-hidden bg-slate-100 relative">
                       <img
                         src={img.src}
-                        alt={img.caption || 'Gallery item'}
+                        alt={`Photo ${idx + 1}`}
                         className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                         onError={(e) => {
                           e.target.src = '/assets/hero.jpg';
                         }}
                       />
-                      <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-sm text-[10px] font-semibold text-emerald-300">
-                        {img.category || 'Campus'}
+                      <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-full bg-brand-forest/90 text-white text-[10px] font-bold">
+                        #{idx + 1}
                       </span>
+
+                      {/* Replace from PC button on hover */}
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setReplaceCardIndex(idx);
+                          cardFileInputRef.current?.click();
+                        }}
+                        className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition shadow-sm cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100"
+                        title="Upload new picture from PC to replace this photo"
+                      >
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                      </button>
                     </div>
 
-                    <div className="p-3">
+                    <div className="p-2.5 bg-brand-white flex-1 flex flex-col justify-between">
                       <input
                         type="text"
-                        value={img.caption || ''}
-                        onChange={(e) => updateGalleryImage(img.id, { caption: e.target.value })}
-                        placeholder="Image caption"
-                        className="w-full px-2 py-1 rounded bg-slate-900 border border-slate-700 text-white text-xs"
+                        value={img.src}
+                        onChange={(e) => updateGalleryImage(idx, e.target.value)}
+                        placeholder="/assets/photo.jpg or data:image..."
+                        className="w-full px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-700 text-[11px] font-mono focus:outline-none focus:border-brand-forest"
+                        title={img.src}
                       />
-                      <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800/80">
-                        <span className="text-[10px] text-slate-500 font-mono truncate max-w-[140px]">
-                          {img.src}
-                        </span>
+                      <div className="flex items-center justify-between mt-2 pt-1 border-t border-brand-pale/60 text-xs">
                         <button
                           type="button"
-                          onClick={() => deleteGalleryImage(img.id)}
-                          className="text-slate-500 hover:text-rose-400 p-1 rounded hover:bg-slate-900 transition cursor-pointer"
-                          title="Delete image"
+                          onClick={() => {
+                            setReplaceCardIndex(idx);
+                            cardFileInputRef.current?.click();
+                          }}
+                          className="text-[11px] text-brand-forest hover:underline font-medium cursor-pointer flex items-center gap-1"
+                          title="Choose photo from PC"
+                        >
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                          </svg>
+                          <span>PC</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteGalleryImage(idx)}
+                          className="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 transition cursor-pointer text-xs flex items-center gap-1"
+                          title="Remove image"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                           </svg>
+                          <span>Remove</span>
                         </button>
                       </div>
                     </div>
@@ -1268,69 +719,167 @@ export default function AdminPage() {
               </div>
             </div>
 
+            {/* ADD PHOTO MODAL WITH PC UPLOAD & AUTO URL RETRIEVAL */}
             {isAddGalleryOpen && (
-              <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-md w-full p-6 shadow-2xl">
-                  <h3 className="text-lg font-bold text-white mb-4">Add Photo to Gallery</h3>
-                  <div className="space-y-4">
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl my-8">
+                  {/* Hidden file input for modal */}
+                  <input
+                    type="file"
+                    ref={modalFileInputRef}
+                    accept="image/*"
+                    onChange={handleModalFileChange}
+                    className="hidden"
+                  />
+
+                  <div className="bg-brand-forest p-4 sm:p-5 text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-sm sm:text-base font-bold">Add Photo to Gallery</h3>
+                        <p className="text-[11px] text-brand-pale">Upload from PC or Enter Image URL</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddGalleryOpen(false);
+                        setNewGallerySrc('');
+                        setPhotoUploadError('');
+                      }}
+                      className="text-white/80 hover:text-white p-1 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                    {/* PC File Upload Dropzone */}
                     <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">
-                        Image URL / File Path
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+                        1. Upload Picture from PC
+                      </label>
+                      <div
+                        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                        onDrop={handleModalDrop}
+                        onClick={() => modalFileInputRef.current?.click()}
+                        className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+                          isProcessingPhoto
+                            ? 'border-brand-forest bg-brand-light/50 animate-pulse'
+                            : newGallerySrc
+                              ? 'border-emerald-400 bg-emerald-50/50'
+                              : 'border-brand-pale hover:border-brand-forest/70 hover:bg-brand-light/30 bg-brand-light/10'
+                        }`}
+                      >
+                        <div className="w-12 h-12 mx-auto rounded-full bg-brand-light border border-brand-pale flex items-center justify-center text-brand-forest mb-3 shadow-2xs">
+                          {isProcessingPhoto ? (
+                            <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+                              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                            </svg>
+                          ) : (
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                          )}
+                        </div>
+
+                        <div className="space-y-1">
+                          <p className="text-xs font-bold text-slate-800">
+                            {isProcessingPhoto ? 'Optimizing & Retrieving Image URL...' : 'Click to choose image from PC or drag & drop here'}
+                          </p>
+                          <p className="text-[11px] text-slate-500">
+                            Supports JPG, PNG, WEBP, GIF. Automatically optimized for fast web rendering.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {photoUploadError && (
+                      <p className="text-xs text-rose-600 font-medium">{photoUploadError}</p>
+                    )}
+
+                    {/* Live Preview If Image Loaded */}
+                    {newGallerySrc && (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Photo Successfully Loaded</span>
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => modalFileInputRef.current?.click()}
+                            className="text-[11px] text-brand-forest hover:underline font-semibold cursor-pointer"
+                          >
+                            Choose Different Image
+                          </button>
+                        </div>
+
+                        <div className="h-44 w-full rounded-lg overflow-hidden bg-slate-100 border border-emerald-200 relative">
+                          <img
+                            src={newGallerySrc}
+                            alt="Uploaded preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Fetched URL Input */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        2. Fetched Image URL / File Path
                       </label>
                       <input
                         type="text"
-                        value={newGallery.src}
-                        onChange={(e) => setNewGallery({ ...newGallery, src: e.target.value })}
-                        placeholder="e.g. /assets/gal_(1).jpeg or https://..."
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-mono"
+                        value={newGallerySrc}
+                        onChange={(e) => setNewGallerySrc(e.target.value)}
+                        placeholder="Automatically populated upon PC upload or enter /assets/photo.jpg"
+                        className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                       />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Caption</label>
-                      <input
-                        type="text"
-                        value={newGallery.caption}
-                        onChange={(e) => setNewGallery({ ...newGallery, caption: e.target.value })}
-                        placeholder="e.g. Annual Sports Meet Parade"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Category</label>
-                      <select
-                        value={newGallery.category}
-                        onChange={(e) => setNewGallery({ ...newGallery, category: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      >
-                        <option value="Campus">Campus</option>
-                        <option value="Academics">Academics</option>
-                        <option value="Sports">Sports</option>
-                        <option value="Collegiate Life">Collegiate Life</option>
-                        <option value="Events">Events</option>
-                        <option value="Culture">Culture</option>
-                      </select>
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        When you select a picture from your PC, the URL is automatically retrieved and inserted above.
+                      </p>
                     </div>
                   </div>
-                  <div className="mt-6 flex justify-end gap-2">
+
+                  <div className="p-4 bg-brand-light/30 border-t border-brand-pale flex justify-end gap-2">
                     <button
                       type="button"
-                      onClick={() => setIsAddGalleryOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold cursor-pointer"
+                      onClick={() => {
+                        setIsAddGalleryOpen(false);
+                        setNewGallerySrc('');
+                        setPhotoUploadError('');
+                      }}
+                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
+                      disabled={!newGallerySrc.trim()}
                       onClick={() => {
-                        if (!newGallery.src) return;
-                        addGalleryImage(newGallery);
-                        setNewGallery({ src: '', caption: '', category: 'Campus' });
+                        if (!newGallerySrc.trim()) return;
+                        addGalleryImage(newGallerySrc.trim());
+                        setNewGallerySrc('');
+                        setPhotoUploadError('');
                         setIsAddGalleryOpen(false);
                         showToast('Photo added to gallery!', 'success');
                       }}
-                      className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold cursor-pointer"
+                      className={`px-5 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs ${
+                        newGallerySrc.trim()
+                          ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                      }`}
                     >
-                      Add Photo
+                      Add Photo to Gallery
                     </button>
                   </div>
                 </div>
@@ -1339,148 +888,349 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* SCHOOL EVENTS (FACEBOOK IFRAME EMBEDS) */}
         {activeTab === 'events' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
-                  <h2 className="text-xl font-bold text-white">Events &amp; School Updates</h2>
-                  <p className="text-xs text-slate-400 mt-0.5">
-                    Add new official school events and manage the Facebook community feed.
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-lg font-bold text-brand-forest">School Events &amp; Facebook Updates</h2>
+                    <span className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-bold">
+                      Facebook Iframe Feed
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Manage the official community Facebook event posts displayed on the School Events page. Paste any Facebook post link or embed code to automatically retrieve and format it as an iframe.
                   </p>
                 </div>
+
                 <button
                   type="button"
-                  onClick={() => setIsAddEventOpen(true)}
-                  className="px-4 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shrink-0 self-start sm:self-auto"
+                  onClick={() => {
+                    setNewEventInput('');
+                    setNewEventHeight(645);
+                    setIsAddEventOpen(true);
+                  }}
+                  className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-start sm:self-auto"
                 >
-                  <span>+ Add New Event</span>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>+ Add Facebook Event</span>
                 </button>
               </div>
 
-              <div className="space-y-4">
-                {(content.events?.customEvents || []).map(event => (
-                  <div key={event.id} className="bg-slate-950 border border-slate-800 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-brand-forest/30 text-emerald-300 font-bold uppercase">
-                          {event.category || 'General'}
-                        </span>
-                        <span className="text-xs text-slate-400 font-medium">{event.date}</span>
-                      </div>
-                      <h3 className="text-base font-bold text-white">{event.title}</h3>
-                      {event.titleTa && <h4 className="text-xs text-emerald-400 font-tamil mt-0.5">{event.titleTa}</h4>}
-                      <p className="text-xs text-slate-300 mt-2 leading-relaxed">{event.description}</p>
-                    </div>
-
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => deleteEvent(event.id)}
-                        className="text-slate-500 hover:text-rose-400 p-2 rounded-lg hover:bg-slate-900 transition cursor-pointer"
-                        title="Delete event"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                        </svg>
-                      </button>
-                    </div>
+              {/* Event Cards Grid */}
+              {(!content.events || content.events.length === 0) ? (
+                <div className="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-brand-pale bg-brand-light/20">
+                  <div className="w-12 h-12 mx-auto rounded-full bg-brand-light flex items-center justify-center text-brand-forest mb-3">
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
                   </div>
-                ))}
-              </div>
+                  <h3 className="text-sm font-bold text-slate-800">No Facebook Events Configured</h3>
+                  <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                    Add posts from the school Facebook page by pasting their URLs to display them as interactive iframes.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setNewEventInput('');
+                      setNewEventHeight(645);
+                      setIsAddEventOpen(true);
+                    }}
+                    className="mt-4 px-4 py-2 rounded-full bg-brand-forest text-white text-xs font-semibold cursor-pointer shadow-2xs"
+                  >
+                    Add First Event
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs text-slate-500 font-medium pb-2 border-b border-brand-pale/60">
+                    <span>Active Event Posts ({content.events.length})</span>
+                    <a
+                      href="https://www.facebook.com/profile.php?id=61575442051109"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-brand-forest hover:underline flex items-center gap-1 font-semibold"
+                    >
+                      <span>Official Facebook Page</span>
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {content.events.map((post, idx) => (
+                      <div
+                        key={post.id || idx}
+                        className="bg-brand-light/20 border border-brand-pale rounded-2xl p-4 shadow-2xs flex flex-col justify-between"
+                      >
+                        {/* Top Bar */}
+                        <div className="flex items-center justify-between gap-2 mb-3">
+                          <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
+                            #{idx + 1}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <a
+                              href={post.postUrl || '#'}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1 hover:underline"
+                              title="View post on Facebook"
+                            >
+                              <span>View Post</span>
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                              </svg>
+                            </a>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (window.confirm('Remove this Facebook event card?')) {
+                                  deleteEvent(post.id);
+                                  showToast('Event removed', 'success');
+                                }
+                              }}
+                              className="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                              title="Delete event"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Live Iframe Scaled Preview Container */}
+                        <div className="w-full h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
+                          <div
+                            className="shrink-0 flex justify-center origin-top pointer-events-auto"
+                            style={{
+                              width: '500px',
+                              height: `${post.height || 645}px`,
+                              transform: 'scale(0.62)',
+                              marginBottom: `-${(post.height || 645) * 0.38}px`,
+                            }}
+                          >
+                            <iframe
+                              src={post.iframeSrc}
+                              width={post.width || 500}
+                              height={post.height || 645}
+                              style={{ border: 'none', overflow: 'hidden' }}
+                              scrolling="no"
+                              frameBorder="0"
+                              allowFullScreen={true}
+                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                              className="w-full h-full rounded-xl"
+                              title={`Facebook Event ${post.id}`}
+                            />
+                          </div>
+                        </div>
+
+                        {/* Card Info & Height Settings */}
+                        <div className="mt-3 pt-3 border-t border-brand-pale/60 space-y-2">
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="font-semibold text-slate-600">Iframe Height (px):</span>
+                            <div className="flex items-center gap-1">
+                              <input
+                                type="number"
+                                min={300}
+                                max={1200}
+                                step={10}
+                                value={post.height || 645}
+                                onChange={(e) => updateEvent(post.id, { height: Number(e.target.value) || 645 })}
+                                className="w-20 px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
+                              />
+                              <span className="text-slate-400">px</span>
+                            </div>
+                          </div>
+
+                          <div className="truncate text-[10px] text-slate-400 font-mono bg-brand-white px-2 py-1 rounded border border-brand-pale/60" title={post.iframeSrc}>
+                            {post.iframeSrc}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
+            {/* ADD EVENT MODAL (FB LINK TO IFRAME RETRIEVAL) */}
             {isAddEventOpen && (
-              <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-slate-900 border border-slate-700 rounded-3xl max-w-lg w-full p-6 shadow-2xl">
-                  <h3 className="text-lg font-bold text-white mb-4">Add School Event / News</h3>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Event Title (English)</label>
-                      <input
-                        type="text"
-                        value={newEvent.title}
-                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                        placeholder="e.g. Annual Prize Giving 2026"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Event Title (Tamil)</label>
-                      <input
-                        type="text"
-                        value={newEvent.titleTa}
-                        onChange={(e) => setNewEvent({ ...newEvent, titleTa: e.target.value })}
-                        placeholder="e.g. வருடாந்த பரிசளிப்பு விழா"
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs font-tamil"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs font-semibold text-slate-300 mb-1">Date</label>
-                        <input
-                          type="text"
-                          value={newEvent.date}
-                          onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-                          placeholder="e.g. October 2026"
-                          className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                        />
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl my-8">
+                  <div className="bg-brand-forest p-4 sm:p-5 text-white flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
                       </div>
                       <div>
-                        <label className="block text-xs font-semibold text-slate-300 mb-1">Category</label>
-                        <select
-                          value={newEvent.category}
-                          onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
-                          className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                        >
-                          <option value="Sports">Sports</option>
-                          <option value="Academics">Academics</option>
-                          <option value="Tradition">Tradition</option>
-                          <option value="Ceremony">Ceremony</option>
-                          <option value="General">General</option>
-                        </select>
+                        <h3 className="text-sm sm:text-base font-bold">Add Facebook Event Post</h3>
+                        <p className="text-[11px] text-brand-pale">Paste FB Link to Retrieve Iframe</p>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">Description</label>
-                      <textarea
-                        rows={3}
-                        value={newEvent.description}
-                        onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                        placeholder="Details about the event..."
-                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-6 flex justify-end gap-2">
                     <button
                       type="button"
-                      onClick={() => setIsAddEventOpen(false)}
-                      className="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-semibold cursor-pointer"
+                      onClick={() => {
+                        setIsAddEventOpen(false);
+                        setNewEventInput('');
+                      }}
+                      className="text-white/80 hover:text-white p-1 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Facebook Post URL or Iframe Embed Code
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={newEventInput}
+                        onChange={(e) => setNewEventInput(e.target.value)}
+                        placeholder="Paste Facebook post URL (e.g., https://www.facebook.com/permalink.php?story_fbid=... or https://www.facebook.com/.../posts/...) or iframe code"
+                        autoFocus
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
+                      />
+                      <p className="text-[11px] text-slate-500 mt-1">
+                        Tip: Open any post on Facebook, click the three dots (<span className="font-bold">···</span>), click <span className="font-semibold text-slate-700">"Copy link"</span>, and paste it here.
+                      </p>
+                    </div>
+
+                    {/* Retrieval Result & Live Iframe Preview */}
+                    {parsedNewEvent ? (
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                            <span>Iframe Successfully Retrieved</span>
+                          </span>
+                          <span className="text-[11px] font-mono text-emerald-800 font-semibold">Width: 500px</span>
+                        </div>
+
+                        <div>
+                          <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                            Generated Iframe Embed URL:
+                          </span>
+                          <div className="p-2 rounded-lg bg-white border border-emerald-200 text-[11px] font-mono text-slate-700 break-all select-all">
+                            {parsedNewEvent.iframeSrc}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-3">
+                          <div className="flex-1">
+                            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                              Canonical Post URL:
+                            </span>
+                            <div className="truncate text-xs font-mono text-blue-700">
+                              <a href={parsedNewEvent.postUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                {parsedNewEvent.postUrl} ↗
+                              </a>
+                            </div>
+                          </div>
+
+                          <div className="w-32">
+                            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                              Height (px):
+                            </span>
+                            <input
+                              type="number"
+                              min={300}
+                              max={1200}
+                              step={10}
+                              value={newEventHeight}
+                              onChange={(e) => setNewEventHeight(Number(e.target.value) || 645)}
+                              className="w-full px-2 py-1 rounded-lg bg-white border border-emerald-200 text-slate-800 text-xs font-mono font-bold"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Live Preview of Iframe */}
+                        <div className="pt-2">
+                          <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                            Live Iframe Preview:
+                          </span>
+                          <div className="w-full h-[320px] overflow-hidden rounded-xl bg-white border border-slate-200 flex justify-center items-start pt-2">
+                            <div
+                              className="shrink-0 flex justify-center origin-top pointer-events-auto"
+                              style={{
+                                width: '500px',
+                                height: `${newEventHeight}px`,
+                                transform: 'scale(0.55)',
+                                marginBottom: `-${newEventHeight * 0.45}px`,
+                              }}
+                            >
+                              <iframe
+                                src={parsedNewEvent.iframeSrc}
+                                width={500}
+                                height={newEventHeight}
+                                style={{ border: 'none', overflow: 'hidden' }}
+                                scrolling="no"
+                                frameBorder="0"
+                                allowFullScreen={true}
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                className="w-full h-full rounded-xl"
+                                title="Facebook Iframe Preview"
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : newEventInput.trim() ? (
+                      <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3.5 text-xs text-rose-800 flex items-start gap-2">
+                        <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                        <div>
+                          <p className="font-semibold">Unable to parse Facebook URL</p>
+                          <p className="text-[11px] text-rose-700 mt-0.5">
+                            Please ensure your input contains a link to Facebook (e.g. <code>https://www.facebook.com/...</code>) or an official Facebook iframe embed snippet.
+                          </p>
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+
+                  <div className="p-4 bg-brand-light/30 border-t border-brand-pale flex justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsAddEventOpen(false);
+                        setNewEventInput('');
+                      }}
+                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer"
                     >
                       Cancel
                     </button>
                     <button
                       type="button"
+                      disabled={!parsedNewEvent}
                       onClick={() => {
-                        if (!newEvent.title) return;
-                        addEvent(newEvent);
-                        setNewEvent({
-                          title: '',
-                          titleTa: '',
-                          date: '',
-                          category: 'General',
-                          badge: 'Upcoming',
-                          description: '',
-                          image: '/assets/hero.jpg',
-                          link: ''
+                        if (!parsedNewEvent) return;
+                        addEvent({
+                          ...parsedNewEvent,
+                          height: Number(newEventHeight) || 645
                         });
+                        setNewEventInput('');
                         setIsAddEventOpen(false);
-                        showToast('Event added successfully!', 'success');
+                        showToast('Facebook event added to Events page!', 'success');
                       }}
-                      className="px-4 py-2 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold cursor-pointer"
+                      className={`px-5 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs ${parsedNewEvent
+                          ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
+                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                        }`}
                     >
-                      Add Event
+                      Add Event to Page
                     </button>
                   </div>
                 </div>
@@ -1489,62 +1239,83 @@ export default function AdminPage() {
           </div>
         )}
 
+        {/* CONTACT INFORMATION */}
         {activeTab === 'contact' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">College Contact &amp; Administration Details</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Update school phone lines, official emails, office hours, and address links.
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-2">Contact Information</h2>
+              <p className="text-xs text-slate-600 mb-5">
+                Update the official contact card details and Google Maps location URL.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Official Address</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">School Address</label>
                   <input
                     type="text"
                     value={content.contact?.address || ''}
                     onChange={(e) => updateContact({ address: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Telephone Number</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Telephone</label>
                   <input
                     type="text"
                     value={content.contact?.phone || ''}
                     onChange={(e) => updateContact({ phone: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Official Email</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Email Address</label>
                   <input
                     type="email"
                     value={content.contact?.email || ''}
                     onChange={(e) => updateContact({ email: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Office Hours</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Office Hours</label>
                   <input
                     type="text"
                     value={content.contact?.officeHours || ''}
                     onChange={(e) => updateContact({ officeHours: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Google Maps URL</label>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Google Maps URL</label>
                   <input
                     type="text"
                     value={content.contact?.mapsUrl || ''}
                     onChange={(e) => updateContact({ mapsUrl: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Facebook Profile URL</label>
+                  <input
+                    type="text"
+                    value={content.contact?.facebookUrl || ''}
+                    onChange={(e) => updateContact({ facebookUrl: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">Instagram URL</label>
+                  <input
+                    type="text"
+                    value={content.contact?.instagramUrl || ''}
+                    onChange={(e) => updateContact({ instagramUrl: e.target.value })}
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
               </div>
@@ -1552,148 +1323,125 @@ export default function AdminPage() {
           </div>
         )}
 
-        {activeTab === 'anthem' && (
-          <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">School Anthem (பாடசாலைக் கீதம்)</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Edit the revered school anthem lyrics, ragam composition details, and translation.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Ragam / Musical Scale</label>
-                  <input
-                    type="text"
-                    value={content.anthem?.ragam || ''}
-                    onChange={(e) => updateAnthem({ ragam: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1.5">Audio URL / Embed Link</label>
-                  <input
-                    type="text"
-                    value={content.anthem?.audioUrl || ''}
-                    onChange={(e) => updateAnthem({ audioUrl: e.target.value })}
-                    placeholder="/assets/anthem.mp3 or YouTube link"
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Anthem Verses (Tamil)
-                </label>
-                <textarea
-                  rows={8}
-                  value={Array.isArray(content.anthem?.versesTamil) ? content.anthem.versesTamil.join('\n\n') : ''}
-                  onChange={(e) => updateAnthem({ versesTamil: e.target.value.split('\n\n') })}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-tamil leading-relaxed"
-                />
-              </div>
-
-              <div className="mt-5">
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  English Translation / Meaning
-                </label>
-                <textarea
-                  rows={3}
-                  value={content.anthem?.translationEn || ''}
-                  onChange={(e) => updateAnthem({ translationEn: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm"
-                />
-              </div>
-            </div>
-          </div>
-        )}
-
+        {/* SETTINGS & BACKUP */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">Security &amp; Passcode Settings</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Change the access passcode required to unlock the Admin Panel.
-              </p>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-4">Security Passcode</h2>
 
               <form onSubmit={handleChangePin} className="max-w-md space-y-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Current PIN
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    Current Passcode
                   </label>
                   <input
                     type="text"
                     disabled
                     value={currentPinSetting}
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-400 text-sm font-mono"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-light/40 border border-brand-pale text-slate-600 text-sm font-mono"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    New Security PIN
+                  <label className="block text-xs font-semibold text-slate-700 mb-1">
+                    New Passcode
                   </label>
                   <input
                     type="text"
                     value={newPinInput}
                     onChange={(e) => setNewPinInput(e.target.value)}
-                    placeholder="Enter new 4+ character PIN"
-                    className="w-full px-4 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white text-sm font-mono"
+                    placeholder="Enter new 4+ character passcode"
+                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer"
+                  className="px-5 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs"
                 >
                   Update Passcode
                 </button>
               </form>
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8">
-              <h2 className="text-xl font-bold text-white mb-2">Backup &amp; Configuration Export</h2>
-              <p className="text-xs text-slate-400 mb-6">
-                Download a JSON backup of all current site settings or import a previously exported backup file.
-              </p>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-4">Configuration Backup</h2>
 
-              <div className="flex flex-wrap items-center gap-4">
+              <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
                   onClick={exportJson}
-                  className="px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer transition"
+                  className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center gap-2 cursor-pointer transition shadow-2xs"
                 >
-                  <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
-                  <span>Download siteContent.json</span>
+                  <span>Download Backup JSON</span>
                 </button>
 
-                <label className="px-5 py-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 flex items-center gap-2 cursor-pointer transition">
-                  <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <label className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center gap-2 cursor-pointer transition shadow-2xs">
+                  <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
-                  <span>Import JSON Backup</span>
+                  <span>Import Backup JSON</span>
                   <input type="file" accept=".json" onChange={handleFileUpload} className="hidden" />
                 </label>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.confirm('Are you sure you want to restore default factory content? This will reset local changes.')) {
-                      resetToDefaults();
-                      showToast('Site content reset to factory defaults', 'success');
-                    }
-                  }}
-                  className="px-5 py-3 rounded-2xl bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-200 text-xs font-bold transition cursor-pointer ml-auto"
-                >
-                  Reset to Defaults
-                </button>
+                {hasLocalOverrides && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (window.confirm('Reset all changes back to repository defaults?')) {
+                        resetToDefaults();
+                        showToast('Reset to defaults', 'success');
+                      }
+                    }}
+                    className="px-4 py-2 rounded-full bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold cursor-pointer transition ml-auto"
+                  >
+                    Reset to Defaults
+                  </button>
+                )}
               </div>
+            </div>
+
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <h2 className="text-lg font-bold text-brand-forest mb-2">GitHub Repository</h2>
+              <p className="text-xs text-slate-600 mb-4">
+                View the website source code, commit history, and automated deployment actions on GitHub.
+              </p>
+              <a
+                href={GITHUB_REPO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold transition shadow-2xs"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                </svg>
+                <span>github.com/Sivodayan/KCC-Project</span>
+                <svg className="w-3.5 h-3.5 text-brand-forest/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </a>
             </div>
           </div>
         )}
       </main>
+
+      <footer className="py-6 border-t border-brand-pale bg-brand-white text-center text-xs text-slate-500 mt-auto">
+        <p className="font-semibold text-slate-700">J/Kopay Christian College Admin Panel</p>
+        <p className="mt-1">
+          <a
+            href={GITHUB_REPO_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-brand-forest hover:underline font-medium inline-flex items-center gap-1"
+          >
+            <span>GitHub Repository: Sivodayan/KCC-Project</span>
+            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

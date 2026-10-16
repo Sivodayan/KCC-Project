@@ -4,147 +4,126 @@ import { useNavigate } from 'react-router-dom';
 const searchItems = [
   {
     title: "School Events & Facebook Community Updates",
-    tamil: "பாடசாலை நிகழ்வுகள் & பேஸ்புக் செய்திகள்",
     category: "Events",
     url: "events",
     action: "navigate"
   },
   {
     title: "Annual Prize Giving & Student Achievements",
-    tamil: "வருடாந்த பரிசளிப்பு விழா & மாணவர் சாதனைகள்",
     category: "Events",
     url: "events",
     action: "navigate"
   },
   {
     title: "Inter-House Sports Meet & Athletics",
-    tamil: "இல்லங்களுக்கிடையிலான விளையாட்டுப் போட்டி",
     category: "Events",
     url: "events",
     action: "navigate"
   },
   {
     title: "Cultural Festivals & College Celebrations",
-    tamil: "கலாசார விழாக்கள் & கலை நிகழ்வுகள்",
     category: "Events",
     url: "events",
     action: "navigate"
   },
   {
     title: "Official Facebook Community Page",
-    tamil: "அதிகாரபூர்வ பேஸ்புக் சமூகம் (Facebook)",
     category: "Social",
     url: "https://www.facebook.com/profile.php?id=61575442051109",
     action: "external"
   },
   {
     title: "Campus Life Journal & 3D Digital Gallery",
-    tamil: "கல்லூரி நினைவுகள் & புகைப்படத் தொகுப்பு",
     category: "Gallery",
     url: "gallery",
     action: "navigate"
   },
   {
     title: "College History Timeline (1849 - Present)",
-    tamil: "கல்லூரி வரலாறு (1849 - இன்று வரை)",
     category: "History",
     url: "history",
     action: "navigate"
   },
   {
-    title: "Tamil History Chronicle (தமிழ் வரலாற்றுப் பதிப்பு)",
-    tamil: "கல்லூரி வரலாறு - தமிழ் ஆவணம்",
+    title: "Tamil History Chronicle",
     category: "History",
     url: "history?lang=ta",
     action: "navigate"
   },
   {
     title: "Founded Year 1852 (170+ Years of Service)",
-    tamil: "நிறுவப்பட்ட ஆண்டு 1852 (170+ ஆண்டு பாரம்பரியம்)",
     category: "Heritage",
     url: "history",
     action: "navigate"
   },
   {
     title: "Motto: Truth and Justice",
-    tamil: "மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்",
     category: "Heritage",
     url: "motto",
     action: "navigate"
   },
   {
     title: "Vision: The Ideal School in Peninsula",
-    tamil: "தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
     category: "Heritage",
     url: "motto",
     action: "navigate"
   },
   {
     title: "Mission Statement",
-    tamil: "நோக்கக்கூற்று: விழுமியங்கள், கடமைகள்",
     category: "Heritage",
     url: "motto",
     action: "navigate"
   },
   {
-    title: "School Anthem (பாடசாலைக் கீதம்)",
-    tamil: "பாடசாலைக் கீதம் (வாழிய நம் கலைக்கூடமே)",
+    title: "School Anthem",
     category: "Tradition",
     url: "anthem",
     action: "navigate"
   },
   {
     title: "Key Performance & Enrolment Metrics",
-    tamil: "செயற்திறன் புள்ளிவிபரங்கள்",
     category: "Academics",
     url: "performance",
     action: "navigate"
   },
   {
     title: "G.C.E. O/L Examination Results (94.2%)",
-    tamil: "க.பொ.த சாதாரண தரப் பரீட்சை பெறுபேறுகள்",
     category: "Academics",
     url: "performance",
     action: "navigate"
   },
   {
     title: "G.C.E. A/L University Qualifying Rate (78%)",
-    tamil: "பல்கலைக்கழக அனுமதி வீதம் (78%)",
     category: "Academics",
     url: "performance",
     action: "navigate"
   },
   {
     title: "Clubs & Societies (18 Co-Curriculars)",
-    tamil: "பாடசாலைச் சங்கங்களும் மன்றங்களும் (18)",
     category: "Activities",
     url: "performance",
     action: "navigate"
   },
   {
     title: "Science & ICT Smart Laboratories",
-    tamil: "விஞ்ஞான & கணனி ஆய்வுகூடங்கள்",
     category: "Facilities",
     url: "performance",
     action: "navigate"
   },
   {
     title: "College Administrative Office",
-    tamil: "கல்லூரி அலுவலகம் & தொடர்புகள்",
     category: "Contact",
     url: "contact",
     action: "navigate"
   },
   {
     title: "Campus Location & Google Maps Directions",
-    tamil: "பாடசாலை அமைவிடம் & வரைபடம்",
     category: "Contact",
     url: "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     action: "external"
   },
   {
     title: "Instagram Official Tag (@kopaychristiancollege)",
-    tamil: "இன்ஸ்டாகிராம் தொடர்புகள்",
     category: "Social",
     url: "https://www.instagram.com/explore/tags/kopaychristiancollege/",
     action: "external"
@@ -164,7 +143,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
       const q = query.toLowerCase().trim();
       return (
         item.title.toLowerCase().includes(q) ||
-        item.tamil.toLowerCase().includes(q) ||
         item.category.toLowerCase().includes(q)
       );
     })
@@ -247,19 +225,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
     if (inputRef.current) inputRef.current.focus();
   }
 
-  function getCategoryBadgeClass(category) {
-    if (category === 'Events') return 'bg-[#1877F2]/15 text-[#1877F2] font-semibold border border-[#1877F2]/20';
-    if (category === 'Social') return 'bg-sky-100 text-sky-800 font-semibold border border-sky-200';
-    if (category === 'History') return 'bg-amber-100 text-amber-800 font-semibold border border-amber-200';
-    if (category === 'Heritage') return 'bg-emerald-100 text-emerald-800 font-semibold border border-emerald-200';
-    if (category === 'Tradition') return 'bg-indigo-100 text-indigo-800 font-semibold border border-indigo-200';
-    if (category === 'Academics') return 'bg-blue-100 text-blue-800 font-semibold border border-blue-200';
-    if (category === 'Gallery') return 'bg-purple-100 text-purple-800 font-semibold border border-purple-200';
-    if (category === 'Activities') return 'bg-teal-100 text-teal-800 font-semibold border border-teal-200';
-    if (category === 'Contact') return 'bg-emerald-100 text-brand-forest font-semibold border border-brand-pale';
-    return 'bg-brand-pale text-brand-forest font-semibold';
-  }
-
   return (
     <div
       className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 animate-modal-backdrop"
@@ -318,7 +283,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
               }`}
           >
-            History (வரலாறு)
+            History
           </button>
           <button
             type="button"
@@ -369,7 +334,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           ) : (
             filteredItems.map((item, index) => {
               const isSelected = index === selectedIndex;
-              const catClass = getCategoryBadgeClass(item.category);
 
               return (
                 <div
@@ -377,23 +341,13 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`search-item px-3 sm:px-3.5 py-2.5 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${isSelected
+                  className={`search-item px-3.5 py-3 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${isSelected
                       ? 'bg-brand-light border border-brand-pale text-brand-forest shadow-2xs translate-x-0.5'
                       : 'hover:bg-brand-light/60 text-slate-700'
                     }`}
                 >
-                  <div className="min-w-0 flex-1 space-y-0.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md shrink-0 ${catClass}`}>
-                        {item.category}
-                      </span>
-                      <span className="font-bold text-slate-900 text-sm">{item.title}</span>
-                    </div>
-                    {item.tamil && (
-                      <p className="text-[11px] font-tamil text-slate-500 font-medium pl-0.5">
-                        {item.tamil}
-                      </p>
-                    )}
+                  <div className="min-w-0 flex-1">
+                    <span className="font-semibold text-slate-900 text-sm block truncate">{item.title}</span>
                   </div>
                   <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 opacity-80">
                     <span>{item.action === 'external' ? 'Open' : 'Go'}</span>

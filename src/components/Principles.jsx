@@ -20,7 +20,6 @@ export default function Principles() {
     tamil: "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள் மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
   };
 
-  const customCards = principles.customCards || [];
   const [flippedCards, setFlippedCards] = useState({});
 
   const toggleFlip = (cardKey) => {
@@ -155,50 +154,6 @@ export default function Principles() {
             </div>
           </div>
         </div>
-
-        {customCards.length > 0 && (
-          <div className="mt-8 pt-6 border-t border-brand-pale/60">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {customCards.map((card, idx) => {
-                const cardKey = card.id || `custom_${idx}`;
-                return (
-                  <div key={cardKey} className="reveal-item h-[240px]">
-                    <div
-                      role="button"
-                      tabIndex={0}
-                      onClick={() => toggleFlip(cardKey)}
-                      onKeyDown={(e) => handleKeyDown(e, cardKey)}
-                      className={`flip-card w-full h-full cursor-pointer select-none rounded-3xl shadow-sm hover:shadow-lg transition-shadow duration-300 ${flippedCards[cardKey] ? 'is-flipped' : ''}`}
-                    >
-                      <div className="flip-card-inner">
-                        <div className="flip-card-front bg-brand-white text-slate-800 p-6 border border-brand-pale rounded-3xl flex flex-col">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-[10px] font-extrabold tracking-widest uppercase px-2.5 py-0.5 rounded-full bg-brand-light text-brand-forest border border-brand-pale">
-                              {card.badge || 'Pillar'}
-                            </span>
-                            <span className="text-[10px] text-slate-400">Tap to flip</span>
-                          </div>
-                          <h4 className="text-xl font-bold text-brand-forest mt-1">{card.titleEn}</h4>
-                          <p className="text-xs text-slate-600 mt-2 leading-relaxed flex-1">{card.descEn}</p>
-                        </div>
-
-                        <div className="flip-card-back bg-brand-forest text-brand-white p-6 rounded-3xl border border-brand-soft/40 flex flex-col">
-                          <span className="text-[10px] font-extrabold tracking-widest uppercase text-brand-pale">
-                            {card.badge || 'மதிப்பீடு'}
-                          </span>
-                          <h4 className="text-lg font-bold text-white font-tamil mt-2">{card.titleTa || card.titleEn}</h4>
-                          <p className="text-xs text-brand-light/90 font-tamil mt-2 leading-relaxed flex-1">
-                            {card.descTa || card.descEn}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
       </div>
     </section>
   );

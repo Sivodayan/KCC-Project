@@ -1,16 +1,66 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import defaultSiteContent from '../data/siteContent.json';
+import { FACEBOOK_POSTS } from '../data/facebookEvents.js';
 
 const STORAGE_KEY = 'kcc_site_content_v1';
 const SiteContentContext = createContext(null);
 
 /**
+ * Utility to parse any Facebook URL or iframe embed snippet
+ * and format it into a standardized Facebook plugin iframe embed URL.
+ */
+export function parseFacebookInput(input) {
+  if (!input || typeof input !== 'string') return null;
+  const trimmed = input.trim();
+  if (!trimmed) return null;
+
+  // Case 1: Pasted iframe code (e.g. <iframe src="https://www.facebook.com/plugins/post.php?href=..." ...></iframe>)
+  const iframeMatch = trimmed.match(/src=["']([^"']+)["']/i);
+  if (iframeMatch) {
+    const rawSrc = iframeMatch[1];
+    const hrefMatch = rawSrc.match(/href=([^&]+)/);
+    const postUrl = hrefMatch ? decodeURIComponent(hrefMatch[1]) : rawSrc;
+    return {
+      postUrl,
+      iframeSrc: rawSrc,
+      width: 500,
+      height: 645
+    };
+  }
+
+  // Case 2: Already a facebook plugin URL (plugins/post.php or plugins/video.php)
+  if (trimmed.includes('facebook.com/plugins/')) {
+    const hrefMatch = trimmed.match(/href=([^&]+)/);
+    const postUrl = hrefMatch ? decodeURIComponent(hrefMatch[1]) : trimmed;
+    return {
+      postUrl,
+      iframeSrc: trimmed,
+      width: 500,
+      height: 645
+    };
+  }
+
+  // Case 3: Standard Facebook URL (post, permalink, reel, video, photo)
+  let cleanUrl = trimmed.replace('m.facebook.com', 'www.facebook.com');
+  const isVideo = cleanUrl.includes('/watch') || cleanUrl.includes('/reel') || cleanUrl.includes('/videos/');
+  const plugin = isVideo ? 'video.php' : 'post.php';
+  const iframeSrc = `https://www.facebook.com/plugins/${plugin}?href=${encodeURIComponent(cleanUrl)}&show_text=true&width=500`;
+
+  return {
+    postUrl: cleanUrl,
+    iframeSrc,
+    width: 500,
+    height: 645
+  };
+}
+
+/**
  * SiteContentProvider
- * Centralized content state provider for user-customizable text, stats, gallery, and events.
- * Implements a 3-tier resolution strategy:
+ * Centralized content state provider for user-customizable text, stats, gallery, events, and contact information.
+ * Supports:
  * 1. Active React component state (in-memory)
- * 2. Browser localStorage overrides (persists unpublished drafts across reloads)
- * 3. Packaged JSON defaults from siteContent.json (production fallback)
+ * 2. Browser localStorage overrides (persists edits across reloads)
+ * 3. Packaged JSON defaults from siteContent.json (fallback)
  */
 export function SiteContentProvider({ children }) {
   const [content, setContent] = useState(() => {
@@ -21,33 +71,27 @@ export function SiteContentProvider({ children }) {
         return {
           ...defaultSiteContent,
           ...parsed,
-          meta: { ...defaultSiteContent.meta, ...parsed?.meta },
-          announcement: { ...defaultSiteContent.announcement, ...parsed?.announcement },
           hero: { ...defaultSiteContent.hero, ...parsed?.hero },
           principles: {
             ...defaultSiteContent.principles,
-            ...parsed?.principles,
-            customCards: parsed?.principles?.customCards || defaultSiteContent.principles.customCards || []
+            ...parsed?.principles
           },
           performance: {
             ...defaultSiteContent.performance,
-            ...parsed?.performance,
-            customStats: parsed?.performance?.customStats || defaultSiteContent.performance.customStats || []
+            ...parsed?.performance
           },
           gallery: parsed?.gallery || defaultSiteContent.gallery || [],
-          events: {
-            ...defaultSiteContent.events,
-            ...parsed?.events,
-            customEvents: parsed?.events?.customEvents || defaultSiteContent.events.customEvents || []
-          },
-          contact: { ...defaultSiteContent.contact, ...parsed?.contact },
-          anthem: { ...defaultSiteContent.anthem, ...parsed?.anthem }
+          events: parsed?.events || defaultSiteContent.events || FACEBOOK_POSTS,
+          contact: { ...defaultSiteContent.contact, ...parsed?.contact }
         };
       }
     } catch (e) {
       console.warn('Failed to parse cached site content:', e);
     }
-    return defaultSiteContent;
+    return {
+      ...defaultSiteContent,
+      events: defaultSiteContent.events || FACEBOOK_POSTS
+    };
   });
 
   const [hasLocalOverrides, setHasLocalOverrides] = useState(() => {
@@ -81,162 +125,95 @@ export function SiteContentProvider({ children }) {
     }));
   }, [saveContent]);
 
-  const updateMeta = useCallback((meta) => updateSection('meta', meta), [updateSection]);
-  const updateAnnouncement = useCallback((announcement) => updateSection('announcement', announcement), [updateSection]);
   const updateHero = useCallback((hero) => updateSection('hero', hero), [updateSection]);
-  const updateContact = useCallback((contact) => updateSection('contact', contact), [updateSection]);
-  const updateAnthem = useCallback((anthem) => updateSection('anthem', anthem), [updateSection]);
   const updatePrinciples = useCallback((principles) => updateSection('principles', principles), [updateSection]);
-
-  const addPrincipleCard = useCallback((newCard) => {
-    saveContent(prev => {
-      const card = {
-        id: newCard.id || `pillar_${Date.now()}`,
-        titleEn: newCard.titleEn || '',
-        titleTa: newCard.titleTa || '',
-        descEn: newCard.descEn || '',
-        descTa: newCard.descTa || '',
-        badge: newCard.badge || 'Pillar'
-      };
-      const customCards = [...(prev.principles?.customCards || []), card];
-      return {
-        ...prev,
-        principles: {
-          ...prev.principles,
-          customCards
-        }
-      };
-    });
-  }, [saveContent]);
-
-  const deletePrincipleCard = useCallback((cardId) => {
-    saveContent(prev => ({
-      ...prev,
-      principles: {
-        ...prev.principles,
-        customCards: (prev.principles?.customCards || []).filter(c => c.id !== cardId)
-      }
-    }));
-  }, [saveContent]);
-
-  const updatePerformance = useCallback((performanceData) => {
-    saveContent(prev => ({
-      ...prev,
-      performance: {
-        ...prev.performance,
-        ...performanceData
-      }
-    }));
-  }, [saveContent]);
-
-  const addCustomStat = useCallback((newStat) => {
-    saveContent(prev => {
-      const stat = {
-        id: newStat.id || `stat_${Date.now()}`,
-        label: newStat.label || '',
-        labelTa: newStat.labelTa || '',
-        value: Number(newStat.value) || 0,
-        suffix: newStat.suffix || '+',
-        description: newStat.description || ''
-      };
-      const customStats = [...(prev.performance?.customStats || []), stat];
-      return {
-        ...prev,
-        performance: {
-          ...prev.performance,
-          customStats
-        }
-      };
-    });
-  }, [saveContent]);
-
-  const deleteCustomStat = useCallback((statId) => {
-    saveContent(prev => ({
-      ...prev,
-      performance: {
-        ...prev.performance,
-        customStats: (prev.performance?.customStats || []).filter(s => s.id !== statId)
-      }
-    }));
-  }, [saveContent]);
+  const updatePerformance = useCallback((performanceData) => updateSection('performance', performanceData), [updateSection]);
+  const updateContact = useCallback((contact) => updateSection('contact', contact), [updateSection]);
 
   const addGalleryImage = useCallback((newImg) => {
     saveContent(prev => {
-      const item = {
-        id: newImg.id || `gal_${Date.now()}`,
-        src: newImg.src || '/assets/hero.jpg',
-        caption: newImg.caption || 'Campus Memory',
-        category: newImg.category || 'Campus'
-      };
+      if (Array.isArray(newImg)) {
+        const newItems = newImg.map(item => ({
+          src: typeof item === 'string' ? item : (item.src || '/assets/hero.jpg')
+        }));
+        return {
+          ...prev,
+          gallery: [...(prev.gallery || []), ...newItems]
+        };
+      }
+      const src = typeof newImg === 'string' ? newImg : (newImg.src || '/assets/hero.jpg');
       return {
         ...prev,
-        gallery: [item, ...(prev.gallery || [])]
+        gallery: [...(prev.gallery || []), { src }]
       };
     });
   }, [saveContent]);
 
-  const deleteGalleryImage = useCallback((imgId) => {
+  const deleteGalleryImage = useCallback((indexOrSrc) => {
     saveContent(prev => ({
       ...prev,
-      gallery: (prev.gallery || []).filter(item => item.id !== imgId && item.src !== imgId)
-    }));
-  }, [saveContent]);
-
-  const updateGalleryImage = useCallback((imgId, updatedFields) => {
-    saveContent(prev => ({
-      ...prev,
-      gallery: (prev.gallery || []).map(item => {
-        if (item.id === imgId || item.src === imgId) {
-          return { ...item, ...updatedFields };
-        }
-        return item;
+      gallery: (prev.gallery || []).filter((item, idx) => {
+        if (typeof indexOrSrc === 'number') return idx !== indexOrSrc;
+        return item.src !== indexOrSrc;
       })
     }));
   }, [saveContent]);
 
-  const addEvent = useCallback((newEvent) => {
+  const updateGalleryImage = useCallback((index, newSrc) => {
     saveContent(prev => {
-      const item = {
-        id: newEvent.id || `evt_${Date.now()}`,
-        title: newEvent.title || 'New College Event',
-        titleTa: newEvent.titleTa || '',
-        date: newEvent.date || new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
-        category: newEvent.category || 'General',
-        badge: newEvent.badge || 'Upcoming',
-        description: newEvent.description || '',
-        image: newEvent.image || '/assets/hero.jpg',
-        link: newEvent.link || ''
-      };
-      const customEvents = [item, ...(prev.events?.customEvents || [])];
+      const newGallery = [...(prev.gallery || [])];
+      if (newGallery[index]) {
+        newGallery[index] = { src: newSrc };
+      }
       return {
         ...prev,
-        events: {
-          ...prev.events,
-          customEvents
-        }
+        gallery: newGallery
       };
     });
   }, [saveContent]);
 
-  const updateEvent = useCallback((eventId, fields) => {
+  const addEvent = useCallback((eventOrFbUrl) => {
+    saveContent(prev => {
+      let newEvent;
+      if (typeof eventOrFbUrl === 'string') {
+        const parsed = parseFacebookInput(eventOrFbUrl);
+        if (!parsed) return prev;
+        newEvent = {
+          id: `post-${Date.now()}`,
+          ...parsed
+        };
+      } else {
+        newEvent = {
+          id: eventOrFbUrl.id || `post-${Date.now()}`,
+          postUrl: eventOrFbUrl.postUrl,
+          iframeSrc: eventOrFbUrl.iframeSrc,
+          width: eventOrFbUrl.width || 500,
+          height: eventOrFbUrl.height || 645
+        };
+      }
+      return {
+        ...prev,
+        events: [newEvent, ...(prev.events || FACEBOOK_POSTS)]
+      };
+    });
+  }, [saveContent]);
+
+  const deleteEvent = useCallback((id) => {
     saveContent(prev => ({
       ...prev,
-      events: {
-        ...prev.events,
-        customEvents: (prev.events?.customEvents || []).map(evt =>
-          evt.id === eventId ? { ...evt, ...fields } : evt
-        )
-      }
+      events: (prev.events || FACEBOOK_POSTS).filter(ev => ev.id !== id)
     }));
   }, [saveContent]);
 
-  const deleteEvent = useCallback((eventId) => {
+  const updateEvent = useCallback((id, updatedData) => {
     saveContent(prev => ({
       ...prev,
-      events: {
-        ...prev.events,
-        customEvents: (prev.events?.customEvents || []).filter(evt => evt.id !== eventId)
-      }
+      events: (prev.events || FACEBOOK_POSTS).map(ev => {
+        if (ev.id === id) {
+          return { ...ev, ...updatedData };
+        }
+        return ev;
+      })
     }));
   }, [saveContent]);
 
@@ -281,23 +258,16 @@ export function SiteContentProvider({ children }) {
     defaultContent: defaultSiteContent,
     saveContent,
     updateSection,
-    updateMeta,
-    updateAnnouncement,
     updateHero,
     updatePrinciples,
-    addPrincipleCard,
-    deletePrincipleCard,
     updatePerformance,
-    addCustomStat,
-    deleteCustomStat,
     addGalleryImage,
     deleteGalleryImage,
     updateGalleryImage,
     addEvent,
-    updateEvent,
     deleteEvent,
+    updateEvent,
     updateContact,
-    updateAnthem,
     resetToDefaults,
     exportJson,
     importJson
