@@ -6,15 +6,13 @@ import { commitFileToGitHub, verifyGitHubToken } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
 import {
   isFirebaseConfigured,
+  firebaseProjectId,
   signInWithGoogle,
   signInWithEmail,
   logOutFirebase,
   subscribeToAuth
 } from '../firebase.js';
 
-const DEFAULT_PIN = 'kcc1852';
-const PIN_STORAGE_KEY = 'kcc_admin_pin';
-const SESSION_AUTH_KEY = 'kcc_admin_session_auth';
 const LAST_ACTIVE_KEY = 'kcc_admin_last_active';
 const GITHUB_TOKEN_STORAGE_KEY = 'kcc_admin_github_token';
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
@@ -60,42 +58,27 @@ export default function AdminPage() {
     importJson
   } = useSiteContent();
 
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    const isAuth = sessionStorage.getItem(SESSION_AUTH_KEY) === 'true';
-    if (!isAuth) return false;
-    const lastActive = Number(sessionStorage.getItem(LAST_ACTIVE_KEY) || '0');
-    // If last active timestamp is older than timeout duration, expire session
-    if (lastActive && Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS) {
-      sessionStorage.removeItem(SESSION_AUTH_KEY);
-      sessionStorage.removeItem(LAST_ACTIVE_KEY);
-      return false;
-    }
-    return true;
-  });
-  const [pinInput, setPinInput] = useState('');
-  const [pinError, setPinError] = useState('');
-  const [showPin, setShowPin] = useState(false);
-
   // Firebase Authentication States
   const [firebaseUser, setFirebaseUser] = useState(null);
+  const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [emailInput, setEmailInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [authError, setAuthError] = useState('');
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [loginMethod, setLoginMethod] = useState(() => (isFirebaseConfigured ? 'firebase' : 'pin'));
 
   useEffect(() => {
     const unsubscribe = subscribeToAuth((user) => {
+      setFirebaseUser(user);
+      setIsAuthChecking(false);
       if (user) {
-        setFirebaseUser(user);
-        setIsAuthenticated(true);
-        sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
         sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
       }
     });
     return () => unsubscribe();
   }, []);
+
+  const isAuthenticated = Boolean(firebaseUser);
 
   const [activeTab, setActiveTab] = useState('hero');
 
@@ -169,10 +152,6 @@ export default function AdminPage() {
   const [newEventHeight, setNewEventHeight] = useState(645);
   const parsedNewEvent = parseFacebookInput(newEventInput);
 
-  const [currentPinSetting, setCurrentPinSetting] = useState(() => {
-    return localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
-  });
-  const [newPinInput, setNewPinInput] = useState('');
 
   // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
@@ -322,8 +301,6 @@ export default function AdminPage() {
       const result = await signInWithEmail(emailInput.trim(), passwordInput);
       const user = result.user;
       setFirebaseUser(user);
-      setIsAuthenticated(true);
-      sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
       sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
       showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
     } catch (err) {
@@ -338,20 +315,6 @@ export default function AdminPage() {
     }
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    const storedPin = localStorage.getItem(PIN_STORAGE_KEY) || DEFAULT_PIN;
-    if (pinInput.trim() === storedPin) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem(SESSION_AUTH_KEY, 'true');
-      sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
-      setPinError('');
-      showToast('Welcome to KCC Admin Panel', 'success');
-    } else {
-      setPinError('Incorrect passcode. Please try again.');
-    }
-  };
-
   const handleLogout = async (reason = '') => {
     try {
       await logOutFirebase();
@@ -359,14 +322,10 @@ export default function AdminPage() {
       console.warn('Firebase signout error:', err);
     }
     setFirebaseUser(null);
-    setIsAuthenticated(false);
-    sessionStorage.removeItem(SESSION_AUTH_KEY);
     sessionStorage.removeItem(LAST_ACTIVE_KEY);
-    setPinInput('');
     setEmailInput('');
     setPasswordInput('');
     if (reason) {
-      setPinError(reason);
       setAuthError(reason);
     }
     showToast('Logged out of Admin Panel', 'info');
@@ -549,29 +508,32 @@ export default function AdminPage() {
     }
   };
 
-  const handleChangePin = (e) => {
-    e.preventDefault();
-    if (newPinInput.trim().length < 4) {
-      showToast('Passcode must be at least 4 characters long', 'error');
-      return;
-    }
-    localStorage.setItem(PIN_STORAGE_KEY, newPinInput.trim());
-    setCurrentPinSetting(newPinInput.trim());
-    setNewPinInput('');
-    showToast('Passcode updated successfully!', 'success');
-  };
+  if (isAuthChecking) {
+    return (
+      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-4">
+        <div className="w-full max-w-sm bg-brand-white border border-brand-pale rounded-3xl p-8 shadow-xl text-center">
+          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 animate-pulse">
+            <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
+          </div>
+          <div className="inline-flex items-center gap-2 text-brand-forest text-xs font-bold mb-1">
+            <svg className="w-4 h-4 animate-spin text-brand-forest" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+            <span>Verifying Credentials...</span>
+          </div>
+          <p className="text-[11px] text-slate-500 font-sans">Connecting to Firebase Authentication</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-4 selection:bg-brand-pale selection:text-brand-forest">
         <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-3xl p-8 shadow-xl text-slate-800">
           <div className="text-center mb-6">
-            <button
-              type="button"
-              onClick={() => navigate('/')}
-              className="group inline-flex flex-col items-center cursor-pointer focus:outline-none"
-              title="Return to Website"
-            >
+           
               <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 shadow-2xs group-hover:scale-105 group-hover:border-brand-soft transition">
                 <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
               </div>
@@ -581,7 +543,7 @@ export default function AdminPage() {
               <p className="text-xs text-slate-500 font-tamil mt-1">
                 யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
               </p>
-            </button>
+          
             <div className="mt-3 flex items-center justify-center gap-2">
               <span className="inline-block px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-[11px] font-bold text-brand-forest">
                 Admin Panel
@@ -591,152 +553,75 @@ export default function AdminPage() {
                 onClick={() => navigate('/')}
                 className="text-[11px] font-bold text-brand-forest hover:underline cursor-pointer flex items-center gap-1"
               >
-                <span>← Return to Website</span>
+                
               </button>
             </div>
           </div>
 
-          {/* DUAL OPTION AUTHENTICATION: FIREBASE (GOOGLE + EMAIL) OR PASSCODE */}
-          {loginMethod === 'firebase' ? (
-            <div className="space-y-4">
-              {/* Google Sign-In */}
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={isAuthLoading}
-                className="w-full py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-                </svg>
-                <span>Continue with Google</span>
-              </button>
+          {/* FIREBASE AUTHENTICATION (GOOGLE + EMAIL & PASSWORD) */}
+          <div className="space-y-4">
+            {/* Google Sign-In */}
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isAuthLoading}
+              className="w-full py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+              </svg>
+              <span>Continue with Google</span>
+            </button>
 
-              {/* Divider */}
-              <div className="relative flex items-center justify-center my-3">
-                <div className="border-t border-brand-pale w-full" />
-                <span className="bg-brand-white px-2.5 text-[11px] text-slate-400 font-medium uppercase tracking-wider shrink-0">
-                  or with email
-                </span>
-                <div className="border-t border-brand-pale w-full" />
-              </div>
-
-              {/* Email / Password Form */}
-              <form onSubmit={handleEmailSignIn} className="space-y-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Admin Email
-                  </label>
-                  <input
-                    type="email"
-                    value={emailInput}
-                    onChange={(e) => setEmailInput(e.target.value)}
-                    placeholder="admin@kcc.lk or kcckopay@gmail.com"
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      type={showPassword ? 'text' : 'password'}
-                      value={passwordInput}
-                      onChange={(e) => setPasswordInput(e.target.value)}
-                      placeholder="Enter account password"
-                      className="w-full px-3.5 py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        {showPassword ? (
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                        ) : (
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        )}
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                {authError && (
-                  <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
-                    {authError}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={isAuthLoading}
-                  className="w-full py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
-                >
-                  {isAuthLoading ? (
-                    <span>Signing in...</span>
-                  ) : (
-                    <>
-                      <span>Sign In with Email</span>
-                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </form>
-
-              {/* Mode switch to Passcode */}
-              <div className="pt-2 text-center border-t border-brand-pale/70">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setAuthError('');
-                    setLoginMethod('pin');
-                  }}
-                  className="text-xs text-brand-forest hover:underline font-semibold cursor-pointer"
-                >
-                  Or sign in with Master Passcode (PIN) →
-                </button>
-              </div>
-
-              {!isFirebaseConfigured && (
-                <div className="p-3 rounded-xl bg-amber-50/70 border border-amber-200 text-amber-900 text-[11px] leading-relaxed">
-                  <span className="font-bold block mb-0.5">ℹ️ Firebase Setup Note:</span>
-                  Firebase API keys are not detected in <code className="font-mono bg-white px-1 py-0.5 rounded border border-amber-300">.env</code>. You can sign in using the Master Passcode (default: <code className="font-mono font-bold">kcc1852</code>) or add your Firebase project credentials.
-                </div>
-              )}
+            {/* Divider */}
+            <div className="relative flex items-center justify-center my-3">
+              <div className="border-t border-brand-pale w-full" />
+              <span className="bg-brand-white px-2.5 text-[11px] text-slate-400 font-medium uppercase tracking-wider shrink-0">
+                or sign in with email
+              </span>
+              <div className="border-t border-brand-pale w-full" />
             </div>
-          ) : (
-            /* MASTER PASSCODE (PIN) FORM */
-            <form onSubmit={handleLogin} className="space-y-4">
+
+            {/* Email / Password Form */}
+            <form onSubmit={handleEmailSignIn} className="space-y-3">
               <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-                  Master Passcode
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Admin Email
+                </label>
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  placeholder="admin@kcc.lk"
+                  required
+                  className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                  Password
                 </label>
                 <div className="relative">
                   <input
-                    type={showPin ? 'text' : 'password'}
-                    value={pinInput}
-                    onChange={(e) => setPinInput(e.target.value)}
-                    placeholder="Enter passcode"
-                    autoFocus
-                    className="w-full px-4 py-2.5 pr-11 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest font-mono tracking-wider"
+                    type={showPassword ? 'text' : 'password'}
+                    value={passwordInput}
+                    onChange={(e) => setPasswordInput(e.target.value)}
+                    placeholder="Enter account password"
+                    required
+                    className="w-full px-3.5 py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPin(!showPin)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                    aria-label={showPin ? 'Hide passcode' : 'Show passcode'}
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {showPin ? (
+                      {showPassword ? (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
                       ) : (
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -744,35 +629,38 @@ export default function AdminPage() {
                     </svg>
                   </button>
                 </div>
-                {pinError && (
-                  <p className="text-xs text-rose-600 mt-2 font-medium">{pinError}</p>
-                )}
               </div>
+
+              {authError && (
+                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                  {authError}
+                </div>
+              )}
 
               <button
                 type="submit"
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2"
+                disabled={isAuthLoading}
+                className="w-full py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <span>Enter Admin Panel</span>
-                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                </svg>
+                {isAuthLoading ? (
+                  <span>Signing in...</span>
+                ) : (
+                  <>
+                    <span>Sign In with Email</span>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                    </svg>
+                  </>
+                )}
               </button>
-
-              <div className="pt-2 text-center border-t border-brand-pale/70">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setPinError('');
-                    setLoginMethod('firebase');
-                  }}
-                  className="text-xs text-brand-forest hover:underline font-semibold cursor-pointer"
-                >
-                  ← Back to Firebase Login (Google / Email)
-                </button>
-              </div>
             </form>
-          )}
+
+            <div className="pt-3 border-t border-brand-pale/70 text-center">
+              <p className="text-[11px] text-slate-400">
+                Authorized Personnel Only 
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -903,11 +791,30 @@ export default function AdminPage() {
                 )}
               </button>
 
+              {/* Authenticated Firebase User Badge */}
+              <div
+                className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-white border border-brand-pale text-xs shadow-2xs"
+                title={`Signed in as ${firebaseUser?.email || 'Admin'}`}
+              >
+                {firebaseUser?.photoURL ? (
+                  <img
+                    src={firebaseUser.photoURL}
+                    alt=""
+                    className="w-4 h-4 rounded-full object-cover shrink-0"
+                  />
+                ) : (
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                )}
+                <span className="font-semibold text-slate-700 max-w-[130px] truncate">
+                  {firebaseUser?.displayName || firebaseUser?.email || 'Admin'}
+                </span>
+              </div>
+
               <button
                 type="button"
                 onClick={() => handleLogout()}
                 className="p-2 rounded-full bg-brand-white border border-brand-pale text-slate-500 hover:text-rose-600 hover:bg-brand-light transition cursor-pointer shadow-2xs"
-                title="Lock Admin Panel"
+                title={firebaseUser?.email ? `Sign out (${firebaseUser.email})` : 'Sign out of Admin Panel'}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -1981,39 +1888,72 @@ export default function AdminPage() {
         {activeTab === 'settings' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-4">Security Passcode</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
+                <div>
+                  <h2 className="text-lg font-bold text-brand-forest">Administrator Account</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Secured by Firebase Authentication {firebaseProjectId && <span className="font-mono text-brand-forest font-semibold">({firebaseProjectId})</span>}
+                  </p>
+                </div>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold self-start sm:self-auto">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Authenticated
+                </span>
+              </div>
 
-              <form onSubmit={handleChangePin} className="max-w-md space-y-4">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    Current Passcode
-                  </label>
-                  <input
-                    type="text"
-                    disabled
-                    value={currentPinSetting}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-light/40 border border-brand-pale text-slate-600 text-sm font-mono"
-                  />
+              <div className="max-w-xl bg-brand-light/30 border border-brand-pale rounded-2xl p-4 sm:p-5 space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
+                  <span className="text-slate-500 font-medium">Logged In As</span>
+                  <span className="font-bold text-slate-800">{firebaseUser?.email || 'Authenticated Admin'}</span>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1">
-                    New Passcode
-                  </label>
-                  <input
-                    type="text"
-                    value={newPinInput}
-                    onChange={(e) => setNewPinInput(e.target.value)}
-                    placeholder="Enter new 4+ character passcode"
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                  />
+                {firebaseUser?.displayName && (
+                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
+                    <span className="text-slate-500 font-medium">Display Name</span>
+                    <span className="font-semibold text-slate-800">{firebaseUser.displayName}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
+                  <span className="text-slate-500 font-medium">Sign-In Provider</span>
+                  <span className="font-mono font-semibold text-slate-700">
+                    {firebaseUser?.providerData?.[0]?.providerId === 'google.com'
+                      ? 'Google OAuth 2.0'
+                      : firebaseUser?.providerData?.[0]?.providerId === 'password'
+                      ? 'Email & Password'
+                      : 'Firebase Auth'}
+                  </span>
                 </div>
+                {firebaseProjectId && (
+                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
+                    <span className="text-slate-500 font-medium">Firebase Project ID</span>
+                    <span className="font-mono text-brand-forest font-semibold">{firebaseProjectId}</span>
+                  </div>
+                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-500 font-medium">Auto Inactivity Timeout</span>
+                  <span className="text-slate-700 font-semibold">15 Minutes of Idle Time</span>
+                </div>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center gap-3">
                 <button
-                  type="submit"
-                  className="px-5 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs"
+                  type="button"
+                  onClick={() => handleLogout()}
+                  className="px-4 py-2 rounded-full bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition cursor-pointer shadow-2xs"
                 >
-                  Update Passcode
+                  Sign Out from Session
                 </button>
-              </form>
+                <a
+                  href={firebaseProjectId ? `https://console.firebase.google.com/project/${firebaseProjectId}/authentication/users` : 'https://console.firebase.google.com/'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold inline-flex items-center gap-1.5 transition shadow-2xs"
+                >
+                  <span>Manage Users in Firebase Console</span>
+                  <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
             </div>
 
             <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">

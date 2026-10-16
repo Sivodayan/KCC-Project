@@ -12,7 +12,7 @@ export default function Contact() {
 
   const address = contact.address || "J/Kopay Christian College, Kopay, Jaffna, Sri Lanka";
   const phone = contact.phone || "021 223 0040";
-  const officeHours = contact.officeHours || "Mon – Fri, 8:00 AM – 3:30 PM";
+  const officeHours = contact.officeHours;
   const email = contact.email || "kcckopay@gmail.com";
   const mapsUrl = contact.mapsUrl || MAPS_LOCATION_URL;
   const facebookUrl = contact.facebookUrl || FACEBOOK_URL;

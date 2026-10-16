@@ -36,14 +36,21 @@ node_modules/
 dist/
 dist-ssr/
 
-# Local env files
+# Local env files and secrets
 .env
-.env.local
-.env.*.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+.env*.local
 !.env.example
+
+# Service accounts, private keys & credentials
+*-adminsdk-*.json
+*service-account*.json
+*serviceAccount*.json
+*credentials*.json
+credentials.json
+service-account.json
+*.pem
+*.key
 
 # Firebase cache
 .firebase/

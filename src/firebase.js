@@ -32,6 +32,8 @@ export const isFirebaseConfigured = Boolean(
   firebaseConfig.projectId
 );
 
+export const firebaseProjectId = firebaseConfig.projectId || '';
+
 let app = null;
 let auth = null;
 let googleProvider = null;
