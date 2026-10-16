@@ -137,29 +137,33 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
   const itemRefs = useRef([]);
   const routerNavigate = useNavigate();
 
-  const filteredItems = searchItems
-    .filter(item => {
-      if (!query.trim()) return true;
-      const q = query.toLowerCase().trim();
-      return (
-        item.title.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-      );
-    })
-    .sort((a, b) => {
-      if (!query.trim()) return 0;
-      const q = query.toLowerCase().trim();
-      const aTitle = a.title.toLowerCase();
-      const bTitle = b.title.toLowerCase();
-      const aStarts = aTitle.startsWith(q);
-      const bStarts = bTitle.startsWith(q);
-      if (aStarts && !bStarts) return -1;
-      if (!aStarts && bStarts) return 1;
-      return 0;
-    });
+  const hasQuery = Boolean(query.trim());
+
+  const filteredItems = !hasQuery
+    ? []
+    : searchItems
+        .filter(item => {
+          const q = query.toLowerCase().trim();
+          return (
+            item.title.toLowerCase().includes(q) ||
+            item.category.toLowerCase().includes(q)
+          );
+        })
+        .sort((a, b) => {
+          const q = query.toLowerCase().trim();
+          const aTitle = a.title.toLowerCase();
+          const bTitle = b.title.toLowerCase();
+          const aStarts = aTitle.startsWith(q);
+          const bStarts = bTitle.startsWith(q);
+          if (aStarts && !bStarts) return -1;
+          if (!aStarts && bStarts) return 1;
+          return 0;
+        });
 
   useEffect(() => {
     if (isOpen) {
+      setQuery('');
+      setSelectedIndex(0);
       setTimeout(() => {
         if (inputRef.current) inputRef.current.focus();
       }, 50);
@@ -185,10 +189,14 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         onClose();
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % Math.max(1, filteredItems.length));
+        if (filteredItems.length > 0) {
+          setSelectedIndex(prev => (prev + 1) % filteredItems.length);
+        }
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + filteredItems.length) % Math.max(1, filteredItems.length));
+        if (filteredItems.length > 0) {
+          setSelectedIndex(prev => (prev - 1 + filteredItems.length) % filteredItems.length);
+        }
       } else if (e.key === 'Enter') {
         e.preventDefault();
         if (filteredItems[selectedIndex]) {
@@ -318,7 +326,19 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         </div>
 
         <div className="overflow-y-auto divide-y divide-brand-pale/60 p-2 text-sm max-h-[50vh]">
-          {filteredItems.length === 0 ? (
+          {!hasQuery ? (
+            <div className="py-12 px-4 text-center text-slate-500">
+              <div className="w-12 h-12 mx-auto rounded-full bg-brand-light/80 border border-brand-pale flex items-center justify-center text-brand-forest mb-3 shadow-2xs">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <p className="font-semibold text-slate-700 text-sm">Start typing to search...</p>
+              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                Type keywords (events, history, gallery, anthem, contact) or tap a quick topic above.
+              </p>
+            </div>
+          ) : filteredItems.length === 0 ? (
             <div className="py-12 text-center text-slate-500">
               <svg className="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
@@ -329,7 +349,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 />
               </svg>
               <p className="font-semibold text-slate-700">No matching results found</p>
-              <p className="text-xs text-slate-400 mt-1">Try searching for "Events", "Facebook", "History", "Anthem", or "Contact"</p>
+              <p className="text-xs text-slate-400 mt-1">Try searching with a different keyword</p>
             </div>
           ) : (
             filteredItems.map((item, index) => {
@@ -369,16 +389,25 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
         <div className="p-3 bg-brand-light/50 border-t border-brand-pale flex items-center justify-between text-[11px] text-slate-500 px-4">
           <div className="flex items-center gap-3">
+            {hasQuery && filteredItems.length > 0 && (
+              <>
+                <span>
+                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↑</kbd>{' '}
+                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↓</kbd> navigate
+                </span>
+                <span>
+                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↵</kbd> select
+                </span>
+              </>
+            )}
             <span>
-              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↑</kbd>{' '}
-              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↓</kbd> navigate
-            </span>
-            <span>
-              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↵</kbd> select
+              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">esc</kbd> close
             </span>
           </div>
           <span className="font-medium text-brand-forest">
-            {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'} available
+            {!hasQuery
+              ? 'Search Kopay Christian College'
+              : `${filteredItems.length} ${filteredItems.length === 1 ? 'result' : 'results'} found`}
           </span>
         </div>
       </div>
