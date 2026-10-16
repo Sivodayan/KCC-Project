@@ -188,14 +188,8 @@ export default function Gallery() {
       id="gallery"
     >
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 reveal-item">
-          <h2 className="text-3xl font-extrabold text-brand-forest mt-1 tracking-tight">
-            Campus Life &amp; Historic Moments
-          </h2>
-          <p className="text-slate-600 text-sm mt-2">
-            Archival captures and vibrant collegiate activity reflecting the heritage of Kopay Christian College.
-          </p>
-        </div>
+
+
 
         <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden">
           <div
@@ -317,15 +311,10 @@ export default function Gallery() {
                   <div className="w-full h-full relative overflow-hidden bg-slate-900">
                     <img
                       src={item.src}
-                      alt={item.caption || `Campus moment ${index + 1}`}
+                      alt={item.caption || `School moment ${index + 1}`}
                       className="w-full h-full object-cover object-center pointer-events-none"
                       loading="lazy"
                     />
-                    {item.category && (
-                      <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-full bg-slate-900/80 backdrop-blur-sm text-[10px] font-semibold text-emerald-300 border border-slate-700/60">
-                        {item.category}
-                      </span>
-                    )}
                   </div>
                 </div>
               );

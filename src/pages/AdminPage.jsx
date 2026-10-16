@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
@@ -28,6 +28,13 @@ export default function AdminPage() {
   const {
     content,
     hasLocalOverrides,
+    canUndo,
+    canRedo,
+    undoCount,
+    redoCount,
+    undo,
+    redo,
+    commitContinuous,
     updateHero,
     updatePrinciples,
     updatePerformance,
@@ -66,6 +73,52 @@ export default function AdminPage() {
     setToast({ show: true, message, type });
     setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 4000);
   };
+
+  const handleUndo = useCallback(() => {
+    if (!canUndo) return;
+    const success = undo();
+    if (success) {
+      showToast('Action undone (Ctrl+Z)', 'info');
+    }
+  }, [canUndo, undo]);
+
+  const handleRedo = useCallback(() => {
+    if (!canRedo) return;
+    const success = redo();
+    if (success) {
+      showToast('Action redone (Ctrl+Y)', 'info');
+    }
+  }, [canRedo, redo]);
+
+  // Global Keyboard shortcuts for Undo (Ctrl+Z / Cmd+Z) and Redo (Ctrl+Y / Ctrl+Shift+Z / Cmd+Shift+Z)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const handleKeyDown = (e) => {
+      const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
+      if (!cmdOrCtrl) return;
+
+      const key = e.key.toLowerCase();
+
+      // Redo: Ctrl+Y or Ctrl+Shift+Z
+      if (key === 'y' || (key === 'z' && e.shiftKey)) {
+        e.preventDefault();
+        handleRedo();
+        return;
+      }
+
+      // Undo: Ctrl+Z (without shift)
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isAuthenticated, handleUndo, handleRedo]);
 
   const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
   const [newGallerySrc, setNewGallerySrc] = useState('');
@@ -377,12 +430,18 @@ export default function AdminPage() {
         <div
           className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all transform animate-bounce duration-300 ${toast.type === 'error'
               ? 'bg-rose-50 border border-rose-300 text-rose-800'
+              : toast.type === 'info'
+              ? 'bg-slate-900 border border-slate-700 text-white shadow-2xl'
               : 'bg-brand-light border border-brand-pale text-brand-forest'
             }`}
         >
           {toast.type === 'error' ? (
             <svg className="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          ) : toast.type === 'info' ? (
+            <svg className="w-4 h-4 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 10h10a5 5 0 0 1 5 5v2m0 0l-4-4m4 4l4-4M3 10l4-4m-4 4l4 4" />
             </svg>
           ) : (
             <svg className="w-4 h-4 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -426,11 +485,62 @@ export default function AdminPage() {
             </div>
 
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Undo / Redo History Controls */}
+              <div className="inline-flex items-center rounded-full bg-brand-white border border-brand-pale p-0.5 shadow-2xs">
+                <button
+                  type="button"
+                  onClick={handleUndo}
+                  disabled={!canUndo}
+                  title={canUndo ? `Undo last change (Ctrl+Z) • ${undoCount} step${undoCount > 1 ? 's' : ''} available` : 'Nothing to undo (Ctrl+Z)'}
+                  aria-label="Undo last change"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
+                    canUndo
+                      ? 'text-slate-700 hover:text-brand-forest hover:bg-brand-light active:scale-95'
+                      : 'text-slate-300 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.3" d="M3 10h10a5 5 0 0 1 5 5v2m0 0l-4-4m4 4l4-4M3 10l4-4m-4 4l4 4" />
+                  </svg>
+                  <span className="hidden sm:inline">Undo</span>
+                  {undoCount > 0 && (
+                    <span className="hidden md:inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
+                      {undoCount}
+                    </span>
+                  )}
+                </button>
+
+                <div className="w-[1px] h-4 bg-brand-pale" />
+
+                <button
+                  type="button"
+                  onClick={handleRedo}
+                  disabled={!canRedo}
+                  title={canRedo ? `Redo change (Ctrl+Y or Ctrl+Shift+Z) • ${redoCount} step${redoCount > 1 ? 's' : ''} available` : 'Nothing to redo (Ctrl+Y)'}
+                  aria-label="Redo change"
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
+                    canRedo
+                      ? 'text-slate-700 hover:text-brand-forest hover:bg-brand-light active:scale-95'
+                      : 'text-slate-300 cursor-not-allowed opacity-50'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Redo</span>
+                  {redoCount > 0 && (
+                    <span className="hidden md:inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
+                      {redoCount}
+                    </span>
+                  )}
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.3" d="M21 10H11a5 5 0 0 0-5 5v2m0 0l4-4m-4 4l-4-4m20-3l-4-4m4 4l-4 4" />
+                  </svg>
+                </button>
+              </div>
+
               <a
                 href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer"
+                className="hidden lg:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold shadow-2xs transition active:scale-95 cursor-pointer"
                 title="View GitHub Repository"
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
@@ -447,7 +557,7 @@ export default function AdminPage() {
                 onClick={() => window.open('/', '_blank')}
                 className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer shadow-2xs"
               >
-                <span>Live Preview</span>
+                <span>Save & Preview</span>
                 <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
@@ -478,7 +588,10 @@ export default function AdminPage() {
             ].map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  commitContinuous();
+                  setActiveTab(tab.id);
+                }}
                 className={`px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer font-semibold ${activeTab === tab.id
                     ? 'bg-brand-forest text-white shadow-2xs'
                     : 'text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60 bg-brand-white border border-brand-pale/60'
@@ -1615,6 +1728,61 @@ export default function AdminPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
+            </div>
+
+            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
+                <h2 className="text-lg font-bold text-brand-forest">Workflow &amp; Keyboard Shortcuts</h2>
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-light text-brand-forest border border-brand-pale">
+                    {undoCount} undoable step{undoCount === 1 ? '' : 's'}
+                  </span>
+                  {redoCount > 0 && (
+                    <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+                      {redoCount} redoable
+                    </span>
+                  )}
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 mb-4">
+                The KCC Admin Console automatically records snapshots of your edits across all tabs. Use the sticky top navigation buttons or these universal keyboard shortcuts:
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 10h10a5 5 0 0 1 5 5v2m0 0l-4-4m4 4l4-4M3 10l4-4m-4 4l4 4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-800 block">Undo Last Action</span>
+                      <span className="text-[11px] text-slate-500">Reverts text, stat, photo or event edits</span>
+                    </div>
+                  </div>
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs">
+                    Ctrl + Z
+                  </kbd>
+                </div>
+
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M21 10H11a5 5 0 0 0-5 5v2m0 0l4-4m-4 4l-4-4m20-3l-4-4m4 4l-4 4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-800 block">Redo Action</span>
+                      <span className="text-[11px] text-slate-500">Restores undone changes</span>
+                    </div>
+                  </div>
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs">
+                    Ctrl + Y / ⇧⌘Z
+                  </kbd>
+                </div>
+              </div>
             </div>
           </div>
         )}

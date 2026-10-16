@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import defaultSiteContent from '../data/siteContent.json';
 import { FACEBOOK_POSTS } from '../data/facebookEvents.js';
 
@@ -102,18 +102,145 @@ export function SiteContentProvider({ children }) {
     }
   });
 
-  const saveContent = useCallback((updater) => {
-    setContent(prev => {
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-        setHasLocalOverrides(true);
-      } catch (err) {
-        console.error('LocalStorage write error:', err);
-      }
-      return next;
-    });
+  // Undo / Redo History Stack Management
+  const MAX_HISTORY = 40;
+  const [past, setPast] = useState([]);
+  const [future, setFuture] = useState([]);
+
+  const contentRef = useRef(content);
+  contentRef.current = content;
+
+  const pastRef = useRef([]);
+  pastRef.current = past;
+
+  const futureRef = useRef([]);
+  futureRef.current = future;
+
+  const typingSessionRef = useRef({
+    active: false,
+    timer: null
+  });
+
+  const commitContinuous = useCallback(() => {
+    if (typingSessionRef.current.timer) {
+      clearTimeout(typingSessionRef.current.timer);
+      typingSessionRef.current.timer = null;
+    }
+    typingSessionRef.current.active = false;
   }, []);
+
+  const saveContent = useCallback((updater, options = {}) => {
+    const { isContinuous = false } = options;
+    const current = contentRef.current;
+    const next = typeof updater === 'function' ? updater(current) : updater;
+
+    // Skip redundant updates
+    if (JSON.stringify(current) === JSON.stringify(next)) {
+      return;
+    }
+
+    if (isContinuous) {
+      // If we are starting a continuous typing/editing sequence, record snapshot of state before typing started
+      if (!typingSessionRef.current.active) {
+        typingSessionRef.current.active = true;
+        const newPast = [...pastRef.current.slice(-(MAX_HISTORY - 1)), current];
+        pastRef.current = newPast;
+        futureRef.current = [];
+        setPast(newPast);
+        setFuture([]);
+      }
+
+      // Debounce the typing session so user pauses reset the session boundary
+      if (typingSessionRef.current.timer) {
+        clearTimeout(typingSessionRef.current.timer);
+      }
+      typingSessionRef.current.timer = setTimeout(() => {
+        typingSessionRef.current.active = false;
+        typingSessionRef.current.timer = null;
+      }, 750);
+    } else {
+      // Discrete action (e.g. upload, delete image, add event): seal any ongoing typing session
+      if (typingSessionRef.current.timer) {
+        clearTimeout(typingSessionRef.current.timer);
+        typingSessionRef.current.timer = null;
+      }
+      typingSessionRef.current.active = false;
+
+      const newPast = [...pastRef.current.slice(-(MAX_HISTORY - 1)), current];
+      pastRef.current = newPast;
+      futureRef.current = [];
+      setPast(newPast);
+      setFuture([]);
+    }
+
+    setContent(next);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      setHasLocalOverrides(true);
+    } catch (err) {
+      console.error('LocalStorage write error:', err);
+    }
+  }, []);
+
+  const undo = useCallback(() => {
+    commitContinuous();
+
+    const pastList = pastRef.current;
+    if (pastList.length === 0) return false;
+
+    const previousState = pastList[pastList.length - 1];
+    const newPast = pastList.slice(0, -1);
+    const newFuture = [contentRef.current, ...futureRef.current.slice(0, MAX_HISTORY - 1)];
+
+    pastRef.current = newPast;
+    futureRef.current = newFuture;
+    setPast(newPast);
+    setFuture(newFuture);
+
+    setContent(previousState);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(previousState));
+      setHasLocalOverrides(true);
+    } catch (err) {
+      console.error('LocalStorage write error during undo:', err);
+    }
+
+    return true;
+  }, [commitContinuous]);
+
+  const redo = useCallback(() => {
+    commitContinuous();
+
+    const futureList = futureRef.current;
+    if (futureList.length === 0) return false;
+
+    const nextState = futureList[0];
+    const newFuture = futureList.slice(1);
+    const newPast = [...pastRef.current.slice(-(MAX_HISTORY - 1)), contentRef.current];
+
+    pastRef.current = newPast;
+    futureRef.current = newFuture;
+    setPast(newPast);
+    setFuture(newFuture);
+
+    setContent(nextState);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
+      setHasLocalOverrides(true);
+    } catch (err) {
+      console.error('LocalStorage write error during redo:', err);
+    }
+
+    return true;
+  }, [commitContinuous]);
+
+  const clearHistory = useCallback(() => {
+    commitContinuous();
+    pastRef.current = [];
+    futureRef.current = [];
+    setPast([]);
+    setFuture([]);
+  }, [commitContinuous]);
 
   const updateSection = useCallback((section, data) => {
     saveContent(prev => ({
@@ -122,7 +249,7 @@ export function SiteContentProvider({ children }) {
         ...prev[section],
         ...data
       }
-    }));
+    }), { isContinuous: true });
   }, [saveContent]);
 
   const updateHero = useCallback((hero) => updateSection('hero', hero), [updateSection]);
@@ -146,7 +273,7 @@ export function SiteContentProvider({ children }) {
         ...prev,
         gallery: [...(prev.gallery || []), { src }]
       };
-    });
+    }, { isContinuous: false });
   }, [saveContent]);
 
   const deleteGalleryImage = useCallback((indexOrSrc) => {
@@ -156,7 +283,7 @@ export function SiteContentProvider({ children }) {
         if (typeof indexOrSrc === 'number') return idx !== indexOrSrc;
         return item.src !== indexOrSrc;
       })
-    }));
+    }), { isContinuous: false });
   }, [saveContent]);
 
   const updateGalleryImage = useCallback((index, newSrc) => {
@@ -169,7 +296,7 @@ export function SiteContentProvider({ children }) {
         ...prev,
         gallery: newGallery
       };
-    });
+    }, { isContinuous: false });
   }, [saveContent]);
 
   const addEvent = useCallback((eventOrFbUrl) => {
@@ -195,14 +322,14 @@ export function SiteContentProvider({ children }) {
         ...prev,
         events: [newEvent, ...(prev.events || FACEBOOK_POSTS)]
       };
-    });
+    }, { isContinuous: false });
   }, [saveContent]);
 
   const deleteEvent = useCallback((id) => {
     saveContent(prev => ({
       ...prev,
       events: (prev.events || FACEBOOK_POSTS).filter(ev => ev.id !== id)
-    }));
+    }), { isContinuous: false });
   }, [saveContent]);
 
   const updateEvent = useCallback((id, updatedData) => {
@@ -214,11 +341,19 @@ export function SiteContentProvider({ children }) {
         }
         return ev;
       })
-    }));
+    }), { isContinuous: false });
   }, [saveContent]);
 
   const resetToDefaults = useCallback(() => {
     try {
+      commitContinuous();
+      const current = contentRef.current;
+      const newPast = [...pastRef.current.slice(-(MAX_HISTORY - 1)), current];
+      pastRef.current = newPast;
+      futureRef.current = [];
+      setPast(newPast);
+      setFuture([]);
+
       localStorage.removeItem(STORAGE_KEY);
       setContent(defaultSiteContent);
       setHasLocalOverrides(false);
@@ -227,7 +362,7 @@ export function SiteContentProvider({ children }) {
       console.error('Failed to reset content defaults:', e);
       return false;
     }
-  }, []);
+  }, [commitContinuous]);
 
   const exportJson = useCallback(() => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(content, null, 2));
@@ -243,7 +378,7 @@ export function SiteContentProvider({ children }) {
     try {
       const parsed = JSON.parse(jsonString);
       if (parsed && typeof parsed === 'object') {
-        saveContent(parsed);
+        saveContent(parsed, { isContinuous: false });
         return { success: true };
       }
       return { success: false, error: 'Malformed JSON payload' };
@@ -256,6 +391,14 @@ export function SiteContentProvider({ children }) {
     content,
     hasLocalOverrides,
     defaultContent: defaultSiteContent,
+    canUndo: past.length > 0,
+    canRedo: future.length > 0,
+    undoCount: past.length,
+    redoCount: future.length,
+    undo,
+    redo,
+    clearHistory,
+    commitContinuous,
     saveContent,
     updateSection,
     updateHero,

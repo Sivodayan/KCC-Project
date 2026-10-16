@@ -33,7 +33,7 @@ const searchItems = [
     action: "external"
   },
   {
-    title: "Campus Life Journal & 3D Digital Gallery",
+    title: "School Life Journal & 3D Digital Gallery",
     category: "Gallery",
     url: "gallery",
     action: "navigate"
@@ -117,7 +117,7 @@ const searchItems = [
     action: "navigate"
   },
   {
-    title: "Campus Location & Google Maps Directions",
+    title: "Location & Google Maps Directions",
     category: "Contact",
     url: "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     action: "external"

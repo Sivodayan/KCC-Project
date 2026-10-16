@@ -596,7 +596,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   In 1939, following the assumption of headmastership by the late Mr. G. S. Chelliah, classes were
                   expanded systematically, and beginning in 1940, candidates were prepared and presented for the
                   S.S.C. examinations. In 1945, by amalgamating with the girls’ boarding school functioning within the
-                  shared campus, the school was renamed Kopay Christian College. Mr. G. S. Chelliah served as
+                  shared school, the school was renamed Kopay Christian College. Mr. G. S. Chelliah served as
                   Principal, while Miss M. V. Hutchins served as Vice Principal. While student boarding facilities
                   were initially situated outside the premises, they were later housed within Wordsworth Hall.
                 </p>
@@ -692,7 +692,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               Mr. E. C. A. Navaratnarajah
             </span>
             <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
-              Multi-Disciplinary Growth &amp; Campus Grounds
+              Multi-Disciplinary Growth &amp; School Grounds
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
@@ -708,7 +708,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   Under the leadership of Principal Mr. E. C. A. Navaratnarajah, the institution witnessed rapid
                   multi-disciplinary expansion. Staff residential quarters, designated the “Pakkiyam Williams
                   Building,” and “Hutchins Hall” were erected. The sports grounds were expanded, enabling full-scale
-                  athletic meets on campus. Sports such as hockey, basketball, and football were introduced, with
+                  athletic meets on school. Sports such as hockey, basketball, and football were introduced, with
                   teams qualifying for national-level tournaments.
                 </p>
               </div>
@@ -848,7 +848,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
               Modern Era
             </span>
             <h2 className="text-lg sm:text-xl font-serif font-bold text-[#1F4D2B]">
-              Campus Renaissance &amp; University Entrants
+              School Renaissance &amp; University Entrants
             </h2>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
               <div className="lg:col-span-5 order-2 lg:order-1 bg-[#FAF6EE] border border-[#DDD6C7] p-2">
