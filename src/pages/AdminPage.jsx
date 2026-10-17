@@ -4,11 +4,13 @@ import { useSiteContent, parseFacebookInput } from '../context/SiteContentContex
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
 import { commitFileToGitHub, verifyGitHubToken } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
+import ThemeToggle from '../components/ThemeToggle.jsx';
 import {
   isFirebaseConfigured,
   firebaseProjectId,
   signInWithGoogle,
   signInWithEmail,
+  sendPasswordReset,
   logOutFirebase,
   subscribeToAuth
 } from '../firebase.js';
@@ -67,6 +69,13 @@ export default function AdminPage() {
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  // Forgot Password States
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetSuccess, setResetSuccess] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState('');
+
   useEffect(() => {
     const unsubscribe = subscribeToAuth((user) => {
       setFirebaseUser(user);
@@ -113,36 +122,6 @@ export default function AdminPage() {
       showToast('Action redone (Ctrl+Y)', 'info');
     }
   }, [canRedo, redo]);
-
-  // Global Keyboard shortcuts for Undo (Ctrl+Z / Cmd+Z) and Redo (Ctrl+Y / Ctrl+Shift+Z / Cmd+Shift+Z)
-  useEffect(() => {
-    if (!isAuthenticated) return;
-
-    const handleKeyDown = (e) => {
-      const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-      const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
-      if (!cmdOrCtrl) return;
-
-      const key = e.key.toLowerCase();
-
-      // Redo: Ctrl+Y or Ctrl+Shift+Z
-      if (key === 'y' || (key === 'z' && e.shiftKey)) {
-        e.preventDefault();
-        handleRedo();
-        return;
-      }
-
-      // Undo: Ctrl+Z (without shift)
-      if (key === 'z' && !e.shiftKey) {
-        e.preventDefault();
-        handleUndo();
-        return;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAuthenticated, handleUndo, handleRedo]);
 
   const [isAddGalleryOpen, setIsAddGalleryOpen] = useState(false);
   const [newGallerySrc, setNewGallerySrc] = useState('');
@@ -274,6 +253,80 @@ export default function AdminPage() {
     }
   };
 
+  // Global Keyboard shortcuts:
+  // - Commit changes: Ctrl+S / Cmd+S (opens modal or commits) & Ctrl+Enter / Cmd+Enter
+  // - Undo: Ctrl+Z / Cmd+Z
+  // - Redo: Ctrl+Y / Ctrl+Shift+Z / Cmd+Shift+Z
+  // - Escape: Dismiss active modal
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    const handleKeyDown = (e) => {
+      // Escape closes open modals
+      if (e.key === 'Escape') {
+        if (isCommitModalOpen && !isCommitting) {
+          setIsCommitModalOpen(false);
+          setCommitResult(null);
+          setCommitError('');
+        }
+        if (isAddGalleryOpen) setIsAddGalleryOpen(false);
+        if (isAddEventOpen) setIsAddEventOpen(false);
+        if (isLeaveConfirmOpen) setIsLeaveConfirmOpen(false);
+        return;
+      }
+
+      const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const cmdOrCtrl = isMac ? e.metaKey : e.ctrlKey;
+      if (!cmdOrCtrl) return;
+
+      const key = e.key.toLowerCase();
+
+      // Commit changes: Ctrl+S / Cmd+S or Ctrl+Enter / Cmd+Enter
+      if (key === 's' || e.key === 'Enter') {
+        e.preventDefault();
+        if (isCommitModalOpen) {
+          // If modal is open, trigger commit submit
+          if (!isCommitting && githubToken.trim()) {
+            handleCommitToGitHub();
+          }
+        } else {
+          // Open commit modal
+          handleOpenCommitModal();
+        }
+        return;
+      }
+
+      // Redo: Ctrl+Y or Ctrl+Shift+Z / Cmd+Shift+Z
+      if (key === 'y' || (key === 'z' && e.shiftKey)) {
+        e.preventDefault();
+        handleRedo();
+        return;
+      }
+
+      // Undo: Ctrl+Z / Cmd+Z (without shift)
+      if (key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        handleUndo();
+        return;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [
+    isAuthenticated,
+    isCommitModalOpen,
+    isCommitting,
+    githubToken,
+    isAddGalleryOpen,
+    isAddEventOpen,
+    isLeaveConfirmOpen,
+    handleUndo,
+    handleRedo,
+    handleOpenCommitModal,
+    handleCommitToGitHub
+  ]);
+
   const handleGoogleSignIn = async () => {
     setIsAuthLoading(true);
     setAuthError('');
@@ -320,6 +373,36 @@ export default function AdminPage() {
       }
     } finally {
       setIsAuthLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (e) => {
+    e.preventDefault();
+    const targetEmail = (resetEmail || emailInput).trim();
+    if (!targetEmail) {
+      setResetError('Please enter your administrator email address.');
+      return;
+    }
+    setResetLoading(true);
+    setResetError('');
+    setResetSuccess(false);
+    try {
+      await sendPasswordReset(targetEmail);
+      setResetSuccess(true);
+      showToast('Password reset link sent! Check your email inbox.', 'success');
+    } catch (err) {
+      console.error('Password Reset Error:', err);
+      if (err.code === 'auth/user-not-found') {
+        setResetError('No administrator account found with this email.');
+      } else if (err.code === 'auth/invalid-email') {
+        setResetError('Please enter a valid email address.');
+      } else if (err.code === 'auth/too-many-requests') {
+        setResetError('Too many reset requests. Please wait a moment before trying again.');
+      } else {
+        setResetError(err.message || 'Failed to send password reset email.');
+      }
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -551,119 +634,213 @@ export default function AdminPage() {
               யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
             </p>
 
-            <div className="mt-3 flex items-center justify-center gap-2">
-              <span className="inline-block px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-[11px] font-bold text-brand-forest">
+            <div className="mt-3 flex items-center justify-center gap-2 flex-wrap">
+              <span className="inline-block px-3 py-1 rounded-full bg-brand-light dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/40 text-[11px] font-bold text-brand-forest dark:text-emerald-400">
                 Admin Console
               </span>
-              <button
-                type="button"
-                onClick={() => navigate('/')}
-                className="text-[11px] font-bold text-brand-forest hover:underline cursor-pointer flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-brand-light transition"
-              >
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                <span>Return to Website</span>
-              </button>
+            
+             
             </div>
           </div>
 
-          {/* FIREBASE AUTHENTICATION (GOOGLE + EMAIL & PASSWORD) */}
+          {/* FIREBASE AUTHENTICATION (GOOGLE + EMAIL & PASSWORD + FORGOT PASSWORD) */}
           <div className="space-y-4">
-            {/* Google Sign-In */}
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              disabled={isAuthLoading}
-              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
-            >
-              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
-              </svg>
-              <span>Continue with Google</span>
-            </button>
+            {isForgotPassword ? (
+              /* Forgot / Reset Password View */
+              <form onSubmit={handleForgotPassword} className="space-y-4">
+                <div className="p-3 rounded-xl bg-brand-light dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-800/40 text-xs">
+                  <div className="font-bold text-brand-forest dark:text-emerald-400 mb-1 flex items-center gap-1.5">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                    </svg>
+                    <span>Reset Admin Password</span>
+                  </div>
+                  <p className="text-slate-600 dark:text-slate-400">
+                    Enter your registered administrator email address and we'll send you a secure link to reset your password.
+                  </p>
+                </div>
 
-            {/* Divider */}
-            <div className="relative flex items-center justify-center my-3">
-              <div className="border-t border-brand-pale w-full" />
-              <span className="bg-brand-white px-2.5 text-[11px] text-slate-400 font-medium uppercase tracking-wider shrink-0">
-                or sign in with email
-              </span>
-              <div className="border-t border-brand-pale w-full" />
-            </div>
-
-            {/* Email / Password Form */}
-            <form onSubmit={handleEmailSignIn} className="space-y-3">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Admin Email
-                </label>
-                <input
-                  type="email"
-                  value={emailInput}
-                  onChange={(e) => setEmailInput(e.target.value)}
-                  placeholder="admin@kcc.lk"
-                  required
-                  className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Password
-                </label>
-                <div className="relative">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1.5">
+                    Admin Email Address
+                  </label>
                   <input
-                    type={showPassword ? 'text' : 'password'}
-                    value={passwordInput}
-                    onChange={(e) => setPasswordInput(e.target.value)}
-                    placeholder="Enter account password"
+                    type="email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    placeholder="admin@kcc.lk"
                     required
-                    className="w-full px-3.5 py-2.5 sm:py-2 pr-11 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white dark:bg-[#0e160f] border border-brand-pale dark:border-emerald-800/40 text-slate-800 dark:text-slate-100 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
+                </div>
+
+                {resetSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 text-xs font-medium space-y-1">
+                    <div className="font-bold flex items-center gap-1.5">
+                      <svg className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>Password reset email sent!</span>
+                    </div>
+                    <p className="text-[11px] text-emerald-700 dark:text-emerald-400">
+                      Check your inbox at <span className="font-semibold underline">{resetEmail}</span> for instructions to reset your password.
+                    </p>
+                  </div>
+                )}
+
+                {resetError && (
+                  <div className="p-2.5 rounded-xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-medium">
+                    {resetError}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={resetLoading}
+                  className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {resetLoading ? (
+                    <span>Sending Reset Link...</span>
+                  ) : (
+                    <>
+                      <span>Send Password Reset Email</span>
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+
+                <div className="pt-2 text-center">
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 cursor-pointer touch-manipulation"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    onClick={() => {
+                      setIsForgotPassword(false);
+                      setResetError('');
+                      setResetSuccess(false);
+                    }}
+                    className="text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-brand-forest dark:hover:text-emerald-400 inline-flex items-center gap-1.5 cursor-pointer"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      {showPassword ? (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                      ) : (
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                      )}
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                     </svg>
+                    <span>Back to Sign In</span>
                   </button>
                 </div>
-              </div>
+              </form>
+            ) : (
+              /* Normal Sign-In Form */
+              <>
+                {/* Google Sign-In */}
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isAuthLoading}
+                  className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
+                >
+                  <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                  </svg>
+                  <span>Continue with Google</span>
+                </button>
 
-              {authError && (
-                <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
-                  {authError}
+                {/* Divider */}
+                <div className="relative flex items-center justify-center my-3">
+                  <div className="border-t border-brand-pale w-full" />
+                  <span className="bg-brand-white px-2.5 text-[11px] text-slate-400 font-medium uppercase tracking-wider shrink-0">
+                    or sign in with email
+                  </span>
+                  <div className="border-t border-brand-pale w-full" />
                 </div>
-              )}
 
-              <button
-                type="submit"
-                disabled={isAuthLoading}
-                className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {isAuthLoading ? (
-                  <span>Signing in...</span>
-                ) : (
-                  <>
-                    <span>Sign In with Email</span>
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </>
-                )}
-              </button>
-            </form>
+                {/* Email / Password Form */}
+                <form onSubmit={handleEmailSignIn} className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Admin Email
+                    </label>
+                    <input
+                      type="email"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      placeholder="admin@kcc.lk"
+                      required
+                      className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                        Password
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsForgotPassword(true);
+                          setResetEmail(emailInput.trim());
+                          setResetError('');
+                          setResetSuccess(false);
+                        }}
+                        className="text-[11px] font-bold text-brand-forest dark:text-emerald-400 hover:underline cursor-pointer"
+                      >
+                        Forgot password?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <input
+                        type={showPassword ? 'text' : 'password'}
+                        value={passwordInput}
+                        onChange={(e) => setPasswordInput(e.target.value)}
+                        placeholder="Enter account password"
+                        required
+                        className="w-full px-3.5 py-2.5 sm:py-2 pr-11 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 cursor-pointer touch-manipulation"
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          {showPassword ? (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                          ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                          )}
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {authError && (
+                    <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+                      {authError}
+                    </div>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={isAuthLoading}
+                    className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                  >
+                    {isAuthLoading ? (
+                      <span>Signing in...</span>
+                    ) : (
+                      <>
+                        <span>Sign In with Email</span>
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
+            )}
 
             <div className="pt-3 border-t border-brand-pale/70 text-center">
               <p className="text-[11px] text-slate-400">
@@ -792,15 +969,15 @@ export default function AdminPage() {
                 type="button"
                 onClick={handleOpenCommitModal}
                 className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs shrink-0"
-                title="Commit changes directly to GitHub repository (Triggers automated site rebuild)"
+                title="Commit changes directly to GitHub repository (Ctrl+S)"
               >
                 <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
-                <span>Commit<span className="hidden sm:inline"> to GitHub</span></span>
-                {hasLocalOverrides && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" title="Changes ready to commit" />
-                )}
+                <span>Save<span className="hidden sm:inline"> Changes</span></span>
+                <kbd className="hidden lg:inline-block px-1.5 py-0.2 rounded bg-white/20 text-[10px] font-mono font-medium text-white/90">
+                  Ctrl+S
+                </kbd>
               </button>
 
               {/* Authenticated Firebase User Badge */}
@@ -817,10 +994,13 @@ export default function AdminPage() {
                 ) : (
                   <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                 )}
-                <span className="font-semibold text-slate-700 max-w-[120px] truncate">
+                <span className='flex items-center gap-2'>
                   {firebaseUser?.displayName || firebaseUser?.email || 'Admin'}
                 </span>
               </div>
+
+              {/* Appearance Theme Switcher */}
+              <ThemeToggle variant="compact" />
 
               {/* Logout button */}
               <button
@@ -1547,9 +1727,7 @@ export default function AdminPage() {
                 <div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="text-base sm:text-lg font-bold text-brand-forest">School Events &amp; Facebook Updates</h2>
-                    <span className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-bold">
-                      Facebook Iframe Feed
-                    </span>
+                    
                   </div>
                   <p className="text-xs text-slate-600 mt-1">
                     Manage the official community Facebook event posts displayed on the School Events page. Paste any Facebook post link or embed code to automatically retrieve and format it as an iframe.
@@ -1568,7 +1746,7 @@ export default function AdminPage() {
                   <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
                   </svg>
-                  <span>+ Add Facebook Event</span>
+                  <span> Add Facebook Event</span>
                 </button>
               </div>
 
@@ -2244,6 +2422,23 @@ export default function AdminPage() {
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
                   <div className="flex items-center gap-2.5">
                     <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest shrink-0">
+                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-800 block">Commit Changes</span>
+                      <span className="text-[11px] text-slate-500">Opens commit modal / pushes to GitHub</span>
+                    </div>
+                  </div>
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-brand-forest shadow-2xs shrink-0">
+                    Ctrl + S
+                  </kbd>
+                </div>
+
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 10h10a5 5 0 0 1 5 5v2m0 0l-4-4m4 4l4-4M3 10l4-4m-4 4l4 4" />
                       </svg>
@@ -2271,7 +2466,24 @@ export default function AdminPage() {
                     </div>
                   </div>
                   <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs shrink-0">
-                    Ctrl + Y / ⇧⌘Z
+                    Ctrl + Y 
+                  </kbd>
+                </div>
+
+                <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-600 shrink-0">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                    <div>
+                      <span className="font-bold text-slate-800 block">Close Active Modal</span>
+                      <span className="text-[11px] text-slate-500">Dismisses dialogs without saving</span>
+                    </div>
+                  </div>
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs shrink-0">
+                    Esc
                   </kbd>
                 </div>
               </div>
@@ -2496,6 +2708,7 @@ export default function AdminPage() {
                     <button
                       type="submit"
                       disabled={isCommitting || !githubToken.trim()}
+                      title="Commit & Publish to GitHub (Ctrl+Enter or Ctrl+S)"
                       className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
                         isCommitting || !githubToken.trim() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                       }`}
@@ -2514,6 +2727,9 @@ export default function AdminPage() {
                             <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                           </svg>
                           <span>Commit &amp; Publish</span>
+                          <kbd className="hidden sm:inline-block px-1.5 py-0.2 rounded bg-white/20 text-[10px] font-mono font-medium text-white/90">
+                            Ctrl+↵
+                          </kbd>
                         </>
                       )}
                     </button>

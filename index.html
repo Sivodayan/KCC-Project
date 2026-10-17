@@ -63,6 +63,29 @@
   }
   </script>
 
+  <!-- Theme Color for Browser Address Bar -->
+  <meta name="theme-color" content="#196716" id="meta-theme-color">
+
+  <!-- Instant System Dark Theme Pre-Detection (Zero-FOUC) -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem('kcc_theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = stored === 'dark' || ((!stored || stored === 'system') && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+          document.documentElement.style.colorScheme = 'dark';
+          var meta = document.getElementById('meta-theme-color');
+          if (meta) meta.setAttribute('content', '#0b120c');
+        } else {
+          document.documentElement.classList.remove('dark');
+          document.documentElement.style.colorScheme = 'light';
+        }
+      } catch (e) {}
+    })();
+  </script>
+
   <!-- Typography: Plus Jakarta Sans for English, Noto Sans Tamil for Tamil script -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -73,6 +96,7 @@
   <link rel="icon" type="image/png" href="/assets/logo.png">
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           maxWidth: {
@@ -101,7 +125,7 @@
 </head>
 
 <body
-  class="bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest min-h-screen flex flex-col antialiased">
+  class="bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300 min-h-screen flex flex-col antialiased transition-colors duration-150">
   <div id="root"></div>
   <script type="module" src="/src/main.jsx"></script>
 </body>

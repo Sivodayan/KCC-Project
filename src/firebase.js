@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   onAuthStateChanged
 } from 'firebase/auth';
@@ -69,6 +70,16 @@ export async function signInWithEmail(email, password) {
     throw new Error('Firebase credentials are not configured. Please add your VITE_FIREBASE_* keys to .env');
   }
   return await signInWithEmailAndPassword(auth, email, password);
+}
+
+/**
+ * Send Password Reset Email
+ */
+export async function sendPasswordReset(email) {
+  if (!isFirebaseConfigured || !auth) {
+    throw new Error('Firebase credentials are not configured. Please add your VITE_FIREBASE_* keys to .env');
+  }
+  return await sendPasswordResetEmail(auth, email);
 }
 
 /**

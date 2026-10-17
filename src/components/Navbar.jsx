@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AboutDropdown from './AboutDropdown.jsx';
 import GlassImage from './GlassImage.jsx';
+import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Navbar({
   currentPage,
@@ -19,7 +20,7 @@ export default function Navbar({
   }
 
   return (
-    <header className="w-full border-b border-brand-pale bg-brand-white sticky top-0 z-40" id="mainHeader">
+    <header className="w-full border-b border-brand-pale dark:border-emerald-900/40 bg-brand-white/95 dark:bg-[#0b120c]/95 backdrop-blur-md sticky top-0 z-40 transition-colors duration-150" id="mainHeader">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between py-3.5" aria-label="Main Navigation">
           <button
@@ -139,9 +140,11 @@ export default function Navbar({
                 <span>Search</span>
               </button>
 
+              <ThemeToggle variant="compact" />
+
               <button
                 onClick={() => handleNavLink('contact')}
-                className={`ml-2 inline-flex items-center px-4 py-1.5 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${currentPage === 'contact'
+                className={`ml-1 inline-flex items-center px-4 py-1.5 rounded-full font-medium transition-all duration-200 ease-out shadow-sm active:translate-y-0 cursor-pointer ${currentPage === 'contact'
                     ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold'
                     : 'bg-brand-forest text-brand-white hover:bg-brand-forestHover hover:-translate-y-0.5'
                   }`}
@@ -151,7 +154,9 @@ export default function Navbar({
             </div>
           </div>
 
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:hidden">
+            <ThemeToggle variant="compact" />
+
             <button
               onClick={onOpenSearch}
               type="button"
@@ -183,7 +188,7 @@ export default function Navbar({
       </div>
 
       {mobileMenuOpen && (
-        <div className="md:hidden bg-brand-white border-t border-brand-pale px-6 py-4 space-y-3 shadow-lg">
+        <div className="md:hidden bg-brand-white dark:bg-[#101911] border-t border-brand-pale dark:border-emerald-900/40 px-6 py-4 space-y-3 shadow-lg">
           <button
             onClick={() => {
               setMobileMenuOpen(false);
@@ -282,19 +287,19 @@ export default function Navbar({
           </button>
 
           {currentPage === 'history' && (
-            <div className="flex items-center justify-between pt-2 border-t border-brand-pale">
-              <span className="text-xs text-slate-500 font-medium">History Language:</span>
+            <div className="flex items-center justify-between pt-2 border-t border-brand-pale dark:border-emerald-900/40">
+              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">History Language:</span>
               <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => onChangeHistoryLang('en')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
+                  className={`px-3 py-1 rounded-full text-xs font-semibold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'bg-brand-light dark:bg-emerald-950/60 text-slate-700 dark:text-slate-300'
                     }`}
                 >
                   English
                 </button>
                 <button
                   onClick={() => onChangeHistoryLang('ta')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'bg-brand-light text-slate-700'
+                  className={`px-3 py-1 rounded-full text-xs font-semibold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'bg-brand-light dark:bg-emerald-950/60 text-slate-700 dark:text-slate-300'
                     }`}
                 >
                   தமிழ்
@@ -302,6 +307,14 @@ export default function Navbar({
               </div>
             </div>
           )}
+
+          {/* Theme Mode Segmented Switcher for Mobile */}
+          <div className="pt-2 border-t border-brand-pale dark:border-emerald-900/40 space-y-1.5">
+            <span className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+              Appearance Theme
+            </span>
+            <ThemeToggle variant="segmented" />
+          </div>
         </div>
       )}
     </header>

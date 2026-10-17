@@ -198,7 +198,7 @@ export default function App() {
 
   return (
     <SiteContentProvider>
-      <div className="min-h-screen flex flex-col bg-brand-white text-slate-800 font-sans selection:bg-brand-pale selection:text-brand-forest antialiased">
+      <div className="min-h-screen flex flex-col bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300 antialiased transition-colors duration-150">
         <Navbar
           currentPage={currentPage}
           onNavigate={handleNavigate}

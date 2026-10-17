@@ -521,3 +521,187 @@ html {
     --fb-scale: 0.62;
   }
 }
+
+/* ==========================================================================
+   KCC Institutional Dark Theme System (Obsidian Emerald Palette)
+   ========================================================================== */
+
+html.dark {
+  color-scheme: dark;
+}
+
+html.dark body {
+  background-color: #0b120c !important;
+  color: #f1f5f9 !important;
+}
+
+/* Obsidian Card & Surface Backgrounds */
+html.dark .bg-brand-white {
+  background-color: #111a12 !important;
+}
+
+html.dark .bg-brand-light {
+  background-color: #152417 !important;
+}
+
+html.dark .bg-white {
+  background-color: #121e14 !important;
+}
+
+html.dark .bg-slate-50,
+html.dark .bg-slate-100 {
+  background-color: #162518 !important;
+}
+
+/* Glowing Emerald & Subtle Obsidian Borders */
+html.dark .border-brand-pale,
+html.dark [class*="border-brand-pale"] {
+  border-color: rgba(74, 222, 128, 0.16) !important;
+}
+
+html.dark .border-slate-200,
+html.dark .border-slate-100 {
+  border-color: rgba(74, 222, 128, 0.14) !important;
+}
+
+/* High-Contrast Dynamic Typography */
+html.dark .text-slate-900,
+html.dark .text-slate-800 {
+  color: #f8fafc !important;
+}
+
+html.dark .text-slate-700 {
+  color: #e2e8f0 !important;
+}
+
+html.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+html.dark .text-slate-500 {
+  color: #94a3b8 !important;
+}
+
+html.dark .text-slate-400 {
+  color: #64748b !important;
+}
+
+/* Luminous Emerald Accent for Dark Mode Headers & Badges */
+html.dark .text-brand-forest {
+  color: #4ade80 !important;
+}
+
+html.dark .text-brand-forestHover {
+  color: #86efac !important;
+}
+
+html.dark .hover\:text-brand-forest:hover {
+  color: #4ade80 !important;
+}
+
+html.dark .hover\:text-brand-forestHover:hover {
+  color: #86efac !important;
+}
+
+/* Active Nav Link Underline */
+html.dark .nav-link::after {
+  background-color: #4ade80;
+}
+
+/* Brand Buttons & Pills */
+html.dark .bg-brand-pale {
+  background-color: rgba(74, 222, 128, 0.18) !important;
+}
+
+html.dark .hover\:bg-brand-pale\/60:hover,
+html.dark .hover\:bg-brand-pale\/70:hover,
+html.dark .hover\:bg-brand-pale\/50:hover {
+  background-color: rgba(74, 222, 128, 0.24) !important;
+}
+
+/* Interactive Flip Cards in Dark Mode */
+html.dark .flip-card-back.bg-brand-white,
+html.dark .flip-card-front.bg-brand-white {
+  background-color: #121f14 !important;
+  color: #f8fafc !important;
+  border-color: rgba(74, 222, 128, 0.22) !important;
+}
+
+/* Form Controls & Inputs */
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html.dark textarea,
+html.dark select {
+  background-color: #0d160f !important;
+  color: #f8fafc !important;
+  border-color: rgba(74, 222, 128, 0.24) !important;
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+html.dark input:focus,
+html.dark textarea:focus,
+html.dark select:focus {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25) !important;
+}
+
+/* Frosted Obsidian Glassmorphism */
+html.dark .glass-surface {
+  background: linear-gradient(
+    135deg,
+    rgba(17, 27, 18, 0.88) 0%,
+    rgba(12, 19, 13, 0.94) 100%
+  ) !important;
+  border: 1px solid rgba(74, 222, 128, 0.22) !important;
+  backdrop-filter: blur(16px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
+  box-shadow: 
+    0 8px 32px -4px rgba(0, 0, 0, 0.65),
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+html.dark .glass-surface-emerald {
+  background: linear-gradient(
+    135deg,
+    rgba(21, 48, 23, 0.8) 0%,
+    rgba(13, 31, 15, 0.92) 100%
+  ) !important;
+  border: 1px solid rgba(74, 222, 128, 0.28) !important;
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.65) !important;
+}
+
+/* Dark Mode Modal Dialogs & Menus */
+html.dark [role="menu"] {
+  background-color: #111c13 !important;
+  border-color: rgba(74, 222, 128, 0.25) !important;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8) !important;
+}
+
+html.dark .animate-modal-content {
+  background-color: #111a12 !important;
+  border-color: rgba(74, 222, 128, 0.22) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
+}
+
+/* Obsidian Custom Scrollbars */
+html.dark ::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #0b120c;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #1c301f;
+  border-radius: 9999px;
+  border: 2px solid #0b120c;
+}
+
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #28472d;
+}
