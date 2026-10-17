@@ -33,9 +33,7 @@ export default function GalleryPage() {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           Photo Gallery
         </h1>
-        <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
-          Explore our collegiate life, campus grounds, academic events, and historic moments in our interactive 3D digital gallery.
-        </p>
+       
       </header>
 
       <Gallery showHeader={false} />

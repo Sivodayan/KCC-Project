@@ -33,9 +33,6 @@ export default function EventsPage() {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
           School Events &amp; Updates
         </h1>
-        <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
-          Latest news, sports meets, academic ceremonies, and student milestones from the official school feed.
-        </p>
       </header>
 
       <SchoolEvents />

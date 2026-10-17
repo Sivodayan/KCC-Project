@@ -56,9 +56,9 @@ export default function SchoolAnthem() {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
-        <p className="text-slate-600 text-sm sm:text-base mt-2 font-sans max-w-xl mx-auto">
-          Official School Anthem • Composed in Ragam Hamsadhwani
-        </p>
+        <h3 className="text-slate-600 text-sm sm:text-4xl mt-4 font-sans max-w-10xl mx-auto font-bold">
+          School Anthem 
+        </h3>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
           <button
@@ -88,7 +88,7 @@ export default function SchoolAnthem() {
 
         <div className="relative z-10 space-y-8 text-center font-tamil">
           <div className="relative pt-12 pb-6 px-6 sm:py-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-brand-forest text-xs font-semibold shadow-2xs">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1  rounded-full   text-brand-forest text-xs font-semibold shadow-2xs">
               <svg className="w-3.5 h-3.5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
               </svg>

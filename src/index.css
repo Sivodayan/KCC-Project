@@ -479,3 +479,45 @@ html {
   background-size: 200% 100%;
   animation: glassRouteProgress 1.6s infinite linear;
 }
+
+/* ==========================================================================
+   Admin Console Mobile Optimizations
+   ========================================================================== */
+
+/* Smooth momentum scrolling for admin tabs on iOS & Android */
+.admin-tabs-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE / Edge */
+}
+.admin-tabs-scroll::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
+/* Responsive Facebook Iframe Post Previews (Prevents mobile overflow) */
+.admin-fb-wrapper {
+  --fb-scale: 0.52;
+  width: 500px;
+  transform: scale(var(--fb-scale));
+  transform-origin: top center;
+  transition: transform 0.2s ease;
+}
+
+@media (min-width: 380px) {
+  .admin-fb-wrapper {
+    --fb-scale: 0.56;
+  }
+}
+
+@media (min-width: 480px) {
+  .admin-fb-wrapper {
+    --fb-scale: 0.62;
+  }
+}
+
+@media (min-width: 640px) {
+  .admin-fb-wrapper {
+    --fb-scale: 0.62;
+  }
+}

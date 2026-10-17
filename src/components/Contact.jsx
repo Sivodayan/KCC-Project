@@ -26,7 +26,7 @@ export default function Contact() {
             <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
               <div>
                 <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
-                  College Office
+                  Contact Us
                 </h2>
                 <div className="space-y-3 pt-3 text-xs">
                   <div className="flex items-start gap-3">
@@ -67,7 +67,7 @@ export default function Contact() {
                       <a href={`tel:${phone.replace(/\s+/g, '')}`} className="font-semibold text-white hover:text-brand-pale transition-colors text-xs sm:text-sm">
                         {phone}
                       </a>
-                      <span className="text-[10px] text-brand-light/70 ml-2">{officeHours}</span>
+                     
                     </div>
                   </div>
 

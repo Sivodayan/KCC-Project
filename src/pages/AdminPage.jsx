@@ -81,6 +81,16 @@ export default function AdminPage() {
   const isAuthenticated = Boolean(firebaseUser);
 
   const [activeTab, setActiveTab] = useState('hero');
+  const tabsContainerRef = useRef(null);
+
+  // Auto-scroll active tab into view horizontally on mobile / touch viewports
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const tabEl = document.getElementById(`admin-tab-${activeTab}`);
+    if (tabEl && tabsContainerRef.current) {
+      tabEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+  }, [activeTab, isAuthenticated]);
 
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
   const showToast = (message, type = 'success') => {
@@ -508,9 +518,9 @@ export default function AdminPage() {
 
   if (isAuthChecking) {
     return (
-      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-4">
-        <div className="w-full max-w-sm bg-brand-white border border-brand-pale rounded-3xl p-8 shadow-xl text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 animate-pulse">
+      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4">
+        <div className="w-full max-w-sm bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl text-center">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 animate-pulse">
             <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
           </div>
           <div className="inline-flex items-center gap-2 text-brand-forest text-xs font-bold mb-1">
@@ -528,30 +538,32 @@ export default function AdminPage() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-4 selection:bg-brand-pale selection:text-brand-forest">
-        <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-3xl p-8 shadow-xl text-slate-800">
+      <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4 selection:bg-brand-pale selection:text-brand-forest">
+        <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl text-slate-800">
           <div className="text-center mb-6">
-           
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 shadow-2xs group-hover:scale-105 group-hover:border-brand-soft transition">
-                <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
-              </div>
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-brand-forest group-hover:text-brand-forestHover transition">
-                J/Kopay Christian College
-              </h1>
-              <p className="text-xs text-slate-500 font-tamil mt-1">
-                யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
-              </p>
-          
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 shadow-2xs">
+              <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
+            </div>
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-brand-forest">
+              J/Kopay Christian College
+            </h1>
+            <p className="text-xs text-slate-500 font-tamil mt-1">
+              யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
+            </p>
+
             <div className="mt-3 flex items-center justify-center gap-2">
               <span className="inline-block px-3 py-1 rounded-full bg-brand-light border border-brand-pale text-[11px] font-bold text-brand-forest">
-                Admin Panel
+                Admin Console
               </span>
               <button
                 type="button"
                 onClick={() => navigate('/')}
-                className="text-[11px] font-bold text-brand-forest hover:underline cursor-pointer flex items-center gap-1"
+                className="text-[11px] font-bold text-brand-forest hover:underline cursor-pointer flex items-center gap-1 px-2.5 py-1 rounded-full hover:bg-brand-light transition"
               >
-                
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Return to Website</span>
               </button>
             </div>
           </div>
@@ -563,9 +575,9 @@ export default function AdminPage() {
               type="button"
               onClick={handleGoogleSignIn}
               disabled={isAuthLoading}
-              className="w-full py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
+              className="w-full min-h-[44px] py-2.5 px-4 rounded-xl border border-brand-pale bg-white hover:bg-brand-light/70 text-slate-700 font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2.5 disabled:opacity-50"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
@@ -595,7 +607,7 @@ export default function AdminPage() {
                   onChange={(e) => setEmailInput(e.target.value)}
                   placeholder="admin@kcc.lk"
                   required
-                  className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                  className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                 />
               </div>
 
@@ -610,12 +622,12 @@ export default function AdminPage() {
                     onChange={(e) => setPasswordInput(e.target.value)}
                     placeholder="Enter account password"
                     required
-                    className="w-full px-3.5 py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 pr-11 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                    className="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-2 cursor-pointer touch-manipulation"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -638,7 +650,7 @@ export default function AdminPage() {
               <button
                 type="submit"
                 disabled={isAuthLoading}
-                className="w-full py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full min-h-[44px] py-2.5 px-4 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white font-bold text-xs sm:text-sm shadow-2xs transition active:scale-98 cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
               >
                 {isAuthLoading ? (
                   <span>Signing in...</span>
@@ -668,7 +680,7 @@ export default function AdminPage() {
     <div className="min-h-screen bg-brand-light/30 text-slate-800 flex flex-col font-sans selection:bg-brand-pale selection:text-brand-forest">
       {toast.show && (
         <div
-          className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all transform animate-bounce duration-300 ${toast.type === 'error'
+          className={`fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2.5 text-xs font-semibold transition-all transform animate-bounce duration-300 max-w-sm sm:max-w-md mx-auto sm:mx-0 ${toast.type === 'error'
               ? 'bg-rose-50 border border-rose-300 text-rose-800'
               : toast.type === 'info'
               ? 'bg-slate-900 border border-slate-700 text-white shadow-2xl'
@@ -688,41 +700,42 @@ export default function AdminPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
             </svg>
           )}
-          <span>{toast.message}</span>
+          <span className="truncate">{toast.message}</span>
         </div>
       )}
 
       <header className="sticky top-0 z-40 bg-brand-white border-b border-brand-pale shadow-2xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16 gap-2">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
               <button
                 type="button"
                 onClick={handleReturnHome}
-                className="flex items-center gap-3 group text-left cursor-pointer focus:outline-none rounded-xl p-1 -m-1 transition hover:bg-brand-light/60 active:scale-[0.98]"
+                className="flex items-center gap-2 sm:gap-3 group text-left cursor-pointer focus:outline-none rounded-xl p-1 -m-1 transition hover:bg-brand-light/60 active:scale-[0.98] min-w-0"
                 title="Return to Website Home Page"
                 aria-label="Return to Home Page"
               >
-                <div className="relative">
-                  <img src="/assets/logo.png" alt="Logo" className="w-10 h-10 object-contain transition group-hover:scale-105" />
-                 
+                <div className="relative shrink-0">
+                  <img src="/assets/logo.png" alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition group-hover:scale-105" />
                 </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-extrabold text-brand-forest text-sm sm:text-base tracking-tight group-hover:text-brand-forestHover flex items-center gap-1.5">
-                      <span>J/Kopay Christian College</span>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="font-extrabold text-brand-forest text-xs sm:text-base tracking-tight group-hover:text-brand-forestHover truncate">
+                      <span className="hidden sm:inline">J/Kopay Christian College</span>
+                      <span className="sm:hidden">KCC Admin</span>
                     </span>
-                   
+                    <span className="sm:hidden px-1.5 py-0.2 rounded bg-brand-light text-brand-forest text-[9px] font-bold uppercase tracking-wider shrink-0">
+                      Live
+                    </span>
                   </div>
-                  <div className="text-[11px] text-slate-500 font-tamil flex items-center gap-1.5">
+                  <div className="text-[10px] sm:text-[11px] text-slate-500 font-tamil truncate hidden xs:block">
                     <span>யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி</span>
-                   
                   </div>
                 </div>
               </button>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
               {/* Undo / Redo History Controls */}
               <div className="inline-flex items-center rounded-full bg-brand-white border border-brand-pale p-0.5 shadow-2xs">
                 <button
@@ -731,7 +744,7 @@ export default function AdminPage() {
                   disabled={!canUndo}
                   title={canUndo ? `Undo last change (Ctrl+Z) • ${undoCount} step${undoCount > 1 ? 's' : ''} available` : 'Nothing to undo (Ctrl+Z)'}
                   aria-label="Undo last change"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
+                  className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
                     canUndo
                       ? 'text-slate-700 hover:text-brand-forest hover:bg-brand-light active:scale-95'
                       : 'text-slate-300 cursor-not-allowed opacity-50'
@@ -742,7 +755,7 @@ export default function AdminPage() {
                   </svg>
                   <span className="hidden sm:inline">Undo</span>
                   {undoCount > 0 && (
-                    <span className="hidden md:inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
                       {undoCount}
                     </span>
                   )}
@@ -756,7 +769,7 @@ export default function AdminPage() {
                   disabled={!canRedo}
                   title={canRedo ? `Redo change (Ctrl+Y or Ctrl+Shift+Z) • ${redoCount} step${redoCount > 1 ? 's' : ''} available` : 'Nothing to redo (Ctrl+Y)'}
                   aria-label="Redo change"
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
+                  className={`inline-flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
                     canRedo
                       ? 'text-slate-700 hover:text-brand-forest hover:bg-brand-light active:scale-95'
                       : 'text-slate-300 cursor-not-allowed opacity-50'
@@ -764,7 +777,7 @@ export default function AdminPage() {
                 >
                   <span className="hidden sm:inline">Redo</span>
                   {redoCount > 0 && (
-                    <span className="hidden md:inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
+                    <span className="inline-flex items-center justify-center px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-brand-pale/70 text-brand-forest">
                       {redoCount}
                     </span>
                   )}
@@ -774,16 +787,17 @@ export default function AdminPage() {
                 </button>
               </div>
 
+              {/* Commit to GitHub Button */}
               <button
                 type="button"
                 onClick={handleOpenCommitModal}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs"
+                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs shrink-0"
                 title="Commit changes directly to GitHub repository (Triggers automated site rebuild)"
               >
                 <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
-                <span>Commit to GitHub</span>
+                <span>Commit<span className="hidden sm:inline"> to GitHub</span></span>
                 {hasLocalOverrides && (
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse" title="Changes ready to commit" />
                 )}
@@ -791,7 +805,7 @@ export default function AdminPage() {
 
               {/* Authenticated Firebase User Badge */}
               <div
-                className="hidden sm:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-white border border-brand-pale text-xs shadow-2xs"
+                className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-white border border-brand-pale text-xs shadow-2xs"
                 title={`Signed in as ${firebaseUser?.email || 'Admin'}`}
               >
                 {firebaseUser?.photoURL ? (
@@ -803,15 +817,16 @@ export default function AdminPage() {
                 ) : (
                   <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
                 )}
-                <span className="font-semibold text-slate-700 max-w-[130px] truncate">
+                <span className="font-semibold text-slate-700 max-w-[120px] truncate">
                   {firebaseUser?.displayName || firebaseUser?.email || 'Admin'}
                 </span>
               </div>
 
+              {/* Logout button */}
               <button
                 type="button"
                 onClick={() => handleLogout()}
-                className="p-2 rounded-full bg-brand-white border border-brand-pale text-slate-500 hover:text-rose-600 hover:bg-brand-light transition cursor-pointer shadow-2xs"
+                className="p-1.5 sm:p-2 rounded-full bg-brand-white border border-brand-pale text-slate-500 hover:text-rose-600 hover:bg-brand-light transition cursor-pointer shadow-2xs shrink-0"
                 title={firebaseUser?.email ? `Sign out (${firebaseUser.email})` : 'Sign out of Admin Panel'}
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -821,49 +836,133 @@ export default function AdminPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 overflow-x-auto py-2.5 border-t border-brand-pale/70 no-scrollbar text-xs">
+          {/* Touch-Friendly Horizontal Scrolling Navigation Tabs */}
+          <div
+            ref={tabsContainerRef}
+            className="admin-tabs-scroll flex items-center gap-1.5 py-2 border-t border-brand-pale/70 text-xs px-0.5"
+          >
             {[
-              { id: 'hero', label: 'Hero Section' },
-              { id: 'principles', label: 'Motto, Vision & Mission' },
-              { id: 'performance', label: 'Performance' },
-              { id: 'gallery', label: 'Photo Gallery' },
-              { id: 'events', label: 'School Events' },
-              { id: 'contact', label: 'Contact' },
-              { id: 'settings', label: 'Settings' }
+              {
+                id: 'hero',
+                label: 'Hero',
+                fullLabel: 'Hero Section',
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'principles',
+                label: 'Motto & Vision',
+                fullLabel: 'Motto, Vision & Mission',
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'performance',
+                label: 'Key Numbers',
+                fullLabel: 'Performance',
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'gallery',
+                label: 'Gallery',
+                fullLabel: 'Photo Gallery',
+                badge: content.gallery?.length,
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'events',
+                label: 'Events',
+                fullLabel: 'School Events',
+                badge: content.events?.length,
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'contact',
+                label: 'Contact',
+                fullLabel: 'Contact Info',
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                )
+              },
+              {
+                id: 'settings',
+                label: 'Settings',
+                fullLabel: 'Settings & Sync',
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                )
+              }
             ].map(tab => (
               <button
                 key={tab.id}
+                id={`admin-tab-${tab.id}`}
                 onClick={() => {
                   commitContinuous();
                   setActiveTab(tab.id);
                 }}
-                className={`px-3.5 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer font-semibold ${activeTab === tab.id
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full whitespace-nowrap transition-all cursor-pointer font-semibold text-xs shrink-0 select-none ${
+                  activeTab === tab.id
                     ? 'bg-brand-forest text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60 bg-brand-white border border-brand-pale/60'
-                  }`}
+                    : 'text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60 bg-brand-white border border-brand-pale/70'
+                }`}
               >
-                {tab.label}
+                {tab.icon}
+                <span>
+                  <span className="sm:hidden">{tab.label}</span>
+                  <span className="hidden sm:inline">{tab.fullLabel}</span>
+                </span>
+                {typeof tab.badge === 'number' && (
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                    activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-brand-light text-brand-forest'
+                  }`}>
+                    {tab.badge}
+                  </span>
+                )}
               </button>
             ))}
           </div>
         </div>
       </header>
 
-      <main className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* HERO SECTION */}
         {activeTab === 'hero' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-5">Hero Section</h2>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-4 sm:mb-5">Hero Section</h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">School Name (English)</label>
                   <input
                     type="text"
                     value={content.hero?.title || ''}
                     onChange={(e) => updateHero({ title: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -873,7 +972,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.hero?.tamilTitle || ''}
                     onChange={(e) => updateHero({ tamilTitle: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-tamil focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm font-tamil focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -883,7 +982,7 @@ export default function AdminPage() {
                     rows={3}
                     value={content.hero?.subtitle || ''}
                     onChange={(e) => updateHero({ subtitle: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
                   />
                 </div>
 
@@ -894,7 +993,7 @@ export default function AdminPage() {
                     value={content.hero?.image || ''}
                     onChange={(e) => updateHero({ image: e.target.value })}
                     placeholder="/assets/hero.jpg"
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -904,20 +1003,20 @@ export default function AdminPage() {
                     type="text"
                     value={content.hero?.buttonText || ''}
                     onChange={(e) => updateHero({ buttonText: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-brand-pale">
-                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Live Card Preview</span>
-                <div className="relative rounded-2xl overflow-hidden bg-brand-forest border border-brand-soft/40 p-6 sm:p-8 text-white min-h-[180px] flex items-center shadow-md">
+              <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-brand-pale">
+                <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5 sm:mb-3">Live Card Preview</span>
+                <div className="relative rounded-2xl overflow-hidden bg-brand-forest border border-brand-soft/40 p-5 sm:p-8 text-white min-h-[160px] flex items-center shadow-md">
                   <div className="relative z-10 max-w-xl">
-                    <h3 className="text-2xl font-extrabold text-white">{content.hero?.title}</h3>
-                    <h4 className="text-lg font-bold text-brand-pale font-tamil mt-1">{content.hero?.tamilTitle}</h4>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-white">{content.hero?.title}</h3>
+                    <h4 className="text-base sm:text-lg font-bold text-brand-pale font-tamil mt-1">{content.hero?.tamilTitle}</h4>
                     <p className="text-xs sm:text-sm text-brand-light/90 mt-2 leading-relaxed">{content.hero?.subtitle}</p>
                     <div className="mt-4">
-                      <span className="inline-block px-5 py-2 rounded-full bg-white text-brand-forest font-bold text-xs shadow-2xs">
+                      <span className="inline-block px-4 sm:px-5 py-1.5 sm:py-2 rounded-full bg-white text-brand-forest font-bold text-xs shadow-2xs">
                         {content.hero?.buttonText} →
                       </span>
                     </div>
@@ -931,15 +1030,15 @@ export default function AdminPage() {
         {/* MOTTO, VISION & MISSION */}
         {activeTab === 'principles' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-2">Motto, Vision &amp; Mission</h2>
-              <p className="text-xs text-slate-600 mb-6">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-1.5 sm:mb-2">Motto, Vision &amp; Mission</h2>
+              <p className="text-xs text-slate-600 mb-4 sm:mb-6">
                 Customize the three core institutional pillars displayed in the interactive flip cards on the home page.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 {/* Motto */}
-                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Motto (மகுடவாசகம்)</div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
@@ -947,7 +1046,7 @@ export default function AdminPage() {
                       type="text"
                       value={content.principles?.motto?.english || ''}
                       onChange={(e) => updatePrinciples({ motto: { ...content.principles?.motto, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold focus:outline-none focus:border-brand-forest"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-bold focus:outline-none focus:border-brand-forest"
                     />
                   </div>
                   <div>
@@ -956,13 +1055,13 @@ export default function AdminPage() {
                       type="text"
                       value={content.principles?.motto?.tamil || ''}
                       onChange={(e) => updatePrinciples({ motto: { ...content.principles?.motto, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold font-tamil focus:outline-none focus:border-brand-forest"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-bold font-tamil focus:outline-none focus:border-brand-forest"
                     />
                   </div>
                 </div>
 
                 {/* Vision */}
-                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Vision (தூரநோக்கு)</div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
@@ -970,7 +1069,7 @@ export default function AdminPage() {
                       rows={3}
                       value={content.principles?.vision?.english || ''}
                       onChange={(e) => updatePrinciples({ vision: { ...content.principles?.vision, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                   <div>
@@ -979,13 +1078,13 @@ export default function AdminPage() {
                       rows={3}
                       value={content.principles?.vision?.tamil || ''}
                       onChange={(e) => updatePrinciples({ vision: { ...content.principles?.vision, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                 </div>
 
                 {/* Mission */}
-                <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-5 space-y-3">
+                <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Mission (பணி இலக்கு)</div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
@@ -993,7 +1092,7 @@ export default function AdminPage() {
                       rows={4}
                       value={content.principles?.mission?.english || ''}
                       onChange={(e) => updatePrinciples({ mission: { ...content.principles?.mission, english: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                   <div>
@@ -1002,7 +1101,7 @@ export default function AdminPage() {
                       rows={4}
                       value={content.principles?.mission?.tamil || ''}
                       onChange={(e) => updatePrinciples({ mission: { ...content.principles?.mission, tamil: e.target.value } })}
-                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
+                      className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
                     />
                   </div>
                 </div>
@@ -1014,13 +1113,13 @@ export default function AdminPage() {
         {/* PERFORMANCE */}
         {activeTab === 'performance' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-2">Key Numbers &amp; Performance</h2>
-              <p className="text-xs text-slate-600 mb-6">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-1.5 sm:mb-2">Key Numbers &amp; Performance</h2>
+              <p className="text-xs text-slate-600 mb-4 sm:mb-6">
                 Update the 8 official statistics displayed on the Key Numbers &amp; Performance grid.
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
                 {[
                   { key: 'founded', label: 'Founded Year', val: content.performance?.founded },
                   { key: 'students', label: 'Enrolled Students', val: content.performance?.students },
@@ -1031,14 +1130,14 @@ export default function AdminPage() {
                   { key: 'houses', label: 'Competitive Houses', val: content.performance?.houses },
                   { key: 'labs', label: 'Lab Coverage (%)', val: content.performance?.labs }
                 ].map(stat => (
-                  <div key={stat.key} className="bg-brand-light/30 border border-brand-pale rounded-2xl p-4">
-                    <span className="block text-[11px] font-semibold text-slate-600 mb-1">{stat.label}</span>
+                  <div key={stat.key} className="bg-brand-light/30 border border-brand-pale rounded-xl sm:rounded-2xl p-3 sm:p-4">
+                    <span className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1 truncate" title={stat.label}>{stat.label}</span>
                     <input
                       type="number"
                       step="any"
                       value={stat.val ?? ''}
                       onChange={(e) => updatePerformance({ [stat.key]: Number(e.target.value) })}
-                      className="w-full px-3 py-1.5 rounded-xl bg-brand-white border border-brand-pale text-brand-forest font-mono font-bold text-base focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                      className="w-full px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-brand-white border border-brand-pale text-brand-forest font-mono font-bold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                     />
                   </div>
                 ))}
@@ -1067,26 +1166,26 @@ export default function AdminPage() {
               className="hidden"
             />
 
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
                 <div>
-                  <h2 className="text-lg font-bold text-brand-forest">Photo Gallery</h2>
+                  <h2 className="text-base sm:text-lg font-bold text-brand-forest">Photo Gallery</h2>
                   <p className="text-xs text-slate-600 mt-1">
-                    Manage the 3D gallery images displayed in the interactive carousel. Upload photos directly from your PC or enter image links.
+                    Manage the 3D gallery images displayed in the interactive carousel. Upload photos directly from your phone/PC or enter image links.
                   </p>
                 </div>
-                <div className="flex items-center gap-2 self-start sm:self-auto">
+                <div className="grid grid-cols-2 sm:flex items-center gap-2 w-full sm:w-auto">
                   <button
                     type="button"
                     disabled={isProcessingPhoto}
                     onClick={() => multiFileInputRef.current?.click()}
-                    className="px-4 py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
-                    title="Choose one or multiple pictures from your computer"
+                    className="w-full sm:w-auto justify-center px-3.5 sm:px-4 py-2.5 sm:py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                    title="Choose pictures from your device"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                     </svg>
-                    <span>{isProcessingPhoto ? 'Processing...' : 'Upload from PC'}</span>
+                    <span className="truncate">{isProcessingPhoto ? 'Processing...' : 'Upload Photos'}</span>
                   </button>
 
                   <button
@@ -1098,9 +1197,9 @@ export default function AdminPage() {
                       setModalFile(null);
                       setIsAddGalleryOpen(true);
                     }}
-                    className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
+                    className="w-full sm:w-auto justify-center px-3.5 sm:px-4 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs"
                   >
-                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Add Photo</span>
@@ -1108,10 +1207,10 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2.5 sm:gap-4">
                 {(content.gallery || []).map((img, idx) => (
-                  <div key={idx} className="bg-brand-light/20 border border-brand-pale rounded-2xl overflow-hidden group shadow-2xs flex flex-col">
-                    <div className="h-32 w-full overflow-hidden bg-slate-100 relative">
+                  <div key={idx} className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl overflow-hidden group shadow-2xs flex flex-col">
+                    <div className="h-28 sm:h-32 w-full overflow-hidden bg-slate-100 relative">
                       <GlassImage
                         src={img.src}
                         alt={`Photo ${idx + 1}`}
@@ -1123,15 +1222,15 @@ export default function AdminPage() {
                         #{idx + 1}
                       </span>
 
-                      {/* Replace from PC button on hover */}
+                      {/* Replace from PC/Phone button on hover / touch */}
                       <button
                         type="button"
                         onClick={() => {
                           setReplaceCardIndex(idx);
                           cardFileInputRef.current?.click();
                         }}
-                        className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-slate-900/70 hover:bg-slate-900 text-white transition shadow-sm cursor-pointer opacity-90 sm:opacity-0 group-hover:opacity-100"
-                        title="Upload new picture from PC to replace this photo"
+                        className="absolute top-1.5 right-1.5 p-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 text-white transition shadow-sm cursor-pointer opacity-100 sm:opacity-0 group-hover:opacity-100"
+                        title="Upload new picture to replace this photo"
                       >
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -1140,13 +1239,13 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    <div className="p-2.5 bg-brand-white flex-1 flex flex-col justify-between">
+                    <div className="p-2 sm:p-2.5 bg-brand-white flex-1 flex flex-col justify-between">
                       <input
                         type="text"
                         value={img.src}
                         onChange={(e) => updateGalleryImage(idx, e.target.value)}
-                        placeholder="/assets/photo.jpg or data:image..."
-                        className="w-full px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-700 text-[11px] font-mono focus:outline-none focus:border-brand-forest"
+                        placeholder="/assets/photo.jpg"
+                        className="w-full px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-700 text-[10px] sm:text-[11px] font-mono focus:outline-none focus:border-brand-forest"
                         title={img.src}
                       />
                       <div className="flex items-center justify-between mt-2 pt-1 border-t border-brand-pale/60 text-xs">
@@ -1156,18 +1255,18 @@ export default function AdminPage() {
                             setReplaceCardIndex(idx);
                             cardFileInputRef.current?.click();
                           }}
-                          className="text-[11px] text-brand-forest hover:underline font-medium cursor-pointer flex items-center gap-1"
-                          title="Choose photo from PC"
+                          className="text-[11px] text-brand-forest hover:underline font-medium cursor-pointer flex items-center gap-1 p-1 -m-1"
+                          title="Choose photo to replace"
                         >
                           <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                           </svg>
-                          <span>PC</span>
+                          <span>Replace</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => deleteGalleryImage(idx)}
-                          className="text-slate-400 hover:text-rose-600 p-1 rounded hover:bg-rose-50 transition cursor-pointer text-xs flex items-center gap-1"
+                          className="text-slate-400 hover:text-rose-600 p-1 -m-1 rounded hover:bg-rose-50 transition cursor-pointer text-xs flex items-center gap-1"
                           title="Remove image"
                         >
                           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1182,10 +1281,10 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* ADD PHOTO MODAL WITH PC UPLOAD & AUTO URL RETRIEVAL */}
+            {/* ADD PHOTO MODAL WITH FILE UPLOAD & AUTO URL RETRIEVAL */}
             {isAddGalleryOpen && (
-              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-                <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl my-8">
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
                   {/* Hidden file input for modal */}
                   <input
                     type="file"
@@ -1195,7 +1294,7 @@ export default function AdminPage() {
                     className="hidden"
                   />
 
-                  <div className="bg-brand-forest p-4 sm:p-5 text-white flex items-center justify-between">
+                  <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1204,7 +1303,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-bold">Add Photo to Gallery</h3>
-                        <p className="text-[11px] text-brand-pale">Max 5MB • WebP Quality Optimization</p>
+                        <p className="text-[10px] sm:text-[11px] text-brand-pale">Max 5MB • WebP Quality Optimization</p>
                       </div>
                     </div>
                     <button
@@ -1216,24 +1315,24 @@ export default function AdminPage() {
                         setPhotoStats(null);
                         setModalFile(null);
                       }}
-                      className="text-white/80 hover:text-white p-1 cursor-pointer"
+                      className="text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
                     >
                       ✕
                     </button>
                   </div>
 
-                  <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                  <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
                     {/* Compression Options Toggle Card */}
-                    <div className="bg-brand-light/30 border border-brand-pale rounded-xl p-3.5 flex items-center justify-between gap-3">
+                    <div className="bg-brand-light/30 border border-brand-pale rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
                       <div className="flex-1 pr-2">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs font-bold text-slate-800">Convert to WebP & Optimize</span>
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span className="text-xs font-bold text-slate-800">Convert to WebP &amp; Optimize</span>
                           <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
                             Recommended
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-600 leading-relaxed">
-                          Converts to modern WebP format while preserving ultra-high sharpness with zero pixelation and rapid loading.
+                          Converts to modern WebP format while preserving ultra-high sharpness with rapid mobile loading.
                         </p>
                       </div>
                       <button
@@ -1253,13 +1352,13 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    {/* PC File Upload Dropzone */}
+                    {/* File Upload Dropzone */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-                          1. Upload Picture from PC
+                          1. Select Picture
                         </label>
-                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
+                        <span className="text-[10px] sm:text-[11px] font-semibold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">
                           Max size: 5 MB
                         </span>
                       </div>
@@ -1267,7 +1366,7 @@ export default function AdminPage() {
                         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
                         onDrop={handleModalDrop}
                         onClick={() => modalFileInputRef.current?.click()}
-                        className={`border-2 border-dashed rounded-2xl p-6 text-center cursor-pointer transition-all ${
+                        className={`border-2 border-dashed rounded-2xl p-4 sm:p-6 text-center cursor-pointer transition-all ${
                           isProcessingPhoto
                             ? 'border-brand-forest bg-brand-light/50 animate-pulse'
                             : newGallerySrc
@@ -1275,14 +1374,14 @@ export default function AdminPage() {
                               : 'border-brand-pale hover:border-brand-forest/70 hover:bg-brand-light/30 bg-brand-light/10'
                         }`}
                       >
-                        <div className="w-12 h-12 mx-auto rounded-full bg-brand-light border border-brand-pale flex items-center justify-center text-brand-forest mb-3 shadow-2xs">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-brand-light border border-brand-pale flex items-center justify-center text-brand-forest mb-2.5 sm:mb-3 shadow-2xs">
                           {isProcessingPhoto ? (
-                            <svg className="w-6 h-6 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6 animate-spin" fill="none" viewBox="0 0 24 24">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                             </svg>
                           ) : (
-                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
                           )}
@@ -1292,9 +1391,9 @@ export default function AdminPage() {
                           <p className="text-xs font-bold text-slate-800">
                             {isProcessingPhoto
                               ? 'Optimizing to WebP & Preserving Quality...'
-                              : 'Click to choose image from PC or drag & drop here'}
+                              : 'Tap to choose photo or drag & drop'}
                           </p>
-                          <p className="text-[11px] text-slate-500">
+                          <p className="text-[10px] sm:text-[11px] text-slate-500">
                             Supports JPG, PNG, WEBP, GIF. Strict 5MB limit.
                           </p>
                         </div>
@@ -1313,7 +1412,7 @@ export default function AdminPage() {
 
                     {/* Live Preview & Compression Analytics */}
                     {newGallerySrc && (
-                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3.5 space-y-3">
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3 sm:p-3.5 space-y-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5">
                             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold">
@@ -1337,7 +1436,7 @@ export default function AdminPage() {
                           </button>
                         </div>
 
-                        <div className="h-44 w-full rounded-lg overflow-hidden bg-slate-900/5 border border-emerald-200 relative flex items-center justify-center">
+                        <div className="h-36 sm:h-44 w-full rounded-lg overflow-hidden bg-slate-900/5 border border-emerald-200 relative flex items-center justify-center">
                           <GlassImage
                             src={newGallerySrc}
                             alt="Uploaded preview"
@@ -1348,26 +1447,26 @@ export default function AdminPage() {
 
                         {/* Live Compression Metrics */}
                         {photoStats && (
-                          <div className="bg-brand-white border border-emerald-200/80 rounded-xl p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
+                          <div className="bg-brand-white border border-emerald-200/80 rounded-xl p-2.5 sm:p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                             <div className="p-1.5 bg-slate-50 rounded-lg">
-                              <span className="block text-[10px] text-slate-500 uppercase tracking-wider">Original</span>
-                              <span className="font-bold text-slate-700">{formatBytes(photoStats.originalSize)}</span>
+                              <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider">Original</span>
+                              <span className="font-bold text-slate-700 text-xs sm:text-sm">{formatBytes(photoStats.originalSize)}</span>
                             </div>
                             <div className="p-1.5 bg-emerald-50 rounded-lg">
-                              <span className="block text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">
+                              <span className="block text-[9px] sm:text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">
                                 {compressOption ? 'Optimized' : 'Size'}
                               </span>
-                              <span className="font-bold text-emerald-700">{formatBytes(photoStats.compressedSize)}</span>
+                              <span className="font-bold text-emerald-700 text-xs sm:text-sm">{formatBytes(photoStats.compressedSize)}</span>
                             </div>
                             <div className="p-1.5 bg-emerald-50 rounded-lg">
-                              <span className="block text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Saved</span>
-                              <span className="font-bold text-emerald-700">
+                              <span className="block text-[9px] sm:text-[10px] text-emerald-600 uppercase tracking-wider font-semibold">Saved</span>
+                              <span className="font-bold text-emerald-700 text-xs sm:text-sm">
                                 {photoStats.savedPercent > 0 ? `-${photoStats.savedPercent}%` : 'Original'}
                               </span>
                             </div>
                             <div className="p-1.5 bg-slate-50 rounded-lg">
-                              <span className="block text-[10px] text-slate-500 uppercase tracking-wider">Dimensions</span>
-                              <span className="font-bold text-slate-700">{photoStats.width}×{photoStats.height}</span>
+                              <span className="block text-[9px] sm:text-[10px] text-slate-500 uppercase tracking-wider">Dimensions</span>
+                              <span className="font-bold text-slate-700 text-xs sm:text-sm">{photoStats.width}×{photoStats.height}</span>
                             </div>
                           </div>
                         )}
@@ -1389,16 +1488,16 @@ export default function AdminPage() {
                           setNewGallerySrc(e.target.value);
                           setPhotoStats(null);
                         }}
-                        placeholder="Automatically populated upon PC upload or enter /assets/photo.webp"
-                        className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                        placeholder="Automatically populated upon upload"
+                        className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                       />
                       <p className="text-[11px] text-slate-500 mt-1">
-                        When you select a picture from your PC, the optimized WebP Data URL is automatically retrieved and placed here.
+                        When you select a picture from your device, the optimized WebP Data URL is automatically placed here.
                       </p>
                     </div>
                   </div>
 
-                  <div className="p-4 bg-brand-light/30 border-t border-brand-pale flex justify-end gap-2">
+                  <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => {
@@ -1408,7 +1507,7 @@ export default function AdminPage() {
                         setPhotoStats(null);
                         setModalFile(null);
                       }}
-                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
                     >
                       Cancel
                     </button>
@@ -1425,7 +1524,7 @@ export default function AdminPage() {
                         setIsAddGalleryOpen(false);
                         showToast('Photo added to gallery!', 'success');
                       }}
-                      className={`px-5 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs ${
+                      className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs text-center ${
                         newGallerySrc.trim()
                           ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
                           : 'bg-slate-200 text-slate-400 cursor-not-allowed'
@@ -1443,11 +1542,11 @@ export default function AdminPage() {
         {/* SCHOOL EVENTS (FACEBOOK IFRAME EMBEDS) */}
         {activeTab === 'events' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 mb-5 sm:mb-6">
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-lg font-bold text-brand-forest">School Events &amp; Facebook Updates</h2>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-base sm:text-lg font-bold text-brand-forest">School Events &amp; Facebook Updates</h2>
                     <span className="px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-bold">
                       Facebook Iframe Feed
                     </span>
@@ -1464,9 +1563,9 @@ export default function AdminPage() {
                     setNewEventHeight(645);
                     setIsAddEventOpen(true);
                   }}
-                  className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-start sm:self-auto"
+                  className="w-full sm:w-auto justify-center px-4 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-stretch sm:self-auto"
                 >
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
                   </svg>
                   <span>+ Add Facebook Event</span>
@@ -1478,7 +1577,7 @@ export default function AdminPage() {
                 const eventsList = Array.isArray(content?.events) ? content.events : [];
                 if (eventsList.length === 0) {
                   return (
-                    <div className="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-brand-pale bg-brand-light/20">
+                    <div className="text-center py-10 sm:py-12 px-4 rounded-2xl border-2 border-dashed border-brand-pale bg-brand-light/20">
                       <div className="w-12 h-12 mx-auto rounded-full bg-brand-light flex items-center justify-center text-brand-forest mb-3">
                         <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
@@ -1505,7 +1604,7 @@ export default function AdminPage() {
 
                 return (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xs text-slate-500 font-medium pb-2 border-b border-brand-pale/60">
+                    <div className="flex items-center justify-between text-xs text-slate-500 font-medium pb-2 border-b border-brand-pale/60 flex-wrap gap-2">
                       <span>Active Event Posts ({eventsList.length})</span>
                       <a
                         href="https://www.facebook.com/profile.php?id=61575442051109"
@@ -1520,11 +1619,11 @@ export default function AdminPage() {
                       </a>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                       {eventsList.map((post, idx) => (
                       <div
                         key={post.id || idx}
-                        className="bg-brand-light/20 border border-brand-pale rounded-2xl p-4 shadow-2xs flex flex-col justify-between"
+                        className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
                       >
                         {/* Top Bar */}
                         <div className="flex items-center justify-between gap-2 mb-3">
@@ -1536,7 +1635,7 @@ export default function AdminPage() {
                               href={post.postUrl || '#'}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1 hover:underline"
+                              className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1 hover:underline p-1 -m-1"
                               title="View post on Facebook"
                             >
                               <span>View Post</span>
@@ -1552,7 +1651,7 @@ export default function AdminPage() {
                                   showToast('Event removed', 'success');
                                 }
                               }}
-                              className="text-slate-400 hover:text-rose-600 p-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                              className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
                               title="Delete event"
                             >
                               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1562,14 +1661,12 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Live Iframe Scaled Preview Container */}
-                        <div className="w-full h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
+                        {/* Live Iframe Scaled Preview Container - Fully Responsive on Mobile */}
+                        <div className="w-full h-[360px] sm:h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
                           <div
-                            className="shrink-0 flex justify-center origin-top pointer-events-auto"
+                            className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
                             style={{
-                              width: '500px',
                               height: `${post.height || 645}px`,
-                              transform: 'scale(0.62)',
                               marginBottom: `-${(post.height || 645) * 0.38}px`,
                             }}
                           >
@@ -1600,7 +1697,7 @@ export default function AdminPage() {
                                 step={10}
                                 value={post.height || 645}
                                 onChange={(e) => updateEvent(post.id, { height: Number(e.target.value) || 645 })}
-                                className="w-20 px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
+                                className="w-20 px-2 py-1.5 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
                               />
                               <span className="text-slate-400">px</span>
                             </div>
@@ -1620,9 +1717,9 @@ export default function AdminPage() {
 
             {/* ADD EVENT MODAL (FB LINK TO IFRAME RETRIEVAL) */}
             {isAddEventOpen && (
-              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-                <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-xl w-full overflow-hidden shadow-2xl my-8">
-                  <div className="bg-brand-forest p-4 sm:p-5 text-white flex items-center justify-between">
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
+                  <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
                         <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
@@ -1631,7 +1728,7 @@ export default function AdminPage() {
                       </div>
                       <div>
                         <h3 className="text-sm sm:text-base font-bold">Add Facebook Event Post</h3>
-                        <p className="text-[11px] text-brand-pale">Paste FB Link to Retrieve Iframe</p>
+                        <p className="text-[10px] sm:text-[11px] text-brand-pale">Paste FB Link to Retrieve Iframe</p>
                       </div>
                     </div>
                     <button
@@ -1640,13 +1737,13 @@ export default function AdminPage() {
                         setIsAddEventOpen(false);
                         setNewEventInput('');
                       }}
-                      className="text-white/80 hover:text-white p-1 cursor-pointer"
+                      className="text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
                     >
                       ✕
                     </button>
                   </div>
 
-                  <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto">
+                  <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                         Facebook Post URL or Iframe Embed Code
@@ -1655,9 +1752,9 @@ export default function AdminPage() {
                         rows={3}
                         value={newEventInput}
                         onChange={(e) => setNewEventInput(e.target.value)}
-                        placeholder="Paste Facebook post URL (e.g., https://www.facebook.com/permalink.php?story_fbid=... or https://www.facebook.com/.../posts/...) or iframe code"
+                        placeholder="Paste Facebook post URL or embed code..."
                         autoFocus
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
                       />
                       <p className="text-[11px] text-slate-500 mt-1">
                         Tip: Open any post on Facebook, click the three dots (<span className="font-bold">···</span>), click <span className="font-semibold text-slate-700">"Copy link"</span>, and paste it here.
@@ -1666,8 +1763,8 @@ export default function AdminPage() {
 
                     {/* Retrieval Result & Live Iframe Preview */}
                     {parsedNewEvent ? (
-                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
+                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 sm:p-4 space-y-3">
+                        <div className="flex items-center justify-between flex-wrap gap-2">
                           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
                             <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
@@ -1681,13 +1778,13 @@ export default function AdminPage() {
                           <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                             Generated Iframe Embed URL:
                           </span>
-                          <div className="p-2 rounded-lg bg-white border border-emerald-200 text-[11px] font-mono text-slate-700 break-all select-all">
+                          <div className="p-2 rounded-lg bg-white border border-emerald-200 text-[10px] sm:text-[11px] font-mono text-slate-700 break-all select-all">
                             {parsedNewEvent.iframeSrc}
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3">
-                          <div className="flex-1">
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                          <div className="flex-1 min-w-0">
                             <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                               Canonical Post URL:
                             </span>
@@ -1698,7 +1795,7 @@ export default function AdminPage() {
                             </div>
                           </div>
 
-                          <div className="w-32">
+                          <div className="w-full sm:w-32">
                             <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                               Height (px):
                             </span>
@@ -1709,7 +1806,7 @@ export default function AdminPage() {
                               step={10}
                               value={newEventHeight}
                               onChange={(e) => setNewEventHeight(Number(e.target.value) || 645)}
-                              className="w-full px-2 py-1 rounded-lg bg-white border border-emerald-200 text-slate-800 text-xs font-mono font-bold"
+                              className="w-full px-2 py-1.5 rounded-lg bg-white border border-emerald-200 text-slate-800 text-base sm:text-xs font-mono font-bold"
                             />
                           </div>
                         </div>
@@ -1719,13 +1816,11 @@ export default function AdminPage() {
                           <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
                             Live Iframe Preview:
                           </span>
-                          <div className="w-full h-[320px] overflow-hidden rounded-xl bg-white border border-slate-200 flex justify-center items-start pt-2">
+                          <div className="w-full h-[300px] sm:h-[320px] overflow-hidden rounded-xl bg-white border border-slate-200 flex justify-center items-start pt-2">
                             <div
-                              className="shrink-0 flex justify-center origin-top pointer-events-auto"
+                              className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
                               style={{
-                                width: '500px',
                                 height: `${newEventHeight}px`,
-                                transform: 'scale(0.55)',
                                 marginBottom: `-${newEventHeight * 0.45}px`,
                               }}
                             >
@@ -1746,7 +1841,7 @@ export default function AdminPage() {
                         </div>
                       </div>
                     ) : newEventInput.trim() ? (
-                      <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3.5 text-xs text-rose-800 flex items-start gap-2">
+                      <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3 sm:p-3.5 text-xs text-rose-800 flex items-start gap-2">
                         <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
@@ -1760,14 +1855,14 @@ export default function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="p-4 bg-brand-light/30 border-t border-brand-pale flex justify-end gap-2">
+                  <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                     <button
                       type="button"
                       onClick={() => {
                         setIsAddEventOpen(false);
                         setNewEventInput('');
                       }}
-                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
                     >
                       Cancel
                     </button>
@@ -1784,7 +1879,7 @@ export default function AdminPage() {
                         setIsAddEventOpen(false);
                         showToast('Facebook event added to Events page!', 'success');
                       }}
-                      className={`px-5 py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs ${parsedNewEvent
+                      className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs text-center ${parsedNewEvent
                           ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
                           : 'bg-slate-200 text-slate-400 cursor-not-allowed'
                         }`}
@@ -1801,20 +1896,20 @@ export default function AdminPage() {
         {/* CONTACT INFORMATION */}
         {activeTab === 'contact' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-2">Contact Information</h2>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-1.5">Contact Information</h2>
               <p className="text-xs text-slate-600 mb-5">
-                Update the official contact card details and Google Maps location URL.
+                Update the official contact card details and Google Maps location URL shown across the website.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">School Address</label>
                   <input
                     type="text"
                     value={content.contact?.address || ''}
                     onChange={(e) => updateContact({ address: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1824,7 +1919,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.contact?.phone || ''}
                     onChange={(e) => updateContact({ phone: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1834,7 +1929,7 @@ export default function AdminPage() {
                     type="email"
                     value={content.contact?.email || ''}
                     onChange={(e) => updateContact({ email: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1844,7 +1939,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.contact?.officeHours || ''}
                     onChange={(e) => updateContact({ officeHours: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1854,7 +1949,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.contact?.mapsUrl || ''}
                     onChange={(e) => updateContact({ mapsUrl: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1864,7 +1959,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.contact?.facebookUrl || ''}
                     onChange={(e) => updateContact({ facebookUrl: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
 
@@ -1874,7 +1969,7 @@ export default function AdminPage() {
                     type="text"
                     value={content.contact?.instagramUrl || ''}
                     onChange={(e) => updateContact({ instagramUrl: e.target.value })}
-                    className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                    className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
                 </div>
               </div>
@@ -1885,12 +1980,12 @@ export default function AdminPage() {
         {/* SETTINGS & BACKUP */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-5">
                 <div>
-                  <h2 className="text-lg font-bold text-brand-forest">Administrator Account</h2>
+                  <h2 className="text-base sm:text-lg font-bold text-brand-forest">Administrator Account</h2>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Secured by Firebase Authentication {firebaseProjectId && <span className="font-mono text-brand-forest font-semibold">({firebaseProjectId})</span>}
+                    Secured by Firebase Authentication 
                   </p>
                 </div>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold self-start sm:self-auto">
@@ -1899,20 +1994,20 @@ export default function AdminPage() {
                 </span>
               </div>
 
-              <div className="max-w-xl bg-brand-light/30 border border-brand-pale rounded-2xl p-4 sm:p-5 space-y-3 text-xs">
-                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
-                  <span className="text-slate-500 font-medium">Logged In As</span>
-                  <span className="font-bold text-slate-800">{firebaseUser?.email || 'Authenticated Admin'}</span>
+              <div className="max-w-xl bg-brand-light/30 border border-brand-pale rounded-2xl p-3.5 sm:p-5 space-y-2.5 sm:space-y-3 text-xs">
+                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5 gap-2">
+                  <span className="text-slate-500 font-medium shrink-0">Logged In As</span>
+                  <span className="font-bold text-slate-800 truncate text-right">{firebaseUser?.email || 'Authenticated Admin'}</span>
                 </div>
                 {firebaseUser?.displayName && (
-                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
-                    <span className="text-slate-500 font-medium">Display Name</span>
-                    <span className="font-semibold text-slate-800">{firebaseUser.displayName}</span>
+                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5 gap-2">
+                    <span className="text-slate-500 font-medium shrink-0">Display Name</span>
+                    <span className="font-semibold text-slate-800 truncate text-right">{firebaseUser.displayName}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
-                  <span className="text-slate-500 font-medium">Sign-In Provider</span>
-                  <span className="font-mono font-semibold text-slate-700">
+                <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5 gap-2">
+                  <span className="text-slate-500 font-medium shrink-0">Sign-In Provider</span>
+                  <span className="font-mono font-semibold text-slate-700 text-right">
                     {firebaseUser?.providerData?.[0]?.providerId === 'google.com'
                       ? 'Google OAuth 2.0'
                       : firebaseUser?.providerData?.[0]?.providerId === 'password'
@@ -1921,47 +2016,36 @@ export default function AdminPage() {
                   </span>
                 </div>
                 {firebaseProjectId && (
-                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5">
-                    <span className="text-slate-500 font-medium">Firebase Project ID</span>
-                    <span className="font-mono text-brand-forest font-semibold">{firebaseProjectId}</span>
+                  <div className="flex items-center justify-between border-b border-brand-pale/70 pb-2.5 gap-2">
+                    <span className="text-slate-500 font-medium shrink-0">Firebase Project ID</span>
+                    <span className="font-mono text-brand-forest font-semibold text-right">{firebaseProjectId}</span>
                   </div>
                 )}
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-500 font-medium">Auto Inactivity Timeout</span>
-                  <span className="text-slate-700 font-semibold">15 Minutes of Idle Time</span>
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-slate-500 font-medium shrink-0">Auto Timeout</span>
+                  <span className="text-slate-700 font-semibold text-right">15 Min Inactivity</span>
                 </div>
               </div>
 
-              <div className="mt-5 flex flex-wrap items-center gap-3">
+              <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={() => handleLogout()}
-                  className="px-4 py-2 rounded-full bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition cursor-pointer shadow-2xs"
+                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition cursor-pointer shadow-2xs text-center justify-center flex items-center"
                 >
                   Sign Out from Session
                 </button>
-                <a
-                  href={firebaseProjectId ? `https://console.firebase.google.com/project/${firebaseProjectId}/authentication/users` : 'https://console.firebase.google.com/'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold inline-flex items-center gap-1.5 transition shadow-2xs"
-                >
-                  <span>Manage Users in Firebase Console</span>
-                  <svg className="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
               </div>
             </div>
 
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-4">Configuration Backup</h2>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-3">Configuration Backup</h2>
 
-              <div className="flex flex-wrap items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3">
                 <button
                   type="button"
                   onClick={exportJson}
-                  className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center gap-2 cursor-pointer transition shadow-2xs"
+                  className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition shadow-2xs"
                 >
                   <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -1969,7 +2053,7 @@ export default function AdminPage() {
                   <span>Download Backup JSON</span>
                 </button>
 
-                <label className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center gap-2 cursor-pointer transition shadow-2xs">
+                <label className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer transition shadow-2xs">
                   <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                   </svg>
@@ -1986,7 +2070,7 @@ export default function AdminPage() {
                         showToast('Reset to defaults', 'success');
                       }
                     }}
-                    className="px-4 py-2 rounded-full bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold cursor-pointer transition ml-auto"
+                    className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 text-xs font-semibold cursor-pointer transition sm:ml-auto text-center"
                   >
                     Reset to Defaults
                   </button>
@@ -1994,8 +2078,8 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
-              <h2 className="text-lg font-bold text-brand-forest mb-2">GitHub Repository</h2>
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-1.5">GitHub Repository</h2>
               <p className="text-xs text-slate-600 mb-4">
                 View the website source code, commit history, and automated deployment actions on GitHub.
               </p>
@@ -2003,21 +2087,21 @@ export default function AdminPage() {
                 href={GITHUB_REPO_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold transition shadow-2xs"
+                className="w-full sm:w-auto inline-flex items-center justify-center sm:justify-start gap-2 px-4 py-2.5 sm:py-2 rounded-full bg-brand-light border border-brand-pale hover:border-brand-soft text-brand-forest text-xs font-bold transition shadow-2xs"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
-                <span>github.com/Sivodayan/KCC-Project</span>
-                <svg className="w-3.5 h-3.5 text-brand-forest/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="truncate">github.com/Sivodayan/KCC-Project</span>
+                <svg className="w-3.5 h-3.5 text-brand-forest/60 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                 </svg>
               </a>
             </div>
 
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <h2 className="text-lg font-bold text-brand-forest">GitHub Publishing Token &amp; Repository Sync</h2>
+                <h2 className="text-base sm:text-lg font-bold text-brand-forest">GitHub Publishing Token &amp; Sync</h2>
                 {githubToken ? (
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto">
                     Token Saved
@@ -2034,7 +2118,7 @@ export default function AdminPage() {
 
               <div className="space-y-4 max-w-xl">
                 <div>
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
                     <label className="block text-xs font-semibold text-slate-700">
                       Personal Access Token (PAT)
                     </label>
@@ -2042,36 +2126,38 @@ export default function AdminPage() {
                       href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1"
+                      className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1 self-start sm:self-auto"
                     >
-                      <span>Create Token on GitHub (needs 'repo' scope)</span>
+                      <span>Create Token on GitHub ('repo' scope)</span>
                       <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                       </svg>
                     </a>
                   </div>
-                  <div className="flex gap-2">
-                    <input
-                      type={showGithubToken ? 'text' : 'password'}
-                      value={githubToken}
-                      onChange={(e) => setGithubToken(e.target.value)}
-                      placeholder="ghp_... or github_pat_..."
-                      className="flex-1 px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowGithubToken(prev => !prev)}
-                      className="px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-600 hover:text-slate-900 text-xs font-medium cursor-pointer"
-                    >
-                      {showGithubToken ? 'Hide' : 'Show'}
-                    </button>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <div className="relative flex-1">
+                      <input
+                        type={showGithubToken ? 'text' : 'password'}
+                        value={githubToken}
+                        onChange={(e) => setGithubToken(e.target.value)}
+                        placeholder="ghp_... or github_pat_..."
+                        className="w-full px-3.5 py-2.5 sm:py-2 pr-14 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowGithubToken(prev => !prev)}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-slate-500 hover:text-slate-800 text-xs font-semibold cursor-pointer"
+                      >
+                        {showGithubToken ? 'Hide' : 'Show'}
+                      </button>
+                    </div>
                     <button
                       type="button"
                       disabled={isVerifyingToken || !githubToken.trim()}
                       onClick={handleVerifyToken}
-                      className="px-3.5 py-2 rounded-xl bg-brand-light border border-brand-pale hover:bg-brand-pale/70 text-brand-forest text-xs font-bold transition cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-brand-light border border-brand-pale hover:bg-brand-pale/70 text-brand-forest text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
                     >
-                      {isVerifyingToken ? 'Verifying...' : 'Verify'}
+                      {isVerifyingToken ? 'Verifying...' : 'Verify Token'}
                     </button>
                   </div>
                 </div>
@@ -2100,7 +2186,7 @@ export default function AdminPage() {
                   </div>
                 )}
 
-                <div className="flex items-center gap-2 pt-1">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
                   <button
                     type="button"
                     onClick={() => {
@@ -2111,7 +2197,7 @@ export default function AdminPage() {
                         showToast('Token field is empty', 'error');
                       }
                     }}
-                    className="px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs"
+                    className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs text-center justify-center flex items-center"
                   >
                     Save Token
                   </button>
@@ -2124,7 +2210,7 @@ export default function AdminPage() {
                         setVerifiedUser(null);
                         showToast('GitHub token removed from storage', 'info');
                       }}
-                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold transition cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold transition cursor-pointer text-center justify-center flex items-center"
                     >
                       Clear Token
                     </button>
@@ -2133,9 +2219,9 @@ export default function AdminPage() {
               </div>
             </div>
 
-            <div className="bg-brand-white border border-brand-pale rounded-2xl p-6 sm:p-8 shadow-2xs">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <h2 className="text-lg font-bold text-brand-forest">Workflow &amp; Keyboard Shortcuts</h2>
+                <h2 className="text-base sm:text-lg font-bold text-brand-forest">Workflow &amp; Keyboard Shortcuts</h2>
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-light text-brand-forest border border-brand-pale">
                     {undoCount} undoable step{undoCount === 1 ? '' : 's'}
@@ -2148,30 +2234,33 @@ export default function AdminPage() {
                 </div>
               </div>
               <p className="text-xs text-slate-600 mb-4">
-                The KCC Admin Console automatically records snapshots of your edits across all tabs. Use the sticky top navigation buttons or these universal keyboard shortcuts:
+                The KCC Admin Console automatically records snapshots of your edits across all tabs.
+                <span className="block sm:inline sm:ml-1 text-slate-500">
+                  On mobile devices, use the Undo/Redo tap buttons in the sticky top header. On desktop, use standard shortcuts:
+                </span>
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 10h10a5 5 0 0 1 5 5v2m0 0l-4-4m4 4l4-4M3 10l4-4m-4 4l4 4" />
                       </svg>
                     </div>
                     <div>
                       <span className="font-bold text-slate-800 block">Undo Last Action</span>
-                      <span className="text-[11px] text-slate-500">Reverts text, stat, photo or event edits</span>
+                      <span className="text-[11px] text-slate-500">Reverts recent content changes</span>
                     </div>
                   </div>
-                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs">
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs shrink-0">
                     Ctrl + Z
                   </kbd>
                 </div>
 
                 <div className="flex items-center justify-between p-3.5 rounded-xl bg-brand-light/30 border border-brand-pale">
                   <div className="flex items-center gap-2.5">
-                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest">
+                    <div className="p-1.5 rounded-lg bg-brand-white border border-brand-pale text-brand-forest shrink-0">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M21 10H11a5 5 0 0 0-5 5v2m0 0l4-4m-4 4l-4-4m20-3l-4-4m4 4l-4 4" />
                       </svg>
@@ -2181,7 +2270,7 @@ export default function AdminPage() {
                       <span className="text-[11px] text-slate-500">Restores undone changes</span>
                     </div>
                   </div>
-                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs">
+                  <kbd className="px-2.5 py-1 rounded-lg bg-brand-white border border-slate-200 font-mono text-[11px] font-bold text-slate-700 shadow-2xs shrink-0">
                     Ctrl + Y / ⇧⌘Z
                   </kbd>
                 </div>
@@ -2192,19 +2281,19 @@ export default function AdminPage() {
 
         {/* COMMIT DIRECTLY TO GITHUB MODAL */}
         {isCommitModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-brand-white border border-brand-pale rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl my-8 animate-modal-content">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+          <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-auto animate-modal-content">
             {/* Modal Header */}
-            <div className="bg-slate-900 px-5 py-4 text-white flex items-center justify-between">
+            <div className="shrink-0 bg-slate-900 px-4 sm:px-5 py-3 sm:py-4 text-white flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
                   <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                   </svg>
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white">Commit to GitHub</h3>
-                  <p className="text-[11px] text-slate-400 font-mono">Sivodayan/KCC-Project • branch: main</p>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm text-white truncate">Commit to GitHub</h3>
+                  <p className="text-[11px] text-slate-400 font-mono truncate">Sivodayan/KCC-Project • branch: main</p>
                 </div>
               </div>
               <button
@@ -2217,7 +2306,7 @@ export default function AdminPage() {
                   }
                 }}
                 disabled={isCommitting}
-                className="text-slate-400 hover:text-white p-1 rounded-lg transition cursor-pointer"
+                className="text-slate-400 hover:text-white p-1.5 rounded-lg transition cursor-pointer shrink-0"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -2226,7 +2315,7 @@ export default function AdminPage() {
             </div>
 
             {/* Modal Body */}
-            <div className="p-5 sm:p-6 space-y-4">
+            <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
               {commitResult ? (
                 <div className="text-center py-3 space-y-4">
                   <div className="w-14 h-14 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
@@ -2255,12 +2344,12 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2 pt-2">
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2 pt-2">
                     <a
                       href={commitResult.commitUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-full sm:w-auto px-4 py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-2xs"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-slate-900 hover:bg-black text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-2xs text-center"
                     >
                       <span>View Commit on GitHub</span>
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2273,7 +2362,7 @@ export default function AdminPage() {
                         setIsCommitModalOpen(false);
                         setCommitResult(null);
                       }}
-                      className="w-full sm:w-auto px-5 py-2 rounded-full bg-brand-light border border-brand-pale hover:bg-brand-pale/60 text-brand-forest text-xs font-bold transition cursor-pointer"
+                      className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-light border border-brand-pale hover:bg-brand-pale/60 text-brand-forest text-xs font-bold transition cursor-pointer text-center"
                     >
                       Done
                     </button>
@@ -2306,7 +2395,7 @@ export default function AdminPage() {
                   )}
 
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
                       <label className="block text-xs font-semibold text-slate-700">
                         GitHub Personal Access Token (PAT)
                       </label>
@@ -2314,7 +2403,7 @@ export default function AdminPage() {
                         href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1"
+                        className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1 self-start sm:self-auto"
                       >
                         <span>Create Token on GitHub</span>
                         <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2329,7 +2418,7 @@ export default function AdminPage() {
                         onChange={(e) => setGithubToken(e.target.value)}
                         placeholder="ghp_... or github_pat_..."
                         required
-                        className="w-full px-3.5 py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                        className="w-full px-3.5 py-2.5 sm:py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                       />
                       <button
                         type="button"
@@ -2369,7 +2458,7 @@ export default function AdminPage() {
                       value={commitMessage}
                       onChange={(e) => setCommitMessage(e.target.value)}
                       placeholder="Update website content via KCC Admin Panel"
-                      className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                      className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                     />
                   </div>
 
@@ -2394,12 +2483,12 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-brand-pale">
+                  <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-3 border-t border-brand-pale">
                     <button
                       type="button"
                       disabled={isCommitting}
                       onClick={() => setIsCommitModalOpen(false)}
-                      className="px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer"
+                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-brand-light text-slate-700 text-xs font-semibold transition cursor-pointer text-center"
                     >
                       Cancel
                     </button>
@@ -2407,7 +2496,7 @@ export default function AdminPage() {
                     <button
                       type="submit"
                       disabled={isCommitting || !githubToken.trim()}
-                      className={`inline-flex items-center gap-2 px-5 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
+                      className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
                         isCommitting || !githubToken.trim() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                       }`}
                     >
@@ -2439,12 +2528,12 @@ export default function AdminPage() {
       {/* CONFIRM LEAVE / COMMIT MODAL */}
       {isLeaveConfirmOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-modal-backdrop"
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-modal-backdrop"
           onClick={(e) => {
             if (e.target === e.currentTarget) setIsLeaveConfirmOpen(false);
           }}
         >
-          <div className="bg-brand-white rounded-3xl border border-brand-pale shadow-2xl max-w-md w-full overflow-hidden p-6 sm:p-7 space-y-5 animate-modal-content">
+          <div className="bg-brand-white rounded-2xl sm:rounded-3xl border border-brand-pale shadow-2xl max-w-md w-full overflow-hidden p-5 sm:p-7 space-y-4 sm:space-y-5 animate-modal-content">
             <div className="flex items-center gap-3">
               <div className="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center shrink-0 shadow-2xs">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -2452,12 +2541,12 @@ export default function AdminPage() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-lg font-bold text-slate-800">Uncommitted Changes</h3>
+                <h3 className="text-base sm:text-lg font-bold text-slate-800">Uncommitted Changes</h3>
                 <p className="text-xs text-slate-500">You have modified site content in this session</p>
               </div>
             </div>
 
-            <p className="text-sm text-slate-600 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
               Your modifications are saved in your local browser cache. If you leave without committing, they will not be published to the official GitHub repository for the live school website.
             </p>
 
@@ -2468,9 +2557,9 @@ export default function AdminPage() {
                   setIsLeaveConfirmOpen(false);
                   handleOpenCommitModal();
                 }}
-                className="w-full py-2.5 px-4 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-[0.99]"
+                className="w-full py-3 sm:py-2.5 px-4 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer active:scale-[0.99]"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24">
                   <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
                 <span>Commit to GitHub Before Leaving</span>
@@ -2482,7 +2571,7 @@ export default function AdminPage() {
                   setIsLeaveConfirmOpen(false);
                   navigate('/');
                 }}
-                className="w-full py-2.5 px-4 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99]"
+                className="w-full py-3 sm:py-2.5 px-4 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer active:scale-[0.99]"
               >
                 <span>Leave Without Committing (Return Home)</span>
               </button>
@@ -2490,7 +2579,7 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={() => setIsLeaveConfirmOpen(false)}
-                className="w-full py-2 px-4 rounded-full bg-brand-light hover:bg-brand-pale text-slate-700 text-xs font-semibold transition cursor-pointer"
+                className="w-full py-2.5 sm:py-2 px-4 rounded-full bg-brand-light hover:bg-brand-pale text-slate-700 text-xs font-semibold transition cursor-pointer"
               >
                 Cancel &amp; Keep Editing
               </button>
@@ -2500,7 +2589,7 @@ export default function AdminPage() {
       )}
       </main>
 
-      <footer className="py-6 border-t border-brand-pale bg-brand-white text-center text-xs text-slate-500 mt-auto">
+      <footer className="py-6 px-4 border-t border-brand-pale bg-brand-white text-center text-xs text-slate-500 mt-auto">
         <p className="font-semibold text-slate-700">J/Kopay Christian College Admin Panel</p>
         <p className="mt-1">
           <a
