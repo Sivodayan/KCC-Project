@@ -6,8 +6,24 @@ const STORAGE_KEY = 'kcc_site_content_v1';
 const SiteContentContext = createContext(null);
 
 /**
+ * Checks if a URL string belongs strictly to official HTTPS Facebook domains.
+ */
+export function isTrustedFacebookUrl(urlString) {
+  try {
+    const parsed = new URL(urlString);
+    return (
+      parsed.protocol === 'https:' &&
+      (parsed.hostname === 'facebook.com' || parsed.hostname.endsWith('.facebook.com'))
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Utility to parse any Facebook URL or iframe embed snippet
  * and format it into a standardized Facebook plugin iframe embed URL.
+ * Strictly validates domain safety to prevent non-Facebook URL injection.
  */
 export function parseFacebookInput(input) {
   if (!input || typeof input !== 'string') return null;
@@ -18,6 +34,9 @@ export function parseFacebookInput(input) {
   const iframeMatch = trimmed.match(/src=["']([^"']+)["']/i);
   if (iframeMatch) {
     const rawSrc = iframeMatch[1];
+    if (!isTrustedFacebookUrl(rawSrc)) {
+      return null;
+    }
     const hrefMatch = rawSrc.match(/href=([^&]+)/);
     const postUrl = hrefMatch ? decodeURIComponent(hrefMatch[1]) : rawSrc;
     return {
@@ -30,6 +49,9 @@ export function parseFacebookInput(input) {
 
   // Case 2: Already a facebook plugin URL (plugins/post.php or plugins/video.php)
   if (trimmed.includes('facebook.com/plugins/')) {
+    if (!isTrustedFacebookUrl(trimmed)) {
+      return null;
+    }
     const hrefMatch = trimmed.match(/href=([^&]+)/);
     const postUrl = hrefMatch ? decodeURIComponent(hrefMatch[1]) : trimmed;
     return {
@@ -42,6 +64,13 @@ export function parseFacebookInput(input) {
 
   // Case 3: Standard Facebook URL (post, permalink, reel, video, photo)
   let cleanUrl = trimmed.replace('m.facebook.com', 'www.facebook.com');
+  if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
+    cleanUrl = 'https://' + cleanUrl;
+  }
+  if (!isTrustedFacebookUrl(cleanUrl)) {
+    return null;
+  }
+
   const isVideo = cleanUrl.includes('/watch') || cleanUrl.includes('/reel') || cleanUrl.includes('/videos/');
   const plugin = isVideo ? 'video.php' : 'post.php';
   const iframeSrc = `https://www.facebook.com/plugins/${plugin}?href=${encodeURIComponent(cleanUrl)}&show_text=true&width=500`;

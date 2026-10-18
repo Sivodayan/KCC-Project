@@ -20,6 +20,29 @@ const GITHUB_TOKEN_STORAGE_KEY = 'kcc_admin_github_token';
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
 const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
+// Configurable Administrator Authorization Whitelist
+// Can be customized via VITE_ADMIN_EMAILS in .env / Vercel (comma-separated list)
+const DEFAULT_ADMIN_EMAILS = [
+  'admin@kcc.lk',
+  'principal@kcc.lk',
+  'kcckopay@gmail.com'
+];
+
+const envAdminEmails = (import.meta.env.VITE_ADMIN_EMAILS || '')
+  .split(',')
+  .map((e) => e.trim().toLowerCase())
+  .filter(Boolean);
+
+export const AUTHORIZED_ADMIN_EMAILS = Array.from(
+  new Set([...DEFAULT_ADMIN_EMAILS.map((e) => e.toLowerCase()), ...envAdminEmails])
+);
+
+export function isAuthorizedAdmin(user) {
+  if (!user || !user.email) return false;
+  if (import.meta.env.VITE_ALLOW_ANY_AUTH === 'true') return true;
+  return AUTHORIZED_ADMIN_EMAILS.includes(user.email.trim().toLowerCase());
+}
+
 /**
  * AdminPage Component
  *
@@ -77,17 +100,32 @@ export default function AdminPage() {
   const [resetError, setResetError] = useState('');
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuth((user) => {
-      setFirebaseUser(user);
-      setIsAuthChecking(false);
+    const unsubscribe = subscribeToAuth(async (user) => {
       if (user) {
-        sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+        if (isAuthorizedAdmin(user)) {
+          setFirebaseUser(user);
+          setAuthError('');
+          sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+        } else {
+          try {
+            await logOutFirebase();
+          } catch (e) {
+            console.warn(e);
+          }
+          setFirebaseUser(null);
+          setAuthError(
+            `Access Denied: The account "${user.email}" is not registered on the administrators whitelist. Please sign in with an approved administrator account or contact the school administration.`
+          );
+        }
+      } else {
+        setFirebaseUser(null);
       }
+      setIsAuthChecking(false);
     });
     return () => unsubscribe();
   }, []);
 
-  const isAuthenticated = Boolean(firebaseUser);
+  const isAuthenticated = Boolean(firebaseUser && isAuthorizedAdmin(firebaseUser));
 
   const [activeTab, setActiveTab] = useState('hero');
   const tabsContainerRef = useRef(null);
@@ -145,7 +183,7 @@ export default function AdminPage() {
   // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
   const [githubToken, setGithubToken] = useState(() => {
-    return localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
+    return sessionStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
   });
   const [showGithubToken, setShowGithubToken] = useState(false);
   const [commitMessage, setCommitMessage] = useState('');
@@ -208,6 +246,7 @@ export default function AdminPage() {
         localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
       } else {
         localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+        sessionStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
       }
 
       const contentString = JSON.stringify(content, null, 2);
@@ -251,6 +290,14 @@ export default function AdminPage() {
     } finally {
       setIsVerifyingToken(false);
     }
+  };
+
+  const handleClearToken = () => {
+    localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+    sessionStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+    setGithubToken('');
+    setVerifiedUser(null);
+    showToast('GitHub token cleared from browser storage.', 'info');
   };
 
   // Global Keyboard shortcuts:
@@ -333,9 +380,18 @@ export default function AdminPage() {
     try {
       const result = await signInWithGoogle();
       const user = result.user;
-      setFirebaseUser(user);
-      sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
-      showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
+      if (isAuthorizedAdmin(user)) {
+        setFirebaseUser(user);
+        sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+        showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
+      } else {
+        await logOutFirebase();
+        setFirebaseUser(null);
+        setAuthError(
+          `Access Denied: The account "${user.email}" is not registered on the administrators whitelist. Please sign in with an approved administrator account.`
+        );
+        showToast('Access Denied: Unauthorized account', 'error');
+      }
     } catch (err) {
       console.error('Google Sign-In Error:', err);
       if (err.code === 'auth/popup-closed-by-user') {
@@ -361,9 +417,18 @@ export default function AdminPage() {
     try {
       const result = await signInWithEmail(emailInput.trim(), passwordInput);
       const user = result.user;
-      setFirebaseUser(user);
-      sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
-      showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
+      if (isAuthorizedAdmin(user)) {
+        setFirebaseUser(user);
+        sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
+        showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
+      } else {
+        await logOutFirebase();
+        setFirebaseUser(null);
+        setAuthError(
+          `Access Denied: The account "${user.email}" is not registered on the administrators whitelist.`
+        );
+        showToast('Access Denied: Unauthorized account', 'error');
+      }
     } catch (err) {
       console.error('Email Sign-In Error:', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
@@ -603,7 +668,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4">
         <div className="w-full max-w-sm bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl text-center">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 animate-pulse">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl bg-brand-light dark:bg-white border border-brand-pale dark:border-emerald-500/40 flex items-center justify-center p-2.5 shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)] animate-pulse">
             <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
           </div>
           <div className="inline-flex items-center gap-2 text-brand-forest text-xs font-bold mb-1">
@@ -624,7 +689,7 @@ export default function AdminPage() {
       <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4 selection:bg-brand-pale selection:text-brand-forest">
         <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl text-slate-800">
           <div className="text-center mb-6">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-2xl bg-brand-light border border-brand-pale flex items-center justify-center p-2.5 shadow-2xs">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-2xl bg-brand-light dark:bg-white border border-brand-pale dark:border-emerald-500/40 flex items-center justify-center p-2.5 shadow-2xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)]">
               <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-brand-forest">
@@ -892,8 +957,8 @@ export default function AdminPage() {
                 title="Return to Website Home Page"
                 aria-label="Return to Home Page"
               >
-                <div className="relative shrink-0">
-                  <img src="/assets/logo.png" alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain transition group-hover:scale-105" />
+                <div className="relative shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-white p-0.5 shadow-xs dark:shadow-[0_0_10px_rgba(74,222,128,0.35)] flex items-center justify-center">
+                  <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-contain transition group-hover:scale-105" />
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
@@ -2337,7 +2402,19 @@ export default function AdminPage() {
                     >
                       {isVerifyingToken ? 'Verifying...' : 'Verify Token'}
                     </button>
+                    {githubToken && (
+                      <button
+                        type="button"
+                        onClick={handleClearToken}
+                        className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
+                      >
+                        Clear Token
+                      </button>
+                    )}
                   </div>
+                  <p className="text-[11px] text-slate-500 mt-2">
+                    <span className="font-semibold text-slate-700">Security Recommendation:</span> Use a GitHub Fine-Grained Personal Access Token restricted strictly to <span className="font-mono font-bold text-brand-forest">Sivodayan/KCC-Project</span> with <span className="font-mono">Contents: Read and write</span> permissions.
+                  </p>
                 </div>
 
                 {verifiedUser && (

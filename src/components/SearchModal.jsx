@@ -261,45 +261,51 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-brand-white max-w-2xl w-full rounded-2xl border border-brand-pale overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
-        <div className="p-4 sm:p-5 border-b border-brand-pale bg-brand-white flex items-center gap-3">
-          <svg className="w-5 h-5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            autoComplete="off"
-            spellCheck="false"
-            placeholder="Search events, facebook updates, history, anthem, contact, results..."
-            className="w-full text-slate-800 text-sm sm:text-base bg-transparent placeholder:text-slate-400 focus:outline-none"
-          />
-          {query && (
-            <button
-              onClick={() => {
-                setQuery('');
-                if (inputRef.current) inputRef.current.focus();
-              }}
-              className="p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-brand-light transition-colors cursor-pointer"
-              aria-label="Clear input"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+      <div className="bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
+        <div className="p-3.5 sm:p-4 border-b border-brand-pale dark:border-emerald-950/70 bg-brand-white dark:bg-[#0f1911]">
+          {/* Rounded Border Search Box Container */}
+          <div className="search-box-wrapper flex items-center gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-brand-light/70 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/50 focus-within:border-brand-forest dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-brand-forest/20 dark:focus-within:ring-emerald-400/25 transition-all shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.18)]">
+            <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              autoComplete="off"
+              spellCheck="false"
+              placeholder="Search events, facebook updates, history, anthem, contact, results..."
+              className="search-box-input w-full text-slate-800 dark:text-slate-100 text-sm sm:text-base bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none !border-none !shadow-none !bg-transparent rounded-none"
+            />
+            {query && (
+              <button
+                onClick={() => {
+                  setQuery('');
+                  if (inputRef.current) inputRef.current.focus();
+                }}
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-brand-pale/50 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shrink-0"
+                aria-label="Clear input"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            )}
+            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-slate-400 dark:text-emerald-400/70 bg-slate-100 dark:bg-emerald-950/60 border border-slate-200 dark:border-emerald-500/30 rounded-md shrink-0 select-none">
+              ESC
+            </kbd>
+          </div>
         </div>
 
-        <div className="px-4 py-2.5 bg-brand-light/70 border-b border-brand-pale/70 flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0">Quick:</span>
+        <div className="px-4 py-2.5 bg-brand-light/70 dark:bg-[#0b140d]/90 border-b border-brand-pale/70 dark:border-emerald-950/70 flex items-center gap-2 overflow-x-auto text-xs">
+          <span className="text-[11px] font-bold text-slate-400 dark:text-emerald-400/60 uppercase tracking-wider shrink-0">Quick:</span>
           <button
             type="button"
             onClick={() => handleQuickFilter('Events')}
             className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'events'
-                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
-                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+                ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
+                : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
             Events & FB
@@ -308,8 +314,8 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             type="button"
             onClick={() => handleQuickFilter('History')}
             className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'history'
-                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
-                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+                ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
+                : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
             History
@@ -318,8 +324,8 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             type="button"
             onClick={() => handleQuickFilter('Anthem')}
             className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'anthem'
-                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
-                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+                ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
+                : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
             School Anthem
@@ -328,8 +334,8 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             type="button"
             onClick={() => handleQuickFilter('Gallery')}
             className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'gallery'
-                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
-                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+                ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
+                : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
             3D Gallery
@@ -338,30 +344,30 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
             type="button"
             onClick={() => handleQuickFilter('Contact')}
             className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'contact'
-                ? 'bg-brand-forest text-white border-brand-forest font-semibold shadow-xs'
-                : 'bg-brand-white border-brand-pale hover:border-brand-soft text-brand-forest hover:bg-brand-pale/40'
+                ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
+                : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
             Contact Office
           </button>
         </div>
 
-        <div className="overflow-y-auto divide-y divide-brand-pale/60 p-2 text-sm max-h-[50vh]">
+        <div className="overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh]">
           {!hasQuery ? (
-            <div className="py-12 px-4 text-center text-slate-500">
-              <div className="w-12 h-12 mx-auto rounded-full bg-brand-light/80 border border-brand-pale flex items-center justify-center text-brand-forest mb-3 shadow-2xs">
+            <div className="py-12 px-4 text-center text-slate-500 dark:text-slate-400">
+              <div className="w-12 h-12 mx-auto rounded-full bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/30 flex items-center justify-center text-brand-forest dark:text-emerald-400 mb-3 shadow-2xs">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <p className="font-semibold text-slate-700 text-sm">Start typing to search...</p>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+              <p className="font-semibold text-slate-700 dark:text-slate-200 text-sm">Start typing to search...</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
                 Type keywords (events, history, gallery, anthem, contact) or tap a quick topic above.
               </p>
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="py-12 text-center text-slate-500">
-              <svg className="w-10 h-10 mx-auto text-slate-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="py-12 text-center text-slate-500 dark:text-slate-400">
+              <svg className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -369,8 +375,8 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
-              <p className="font-semibold text-slate-700">No matching results found</p>
-              <p className="text-xs text-slate-400 mt-1">Try searching with a different keyword</p>
+              <p className="font-semibold text-slate-700 dark:text-slate-200">No matching results found</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Try searching with a different keyword</p>
             </div>
           ) : (
             filteredItems.map((item, index) => {
@@ -383,14 +389,14 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
                   className={`search-item px-3.5 py-3 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${isSelected
-                      ? 'bg-brand-light border border-brand-pale text-brand-forest shadow-2xs translate-x-0.5'
-                      : 'hover:bg-brand-light/60 text-slate-700'
+                      ? 'bg-brand-light dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/40 text-brand-forest dark:text-emerald-300 shadow-2xs translate-x-0.5'
+                      : 'hover:bg-brand-light/60 dark:hover:bg-emerald-950/20 text-slate-700 dark:text-slate-200'
                     }`}
                 >
                   <div className="min-w-0 flex-1">
-                    <span className="font-semibold text-slate-900 text-sm block truncate">{item.title}</span>
+                    <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm block truncate">{item.title}</span>
                   </div>
-                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest gap-1 opacity-80">
+                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest dark:text-emerald-400 gap-1 opacity-90">
                     <span>{item.action === 'external' ? 'Open' : 'Go'}</span>
                     {item.action === 'external' ? (
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -408,24 +414,24 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           )}
         </div>
 
-        <div className="p-3 bg-brand-light/50 border-t border-brand-pale flex items-center justify-between text-[11px] text-slate-500 px-4">
+        <div className="p-3 bg-brand-light/50 dark:bg-[#0b140d] border-t border-brand-pale dark:border-emerald-950/70 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-4">
           <div className="flex items-center gap-3">
             {hasQuery && filteredItems.length > 0 && (
               <>
                 <span>
-                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↑</kbd>{' '}
-                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↓</kbd> navigate
+                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↑</kbd>{' '}
+                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↓</kbd> navigate
                 </span>
                 <span>
-                  <kbd className="bg-brand-white border border-brand-pale px-1 rounded">↵</kbd> select
+                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↵</kbd> select
                 </span>
               </>
             )}
             <span>
-              <kbd className="bg-brand-white border border-brand-pale px-1 rounded">esc</kbd> close
+              <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">esc</kbd> close
             </span>
           </div>
-          <span className="font-medium text-brand-forest">
+          <span className="font-medium text-brand-forest dark:text-emerald-400">
             {!hasQuery
               ? 'Search Kopay Christian College'
               : `${filteredItems.length} ${filteredItems.length === 1 ? 'result' : 'results'} found`}

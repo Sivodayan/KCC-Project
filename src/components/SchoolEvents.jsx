@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useSiteContent } from '../context/SiteContentContext.jsx';
+import { useSiteContent, isTrustedFacebookUrl } from '../context/SiteContentContext.jsx';
 import { FACEBOOK_POSTS } from '../data/facebookEvents.js';
 import { GlassEventSkeleton } from './GlassSkeleton.jsx';
 
@@ -29,9 +29,10 @@ function EventCard({ post }) {
   const handleMouseEnter = () => setIsHovered(true);
   const handleMouseLeave = () => setIsHovered(false);
 
+  const isSafeSrc = isTrustedFacebookUrl(post?.iframeSrc || '');
   const postUrl =
     post.postUrl ||
-    decodeURIComponent(post.iframeSrc.match(/href=([^&]+)/)?.[1] || post.iframeSrc);
+    (isSafeSrc ? decodeURIComponent(post.iframeSrc.match(/href=([^&]+)/)?.[1] || post.iframeSrc) : '#');
 
   return (
     <div
@@ -83,19 +84,26 @@ function EventCard({ post }) {
             marginBottom: `-${post.height * 0.34}px`,
           }}
         >
-          <iframe
-            src={post.iframeSrc}
-            onLoad={() => setIsIframeLoaded(true)}
-            width={post.width || 500}
-            height={post.height}
-            style={{ border: 'none', overflow: 'hidden' }}
-            scrolling="no"
-            frameBorder="0"
-            allowFullScreen={true}
-            allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            className="w-full h-full rounded-2xl pointer-events-none"
-            title={`Facebook Post ${post.id}`}
-          />
+          {isSafeSrc ? (
+            <iframe
+              src={post.iframeSrc}
+              onLoad={() => setIsIframeLoaded(true)}
+              width={post.width || 500}
+              height={post.height}
+              style={{ border: 'none', overflow: 'hidden' }}
+              scrolling="no"
+              frameBorder="0"
+              allowFullScreen={true}
+              sandbox="allow-scripts allow-same-origin allow-popups"
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              className="w-full h-full rounded-2xl pointer-events-none"
+              title={`Facebook Post ${post.id}`}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-xs text-slate-400 p-4 text-center">
+              Embed unavailable: Invalid or unverified post source URL.
+            </div>
+          )}
         </div>
       </div>
     </div>

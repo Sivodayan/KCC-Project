@@ -245,6 +245,86 @@ html {
   animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
+/* Hero Cinematic Multi-Stop Gradients & Scrims (Flawless optical easing curve) */
+.hero-scrim-desktop {
+  background: linear-gradient(
+    90deg,
+    #124817 0%,
+    rgba(18, 72, 23, 0.98) 22%,
+    rgba(18, 72, 23, 0.92) 36%,
+    rgba(18, 72, 23, 0.78) 48%,
+    rgba(18, 72, 23, 0.54) 62%,
+    rgba(18, 72, 23, 0.26) 76%,
+    rgba(18, 72, 23, 0.08) 90%,
+    transparent 100%
+  );
+}
+
+html.dark .hero-scrim-desktop {
+  background: linear-gradient(
+    90deg,
+    #071309 0%,
+    rgba(7, 19, 9, 0.98) 22%,
+    rgba(7, 19, 9, 0.92) 36%,
+    rgba(7, 19, 9, 0.8) 48%,
+    rgba(7, 19, 9, 0.56) 62%,
+    rgba(7, 19, 9, 0.28) 76%,
+    rgba(7, 19, 9, 0.08) 90%,
+    transparent 100%
+  );
+}
+
+.hero-scrim-mobile {
+  background: linear-gradient(
+    180deg,
+    #124817 0%,
+    rgba(18, 72, 23, 0.96) 45%,
+    rgba(18, 72, 23, 0.82) 65%,
+    rgba(18, 72, 23, 0.38) 85%,
+    transparent 100%
+  );
+}
+
+html.dark .hero-scrim-mobile {
+  background: linear-gradient(
+    180deg,
+    #071309 0%,
+    rgba(7, 19, 9, 0.96) 45%,
+    rgba(7, 19, 9, 0.82) 65%,
+    rgba(7, 19, 9, 0.38) 85%,
+    transparent 100%
+  );
+}
+
+/* Atmospheric Ambient Vignette & Warm Tint */
+.hero-ambient-vignette {
+  background: radial-gradient(
+    circle at 22% 40%,
+    rgba(74, 222, 128, 0.14) 0%,
+    transparent 55%
+  ),
+  linear-gradient(
+    to top,
+    rgba(5, 20, 7, 0.75) 0%,
+    rgba(5, 20, 7, 0.25) 35%,
+    transparent 70%
+  );
+}
+
+html.dark .hero-ambient-vignette {
+  background: radial-gradient(
+    circle at 22% 40%,
+    rgba(74, 222, 128, 0.1) 0%,
+    transparent 55%
+  ),
+  linear-gradient(
+    to top,
+    rgba(2, 8, 3, 0.9) 0%,
+    rgba(2, 8, 3, 0.35) 35%,
+    transparent 70%
+  );
+}
+
 /* Modal Entrance Animations */
 @keyframes modalBackdropFadeIn {
   from {
@@ -531,32 +611,59 @@ html.dark {
 }
 
 html.dark body {
-  background-color: #0b120c !important;
+  background-color: #080e09 !important;
+  background-image: 
+    radial-gradient(at 50% 0%, rgba(25, 103, 22, 0.16) 0%, transparent 65%),
+    radial-gradient(at 100% 100%, rgba(20, 83, 45, 0.08) 0%, transparent 50%) !important;
+  background-attachment: fixed !important;
   color: #f1f5f9 !important;
+}
+
+/* School crest logo container in dark mode - high-contrast clean background */
+html.dark img[src*="logo.png"] {
+  background-color: #ffffff !important;
+  border-radius: 9999px !important;
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.45), 0 0 2px rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Header and Nav Island in Dark Mode */
+html.dark #mainHeader {
+  background-color: rgba(9, 15, 10, 0.92) !important;
+  backdrop-filter: blur(18px) saturate(160%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  border-bottom-color: rgba(74, 222, 128, 0.15) !important;
+}
+
+html.dark #mainHeader .bg-brand-light {
+  background-color: rgba(18, 32, 20, 0.85) !important;
+  border-color: rgba(74, 222, 128, 0.2) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* Obsidian Card & Surface Backgrounds */
 html.dark .bg-brand-white {
-  background-color: #111a12 !important;
+  background-color: #0f1911 !important;
 }
 
 html.dark .bg-brand-light {
-  background-color: #152417 !important;
+  background-color: #142316 !important;
 }
 
 html.dark .bg-white {
-  background-color: #121e14 !important;
+  background-color: #111e13 !important;
 }
 
 html.dark .bg-slate-50,
 html.dark .bg-slate-100 {
-  background-color: #162518 !important;
+  background-color: #152217 !important;
 }
 
 /* Glowing Emerald & Subtle Obsidian Borders */
 html.dark .border-brand-pale,
 html.dark [class*="border-brand-pale"] {
-  border-color: rgba(74, 222, 128, 0.16) !important;
+  border-color: rgba(74, 222, 128, 0.18) !important;
 }
 
 html.dark .border-slate-200,
@@ -589,6 +696,7 @@ html.dark .text-slate-400 {
 /* Luminous Emerald Accent for Dark Mode Headers & Badges */
 html.dark .text-brand-forest {
   color: #4ade80 !important;
+  text-shadow: 0 0 24px rgba(74, 222, 128, 0.2);
 }
 
 html.dark .text-brand-forestHover {
@@ -619,21 +727,63 @@ html.dark .hover\:bg-brand-pale\/50:hover {
   background-color: rgba(74, 222, 128, 0.24) !important;
 }
 
+/* Hero Section in Dark Mode */
+html.dark #about .bg-brand-forest {
+  background: linear-gradient(135deg, #0f3014 0%, #0a1f0e 50%, #07170a 100%) !important;
+  border-color: rgba(74, 222, 128, 0.3) !important;
+  box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(74, 222, 128, 0.12) !important;
+}
+
+/* Contact Banner in Dark Mode */
+html.dark #contact .bg-brand-forest {
+  background: linear-gradient(135deg, #0e2d13 0%, #091e0d 60%, #07170a 100%) !important;
+  border-color: rgba(74, 222, 128, 0.28) !important;
+  box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7) !important;
+}
+
 /* Interactive Flip Cards in Dark Mode */
-html.dark .flip-card-back.bg-brand-white,
-html.dark .flip-card-front.bg-brand-white {
-  background-color: #121f14 !important;
+html.dark .flip-card-front.bg-brand-forest,
+html.dark .flip-card-back.bg-brand-forest {
+  background: linear-gradient(135deg, #13421b 0%, #0d2812 100%) !important;
+  border-color: rgba(74, 222, 128, 0.3) !important;
+}
+
+html.dark .flip-card-front.bg-brand-white,
+html.dark .flip-card-back.bg-brand-white {
+  background: linear-gradient(135deg, #121f14 0%, #0d170f 100%) !important;
   color: #f8fafc !important;
   border-color: rgba(74, 222, 128, 0.22) !important;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Performance Metric Tiles in Dark Mode */
+html.dark #performance .bg-brand-light {
+  background: linear-gradient(135deg, #111d13 0%, #0d160f 100%) !important;
+  border-color: rgba(74, 222, 128, 0.2) !important;
+  box-shadow: 0 6px 20px -2px rgba(0, 0, 0, 0.5) !important;
+}
+
+html.dark #performance .bg-brand-light:hover {
+  border-color: rgba(74, 222, 128, 0.45) !important;
+  box-shadow: 0 12px 30px -4px rgba(74, 222, 128, 0.16) !important;
+}
+
+/* 3D Gallery Stage in Dark Mode */
+html.dark .journal-card .journal-img {
+  box-shadow: 0 14px 40px -8px rgba(0, 0, 0, 0.8), 0 0 1px rgba(74, 222, 128, 0.3) !important;
+}
+
+html.dark .journal-card.is-active-center .journal-img {
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9), 0 0 24px rgba(74, 222, 128, 0.2) !important;
 }
 
 /* Form Controls & Inputs */
-html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]),
+html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.search-box-input):not(.bg-transparent),
 html.dark textarea,
 html.dark select {
-  background-color: #0d160f !important;
+  background-color: #0b140d !important;
   color: #f8fafc !important;
-  border-color: rgba(74, 222, 128, 0.24) !important;
+  border-color: rgba(74, 222, 128, 0.26) !important;
 }
 
 html.dark input::placeholder,
@@ -641,11 +791,38 @@ html.dark textarea::placeholder {
   color: #64748b !important;
 }
 
-html.dark input:focus,
+html.dark input:not(.search-box-input):not(.bg-transparent):focus,
 html.dark textarea:focus,
 html.dark select:focus {
   border-color: #4ade80 !important;
   box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25) !important;
+}
+
+/* Dark Mode Search Box Container with Rounded Border */
+.search-box-wrapper {
+  border-radius: 1rem;
+}
+
+html.dark .search-box-wrapper {
+  background-color: #0b140d !important;
+  border: 1.5px solid rgba(74, 222, 128, 0.45) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+html.dark .search-box-wrapper:focus-within {
+  border-color: #4ade80 !important;
+  box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.25), 0 0 20px rgba(74, 222, 128, 0.25) !important;
+}
+
+html.dark input.search-box-input,
+html.dark input.bg-transparent {
+  background-color: transparent !important;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
 /* Frosted Obsidian Glassmorphism */
@@ -681,8 +858,8 @@ html.dark [role="menu"] {
 }
 
 html.dark .animate-modal-content {
-  background-color: #111a12 !important;
-  border-color: rgba(74, 222, 128, 0.22) !important;
+  background-color: #0f1911 !important;
+  border-color: rgba(74, 222, 128, 0.24) !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
 }
 
@@ -693,13 +870,13 @@ html.dark ::-webkit-scrollbar {
 }
 
 html.dark ::-webkit-scrollbar-track {
-  background: #0b120c;
+  background: #080e09;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
   background: #1c301f;
   border-radius: 9999px;
-  border: 2px solid #0b120c;
+  border: 2px solid #080e09;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {

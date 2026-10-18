@@ -22,8 +22,15 @@ export function formatBytes(bytes, decimals = 1) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
+export const ALLOWED_IMAGE_MIME_TYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+  'image/gif'
+];
+
 /**
- * Validates that an image file exists, is an image, and does not exceed the 5MB limit.
+ * Validates that an image file exists, is an approved raster image, and does not exceed the 5MB limit.
  *
  * @param {File} file - The file to validate.
  * @throws {Error} If validation fails.
@@ -33,8 +40,9 @@ export function validateImageFile(file) {
     throw new Error('No file provided.');
   }
 
-  if (!file.type || !file.type.startsWith('image/')) {
-    throw new Error('Selected file is not an image (JPEG, PNG, WEBP, GIF required).');
+  const mimeType = (file.type || '').toLowerCase();
+  if (!ALLOWED_IMAGE_MIME_TYPES.includes(mimeType)) {
+    throw new Error('Invalid image format. Supported formats: JPEG, PNG, WEBP, and GIF (SVGs are restricted for security).');
   }
 
   if (file.size > MAX_FILE_SIZE_BYTES) {

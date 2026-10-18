@@ -47,8 +47,11 @@ export default function App() {
     const redirectPath = sessionStorage.getItem('redirect_path');
     if (redirectPath) {
       sessionStorage.removeItem('redirect_path');
-      navigate(redirectPath, { replace: true });
-      return;
+      // Ensure redirectPath is a safe relative path to prevent open redirect vulnerabilities
+      if (typeof redirectPath === 'string' && redirectPath.startsWith('/') && !redirectPath.startsWith('//')) {
+        navigate(redirectPath, { replace: true });
+        return;
+      }
     }
 
     const hash = window.location.hash.toLowerCase();
@@ -89,12 +92,13 @@ export default function App() {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  // Synchronize document title and OpenGraph metadata per route
+  // Synchronize document title, OpenGraph metadata, and indexing directives per route
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     const metaDesc = document.querySelector('meta[name="description"]');
     const ogTitle = document.querySelector('meta[property="og:title"]');
     const ogDesc = document.querySelector('meta[property="og:description"]');
+    const robotsMeta = document.querySelector('meta[name="robots"]');
 
     let pageTitle = "J/Kopay Christian College";
     let descContent = "Official portal of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, history, traditions, and collegiate education.";
@@ -102,23 +106,29 @@ export default function App() {
     if (path.startsWith('/admin')) {
       pageTitle = "Admin Portal";
       descContent = "Administration portal for J/Kopay Christian College.";
-    } else if (path.startsWith('/history')) {
-      pageTitle = historyLang === 'ta'
-        ? "கல்லூரி வரலாறு"
-        : "History & Heritage";
-      descContent = "Explore the 170+ year historic timeline of J/Kopay Christian College (1849 - Present), from Robert Bren and the CMS English School to the modern collegiate era in Kopay, Jaffna.";
-    } else if (path.startsWith('/events')) {
-      pageTitle = "School Events";
-      descContent = "Explore latest sports meets, academic exhibitions, cultural festivals, prize givings, and school milestones from the official Facebook community of Kopay Christian College.";
-    } else if (path.startsWith('/gallery')) {
-      pageTitle = "Photo Gallery";
-      descContent = "Explore our 3D digital photo gallery showcasing collegiate life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
-    } else if (path.startsWith('/contact')) {
-      pageTitle = "Contact Us";
-      descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
-    } else if (path.startsWith('/anthem')) {
-      pageTitle = "School Anthem";
-      descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
+      // Enforce strict noindex for Admin portal to prevent search engine indexing
+      if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow");
+    } else {
+      if (robotsMeta) robotsMeta.setAttribute("content", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
+
+      if (path.startsWith('/history')) {
+        pageTitle = historyLang === 'ta'
+          ? "கல்லூரி வரலாறு"
+          : "History & Heritage";
+        descContent = "Explore the 170+ year historic timeline of J/Kopay Christian College (1849 - Present), from Robert Bren and the CMS English School to the modern collegiate era in Kopay, Jaffna.";
+      } else if (path.startsWith('/events')) {
+        pageTitle = "School Events";
+        descContent = "Explore latest sports meets, academic exhibitions, cultural festivals, prize givings, and school milestones from the official Facebook community of Kopay Christian College.";
+      } else if (path.startsWith('/gallery')) {
+        pageTitle = "Photo Gallery";
+        descContent = "Explore our 3D digital photo gallery showcasing collegiate life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
+      } else if (path.startsWith('/contact')) {
+        pageTitle = "Contact Us";
+        descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
+      } else if (path.startsWith('/anthem')) {
+        pageTitle = "School Anthem";
+        descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
+      }
     }
 
     document.title = pageTitle;

@@ -83,16 +83,10 @@ export function ThemeProvider({ children }) {
     }
   }, []);
 
-  // Quick toggle helper: cycles through system -> dark -> light
+  // Direct 2-way toggle: switches immediately between Dark and Light mode
   const toggleTheme = useCallback(() => {
-    if (theme === 'system') {
-      setTheme(isDark ? 'light' : 'dark');
-    } else if (theme === 'dark') {
-      setTheme('light');
-    } else {
-      setTheme('system');
-    }
-  }, [theme, isDark, setTheme]);
+    setTheme(isDark ? 'light' : 'dark');
+  }, [isDark, setTheme]);
 
   return (
     <ThemeContext.Provider
