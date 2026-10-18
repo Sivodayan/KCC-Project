@@ -668,7 +668,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4">
         <div className="w-full max-w-sm bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-xl text-center">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-2xl bg-brand-light dark:bg-white border border-brand-pale dark:border-emerald-500/40 flex items-center justify-center p-2.5 shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)] animate-pulse">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-4 rounded-xl bg-brand-light dark:bg-white border border-brand-pale dark:border-slate-200 flex items-center justify-center p-2.5 shadow-xs animate-pulse">
             <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
           </div>
           <div className="inline-flex items-center gap-2 text-brand-forest text-xs font-bold mb-1">
@@ -689,7 +689,7 @@ export default function AdminPage() {
       <div className="min-h-screen bg-brand-light/40 flex items-center justify-center p-3 sm:p-4 selection:bg-brand-pale selection:text-brand-forest">
         <div className="w-full max-w-md bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xl text-slate-800">
           <div className="text-center mb-6">
-            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-2xl bg-brand-light dark:bg-white border border-brand-pale dark:border-emerald-500/40 flex items-center justify-center p-2.5 shadow-2xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)]">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto mb-3 rounded-xl bg-brand-light dark:bg-white border border-brand-pale dark:border-slate-200 flex items-center justify-center p-2.5 shadow-2xs">
               <img src="/assets/logo.png" alt="KCC" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-brand-forest">

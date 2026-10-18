@@ -619,14 +619,14 @@ html.dark body {
   color: #f1f5f9 !important;
 }
 
-/* School crest logo container in dark mode - high-contrast clean background, preserved crest shield shape */
+/* School crest logo container in dark mode - clean, high-contrast crisp background without glow */
 .school-crest-badge,
 html.dark .school-crest-badge,
 html.dark div.school-crest-badge,
 html.dark button .school-crest-badge {
   background-color: #ffffff !important;
   border-radius: 0.75rem !important;
-  box-shadow: 0 0 16px rgba(74, 222, 128, 0.45), 0 0 2px rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* Ensure logo images are not distorted into circles and maintain authentic shield crest height */

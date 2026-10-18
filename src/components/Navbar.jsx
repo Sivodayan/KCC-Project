@@ -29,7 +29,7 @@ export default function Navbar({
             className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
             <div
-              className="school-crest-badge shrink-0 rounded-xl p-1 shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)] transition-all flex items-center justify-center"
+              className="school-crest-badge shrink-0 rounded-xl p-1 shadow-xs transition-all flex items-center justify-center border border-slate-200/80 dark:border-emerald-500/20"
               style={{ height: '48px', width: 'auto', minWidth: '44px', maxWidth: '54px', backgroundColor: '#ffffff' }}
             >
               <img
@@ -49,7 +49,8 @@ export default function Navbar({
             </div>
           </button>
 
-          <div className="hidden md:flex items-center gap-2">
+          {/* Right End: Navigation Bar Island + Theme Toggle */}
+          <div className="hidden md:flex items-center gap-2.5 shrink-0 ml-auto">
             <div className="flex items-center bg-brand-light dark:bg-[#122015] border border-brand-pale dark:border-emerald-800/40 px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
               <button
                 onClick={() => handleNavLink('home')}
@@ -152,10 +153,7 @@ export default function Navbar({
                 Contact Us
               </button>
             </div>
-          </div>
 
-          {/* Top Right Corner Theme Toggle (Desktop) */}
-          <div className="hidden md:flex items-center shrink-0">
             <ThemeToggle />
           </div>
 
