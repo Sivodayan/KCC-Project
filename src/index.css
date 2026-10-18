@@ -619,11 +619,19 @@ html.dark body {
   color: #f1f5f9 !important;
 }
 
-/* School crest logo container in dark mode - high-contrast clean background */
-html.dark img[src*="logo.png"] {
+/* School crest logo container in dark mode - high-contrast clean background, preserved crest shield shape */
+.school-crest-badge,
+html.dark .school-crest-badge,
+html.dark div.school-crest-badge,
+html.dark button .school-crest-badge {
   background-color: #ffffff !important;
-  border-radius: 9999px !important;
-  box-shadow: 0 0 14px rgba(74, 222, 128, 0.45), 0 0 2px rgba(255, 255, 255, 0.9) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 0 16px rgba(74, 222, 128, 0.45), 0 0 2px rgba(255, 255, 255, 0.95) !important;
+}
+
+/* Ensure logo images are not distorted into circles and maintain authentic shield crest height */
+img[src*="logo.png"]:not(.keep-round) {
+  border-radius: 0.5rem !important;
 }
 
 /* Header and Nav Island in Dark Mode */
@@ -643,11 +651,13 @@ html.dark #mainHeader .bg-brand-light {
 }
 
 /* Obsidian Card & Surface Backgrounds */
-html.dark .bg-brand-white {
+html.dark .bg-brand-white,
+html.dark [class*="bg-brand-white"] {
   background-color: #0f1911 !important;
 }
 
-html.dark .bg-brand-light {
+html.dark .bg-brand-light,
+html.dark [class*="bg-brand-light"] {
   background-color: #142316 !important;
 }
 
@@ -703,6 +713,10 @@ html.dark .text-brand-forestHover {
   color: #86efac !important;
 }
 
+html.dark .text-brand-sage {
+  color: #86efac !important;
+}
+
 html.dark .hover\:text-brand-forest:hover {
   color: #4ade80 !important;
 }
@@ -716,15 +730,49 @@ html.dark .nav-link::after {
   background-color: #4ade80;
 }
 
-/* Brand Buttons & Pills */
-html.dark .bg-brand-pale {
+/* Brand Buttons, Pills & Any Opacity Variants */
+html.dark .bg-brand-pale,
+html.dark [class*="bg-brand-pale"] {
   background-color: rgba(74, 222, 128, 0.18) !important;
+  border-color: rgba(74, 222, 128, 0.25) !important;
 }
 
-html.dark .hover\:bg-brand-pale\/60:hover,
-html.dark .hover\:bg-brand-pale\/70:hover,
-html.dark .hover\:bg-brand-pale\/50:hover {
-  background-color: rgba(74, 222, 128, 0.24) !important;
+html.dark [class*="hover:bg-brand-pale"]:hover,
+html.dark [class*="bg-brand-pale"]:hover {
+  background-color: rgba(74, 222, 128, 0.26) !important;
+}
+
+/* Active Navigation Links & Tabs - Crisp, luminous emerald contrast */
+html.dark .nav-link.is-active,
+html.dark .nav-link[class*="is-active"],
+html.dark [class*="nav-link"][class*="is-active"] {
+  background-color: rgba(74, 222, 128, 0.22) !important;
+  color: #86efac !important;
+  box-shadow: 0 0 14px rgba(74, 222, 128, 0.25) !important;
+  font-weight: 700 !important;
+}
+
+html.dark .nav-link:not(.is-active) {
+  color: #e2e8f0 !important;
+}
+
+html.dark .nav-link:not(.is-active):hover {
+  color: #86efac !important;
+  background-color: rgba(74, 222, 128, 0.14) !important;
+}
+
+/* Blockquotes across History and entire application - high-contrast emerald obsidian glass */
+html.dark blockquote,
+html.dark [class*="blockquote"] {
+  background-color: rgba(18, 36, 21, 0.88) !important;
+  border-left-color: #4ade80 !important;
+  color: #f1f5f9 !important;
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.4) !important;
+}
+
+html.dark blockquote p,
+html.dark blockquote span {
+  color: #f1f5f9 !important;
 }
 
 /* Hero Section in Dark Mode */

@@ -83,13 +83,13 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
         aria-haspopup="true"
         aria-label="About menu"
         className={`nav-link px-4 py-1.5 rounded-full transition-all duration-200 cursor-pointer inline-flex items-center gap-1.5 ${isOpen
-            ? 'text-brand-forest bg-brand-pale/70 font-semibold'
-            : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60 font-medium'
+            ? 'text-brand-forest dark:text-emerald-300 bg-brand-pale/70 dark:bg-emerald-900/50 font-semibold shadow-xs dark:shadow-[0_0_12px_rgba(74,222,128,0.2)]'
+            : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60 font-medium'
           }`}
       >
         <span>About</span>
         <svg
-          className={`w-3.5 h-3.5 text-brand-forest transition-transform duration-200 ease-out ${isOpen ? 'rotate-180' : 'rotate-0'
+          className={`w-3.5 h-3.5 text-brand-forest dark:text-emerald-400 transition-transform duration-200 ease-out ${isOpen ? 'rotate-180' : 'rotate-0'
             }`}
           fill="none"
           stroke="currentColor"
@@ -103,13 +103,13 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
         <div
           role="menu"
           aria-orientation="vertical"
-          className="absolute top-full left-0 mt-2 w-44 rounded-2xl bg-brand-white border border-brand-pale shadow-xl py-1.5 px-1.5 z-50 origin-top-left transition-all duration-200 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3"
+          className="absolute top-full left-0 mt-2 w-44 rounded-2xl bg-brand-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-800/50 shadow-xl py-1.5 px-1.5 z-50 origin-top-left transition-all duration-200 before:absolute before:-top-3 before:left-0 before:right-0 before:h-3"
         >
           <button
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('history')}
-            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 hover:text-brand-forest hover:bg-brand-light rounded-xl transition-colors cursor-pointer"
+            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/70 rounded-xl transition-colors cursor-pointer"
           >
             History
           </button>
@@ -117,7 +117,7 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('anthem')}
-            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 hover:text-brand-forest hover:bg-brand-light rounded-xl transition-colors cursor-pointer"
+            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/70 rounded-xl transition-colors cursor-pointer"
           >
             Anthem
           </button>
@@ -125,7 +125,7 @@ export default function AboutDropdown({ onNavigate, onOpenAnthem }) {
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('motto')}
-            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 hover:text-brand-forest hover:bg-brand-light rounded-xl transition-colors cursor-pointer"
+            className="w-full text-left px-3.5 py-2 text-sm font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/70 rounded-xl transition-colors cursor-pointer"
           >
             Motto
           </button>

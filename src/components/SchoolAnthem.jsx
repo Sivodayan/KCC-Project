@@ -81,32 +81,32 @@ export default function SchoolAnthem() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-b from-brand-light via-brand-white to-brand-light/60 rounded-3xl border border-brand-pale p-6 sm:p-12 shadow-sm relative overflow-hidden">
+      <div className="bg-gradient-to-b from-brand-light via-brand-white to-brand-light/60 dark:from-[#0d1810] dark:via-[#09120b] dark:to-[#0d1810] rounded-3xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-12 shadow-sm relative overflow-hidden">
         <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
           <img src="/assets/logo.png" alt="" className="w-96 h-96 object-contain" />
         </div>
 
         <div className="relative z-10 space-y-8 text-center font-tamil">
-          <div className="relative pt-12 pb-6 px-6 sm:py-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1  rounded-full   text-brand-forest text-xs font-semibold shadow-2xs">
-              <svg className="w-3.5 h-3.5 text-brand-forest shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="relative pt-12 pb-6 px-6 sm:py-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-brand-light/90 dark:bg-emerald-950/80 border border-brand-pale/80 dark:border-emerald-700/40 text-brand-forest dark:text-emerald-300 text-xs font-semibold shadow-2xs">
+              <svg className="w-3.5 h-3.5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
               </svg>
               <span>இராகம்: ஹம்சத்வனி (Hamsadhvani)</span>
             </div>
-            <div className="text-lg sm:text-2xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
-              <p className="font-bold text-brand-forest">வாழிய நம் கலைக்கூடமே வாழ்க</p>
-              <p className="font-bold text-brand-forest">வாழிய வாழிய வாழியவே</p>
+            <div className="text-lg sm:text-2xl text-slate-900 dark:text-slate-100 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
+              <p className="font-bold text-brand-forest dark:text-emerald-400">வாழிய நம் கலைக்கூடமே வாழ்க</p>
+              <p className="font-bold text-brand-forest dark:text-emerald-400">வாழிய வாழிய வாழியவே</p>
               <p>கழனிகள் சூழ்ந்திடு கோவையம் பதியில்</p>
               <p>விளங்குநற் சிறந்தவக் கல்லூரி</p>
-              <p className="text-slate-800">உண்மையும் நேர்மையும்</p>
-              <p className="text-slate-800">உலகிடை அளிக்கும்</p>
-              <p className="font-bold text-brand-forest">உயர்புகழ் என்றென்றும் வாழியவே</p>
+              <p className="text-slate-800 dark:text-slate-200">உண்மையும் நேர்மையும்</p>
+              <p className="text-slate-800 dark:text-slate-200">உலகிடை அளிக்கும்</p>
+              <p className="font-bold text-brand-forest dark:text-emerald-400">உயர்புகழ் என்றென்றும் வாழியவே</p>
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
+          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="text-base sm:text-xl text-slate-800 dark:text-slate-200 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்</p>
               <p>படைத்து நற்பணிபுரிந்தாய்</p>
               <p>அவர் மிகு சேவையை ஏந்திட நன்னிலை</p>
@@ -114,21 +114,21 @@ export default function SchoolAnthem() {
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-800 leading-[2.2] sm:leading-[2.4] space-y-1">
+          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="text-base sm:text-xl text-slate-800 dark:text-slate-200 leading-[2.2] sm:leading-[2.4] space-y-1">
               <p>மனதினில் உள் திறம் மதிப் பொறிவைத்திட</p>
               <p>மகிழ்வொடு நாம் முயல்வோம்</p>
               <p>கலைபல கற்றுநற் கனிந்திட நல்லறி</p>
-              <p className="font-semibold text-brand-forest">காட்டிடுவாய் தாயே</p>
+              <p className="font-semibold text-brand-forest dark:text-emerald-400">காட்டிடுவாய் தாயே</p>
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 rounded-2xl border border-brand-pale/80 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-900 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
+          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
+            <div className="text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
               <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
               <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>
               <p>நிலை பெறு கலைகளின் நிறைவுடனாக</p>
-              <p className="font-bold text-2xl sm:text-3xl text-brand-forest pt-2">நீயென்றும் வாழிய வாழியவே.</p>
+              <p className="font-bold text-2xl sm:text-3xl text-brand-forest dark:text-emerald-400 pt-2">நீயென்றும் வாழிய வாழியவே.</p>
             </div>
           </div>
         </div>

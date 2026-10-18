@@ -28,32 +28,34 @@ export default function Navbar({
             aria-label="J/Kopay Christian College Home"
             className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
-            <GlassImage
-              src="/assets/logo.png"
-              alt="Logo"
-              style={{ width: '44px', height: '44px', minWidth: '44px', minHeight: '44px' }}
-              containerClassName="w-11 h-11 shrink-0 rounded-full bg-white dark:bg-white p-1 shadow-xs dark:shadow-[0_0_12px_rgba(74,222,128,0.4)] transition-all flex items-center justify-center"
-              className="transition-transform duration-300 group-hover:scale-105 shrink-0 object-contain w-full h-full"
-              showIcon={false}
-              loading="eager"
-            />
+            <div
+              className="school-crest-badge shrink-0 rounded-xl p-1 shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.35)] transition-all flex items-center justify-center"
+              style={{ height: '48px', width: 'auto', minWidth: '44px', maxWidth: '54px', backgroundColor: '#ffffff' }}
+            >
+              <img
+                src="/assets/logo.png"
+                alt="Logo"
+                className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105 shrink-0"
+                loading="eager"
+              />
+            </div>
             <div className="hidden sm:block">
-              <span className="block text-xs font-bold text-brand-forest uppercase tracking-wider">
+              <span className="block text-xs font-bold text-brand-forest dark:text-emerald-400 uppercase tracking-wider">
                 J/Kopay Christian College
               </span>
-              <span className="block text-[11px] text-slate-500 font-tamil">
+              <span className="block text-[11px] text-slate-500 dark:text-slate-400 font-tamil">
                 யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
               </span>
             </div>
           </button>
 
           <div className="hidden md:flex items-center gap-2">
-            <div className="flex items-center bg-brand-light border border-brand-pale px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
+            <div className="flex items-center bg-brand-light dark:bg-[#122015] border border-brand-pale dark:border-emerald-800/40 px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
               <button
                 onClick={() => handleNavLink('home')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'home'
-                    ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
-                    : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                    ? 'text-brand-forest dark:text-emerald-300 bg-brand-pale/70 dark:bg-emerald-950/80 font-bold is-active shadow-xs dark:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60'
                   }`}
               >
                 Home
@@ -61,7 +63,7 @@ export default function Navbar({
 
               <button
                 onClick={() => handleNavLink('performance')}
-                className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60"
+                className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60"
               >
                 Performance
               </button>
@@ -69,8 +71,8 @@ export default function Navbar({
               <button
                 onClick={() => handleNavLink('events')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'events'
-                    ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
-                    : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                    ? 'text-brand-forest dark:text-emerald-300 bg-brand-pale/70 dark:bg-emerald-950/80 font-bold is-active shadow-xs dark:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60'
                   }`}
               >
                 Events
@@ -79,8 +81,8 @@ export default function Navbar({
               <button
                 onClick={() => handleNavLink('gallery')}
                 className={`nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer ${currentPage === 'gallery'
-                    ? 'text-brand-forest bg-brand-pale/70 font-bold is-active'
-                    : 'text-slate-700 hover:text-brand-forest hover:bg-brand-pale/60'
+                    ? 'text-brand-forest dark:text-emerald-300 bg-brand-pale/70 dark:bg-emerald-950/80 font-bold is-active shadow-xs dark:shadow-[0_0_12px_rgba(74,222,128,0.25)]'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60'
                   }`}
               >
                 Gallery
@@ -92,13 +94,13 @@ export default function Navbar({
               />
 
               {currentPage === 'history' && (
-                <div className="inline-flex items-center bg-brand-white border border-brand-pale p-0.5 rounded-full text-xs font-semibold ml-1">
+                <div className="inline-flex items-center bg-brand-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-800/40 p-0.5 rounded-full text-xs font-semibold ml-1">
                   <button
                     type="button"
                     onClick={() => onChangeHistoryLang('en')}
                     className={`px-2.5 py-1 rounded-full transition-all duration-200 cursor-pointer ${historyLang === 'en'
                         ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
-                        : 'text-slate-600 hover:text-brand-forest'
+                        : 'text-slate-600 dark:text-slate-300 hover:text-brand-forest dark:hover:text-emerald-300'
                       }`}
                     aria-label="Switch to English"
                   >
@@ -109,7 +111,7 @@ export default function Navbar({
                     onClick={() => onChangeHistoryLang('ta')}
                     className={`px-2.5 py-1 rounded-full transition-all duration-200 font-tamil cursor-pointer ${historyLang === 'ta'
                         ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
-                        : 'text-slate-600 hover:text-brand-forest'
+                        : 'text-slate-600 dark:text-slate-300 hover:text-brand-forest dark:hover:text-emerald-300'
                       }`}
                     aria-label="Switch to Tamil"
                   >
@@ -208,24 +210,26 @@ export default function Navbar({
 
           <button
             onClick={() => handleNavLink('home')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home'
+                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
               }`}
           >
             Home
           </button>
 
-          <div className="border border-brand-pale rounded-xl overflow-hidden bg-brand-light/40">
+          <div className="border border-brand-pale dark:border-emerald-800/40 rounded-xl overflow-hidden bg-brand-light/40 dark:bg-[#0e1910]">
             <button
               type="button"
               onClick={() => setMobileAboutOpen(prev => !prev)}
-              className="w-full flex items-center justify-between text-left text-slate-800 font-semibold py-2.5 px-3 hover:bg-brand-pale/40 transition-colors cursor-pointer"
+              className="w-full flex items-center justify-between text-left text-slate-800 dark:text-slate-200 font-semibold py-2.5 px-3 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
             >
               <span className="flex items-center gap-2 text-sm">
-                <span className="w-2 h-2 rounded-full bg-brand-forest"></span>
+                <span className="w-2 h-2 rounded-full bg-brand-forest dark:bg-emerald-400"></span>
                 <span>About</span>
               </span>
               <svg
-                className={`w-4 h-4 text-brand-forest transition-transform duration-200 ${mobileAboutOpen ? 'rotate-180' : 'rotate-0'
+                className={`w-4 h-4 text-brand-forest dark:text-emerald-400 transition-transform duration-200 ${mobileAboutOpen ? 'rotate-180' : 'rotate-0'
                   }`}
                 fill="none"
                 stroke="currentColor"
@@ -236,24 +240,28 @@ export default function Navbar({
             </button>
 
             {mobileAboutOpen && (
-              <div className="px-2 pb-2 space-y-1 bg-white/70 border-t border-brand-pale/40">
+              <div className="px-2 pb-2 space-y-1 bg-white/70 dark:bg-[#0c160e] border-t border-brand-pale/40 dark:border-emerald-900/40">
                 <button
                   onClick={() => handleNavLink('history')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${currentPage === 'history' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium ${currentPage === 'history'
+                      ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                      : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
                     }`}
                 >
                   History
                 </button>
                 <button
                   onClick={() => handleNavLink('anthem')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium ${currentPage === 'anthem' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest'
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium ${currentPage === 'anthem'
+                      ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                      : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
                     }`}
                 >
                   School Anthem
                 </button>
                 <button
                   onClick={() => handleNavLink('motto')}
-                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light transition-colors cursor-pointer font-medium text-slate-700 hover:text-brand-forest"
+                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300"
                 >
                   Motto
                 </button>
@@ -263,21 +271,25 @@ export default function Navbar({
 
           <button
             onClick={() => handleNavLink('events')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events'
+                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
               }`}
           >
             Events
           </button>
           <button
             onClick={() => handleNavLink('gallery')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery' ? 'bg-brand-pale text-brand-forest font-bold' : 'text-slate-700 hover:text-brand-forest hover:bg-brand-light'
+            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery'
+                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
               }`}
           >
             Gallery
           </button>
           <button
             onClick={() => handleNavLink('performance')}
-            className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 hover:text-brand-forest hover:bg-brand-light"
+            className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50"
           >
             Performance
           </button>

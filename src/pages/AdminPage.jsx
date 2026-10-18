@@ -957,7 +957,10 @@ export default function AdminPage() {
                 title="Return to Website Home Page"
                 aria-label="Return to Home Page"
               >
-                <div className="relative shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white dark:bg-white p-0.5 shadow-xs dark:shadow-[0_0_10px_rgba(74,222,128,0.35)] flex items-center justify-center">
+                <div
+                  className="school-crest-badge relative shrink-0 w-9 h-9 sm:w-11 sm:h-11 rounded-xl p-1 shadow-xs dark:shadow-[0_0_10px_rgba(74,222,128,0.35)] flex items-center justify-center"
+                  style={{ backgroundColor: '#ffffff' }}
+                >
                   <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-contain transition group-hover:scale-105" />
                 </div>
                 <div className="min-w-0">

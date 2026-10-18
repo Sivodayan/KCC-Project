@@ -11,14 +11,14 @@ export default function LeadershipDirectory({ lang = 'en' }) {
   if (lang === 'ta') {
     return (
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6 font-tamil">
-        <div className="bg-brand-light rounded-2xl border border-brand-pale p-6">
+        <div className="bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
+            <span className="w-8 h-8 rounded-lg bg-brand-forest dark:bg-emerald-700 text-brand-white flex items-center justify-center font-bold text-xs">
               தலை
             </span>
-            <h2 className="text-base font-bold text-brand-forest">தலைமையாசிரியர்கள் (Headmasters)</h2>
+            <h2 className="text-base font-bold text-brand-forest dark:text-emerald-400">தலைமையாசிரியர்கள் (Headmasters)</h2>
           </div>
-          <div className="divide-y divide-brand-pale/70 text-sm">
+          <div className="divide-y divide-brand-pale/70 dark:divide-emerald-900/40 text-sm">
             <div className="py-2.5 flex justify-between">
               <span className="font-bold text-brand-forest">1880</span>
               <span className="font-medium text-slate-800">Mr. Valippillai (Later R. V. Vathavanam)</span>
@@ -46,14 +46,14 @@ export default function LeadershipDirectory({ lang = 'en' }) {
           </div>
         </div>
 
-        <div className="bg-brand-light rounded-2xl border border-brand-pale p-6">
+        <div className="bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6">
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
+            <span className="w-8 h-8 rounded-lg bg-brand-forest dark:bg-emerald-700 text-brand-white flex items-center justify-center font-bold text-xs">
               முகா
             </span>
-            <h2 className="text-base font-bold text-brand-forest">முகாமையாளர்கள் (Managers)</h2>
+            <h2 className="text-base font-bold text-brand-forest dark:text-emerald-400">முகாமையாளர்கள் (Managers)</h2>
           </div>
-          <div className="divide-y divide-brand-pale/70 text-sm">
+          <div className="divide-y divide-brand-pale/70 dark:divide-emerald-900/40 text-sm">
             <div className="py-2.5 flex justify-between">
               <span className="font-bold text-brand-forest">1899 - 1900</span>
               <span className="font-medium text-slate-800">Rev. R. W. Ryde</span>
@@ -86,14 +86,14 @@ export default function LeadershipDirectory({ lang = 'en' }) {
 
   return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-6">
-      <div className="bg-brand-light rounded-2xl border border-brand-pale p-6">
+      <div className="bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
+          <span className="w-8 h-8 rounded-lg bg-brand-forest dark:bg-emerald-700 text-brand-white flex items-center justify-center font-bold text-xs">
             HM
           </span>
-          <h2 className="text-base font-bold text-brand-forest">Headmasters (1880 - 1944)</h2>
+          <h2 className="text-base font-bold text-brand-forest dark:text-emerald-400">Headmasters (1880 - 1944)</h2>
         </div>
-        <div className="divide-y divide-brand-pale/70 text-sm">
+        <div className="divide-y divide-brand-pale/70 dark:divide-emerald-900/40 text-sm">
           <div className="py-2.5 flex justify-between">
             <span className="font-bold text-brand-forest">1880</span>
             <span className="font-medium text-slate-800">Mr. Valippillai (Later R. V. Vathavanam)</span>
@@ -121,14 +121,14 @@ export default function LeadershipDirectory({ lang = 'en' }) {
         </div>
       </div>
 
-      <div className="bg-brand-light rounded-2xl border border-brand-pale p-6">
+      <div className="bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6">
         <div className="flex items-center gap-2 mb-4">
-          <span className="w-8 h-8 rounded-lg bg-brand-forest text-brand-white flex items-center justify-center font-bold text-xs">
+          <span className="w-8 h-8 rounded-lg bg-brand-forest dark:bg-emerald-700 text-brand-white flex items-center justify-center font-bold text-xs">
             M
           </span>
-          <h2 className="text-base font-bold text-brand-forest">Managers (1899 - 1960)</h2>
+          <h2 className="text-base font-bold text-brand-forest dark:text-emerald-400">Managers (1899 - 1960)</h2>
         </div>
-        <div className="divide-y divide-brand-pale/70 text-sm">
+        <div className="divide-y divide-brand-pale/70 dark:divide-emerald-900/40 text-sm">
           <div className="py-2.5 flex justify-between">
             <span className="font-bold text-brand-forest">1899 - 1900</span>
             <span className="font-medium text-slate-800">Rev. R. W. Ryde</span>

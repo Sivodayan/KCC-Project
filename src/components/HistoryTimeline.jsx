@@ -51,7 +51,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                     கிடக்கிறது. இலங்கை மத்திய குழுச் செயலாளரின் 1850ம் ஆண்டு வருகைக் குறிப்பில் பின்வருமாறு
                     குறிக்கப்பட்டுள்ளது:
                   </p>
-                  <blockquote className="border-l-4 border-brand-forest bg-brand-light/70 rounded-r-2xl p-4 italic text-slate-800 text-xs sm:text-sm leading-relaxed">
+                  <blockquote className="border-l-4 border-brand-forest dark:border-emerald-400 bg-brand-light/70 dark:bg-[#132817] rounded-r-2xl p-4 italic text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed shadow-xs dark:shadow-none">
                     “இப்பொழுது இந்த நிலையத்திலுள்ள மிஷனறி Rev. Robert Bren அவர்களின் துணைவியார் திருமதி பிறென்
                     அவர்களுடன் 1849ம் ஆண்டு, நவம்பர் மாதம் இங்கு வருகை தந்தனர். தற்பொழுது ஒரு தேவாலயமும், குருமனை
                     ஒன்றும் கட்டப்பட்டுக் கொண்டிருக்கிறது. இங்கு திருமதி பிறென் அவர்களால் ஆரம்பிக்கப்பட்டு நடைபெற்றுக்
@@ -537,7 +537,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
                   It is documented that this institution was initially founded in 1850 for girls by Mrs. Bren. In the
                   1850 official visit report by the Secretary of the Ceylon Central Committee, it was observed:
                 </p>
-                <blockquote className="border-l-4 border-brand-forest bg-brand-light/70 rounded-r-2xl p-4 italic text-slate-800 text-xs sm:text-sm">
+                <blockquote className="border-l-4 border-brand-forest dark:border-emerald-400 bg-brand-light/70 dark:bg-[#132817] rounded-r-2xl p-4 italic text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed shadow-xs dark:shadow-none">
                   “The missionary currently at this station, Rev. Robert Bren, arrived here with his wife, Mrs. Bren,
                   in November 1849. At present, a church and a parsonage are under construction. I wish to mention an
                   English school for girls that has been established and is being conducted here by Mrs. Bren.
