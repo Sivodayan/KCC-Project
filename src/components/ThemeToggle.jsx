@@ -8,20 +8,29 @@ import { useTheme } from '../context/ThemeContext.jsx';
  * System dark mode is detected automatically behind the scenes.
  * Clicking immediately toggles between Dark and Light mode without any dropdown.
  */
-export default function ThemeToggle({ className = '' }) {
-  const { isDark, toggleTheme } = useTheme();
+export default function ThemeToggle({ className = '', variant = 'default', ...props }) {
+  const { isDark, isSystem, toggleTheme, resetToSystem } = useTheme();
 
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={`Current theme is ${isDark ? 'Dark' : 'Light'}. Click to switch to ${isDark ? 'Light' : 'Dark'} mode.`}
-      title={`Current: ${isDark ? 'Dark' : 'Light'} • Click to toggle`}
+      onDoubleClick={(e) => {
+        e.stopPropagation();
+        resetToSystem();
+      }}
+      aria-label={`Current theme is ${isDark ? 'Dark' : 'Light'} (${isSystem ? 'System Auto' : 'Manual'}). Click to switch to ${isDark ? 'Light' : 'Dark'} mode.`}
+      title={
+        isSystem
+          ? `Theme: Auto (${isDark ? 'Dark' : 'Light'}) • Click to switch to ${isDark ? 'Light' : 'Dark'}`
+          : `Theme: ${isDark ? 'Dark' : 'Light'} • Click to switch to ${isDark ? 'Light' : 'Dark'} • Double-click for Auto`
+      }
       className={`group relative inline-flex items-center justify-center w-9 h-9 sm:w-9.5 sm:h-9.5 rounded-full transition-all duration-200 cursor-pointer select-none active:scale-95 shadow-2xs ${
         isDark
           ? 'bg-[#111e14] hover:bg-[#16271a] text-emerald-300 border border-emerald-500/30 hover:border-emerald-400/60 shadow-[0_2px_12px_rgba(0,0,0,0.5)]'
           : 'bg-white hover:bg-slate-50 text-slate-700 hover:text-amber-700 border border-slate-200/90 hover:border-amber-300 shadow-[0_2px_8px_rgba(0,0,0,0.04)]'
       } ${className}`}
+      {...props}
     >
       {isDark ? (
         <svg

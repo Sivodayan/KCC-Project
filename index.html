@@ -70,9 +70,12 @@
   <script>
     (function () {
       try {
-        var stored = localStorage.getItem('kcc_theme');
+        if (localStorage.getItem('kcc_theme')) {
+          localStorage.removeItem('kcc_theme');
+        }
+        var stored = localStorage.getItem('kcc_theme_v2');
         var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        var isDark = stored === 'dark' || ((!stored || stored === 'system') && prefersDark);
+        var isDark = stored === 'dark' || (stored !== 'light' && Boolean(prefersDark));
         if (isDark) {
           document.documentElement.classList.add('dark');
           document.documentElement.style.colorScheme = 'dark';

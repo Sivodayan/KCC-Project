@@ -40,9 +40,9 @@ function EventCard({ post }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full max-w-[360px] h-[480px] bg-white rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group active:scale-[0.99] select-none ${isHovered
-          ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/15 border-brand-forest/40 ring-2 ring-brand-forest/20'
-          : 'shadow-sm border-slate-200/90 hover:shadow-md'
+      className={`relative w-full max-w-[360px] h-[480px] bg-white dark:bg-[#0e1710] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group active:scale-[0.99] select-none ${isHovered
+          ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/15 dark:shadow-[0_20px_40px_rgba(0,0,0,0.6)] border-brand-forest/40 dark:border-emerald-400/50 ring-2 ring-brand-forest/20 dark:ring-emerald-400/20'
+          : 'shadow-sm border-slate-200/90 dark:border-emerald-500/25 hover:shadow-md dark:hover:border-emerald-500/40'
         }`}
     >
       <a
@@ -115,7 +115,7 @@ export default function SchoolEvents() {
   const posts = (content?.events && content.events.length > 0) ? content.events : FACEBOOK_POSTS;
 
   return (
-    <section className="py-6 sm:py-10 bg-brand-white" id="events-section">
+    <section className="py-6 sm:py-10 bg-brand-white dark:bg-[#0b120c] transition-colors" id="events-section">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center items-stretch">
           {posts.map((post) => (

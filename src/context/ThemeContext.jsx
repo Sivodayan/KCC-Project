@@ -2,32 +2,44 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 
 const ThemeContext = createContext();
 
-export const THEME_STORAGE_KEY = 'kcc_theme';
+export const THEME_STORAGE_KEY = 'kcc_theme_v2';
+const LEGACY_STORAGE_KEY = 'kcc_theme';
 
 /**
  * ThemeProvider Component
  * 
  * Manages theme state ('system' | 'dark' | 'light'), automatically detecting
  * and synchronizing with the user's OS / browser color scheme preferences in real-time.
+ * By default, detects system theme and applies it. Users can still manually switch themes
+ * via the toggle button, and switching back to match the system theme restores automatic tracking.
  */
 export function ThemeProvider({ children }) {
-  // Stored mode preference: 'system' | 'dark' | 'light'
-  const [theme, setThemeState] = useState(() => {
-    try {
-      return localStorage.getItem(THEME_STORAGE_KEY) || 'system';
-    } catch {
-      return 'system';
-    }
-  });
-
   // Real-time system dark mode preference tracking
   const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return false;
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
+  // Stored mode preference: 'system' | 'dark' | 'light'
+  // Defaults to 'system' so it automatically detects OS / browser color scheme
+  const [theme, setThemeState] = useState(() => {
+    try {
+      if (typeof window !== 'undefined' && localStorage.getItem(LEGACY_STORAGE_KEY)) {
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
+      }
+      const stored = localStorage.getItem(THEME_STORAGE_KEY);
+      if (stored === 'dark' || stored === 'light') {
+        return stored;
+      }
+      return 'system';
+    } catch {
+      return 'system';
+    }
+  });
+
   // Computed boolean indicating if the screen is currently dark
   const isDark = theme === 'system' ? systemPrefersDark : theme === 'dark';
+  const isSystem = theme === 'system';
 
   // Listen to system OS theme changes dynamically
   useEffect(() => {
@@ -35,7 +47,17 @@ export function ThemeProvider({ children }) {
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleSystemChange = (e) => {
-      setSystemPrefersDark(Boolean(e.matches));
+      const prefersDark = Boolean(e.matches);
+      setSystemPrefersDark(prefersDark);
+      
+      // When system OS theme changes (e.g. Windows Dark/Light setting change),
+      // adapt to the new system theme automatically and re-sync
+      setThemeState('system');
+      try {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } catch {
+        // ignore
+      }
     };
 
     if (mediaQuery.addEventListener) {
@@ -77,16 +99,32 @@ export function ThemeProvider({ children }) {
   const setTheme = useCallback((newTheme) => {
     setThemeState(newTheme);
     try {
-      localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+      if (newTheme === 'system') {
+        localStorage.removeItem(THEME_STORAGE_KEY);
+      } else {
+        localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+      }
     } catch (e) {
       console.warn('Unable to persist theme to localStorage:', e);
     }
   }, []);
 
-  // Direct 2-way toggle: switches immediately between Dark and Light mode
+  const resetToSystem = useCallback(() => {
+    setTheme('system');
+  }, [setTheme]);
+
+  // Smart toggle: switches between Dark and Light mode.
+  // If switching brings the theme in line with the active OS system theme,
+  // it automatically returns to 'system' mode to keep automatic sync alive.
   const toggleTheme = useCallback(() => {
-    setTheme(isDark ? 'light' : 'dark');
-  }, [isDark, setTheme]);
+    const nextDark = !isDark;
+    const matchesSystem = (nextDark === systemPrefersDark);
+    if (matchesSystem) {
+      setTheme('system');
+    } else {
+      setTheme(nextDark ? 'dark' : 'light');
+    }
+  }, [isDark, systemPrefersDark, setTheme]);
 
   return (
     <ThemeContext.Provider
@@ -94,8 +132,10 @@ export function ThemeProvider({ children }) {
         theme,
         setTheme,
         isDark,
+        isSystem,
         systemPrefersDark,
-        toggleTheme
+        toggleTheme,
+        resetToSystem
       }}
     >
       {children}
