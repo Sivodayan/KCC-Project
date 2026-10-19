@@ -1,10 +1,10 @@
 /* Scroll offset for sticky header */
-html {
-  scroll-padding-top: 5.5rem;
+:root {
+  --nav-height: 4.8rem;
 }
 
-[id] {
-  scroll-margin-top: 5.5rem;
+html {
+  scroll-padding-top: var(--nav-height);
 }
 
 /* Scroll Entrance Transition */

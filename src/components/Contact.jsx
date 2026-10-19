@@ -19,7 +19,7 @@ export default function Contact() {
   const instagramUrl = contact.instagramUrl || INSTAGRAM_URL;
 
   return (
-    <section className="py-6 sm:py-8 bg-brand-white border-t border-brand-pale scroll-mt-20 sm:scroll-mt-24" id="contact">
+    <section className="py-6 sm:py-8 bg-brand-white dark:bg-[#0b120c] border-t border-brand-pale dark:border-emerald-950/60 transition-colors" id="contact">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-brand-forest rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 text-brand-white shadow-lg border border-brand-soft/40">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-start">

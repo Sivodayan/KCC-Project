@@ -35,14 +35,24 @@ export default function HomePage({ onNavigate }) {
     const t2 = setTimeout(revealInView, 400);
 
     // Resolve anchor scroll target if navigated via URI fragment (e.g., #performance)
+    let hashTimer1 = null;
+    let hashTimer2 = null;
     if (window.location.hash) {
       const targetId = window.location.hash.replace('#', '');
-      setTimeout(() => {
+      const scrollToHash = () => {
         const el = document.getElementById(targetId);
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          const header = document.getElementById('mainHeader') || document.querySelector('header');
+          const navHeight = header ? header.getBoundingClientRect().height : 76;
+          const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({
+            top: Math.max(0, Math.round(elementPosition - navHeight)),
+            behavior: 'smooth'
+          });
         }
-      }, 100);
+      };
+      hashTimer1 = setTimeout(scrollToHash, 60);
+      hashTimer2 = setTimeout(scrollToHash, 250);
     }
 
     window.addEventListener('scroll', revealInView, { passive: true });
@@ -52,6 +62,8 @@ export default function HomePage({ onNavigate }) {
       cancelAnimationFrame(rafId);
       clearTimeout(t1);
       clearTimeout(t2);
+      if (hashTimer1) clearTimeout(hashTimer1);
+      if (hashTimer2) clearTimeout(hashTimer2);
       window.removeEventListener('scroll', revealInView);
       window.removeEventListener('resize', revealInView);
     };

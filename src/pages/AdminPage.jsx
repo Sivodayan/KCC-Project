@@ -25,7 +25,8 @@ const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 const DEFAULT_ADMIN_EMAILS = [
   'admin@kcc.lk',
   'principal@kcc.lk',
-  'kcckopay@gmail.com'
+  'kcckopay@gmail.com',
+  'sivodayan17@gmail.com'
 ];
 
 const envAdminEmails = (import.meta.env.VITE_ADMIN_EMAILS || '')
@@ -396,8 +397,13 @@ export default function AdminPage() {
       console.error('Google Sign-In Error:', err);
       if (err.code === 'auth/popup-closed-by-user') {
         setAuthError('Sign-in popup closed before completion.');
+      } else if (err.code === 'auth/popup-blocked') {
+        setAuthError('Sign-in popup was blocked by your browser. Please allow popups for this site or use email sign-in.');
       } else if (err.code === 'auth/unauthorized-domain') {
-        setAuthError('This domain is not authorized in Firebase Console (Authentication > Settings > Authorized domains).');
+        const host = typeof window !== 'undefined' ? window.location.hostname : 'current domain';
+        setAuthError(`This domain ("${host}") is not authorized in Firebase Console (Authentication > Settings > Authorized domains).`);
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setAuthError('Google Sign-In is not enabled in Firebase Console (Authentication > Sign-in method).');
       } else {
         setAuthError(err.message || 'Failed to sign in with Google.');
       }
@@ -433,6 +439,8 @@ export default function AdminPage() {
       console.error('Email Sign-In Error:', err);
       if (err.code === 'auth/invalid-credential' || err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
         setAuthError('Invalid email or password.');
+      } else if (err.code === 'auth/operation-not-allowed') {
+        setAuthError('Email/Password provider is not enabled in Firebase Console (Authentication > Sign-in method).');
       } else {
         setAuthError(err.message || 'Failed to sign in with email.');
       }

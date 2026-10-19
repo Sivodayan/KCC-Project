@@ -101,3 +101,4 @@ export function subscribeToAuth(callback) {
   }
   return onAuthStateChanged(auth, callback);
 }
+

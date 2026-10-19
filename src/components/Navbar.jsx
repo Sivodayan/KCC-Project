@@ -63,6 +63,7 @@ export default function Navbar({
               </button>
 
               <button
+                id="nav-performance-btn"
                 onClick={() => handleNavLink('performance')}
                 className="nav-link px-3.5 py-1.5 rounded-full transition-all duration-200 cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-pale/60 dark:hover:bg-emerald-950/60"
               >

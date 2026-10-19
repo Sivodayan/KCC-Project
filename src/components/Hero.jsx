@@ -16,14 +16,20 @@ export default function Hero({ onExploreHistory }) {
     e.preventDefault();
     const el = document.getElementById('principles');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+      const header = document.getElementById('mainHeader') || document.querySelector('header');
+      const navHeight = header ? header.getBoundingClientRect().height : 76;
+      const targetTop = el.getBoundingClientRect().top + window.scrollY - navHeight;
+      window.scrollTo({
+        top: Math.max(0, Math.round(targetTop)),
+        behavior: 'smooth'
+      });
     }
   };
 
   return (
-    <section className="py-5 sm:py-8 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 scroll-mt-20 sm:scroll-mt-24 transition-colors" id="about">
+    <section className="py-5 sm:py-8 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="about">
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
-        <div className="relative overflow-hidden rounded-3xl bg-brand-forest dark:bg-[#071309] shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_0_0_35px_rgba(74,222,128,0.12)] border border-brand-soft/40 dark:border-emerald-500/30 min-h-[520px] lg:min-h-[580px] flex items-center">
+        <div className="relative overflow-hidden rounded-3xl bg-brand-forest dark:bg-[#071309] shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_0_0_35px_rgba(74,222,128,0.12)] border border-brand-soft/40 dark:border-emerald-500/30 min-h-[550px] lg:min-h-[550px] flex items-center">
 
           {/* Background School Archway Image Container */}
           <div className="absolute inset-0 z-0 overflow-hidden">
@@ -33,7 +39,7 @@ export default function Hero({ onExploreHistory }) {
               variant="dark"
               loading="eager"
               containerClassName="w-full h-full"
-              className="w-full h-full object-cover object-top scale-105 sm:scale-110 lg:scale-100 origin-center translate-x-[4%] sm:translate-x-[8%] lg:translate-x-[16%] brightness-[0.94] contrast-[1.04]"
+              className="w-full h-full object-cover object-top scale-105 sm:scale-110 lg:scale-100 origin-center translate-x-[4%] sm:translate-x-[8%] lg:translate-x-[26%] brightness-[0.94] contrast-[1.04]"
               fallbackSrc="/assets/hero.jpg"
             />
 

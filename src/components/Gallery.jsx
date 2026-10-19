@@ -185,7 +185,7 @@ export default function Gallery({ showHeader = true }) {
   return (
     <section
       ref={sectionRef}
-      className="py-12 sm:py-16 bg-brand-light border-b border-brand-pale overflow-hidden scroll-mt-20 sm:scroll-mt-24 select-none"
+      className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 overflow-hidden select-none transition-colors"
       id="gallery"
     >
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">

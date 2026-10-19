@@ -15,6 +15,17 @@ const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
 
+function scrollToElementWithNavOffset(el) {
+  if (!el) return;
+  const header = document.getElementById('mainHeader') || document.querySelector('header');
+  const navHeight = header ? header.getBoundingClientRect().height : 76;
+  const elementPosition = el.getBoundingClientRect().top + window.scrollY;
+  window.scrollTo({
+    top: Math.max(0, Math.round(elementPosition - navHeight)),
+    behavior: 'smooth'
+  });
+}
+
 /**
  * Root Application Component
  * Manages routing, global modals, SEO metadata sync, and SPA redirects.
@@ -65,13 +76,15 @@ export default function App() {
       navigate('/gallery', { replace: true });
     } else if (hash.startsWith('#principles')) {
       if (window.location.pathname === '/') {
-        document.getElementById('principles')?.scrollIntoView({ behavior: 'smooth' });
+        const el = document.getElementById('principles');
+        if (el) scrollToElementWithNavOffset(el);
       } else {
         navigate('/#principles', { replace: true });
       }
     } else if (hash.startsWith('#performance')) {
       if (window.location.pathname === '/') {
-        document.getElementById('performance')?.scrollIntoView({ behavior: 'smooth' });
+        const el = document.getElementById('performance');
+        if (el) scrollToElementWithNavOffset(el);
       } else {
         navigate('/#performance', { replace: true });
       }
@@ -142,7 +155,8 @@ export default function App() {
       if (location.pathname === '/') {
         const el = document.getElementById('performance');
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          scrollToElementWithNavOffset(el);
+          window.history.replaceState(null, '', '/#performance');
         } else {
           window.location.hash = '#performance';
         }
@@ -156,7 +170,8 @@ export default function App() {
       if (location.pathname === '/') {
         const el = document.getElementById('principles');
         if (el) {
-          el.scrollIntoView({ behavior: 'smooth' });
+          scrollToElementWithNavOffset(el);
+          window.history.replaceState(null, '', '/#principles');
         } else {
           window.location.hash = '#principles';
         }
