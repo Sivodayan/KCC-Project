@@ -255,8 +255,8 @@ html {
     rgba(18, 72, 23, 0.82) 46%,
     rgba(18, 72, 23, 0.52) 52%,
     rgba(18, 72, 23, 0.2) 56%,
-    rgba(18, 72, 23, 0.04) 51%,
-    transparent 54%
+    rgba(18, 72, 23, 0.04) 59%,
+    transparent 62%
   );
 }
 
@@ -693,7 +693,11 @@ html.dark body {
   color: #f1f5f9 !important;
 }
 
-/* School crest logo container in dark mode - clean, high-contrast crisp background without glow */
+/* School crest logo container - clean, high-contrast crisp background without glow */
+.school-crest-badge {
+  border: none !important;
+}
+
 .school-crest-badge,
 html.dark .school-crest-badge,
 html.dark div.school-crest-badge,
@@ -701,6 +705,12 @@ html.dark button .school-crest-badge {
   background-color: #ffffff !important;
   border-radius: 0.75rem !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12) !important;
+}
+
+html.dark .school-crest-badge,
+html.dark div.school-crest-badge,
+html.dark button .school-crest-badge {
+  border: 1px solid rgba(74, 222, 128, 0.2) !important;
 }
 
 /* Ensure logo images are not distorted into circles and maintain authentic shield crest height */
