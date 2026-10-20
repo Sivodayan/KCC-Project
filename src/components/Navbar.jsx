@@ -91,6 +91,7 @@ export default function Navbar({
               </button>
 
               <AboutDropdown
+                currentPage={currentPage}
                 onNavigate={handleNavLink}
                 onOpenAnthem={onOpenAnthem}
               />
@@ -242,7 +243,7 @@ export default function Navbar({
               <div className="px-2 pb-2 space-y-1 bg-white/70 dark:bg-[#0c160e] border-t border-brand-pale/40 dark:border-emerald-900/40">
                 <button
                   onClick={() => handleNavLink('history')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium ${currentPage === 'history'
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'history'
                       ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
                       : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
                     }`}
@@ -251,7 +252,7 @@ export default function Navbar({
                 </button>
                 <button
                   onClick={() => handleNavLink('anthem')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium ${currentPage === 'anthem'
+                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'anthem'
                       ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
                       : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
                     }`}
@@ -260,7 +261,7 @@ export default function Navbar({
                 </button>
                 <button
                   onClick={() => handleNavLink('motto')}
-                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-950/50 transition-colors cursor-pointer font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300"
+                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300"
                 >
                   Motto
                 </button>

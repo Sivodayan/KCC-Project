@@ -748,7 +748,7 @@ html.dark [class*="bg-brand-white"] {
 }
 
 html.dark .bg-brand-light,
-html.dark [class*="bg-brand-light"] {
+html.dark [class*="bg-brand-light"]:not([class*="hover:"]):not(.about-dropdown-item) {
   background-color: #142316 !important;
 }
 
@@ -985,11 +985,70 @@ html.dark .glass-surface-emerald {
   box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* Dark Mode Modal Dialogs & Menus */
-html.dark [role="menu"] {
-  background-color: #111c13 !important;
-  border-color: rgba(74, 222, 128, 0.25) !important;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.8) !important;
+/* About Dropdown Menu - Harmonized Light & Dark Theme */
+.about-dropdown-menu {
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[role="menu"].about-dropdown-menu {
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid #C5E1C1 !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow: 0 16px 36px -6px rgba(0, 0, 0, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.06), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+html.dark [role="menu"].about-dropdown-menu {
+  background: linear-gradient(160deg, rgba(20, 36, 23, 0.96) 0%, rgba(13, 24, 15, 0.97) 100%) !important;
+  border: 1px solid rgba(74, 222, 128, 0.32) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+  box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(74, 222, 128, 0.12), inset 0 1px 1px 0 rgba(134, 239, 172, 0.25) !important;
+}
+
+.about-dropdown-item {
+  background-color: transparent !important;
+  color: #334155 !important;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.about-dropdown-item:hover {
+  background-color: #EAF5E9 !important;
+  color: #1B4D3E !important;
+}
+
+.about-dropdown-item.is-active-item {
+  background-color: rgba(197, 225, 193, 0.7) !important;
+  color: #1B4D3E !important;
+  font-weight: 600 !important;
+}
+
+html.dark .about-dropdown-item {
+  background-color: transparent !important;
+  color: #e2e8f0 !important;
+}
+
+html.dark .about-dropdown-item:hover {
+  background-color: rgba(74, 222, 128, 0.16) !important;
+  color: #86efac !important;
+}
+
+html.dark .about-dropdown-item.is-active-item {
+  background-color: rgba(74, 222, 128, 0.22) !important;
+  color: #4ade80 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 0 10px rgba(74, 222, 128, 0.15) !important;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 html.dark .animate-modal-content {
