@@ -245,122 +245,104 @@ html {
   animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
-/* Hero background campus photo - feathered left edge so no physical image cut is ever visible */
-.hero-bg-photo {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    transparent 15%,
-    rgba(0, 0, 0, 0.5) 30%,
-    black 48%,
-    black 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    transparent 15%,
-    rgba(0, 0, 0, 0.5) 30%,
-    black 48%,
-    black 100%
-  );
+/* Hero background campus photo - feathered left edge so no physical image cut is ever visible on desktop */
+@media (min-width: 640px) {
+  .hero-bg-photo {
+    -webkit-mask-image: linear-gradient(to right,
+        transparent 0%,
+        transparent 15%,
+        rgba(0, 0, 0, 0.5) 30%,
+        black 48%,
+        black 100%);
+    mask-image: linear-gradient(to right,
+        transparent 0%,
+        transparent 15%,
+        rgba(0, 0, 0, 0.5) 30%,
+        black 48%,
+        black 100%);
+  }
 }
 
 /* Hero Cinematic Multi-Stop Gradients & Scrims (Flawless optical easing curve) */
 .hero-scrim-desktop {
-  background: linear-gradient(
-    90deg,
-    #124817 0%,
-    #124817 18%,
-    rgba(18, 72, 23, 0.985) 20%,
-    rgba(18, 72, 23, 0.95) 26%,
-    rgba(18, 72, 23, 0.89) 30%,
-    rgba(18, 72, 23, 0.80) 34%,
-    rgba(18, 72, 23, 0.68) 38%,
-    rgba(18, 72, 23, 0.54) 42%,
-    rgba(18, 72, 23, 0.39) 46%,
-    rgba(18, 72, 23, 0.25) 50%,
-    rgba(18, 72, 23, 0.13) 54%,
-    rgba(18, 72, 23, 0.05) 57%,
-    rgba(18, 72, 23, 0.015) 60%,
-    rgba(18, 72, 23, 0) 63%
-  );
+  background: linear-gradient(90deg,
+      #124817 0%,
+      #124817 18%,
+      rgba(18, 72, 23, 0.985) 20%,
+      rgba(18, 72, 23, 0.95) 26%,
+      rgba(18, 72, 23, 0.89) 30%,
+      rgba(18, 72, 23, 0.80) 34%,
+      rgba(18, 72, 23, 0.68) 38%,
+      rgba(18, 72, 23, 0.54) 42%,
+      rgba(18, 72, 23, 0.39) 46%,
+      rgba(18, 72, 23, 0.25) 50%,
+      rgba(18, 72, 23, 0.13) 54%,
+      rgba(18, 72, 23, 0.05) 57%,
+      rgba(18, 72, 23, 0.015) 60%,
+      rgba(18, 72, 23, 0) 63%);
 }
 
 html.dark .hero-scrim-desktop {
-  background: linear-gradient(
-    90deg,
-    #071309 0%,
-    #071309 18%,
-    rgba(7, 19, 9, 0.985) 22%,
-    rgba(7, 19, 9, 0.95) 26%,
-    rgba(7, 19, 9, 0.89) 30%,
-    rgba(7, 19, 9, 0.80) 34%,
-    rgba(7, 19, 9, 0.68) 38%,
-    rgba(7, 19, 9, 0.54) 42%,
-    rgba(7, 19, 9, 0.39) 46%,
-    rgba(7, 19, 9, 0.25) 50%,
-    rgba(7, 19, 9, 0.13) 54%,
-    rgba(7, 19, 9, 0.05) 57%,
-    rgba(7, 19, 9, 0.015) 60%,
-    rgba(7, 19, 9, 0) 63%
-  );
+  background: linear-gradient(90deg,
+      #071309 0%,
+      #071309 18%,
+      rgba(7, 19, 9, 0.985) 22%,
+      rgba(7, 19, 9, 0.95) 26%,
+      rgba(7, 19, 9, 0.89) 30%,
+      rgba(7, 19, 9, 0.80) 34%,
+      rgba(7, 19, 9, 0.68) 38%,
+      rgba(7, 19, 9, 0.54) 42%,
+      rgba(7, 19, 9, 0.39) 46%,
+      rgba(7, 19, 9, 0.25) 50%,
+      rgba(7, 19, 9, 0.13) 54%,
+      rgba(7, 19, 9, 0.05) 57%,
+      rgba(7, 19, 9, 0.015) 60%,
+      rgba(7, 19, 9, 0) 63%);
 }
 
 .hero-scrim-mobile {
-  background: linear-gradient(
-    180deg,
-    #124817 0%,
-    rgba(18, 72, 23, 0.96) 45%,
-    rgba(18, 72, 23, 0.82) 65%,
-    rgba(18, 72, 23, 0.38) 85%,
-    rgba(18, 72, 23, 0) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(18, 72, 23, 0.76) 0%,
+      rgba(18, 72, 23, 0.55) 30%,
+      rgba(18, 72, 23, 0.28) 55%,
+      rgba(18, 72, 23, 0.08) 75%,
+      rgba(18, 72, 23, 0) 95%);
 }
 
 html.dark .hero-scrim-mobile {
-  background: linear-gradient(
-    180deg,
-    #071309 0%,
-    rgba(7, 19, 9, 0.96) 45%,
-    rgba(7, 19, 9, 0.82) 65%,
-    rgba(7, 19, 9, 0.38) 85%,
-    rgba(7, 19, 9, 0) 100%
-  );
+  background: linear-gradient(180deg,
+      rgba(7, 19, 9, 0.78) 0%,
+      rgba(7, 19, 9, 0.58) 30%,
+      rgba(7, 19, 9, 0.30) 55%,
+      rgba(7, 19, 9, 0.10) 75%,
+      rgba(7, 19, 9, 0) 95%);
 }
 
 /* Atmospheric Ambient Vignette & Warm Tint - Zero hard edges */
 .hero-ambient-vignette {
-  background: radial-gradient(
-    circle at 20% 40%,
-    rgba(74, 222, 128, 0.08) 0%,
-    rgba(74, 222, 128, 0.04) 30%,
-    rgba(74, 222, 128, 0.01) 50%,
-    rgba(74, 222, 128, 0) 70%
-  ),
-  linear-gradient(
-    to top,
-    rgba(5, 20, 7, 0.6) 0%,
-    rgba(5, 20, 7, 0.2) 25%,
-    rgba(5, 20, 7, 0.04) 45%,
-    rgba(5, 20, 7, 0) 65%
-  );
+  background: radial-gradient(circle at 20% 40%,
+      rgba(74, 222, 128, 0.08) 0%,
+      rgba(74, 222, 128, 0.04) 30%,
+      rgba(74, 222, 128, 0.01) 50%,
+      rgba(74, 222, 128, 0) 70%),
+    linear-gradient(to top,
+      rgba(5, 20, 7, 0.6) 0%,
+      rgba(5, 20, 7, 0.2) 25%,
+      rgba(5, 20, 7, 0.04) 45%,
+      rgba(5, 20, 7, 0) 65%);
 }
 
 html.dark .hero-ambient-vignette {
-  background: radial-gradient(
-    circle at 20% 40%,
-    rgba(74, 222, 128, 0.06) 0%,
-    rgba(74, 222, 128, 0.03) 30%,
-    rgba(74, 222, 128, 0.01) 50%,
-    rgba(74, 222, 128, 0) 70%
-  ),
-  linear-gradient(
-    to top,
-    rgba(2, 8, 3, 0.75) 0%,
-    rgba(2, 8, 3, 0.25) 25%,
-    rgba(2, 8, 3, 0.05) 45%,
-    rgba(2, 8, 3, 0) 65%
-  );
+  background: radial-gradient(circle at 20% 40%,
+      rgba(74, 222, 128, 0.06) 0%,
+      rgba(74, 222, 128, 0.03) 30%,
+      rgba(74, 222, 128, 0.01) 50%,
+      rgba(74, 222, 128, 0) 70%),
+    linear-gradient(to top,
+      rgba(2, 8, 3, 0.75) 0%,
+      rgba(2, 8, 3, 0.25) 25%,
+      rgba(2, 8, 3, 0.05) 45%,
+      rgba(2, 8, 3, 0) 65%);
 }
 
 /* Modal Entrance Animations */
