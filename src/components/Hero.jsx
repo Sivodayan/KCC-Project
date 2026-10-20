@@ -38,8 +38,8 @@ export default function Hero({ onExploreHistory }) {
               alt={`${title} School`}
               variant="dark"
               loading="eager"
-              containerClassName="w-full h-full"
-              className="w-full h-full object-cover object-top scale-105 sm:scale-110 lg:scale-100 origin-center translate-x-[4%] sm:translate-x-[8%] lg:translate-x-[26%] brightness-[0.94] contrast-[1.04]"
+              containerClassName="w-full h-full hero-bg-photo"
+              className="w-full h-full object-cover object-top scale-105 sm:scale-110 lg:scale-100 origin-center translate-x-[4%] sm:translate-x-[8%] lg:translate-x-[26%] brightness-[0.94] contrast-[1.04] hero-bg-photo"
               fallbackSrc="/assets/hero.jpg"
             />
 

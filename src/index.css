@@ -245,18 +245,44 @@ html {
   animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
+/* Hero background campus photo - feathered left edge so no physical image cut is ever visible */
+.hero-bg-photo {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 15%,
+    rgba(0, 0, 0, 0.5) 30%,
+    black 48%,
+    black 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    transparent 15%,
+    rgba(0, 0, 0, 0.5) 30%,
+    black 48%,
+    black 100%
+  );
+}
+
 /* Hero Cinematic Multi-Stop Gradients & Scrims (Flawless optical easing curve) */
 .hero-scrim-desktop {
   background: linear-gradient(
     90deg,
     #124817 0%,
-    rgba(18, 72, 23, 0.98) 20%,
-    rgba(18, 72, 23, 0.94) 30%,
-    rgba(18, 72, 23, 0.82) 46%,
-    rgba(18, 72, 23, 0.52) 52%,
-    rgba(18, 72, 23, 0.2) 56%,
-    rgba(18, 72, 23, 0.04) 59%,
-    transparent 62%
+    #124817 18%,
+    rgba(18, 72, 23, 0.985) 20%,
+    rgba(18, 72, 23, 0.95) 26%,
+    rgba(18, 72, 23, 0.89) 30%,
+    rgba(18, 72, 23, 0.80) 34%,
+    rgba(18, 72, 23, 0.68) 38%,
+    rgba(18, 72, 23, 0.54) 42%,
+    rgba(18, 72, 23, 0.39) 46%,
+    rgba(18, 72, 23, 0.25) 50%,
+    rgba(18, 72, 23, 0.13) 54%,
+    rgba(18, 72, 23, 0.05) 57%,
+    rgba(18, 72, 23, 0.015) 60%,
+    rgba(18, 72, 23, 0) 63%
   );
 }
 
@@ -264,13 +290,19 @@ html.dark .hero-scrim-desktop {
   background: linear-gradient(
     90deg,
     #071309 0%,
-    rgba(7, 19, 9, 0.98) 20%,
-    rgba(7, 19, 9, 0.94) 30%,
-    rgba(7, 19, 9, 0.82) 38%,
-    rgba(7, 19, 9, 0.52) 44%,
-    rgba(7, 19, 9, 0.2) 48%,
-    rgba(7, 19, 9, 0.04) 51%,
-    transparent 54%
+    #071309 18%,
+    rgba(7, 19, 9, 0.985) 22%,
+    rgba(7, 19, 9, 0.95) 26%,
+    rgba(7, 19, 9, 0.89) 30%,
+    rgba(7, 19, 9, 0.80) 34%,
+    rgba(7, 19, 9, 0.68) 38%,
+    rgba(7, 19, 9, 0.54) 42%,
+    rgba(7, 19, 9, 0.39) 46%,
+    rgba(7, 19, 9, 0.25) 50%,
+    rgba(7, 19, 9, 0.13) 54%,
+    rgba(7, 19, 9, 0.05) 57%,
+    rgba(7, 19, 9, 0.015) 60%,
+    rgba(7, 19, 9, 0) 63%
   );
 }
 
@@ -281,7 +313,7 @@ html.dark .hero-scrim-desktop {
     rgba(18, 72, 23, 0.96) 45%,
     rgba(18, 72, 23, 0.82) 65%,
     rgba(18, 72, 23, 0.38) 85%,
-    transparent 100%
+    rgba(18, 72, 23, 0) 100%
   );
 }
 
@@ -292,36 +324,42 @@ html.dark .hero-scrim-mobile {
     rgba(7, 19, 9, 0.96) 45%,
     rgba(7, 19, 9, 0.82) 65%,
     rgba(7, 19, 9, 0.38) 85%,
-    transparent 100%
+    rgba(7, 19, 9, 0) 100%
   );
 }
 
-/* Atmospheric Ambient Vignette & Warm Tint */
+/* Atmospheric Ambient Vignette & Warm Tint - Zero hard edges */
 .hero-ambient-vignette {
   background: radial-gradient(
-    circle at 22% 40%,
-    rgba(74, 222, 128, 0.14) 0%,
-    transparent 55%
+    circle at 20% 40%,
+    rgba(74, 222, 128, 0.08) 0%,
+    rgba(74, 222, 128, 0.04) 30%,
+    rgba(74, 222, 128, 0.01) 50%,
+    rgba(74, 222, 128, 0) 70%
   ),
   linear-gradient(
     to top,
-    rgba(5, 20, 7, 0.75) 0%,
-    rgba(5, 20, 7, 0.25) 35%,
-    transparent 70%
+    rgba(5, 20, 7, 0.6) 0%,
+    rgba(5, 20, 7, 0.2) 25%,
+    rgba(5, 20, 7, 0.04) 45%,
+    rgba(5, 20, 7, 0) 65%
   );
 }
 
 html.dark .hero-ambient-vignette {
   background: radial-gradient(
-    circle at 22% 40%,
-    rgba(74, 222, 128, 0.1) 0%,
-    transparent 55%
+    circle at 20% 40%,
+    rgba(74, 222, 128, 0.06) 0%,
+    rgba(74, 222, 128, 0.03) 30%,
+    rgba(74, 222, 128, 0.01) 50%,
+    rgba(74, 222, 128, 0) 70%
   ),
   linear-gradient(
     to top,
-    rgba(2, 8, 3, 0.9) 0%,
-    rgba(2, 8, 3, 0.35) 35%,
-    transparent 70%
+    rgba(2, 8, 3, 0.75) 0%,
+    rgba(2, 8, 3, 0.25) 25%,
+    rgba(2, 8, 3, 0.05) 45%,
+    rgba(2, 8, 3, 0) 65%
   );
 }
 
@@ -382,6 +420,7 @@ html.dark .hero-ambient-vignette {
   0% {
     transform: translateX(-150%) skewX(-20deg);
   }
+
   100% {
     transform: translateX(150%) skewX(-20deg);
   }
@@ -392,16 +431,20 @@ html.dark .hero-ambient-vignette {
   0% {
     transform: translateX(-150%) skewX(-25deg);
   }
+
   100% {
     transform: translateX(150%) skewX(-25deg);
   }
 }
 
 @keyframes glassPulseGlow {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 0.75;
     filter: drop-shadow(0 0 10px rgba(88, 143, 84, 0.2));
   }
+
   50% {
     opacity: 1;
     filter: drop-shadow(0 0 22px rgba(88, 143, 84, 0.4));
@@ -412,9 +455,11 @@ html.dark .hero-ambient-vignette {
   0% {
     transform: translateX(-100%);
   }
+
   50% {
     transform: translateX(0%);
   }
+
   100% {
     transform: translateX(100%);
   }
@@ -422,16 +467,14 @@ html.dark .hero-ambient-vignette {
 
 /* Glassy container with frosted blur, subtle border & inner specular gradient */
 .glass-surface {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.82) 0%,
-    rgba(240, 249, 239, 0.52) 50%,
-    rgba(229, 245, 227, 0.72) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(255, 255, 255, 0.82) 0%,
+      rgba(240, 249, 239, 0.52) 50%,
+      rgba(229, 245, 227, 0.72) 100%);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 
+  box-shadow:
     0 8px 32px -4px rgba(25, 103, 22, 0.08),
     inset 0 1px 2px 0 rgba(255, 255, 255, 0.95),
     inset 0 -1px 1px 0 rgba(25, 103, 22, 0.05);
@@ -439,16 +482,14 @@ html.dark .hero-ambient-vignette {
 
 /* Institutional dark mode frosted glass */
 html.dark .glass-surface {
-  background: linear-gradient(
-    135deg,
-    rgba(17, 30, 20, 0.85) 0%,
-    rgba(12, 22, 14, 0.92) 50%,
-    rgba(8, 16, 10, 0.98) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(17, 30, 20, 0.85) 0%,
+      rgba(12, 22, 14, 0.92) 50%,
+      rgba(8, 16, 10, 0.98) 100%) !important;
   backdrop-filter: blur(16px) saturate(160%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
   border: 1px solid rgba(74, 222, 128, 0.18) !important;
-  box-shadow: 
+  box-shadow:
     0 10px 35px -5px rgba(0, 0, 0, 0.7),
     inset 0 1px 2px 0 rgba(74, 222, 128, 0.15),
     inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5) !important;
@@ -456,56 +497,48 @@ html.dark .glass-surface {
 
 /* Dark variant for Hero or dark containers */
 .glass-surface-dark {
-  background: linear-gradient(
-    135deg,
-    rgba(19, 82, 17, 0.7) 0%,
-    rgba(15, 60, 14, 0.88) 50%,
-    rgba(9, 38, 8, 0.95) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(19, 82, 17, 0.7) 0%,
+      rgba(15, 60, 14, 0.88) 50%,
+      rgba(9, 38, 8, 0.95) 100%);
   backdrop-filter: blur(16px) saturate(150%);
   -webkit-backdrop-filter: blur(16px) saturate(150%);
   border: 1px solid rgba(197, 225, 193, 0.35);
-  box-shadow: 
+  box-shadow:
     0 12px 40px -8px rgba(0, 0, 0, 0.5),
     inset 0 1px 2px 0 rgba(255, 255, 255, 0.3),
     inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
 }
 
 html.dark .glass-surface-dark {
-  background: linear-gradient(
-    135deg,
-    rgba(10, 25, 14, 0.85) 0%,
-    rgba(6, 18, 9, 0.94) 50%,
-    rgba(4, 12, 6, 0.98) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(10, 25, 14, 0.85) 0%,
+      rgba(6, 18, 9, 0.94) 50%,
+      rgba(4, 12, 6, 0.98) 100%) !important;
   border-color: rgba(74, 222, 128, 0.22) !important;
 }
 
 /* Emerald tinted glass for school accent */
 .glass-surface-emerald {
-  background: linear-gradient(
-    135deg,
-    rgba(233, 248, 231, 0.88) 0%,
-    rgba(197, 225, 193, 0.58) 50%,
-    rgba(145, 189, 141, 0.4) 100%
-  );
+  background: linear-gradient(135deg,
+      rgba(233, 248, 231, 0.88) 0%,
+      rgba(197, 225, 193, 0.58) 50%,
+      rgba(145, 189, 141, 0.4) 100%);
   backdrop-filter: blur(14px) saturate(140%);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
   border: 1px solid rgba(197, 225, 193, 0.7);
-  box-shadow: 
+  box-shadow:
     0 8px 32px -4px rgba(25, 103, 22, 0.12),
     inset 0 1px 2px 0 rgba(255, 255, 255, 0.95);
 }
 
 html.dark .glass-surface-emerald {
-  background: linear-gradient(
-    135deg,
-    rgba(20, 52, 26, 0.78) 0%,
-    rgba(14, 38, 18, 0.88) 50%,
-    rgba(9, 26, 12, 0.95) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(20, 52, 26, 0.78) 0%,
+      rgba(14, 38, 18, 0.88) 50%,
+      rgba(9, 26, 12, 0.95) 100%) !important;
   border: 1px solid rgba(74, 222, 128, 0.3) !important;
-  box-shadow: 
+  box-shadow:
     0 10px 35px -5px rgba(0, 0, 0, 0.75),
     inset 0 1px 2px 0 rgba(74, 222, 128, 0.22) !important;
 }
@@ -523,28 +556,24 @@ html.dark .glass-surface-emerald {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.25) 20%,
-    rgba(255, 255, 255, 0.85) 50%,
-    rgba(255, 255, 255, 0.25) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.25) 20%,
+      rgba(255, 255, 255, 0.85) 50%,
+      rgba(255, 255, 255, 0.25) 80%,
+      rgba(255, 255, 255, 0) 100%);
   animation: instaGlassSwipe 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 10;
 }
 
 html.dark .glass-shimmer::after {
-  background: linear-gradient(
-    90deg,
-    rgba(74, 222, 128, 0) 0%,
-    rgba(74, 222, 128, 0.08) 25%,
-    rgba(74, 222, 128, 0.28) 50%,
-    rgba(74, 222, 128, 0.08) 75%,
-    rgba(74, 222, 128, 0) 100%
-  ) !important;
+  background: linear-gradient(90deg,
+      rgba(74, 222, 128, 0) 0%,
+      rgba(74, 222, 128, 0.08) 25%,
+      rgba(74, 222, 128, 0.28) 50%,
+      rgba(74, 222, 128, 0.08) 75%,
+      rgba(74, 222, 128, 0) 100%) !important;
 }
 
 /* Instagram-Style Active Swiping Light Wave (Dark Surfaces) */
@@ -560,28 +589,24 @@ html.dark .glass-shimmer::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.08) 20%,
-    rgba(255, 255, 255, 0.45) 50%,
-    rgba(255, 255, 255, 0.08) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(90deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.08) 20%,
+      rgba(255, 255, 255, 0.45) 50%,
+      rgba(255, 255, 255, 0.08) 80%,
+      rgba(255, 255, 255, 0) 100%);
   animation: instaGlassSwipe 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 10;
 }
 
 html.dark .glass-shimmer-dark::after {
-  background: linear-gradient(
-    90deg,
-    rgba(74, 222, 128, 0) 0%,
-    rgba(74, 222, 128, 0.06) 20%,
-    rgba(74, 222, 128, 0.3) 50%,
-    rgba(74, 222, 128, 0.06) 80%,
-    rgba(74, 222, 128, 0) 100%
-  ) !important;
+  background: linear-gradient(90deg,
+      rgba(74, 222, 128, 0) 0%,
+      rgba(74, 222, 128, 0.06) 20%,
+      rgba(74, 222, 128, 0.3) 50%,
+      rgba(74, 222, 128, 0.06) 80%,
+      rgba(74, 222, 128, 0) 100%) !important;
 }
 
 /* Diagonal glass beam swipe for larger card containers */
@@ -597,28 +622,24 @@ html.dark .glass-shimmer-dark::after {
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.08) 25%,
-    rgba(255, 255, 255, 0.7) 50%,
-    rgba(255, 255, 255, 0.08) 75%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 25%,
+      rgba(255, 255, 255, 0.7) 50%,
+      rgba(255, 255, 255, 0.08) 75%,
+      transparent 100%);
   animation: instaDiagonalSwipe 1.4s infinite cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
   z-index: 12;
 }
 
 html.dark .glass-swipe-diagonal::before {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(74, 222, 128, 0.03) 25%,
-    rgba(74, 222, 128, 0.24) 50%,
-    rgba(74, 222, 128, 0.03) 75%,
-    transparent 100%
-  ) !important;
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(74, 222, 128, 0.03) 25%,
+      rgba(74, 222, 128, 0.24) 50%,
+      rgba(74, 222, 128, 0.03) 75%,
+      transparent 100%) !important;
 }
 
 /* Subtle breathing glow effect */
@@ -642,11 +663,15 @@ html.dark .glass-swipe-diagonal::before {
 .admin-tabs-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE / Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE / Edge */
 }
+
 .admin-tabs-scroll::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 /* Responsive Facebook Iframe Post Previews (Prevents mobile overflow) */
@@ -686,7 +711,7 @@ html.dark {
 
 html.dark body {
   background-color: #080e09 !important;
-  background-image: 
+  background-image:
     radial-gradient(at 50% 0%, rgba(25, 103, 22, 0.16) 0%, transparent 65%),
     radial-gradient(at 100% 100%, rgba(20, 83, 45, 0.08) 0%, transparent 50%) !important;
   background-attachment: fixed !important;
@@ -959,25 +984,21 @@ html.dark input.bg-transparent {
 
 /* Frosted Obsidian Glassmorphism */
 html.dark .glass-surface {
-  background: linear-gradient(
-    135deg,
-    rgba(17, 27, 18, 0.88) 0%,
-    rgba(12, 19, 13, 0.94) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(17, 27, 18, 0.88) 0%,
+      rgba(12, 19, 13, 0.94) 100%) !important;
   border: 1px solid rgba(74, 222, 128, 0.22) !important;
   backdrop-filter: blur(16px) saturate(150%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(150%) !important;
-  box-shadow: 
+  box-shadow:
     0 8px 32px -4px rgba(0, 0, 0, 0.65),
     inset 0 1px 1px 0 rgba(255, 255, 255, 0.08) !important;
 }
 
 html.dark .glass-surface-emerald {
-  background: linear-gradient(
-    135deg,
-    rgba(21, 48, 23, 0.8) 0%,
-    rgba(13, 31, 15, 0.92) 100%
-  ) !important;
+  background: linear-gradient(135deg,
+      rgba(21, 48, 23, 0.8) 0%,
+      rgba(13, 31, 15, 0.92) 100%) !important;
   border: 1px solid rgba(74, 222, 128, 0.28) !important;
   box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.65) !important;
 }
