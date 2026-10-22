@@ -25,7 +25,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
           </h1>
           <p className="text-xs sm:text-sm text-slate-600 font-medium">
             ஆசிரியர்கள்:{' '}
-            <span className="text-slate-800 font-bold">வண. J. S. இரத்தினாதிக்கா</span> &amp;{' '}
+            <span className="text-slate-800 font-bold">வண. J. S. இரட்ணாதிக்கம் </span> &amp;{' '}
             <span className="text-slate-800 font-bold">வண. A. M. நத்தானியல்</span>
           </p>
         </header>

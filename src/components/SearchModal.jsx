@@ -154,7 +154,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
     const timer = setTimeout(() => {
       setDebouncedQuery(trimmed);
       setIsSearching(false);
-    }, 240);
+    }, 280);
 
     return () => clearTimeout(timer);
   }, [query]);
@@ -306,10 +306,10 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               className="search-box-input w-full text-slate-800 dark:text-slate-100 text-sm sm:text-base bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none !border-none !shadow-none !bg-transparent rounded-none"
             />
             {isSearching ? (
-              <div className="flex items-center gap-1.5 shrink-0 px-1 text-brand-forest dark:text-emerald-400">
+              <div className="flex items-center gap-1.5 shrink-0 px-1 text-brand-forest dark:text-emerald-400" aria-label="Searching">
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" />
+                  <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
               </div>
             ) : query ? (
@@ -386,32 +386,51 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           </button>
         </div>
 
+        {/* Sleek Indeterminate Progress Bar */}
+        {isSearching && (
+          <div className="search-progress-track">
+            <div className="search-progress-bar" />
+            <div className="search-progress-bar-secondary" />
+          </div>
+        )}
+
         <div className="overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh]">
           {isSearching ? (
-            <div className="p-2 space-y-2.5">
-              <div className="flex items-center justify-between px-2 py-1 text-xs text-slate-500 dark:text-slate-400">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-brand-forest dark:bg-emerald-400 animate-ping" />
-                  <span className="font-semibold text-slate-700 dark:text-slate-300">Searching records...</span>
+            <div className="p-2 space-y-2 select-none">
+              {/* Clean institutional status header - strictly no emojis */}
+              <div className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs">
+                <div className="flex items-center gap-2 text-slate-600 dark:text-emerald-400/90 font-medium">
+                  <svg className="w-3.5 h-3.5 animate-spin text-brand-forest dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                    <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  <span>Searching college records...</span>
                 </div>
-                <span className="text-[11px] text-slate-400 dark:text-emerald-400/70 font-mono truncate max-w-[150px]">
+                <span className="text-[11px] font-mono text-slate-500 dark:text-emerald-400/70 bg-slate-100 dark:bg-emerald-950/60 px-2 py-0.5 rounded border border-slate-200/80 dark:border-emerald-500/20 truncate max-w-[160px]">
                   "{query.trim()}"
                 </span>
               </div>
-              {[1, 2, 3, 4].map((i) => (
+
+              {/* 4 Professional Skeleton Rows */}
+              {[
+                { titleWidth: 'w-3/5', subWidth: 'w-24', category: 'Events' },
+                { titleWidth: 'w-4/5', subWidth: 'w-32', category: 'History' },
+                { titleWidth: 'w-1/2', subWidth: 'w-20', category: 'Academics' },
+                { titleWidth: 'w-2/3', subWidth: 'w-28', category: 'Gallery' },
+              ].map((row, i) => (
                 <div
                   key={i}
-                  className="px-3.5 py-3 rounded-xl glass-surface glass-shimmer border border-brand-pale/50 dark:border-emerald-500/20 flex items-center justify-between gap-3 select-none"
+                  className="px-3.5 py-3 rounded-xl glass-surface glass-shimmer border border-brand-pale/50 dark:border-emerald-500/20 flex items-center justify-between gap-3"
                 >
                   <div className="min-w-0 flex-1 space-y-2">
-                    <div
-                      className={`h-4 rounded-md bg-slate-200/80 dark:bg-emerald-950/70 ${
-                        i === 1 ? 'w-3/5' : i === 2 ? 'w-4/5' : i === 3 ? 'w-1/2' : 'w-2/3'
-                      }`}
-                    />
-                    <div className="h-2.5 w-24 rounded-full bg-slate-200/50 dark:bg-emerald-950/50" />
+                    <div className={`h-4 rounded-md bg-slate-200/80 dark:bg-emerald-950/70 ${row.titleWidth}`} />
+                    <div className={`h-2.5 rounded-full bg-slate-200/50 dark:bg-emerald-950/50 ${row.subWidth}`} />
                   </div>
-                  <div className="w-12 h-5 rounded-full bg-slate-200/60 dark:bg-emerald-950/50 shrink-0" />
+                  <div className="h-5 px-2.5 rounded-md bg-slate-200/50 dark:bg-emerald-950/50 border border-slate-200/60 dark:border-emerald-500/20 shrink-0 flex items-center">
+                    <span className="text-[10px] text-slate-400/80 dark:text-emerald-400/50 font-medium">
+                      {row.category}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
@@ -495,9 +514,12 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           </div>
           <span className="font-medium text-brand-forest dark:text-emerald-400">
             {isSearching ? (
-              <span className="inline-flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-forest dark:bg-emerald-400 animate-pulse" />
-                Searching...
+              <span className="inline-flex items-center gap-1.5 text-xs text-brand-forest dark:text-emerald-400">
+                <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-80" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span>Searching archives...</span>
               </span>
             ) : !hasQuery ? (
               'Search Kopay Christian College'
