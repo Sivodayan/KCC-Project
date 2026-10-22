@@ -53,10 +53,10 @@ export default function SchoolAnthem() {
   return (
     <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6">
       <div className="text-center mb-10">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight font-tamil leading-tight">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest dark:text-emerald-400 tracking-tight font-tamil leading-tight">
           பாடசாலைக் கீதம்
         </h1>
-        <h3 className="text-slate-600 text-sm sm:text-4xl mt-4 font-sans max-w-10xl mx-auto font-bold">
+        <h3 className="text-slate-600 dark:text-slate-400 text-base sm:text-lg mt-3 font-sans max-w-xl mx-auto font-medium">
           School Anthem 
         </h3>
 
@@ -64,13 +64,15 @@ export default function SchoolAnthem() {
           <button
             type="button"
             onClick={handlePrint}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-white border border-brand-pale hover:border-brand-soft text-slate-700 hover:text-brand-forest text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
           >
-            <svg className="w-4 h-4 text-brand-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
             </svg>
             <span>Print</span>
           </button>
+
+          
 
           <Link
             to="/history"
@@ -81,54 +83,127 @@ export default function SchoolAnthem() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-b from-brand-light via-brand-white to-brand-light/60 dark:from-[#0d1810] dark:via-[#09120b] dark:to-[#0d1810] rounded-3xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-12 shadow-sm relative overflow-hidden">
-        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
+      <div className="bg-brand-white dark:bg-[#111e13] rounded-3xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-12 shadow-sm relative overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] dark:opacity-[0.04] pointer-events-none select-none">
           <img src="/assets/logo.png" alt="" className="w-96 h-96 object-contain" />
         </div>
 
-        <div className="relative z-10 space-y-8 text-center font-tamil">
-          <div className="relative pt-12 pb-6 px-6 sm:py-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="absolute top-3 left-3 sm:top-4 sm:left-4 inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-brand-light/90 dark:bg-emerald-950/80 border border-brand-pale/80 dark:border-emerald-700/40 text-brand-forest dark:text-emerald-300 text-xs font-semibold shadow-2xs">
+        <div className="relative z-10 font-tamil">
+          <div className="flex justify-start mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-light/90 dark:bg-emerald-950/80 border border-brand-pale/80 dark:border-emerald-700/40 text-brand-forest dark:text-emerald-300 text-xs font-semibold shadow-2xs">
               <svg className="w-3.5 h-3.5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
               </svg>
-              <span>இராகம்: ஹம்சத்வனி (Hamsadhvani)</span>
-            </div>
-            <div className="text-lg sm:text-2xl text-slate-900 dark:text-slate-100 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
-              <p className="font-bold text-brand-forest dark:text-emerald-400">வாழிய நம் கலைக்கூடமே வாழ்க</p>
-              <p className="font-bold text-brand-forest dark:text-emerald-400">வாழிய வாழிய வாழியவே</p>
-              <p>கழனிகள் சூழ்ந்திடு கோவையம் பதியில்</p>
-              <p>விளங்குநற் சிறந்தவக் கல்லூரி</p>
-              <p className="text-slate-800 dark:text-slate-200">உண்மையும் நேர்மையும்</p>
-              <p className="text-slate-800 dark:text-slate-200">உலகிடை அளிக்கும்</p>
-              <p className="font-bold text-brand-forest dark:text-emerald-400">உயர்புகழ் என்றென்றும் வாழியவே</p>
+              <span>இராகம்: ஹம்சத்வனி</span>
             </div>
           </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-800 dark:text-slate-200 leading-[2.2] sm:leading-[2.4] space-y-1">
-              <p>பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்</p>
-              <p>படைத்து நற்பணிபுரிந்தாய்</p>
-              <p>அவர் மிகு சேவையை ஏந்திட நன்னிலை</p>
-              <p>அடைந்தநல் நாடெய்தே</p>
+          <div className="text-center text-base sm:text-xl text-slate-800 dark:text-slate-200 leading-[2.3] sm:leading-[2.5] font-medium space-y-7 sm:space-y-8 max-w-2xl mx-auto">
+            <div className="space-y-1">
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  வாழிய நம் கலைக்கூடமே வாழ்க
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  வாழிய வாழிய வாழியவே
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  கழனிகள் சூழ்ந்திடு கோவையம் பதியில்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  விளங்குநற் சிறந்தவக் கல்லூரி
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  உண்மையும் நேர்மையும்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  உலகிடை அளிக்கும்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  உயர்புகழ் என்றென்றும் வாழியவே
+                </span>
+              </p>
             </div>
-          </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-800 dark:text-slate-200 leading-[2.2] sm:leading-[2.4] space-y-1">
-              <p>மனதினில் உள் திறம் மதிப் பொறிவைத்திட</p>
-              <p>மகிழ்வொடு நாம் முயல்வோம்</p>
-              <p>கலைபல கற்றுநற் கனிந்திட நல்லறி</p>
-              <p className="font-semibold text-brand-forest dark:text-emerald-400">காட்டிடுவாய் தாயே</p>
+            <div className="space-y-1">
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  பல்புகழ் மலிந்திடும் பல பெரியோர் களைப்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  படைத்து நற்பணிபுரிந்தாய்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  அவர் மிகு சேவையை ஏந்திட நன்னிலை
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  அடைந்தநல் நாடெய்தே
+                </span>
+              </p>
             </div>
-          </div>
 
-          <div className="p-6 sm:p-8 bg-brand-white/90 dark:bg-[#111e13]/90 rounded-2xl border border-brand-pale/80 dark:border-emerald-800/40 shadow-2xs hover:shadow-md transition-shadow">
-            <div className="text-base sm:text-xl text-slate-900 dark:text-slate-100 leading-[2.2] sm:leading-[2.4] font-semibold space-y-1">
-              <p>நிலமிசை நின்புகழ் நீடுவாழ்க</p>
-              <p>நின்பணி தொடர்ந்து என்றும் வாழ்க</p>
-              <p>நிலை பெறு கலைகளின் நிறைவுடனாக</p>
-              <p className="font-bold text-2xl sm:text-3xl text-brand-forest dark:text-emerald-400 pt-2">நீயென்றும் வாழிய வாழியவே.</p>
+            <div className="space-y-1">
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  மனதினில் உள் திறம் மதிப் பொறிவைத்திட
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  மகிழ்வொடு நாம் முயல்வோம்
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  கலைபல கற்றுநற் கனிந்திட நல்லறி
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  காட்டிடுவாய் தாயே
+                </span>
+              </p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  நிலமிசை நின்புகழ் நீடுவாழ்க
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  நின்பணி தொடர்ந்து என்றும் வாழ்க
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  நிலை பெறு கலைகளின் நிறைவுடனாக
+                </span>
+              </p>
+              <p className="py-0.5">
+                <span className="inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center">
+                  நீயென்றும் வாழிய வாழியவே.
+                </span>
+              </p>
             </div>
           </div>
         </div>
