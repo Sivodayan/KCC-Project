@@ -1,10 +1,10 @@
 /**
- * Cloudflare Pages Function: /api/github
+ * Cloudflare Worker / Pages Function: /api/github
  *
  * Secure server-side proxy endpoint for committing website content to GitHub.
- * The GitHub Personal Access Token (GITHUB_TOKEN) is stored strictly as an
- * encrypted secret within Cloudflare Pages environment variables and is NEVER
- * sent to or exposed in the client browser.
+ * The GitHub Personal Access Token (GITHUB_TOKEN) is stored as an
+ * encrypted secret within Cloudflare environment variables or passed via
+ * authenticated session payload.
  */
 
 /**
@@ -26,23 +26,104 @@ function utf8ToBase64(str) {
 }
 
 /**
- * Extracts and sanitizes the GitHub token from Cloudflare environment or runtime.
- * Supports multiple casing variations for resilience.
+ * Extracts and sanitizes the GitHub token from Cloudflare environment, globalThis, or request headers.
+ * Supports multiple casing variations and environments for maximum resilience.
  *
- * @param {Object} context - Cloudflare Pages Function context
+ * @param {Object} context - Cloudflare context { request, env }
  * @returns {string} Clean token or empty string
  */
 function getSecretToken(context) {
-  const env = context?.env || context || {};
-  const val = (
-    env.GITHUB_TOKEN ||
-    env.github_token ||
-    env.GH_TOKEN ||
-    env.VITE_GITHUB_TOKEN ||
-    (typeof process !== 'undefined' && process.env?.GITHUB_TOKEN) ||
-    ''
-  );
-  return typeof val === 'string' ? val.trim() : '';
+  const env = context?.env || {};
+  const candidates = [
+    'GITHUB_TOKEN',
+    'github_token',
+    'GitHub_Token',
+    'GH_TOKEN',
+    'gh_token',
+    'VITE_GITHUB_TOKEN',
+    'vite_github_token',
+    'GIT_TOKEN',
+    'GITHUB_PAT',
+    'TOKEN'
+  ];
+
+  // 1. Check known candidate keys on env
+  for (const k of candidates) {
+    if (env[k] && typeof env[k] === 'string' && env[k].trim()) {
+      return env[k].trim();
+    }
+  }
+
+  // 2. Case-insensitive search on env
+  for (const k in env) {
+    const lk = k.toLowerCase();
+    if ((lk.includes('github') || lk.includes('token')) && typeof env[k] === 'string' && env[k].trim()) {
+      return env[k].trim();
+    }
+  }
+
+  // 3. Check globalThis (Service Worker / legacy worker runtime)
+  if (typeof globalThis !== 'undefined') {
+    for (const k of candidates) {
+      if (globalThis[k] && typeof globalThis[k] === 'string' && globalThis[k].trim()) {
+        return globalThis[k].trim();
+      }
+    }
+  }
+
+  // 4. Check process.env (Node compatibility flag)
+  if (typeof process !== 'undefined' && process.env) {
+    for (const k of candidates) {
+      if (process.env[k] && typeof process.env[k] === 'string' && process.env[k].trim()) {
+        return process.env[k].trim();
+      }
+    }
+  }
+
+  // 5. Check Authorization header
+  if (context?.request && typeof context.request.headers?.get === 'function') {
+    try {
+      const auth = context.request.headers.get('Authorization') || '';
+      if (auth.startsWith('Bearer ')) {
+        const val = auth.slice(7).trim();
+        if (val) return val;
+      }
+      if (auth.startsWith('token ')) {
+        const val = auth.slice(6).trim();
+        if (val) return val;
+      }
+    } catch {}
+  }
+
+  return '';
+}
+
+/**
+ * Inspects all available environment bindings without leaking secret values.
+ */
+function inspectEnvironment(context) {
+  const env = context?.env || {};
+  const keys = new Set();
+
+  for (const k in env) keys.add(k);
+  try {
+    for (const k of Object.getOwnPropertyNames(env)) keys.add(k);
+  } catch {}
+
+  try {
+    const proto = Object.getPrototypeOf(env);
+    if (proto && proto !== Object.prototype) {
+      for (const k of Object.getOwnPropertyNames(proto)) {
+        if (k !== 'constructor') keys.add(k);
+      }
+    }
+  } catch {}
+
+  const safeKeys = Array.from(keys).filter(k => k !== 'ASSETS');
+  return {
+    totalKeys: safeKeys.length,
+    keysFound: safeKeys
+  };
 }
 
 /**
@@ -64,14 +145,9 @@ export async function onRequestOptions() {
  * Handle GET to check if GitHub publishing is configured server-side
  */
 export async function onRequestGet(context) {
-  const env = context?.env || context || {};
   const token = getSecretToken(context);
   const isConfigured = Boolean(token);
-  const allKeys = Object.keys(env);
-  const nonSensitiveKeys = allKeys.filter(k => k !== 'ASSETS' && !k.toLowerCase().includes('token') && !k.toLowerCase().includes('secret') && !k.toLowerCase().includes('key'));
-  const hasTokenKey = Boolean(
-    env.GITHUB_TOKEN || env.github_token || env.GH_TOKEN || env.VITE_GITHUB_TOKEN
-  );
+  const envInfo = inspectEnvironment(context);
 
   return new Response(
     JSON.stringify({
@@ -79,10 +155,8 @@ export async function onRequestGet(context) {
       targetRepo: 'Sivodayan/KCC-Project',
       branch: 'main',
       hasToken: isConfigured,
-      hasTokenKey,
-      tokenLength: token ? token.length : 0,
-      totalKeys: allKeys.length,
-      sampleKeys: nonSensitiveKeys,
+      totalKeys: envInfo.totalKeys,
+      bindingsFound: envInfo.keysFound,
       checkedAt: new Date().toISOString()
     }),
     {
@@ -100,14 +174,14 @@ export async function onRequestGet(context) {
  * Handle POST to perform atomic Git commit
  */
 export async function onRequestPost(context) {
-  const token = getSecretToken(context);
-  if (!token) {
+  let body;
+  try {
+    body = await context.request.json();
+  } catch (err) {
     return new Response(
-      JSON.stringify({
-        error: 'Cloudflare Pages secret GITHUB_TOKEN is not configured or not yet active in this deployment. Please redeploy in Cloudflare dashboard.'
-      }),
+      JSON.stringify({ error: 'Invalid JSON request body: ' + err.message }),
       {
-        status: 500,
+        status: 400,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
@@ -116,14 +190,18 @@ export async function onRequestPost(context) {
     );
   }
 
-  let body;
-  try {
-    body = await context.request.json();
-  } catch (err) {
+  // Token priority: Server environment secret -> Client provided fallback token
+  const serverToken = getSecretToken(context);
+  const clientToken = (body?.token || '').trim();
+  const token = serverToken || clientToken;
+
+  if (!token) {
     return new Response(
-      JSON.stringify({ error: 'Invalid JSON request body.' }),
+      JSON.stringify({
+        error: 'GitHub Personal Access Token is required. Please set GITHUB_TOKEN in Cloudflare or provide a session token.'
+      }),
       {
-        status: 400,
+        status: 401,
         headers: {
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
@@ -181,7 +259,7 @@ export async function onRequestPost(context) {
     );
   }
 
-  const userAgent = 'Cloudflare-Pages-Function-KCC/1.0';
+  const userAgent = 'Cloudflare-Worker-KCC/1.0';
   const defaultCommitMsg = `Update website content via KCC Admin Panel [${new Date().toISOString()}]`;
   const message = commitMessage?.trim() || defaultCommitMsg;
 
@@ -204,7 +282,7 @@ export async function onRequestPost(context) {
       const err = await getRes.json().catch(() => ({}));
       if (getRes.status === 401) {
         return new Response(
-          JSON.stringify({ error: 'GitHub authentication failed: Provided GITHUB_TOKEN is invalid or expired.' }),
+          JSON.stringify({ error: 'GitHub authentication failed: Provided token is invalid or lacks repo permissions.' }),
           {
             status: 401,
             headers: {
@@ -215,7 +293,7 @@ export async function onRequestPost(context) {
         );
       }
       return new Response(
-        JSON.stringify({ error: err.message || `Failed to fetch file metadata from GitHub (${getRes.status})` }),
+        JSON.stringify({ error: err.message || `Failed to query repository contents (${getRes.status})` }),
         {
           status: getRes.status,
           headers: {
@@ -257,7 +335,7 @@ export async function onRequestPost(context) {
       if (putRes.status === 409) {
         errMsg = 'Branch conflict (409): Target file was modified concurrently. Please refresh and retry.';
       } else if (putRes.status === 401) {
-        errMsg = 'Unauthorized: Cloudflare GITHUB_TOKEN lacks repo write access or is expired.';
+        errMsg = 'Unauthorized: GitHub token lacks write access or is expired.';
       } else if (putRes.status === 404) {
         errMsg = `Repository ${owner}/${repo} or branch ${branch} not found.`;
       }
@@ -277,7 +355,6 @@ export async function onRequestPost(context) {
     const commitSha = result.commit?.sha || '';
     const commitUrl = `https://github.com/${owner}/${repo}/commit/${commitSha}`;
 
-    // 4. Return sanitized public data to React frontend (NO secret token returned!)
     return new Response(
       JSON.stringify({
         success: true,

@@ -227,40 +227,6 @@ export async function commitFileToGitHub({
   const msg = commitMessage?.trim() || `Update website content via KCC Admin Panel [${new Date().toISOString()}]`;
 
   // 1. Primary path: Use Cloudflare Pages Function server-side proxy (/api/github)
-  try {
-    const proxyRes = await fetch('/api/github', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        owner,
-        repo,
-        path,
-        branch,
-        contentString,
-        commitMessage: msg
-      })
-    });
-
-    const isJson = proxyRes.headers.get('content-type')?.includes('application/json');
-
-    // If Cloudflare Pages Function responded with a JSON API response
-    if (isJson) {
-      const data = await proxyRes.json().catch(() => ({}));
-      if (!proxyRes.ok) {
-        throw new Error(data.error || `Server commit failed (${proxyRes.status})`);
-      }
-      return data;
-    }
-  } catch (err) {
-    // If the server proxy returned a deliberate error, surface it
-    if (err.message && !err.message.includes('Failed to fetch')) {
-      throw err;
-    }
-  }
-
-  // 2. Fallback path: Direct client-side commit (used for local development)
   const cleanToken = (
     token ||
     import.meta.env.VITE_GITHUB_TOKEN ||
@@ -268,8 +234,49 @@ export async function commitFileToGitHub({
     ''
   ).trim();
 
+  // 1. Primary path: Use Cloudflare Worker / Pages proxy (/api/github)
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (cleanToken) {
+      headers.Authorization = `Bearer ${cleanToken}`;
+    }
+    const proxyRes = await fetch('/api/github', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        owner,
+        repo,
+        path,
+        branch,
+        contentString,
+        commitMessage: msg,
+        token: cleanToken || undefined
+      })
+    });
+
+    const isJson = proxyRes.headers.get('content-type')?.includes('application/json');
+
+    if (isJson) {
+      const data = await proxyRes.json().catch(() => ({}));
+      if (proxyRes.ok) {
+        return data;
+      }
+      if (cleanToken) {
+        console.warn('Proxy commit returned error, attempting direct GitHub commit:', data.error);
+      } else {
+        throw new Error(data.error || `Server commit failed (${proxyRes.status})`);
+      }
+    }
+  } catch (err) {
+    if (!cleanToken) {
+      throw err;
+    }
+    console.warn('Proxy call failed, attempting direct GitHub commit fallback:', err);
+  }
+
+  // 2. Fallback path: Direct client-side commit (used when proxy lacks secret or for local dev)
   if (!cleanToken) {
-    throw new Error('Cloudflare Pages server proxy /api/github is not available, and no local GITHUB_TOKEN was found in .env.');
+    throw new Error('GitHub publishing is not configured. Please set GITHUB_TOKEN in Cloudflare or enter a token in the modal.');
   }
 
   // Query existing file SHA to support atomic in-place update

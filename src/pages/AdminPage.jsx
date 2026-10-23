@@ -406,9 +406,14 @@ export default function AdminPage() {
 
   const handleCommitToGitHub = async (e) => {
     if (e) e.preventDefault();
-    const token = getEffectiveGitHubToken();
+    let token = getEffectiveGitHubToken();
+    if (!token && sessionTokenInput.trim()) {
+      token = sessionTokenInput.trim();
+      sessionStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token);
+      setSessionTokenSaved(true);
+    }
     if (!token && !isServerProxyReady) {
-      setCommitError('GitHub publishing is not configured. Please set the encrypted GITHUB_TOKEN secret in Cloudflare Pages environment variables.');
+      setCommitError('GitHub publishing requires a token. Please enter your GitHub Personal Access Token below or configure GITHUB_TOKEN in Cloudflare.');
       return;
     }
 
@@ -4210,39 +4215,34 @@ export default function AdminPage() {
                       </div>
 
                       {/* Temporary Session Token Fallback */}
-                      <div className="pt-2 border-t border-amber-200/80">
-                        <button
-                          type="button"
-                          onClick={() => setShowSessionTokenFallback(!showSessionTokenFallback)}
-                          className="text-[11px] text-amber-900 hover:text-amber-950 font-semibold underline flex items-center gap-1 cursor-pointer"
-                        >
-                          <span>{showSessionTokenFallback ? '▾ Hide Temporary Session Token input' : '▸ Or publish immediately using a temporary session token'}</span>
-                        </button>
-
-                        {showSessionTokenFallback && (
-                          <div className="mt-2 p-2.5 bg-brand-white rounded-lg border border-amber-200 space-y-2">
-                            <p className="text-[11px] text-slate-600 leading-normal">
-                              Enter a GitHub Personal Access Token to publish right now. Saved only in this tab (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">sessionStorage</code>) and never committed:
-                            </p>
-                            <div className="flex gap-2">
-                              <input
-                                type="password"
-                                value={sessionTokenInput}
-                                onChange={(e) => setSessionTokenInput(e.target.value)}
-                                placeholder="ghp_..."
-                                className="flex-1 px-2.5 py-1.5 text-xs font-mono rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-forest bg-white"
-                              />
-                              <button
-                                type="button"
-                                onClick={handleSaveSessionToken}
-                                disabled={!sessionTokenInput.trim()}
-                                className="px-3 py-1.5 bg-brand-forest text-white text-xs font-bold rounded-md hover:bg-brand-forestHover transition cursor-pointer disabled:opacity-50"
-                              >
-                                Use Token
-                              </button>
-                            </div>
-                          </div>
-                        )}
+                      <div className="pt-2.5 border-t border-amber-200/80 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-amber-950 flex items-center gap-1.5">
+                            <span>🔑</span>
+                            <span>Publish now using GitHub Token:</span>
+                          </span>
+                          <span className="text-[10px] text-amber-800 font-medium">Session only</span>
+                        </div>
+                        <p className="text-[11px] text-slate-600 leading-normal">
+                          Paste your GitHub Personal Access Token to commit immediately. Saved only in this browser tab (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">sessionStorage</code>) and never committed to code:
+                        </p>
+                        <div className="flex gap-2">
+                          <input
+                            type="password"
+                            value={sessionTokenInput}
+                            onChange={(e) => setSessionTokenInput(e.target.value)}
+                            placeholder="ghp_..."
+                            className="flex-1 px-3 py-2 text-xs font-mono rounded-xl border border-amber-300 focus:outline-none focus:ring-2 focus:ring-brand-forest/20 bg-white"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleSaveSessionToken}
+                            disabled={!sessionTokenInput.trim()}
+                            className="px-4 py-2 bg-brand-forest text-white text-xs font-bold rounded-xl hover:bg-brand-forestHover transition cursor-pointer disabled:opacity-40 shrink-0"
+                          >
+                            Set Token
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -4299,10 +4299,10 @@ export default function AdminPage() {
 
                     <button
                       type="submit"
-                      disabled={isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken())}
+                      disabled={isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken() && !sessionTokenInput.trim())}
                       title="Commit & Publish to GitHub (Ctrl+Enter or Ctrl+S)"
                       className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
-                        isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken()) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken() && !sessionTokenInput.trim()) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                       }`}
                     >
                       {isCommitting ? (
