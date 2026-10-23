@@ -3,7 +3,7 @@
 [![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![Vite 6](https://img.shields.io/badge/Vite-6.2-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![GitHub Pages](https://img.shields.io/badge/Deployed-GitHub_Pages-222222?style=flat-square&logo=github-pages&logoColor=white)](https://sivodayan.github.io/KCC-Project/)
+[![Cloudflare Pages](https://img.shields.io/badge/Deployed-Cloudflare_Pages-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-forest?style=flat-square)](LICENSE)
 
 > **Motto:** *"Truth and Justice"* · **மகுடவாசகம்:** *“உண்மைக்கும் நேர்மைக்கும்”*  
@@ -88,7 +88,7 @@ Visit the deployed website:
   * Pale Green: `#C5E1C1` (`brand-pale`)
   * Light Mint: `#E9F8E7` (`brand-light`)
   * Clean White: `#FDFEFD` (`brand-white`)
-* **Deployment:** [gh-pages](https://www.npmjs.com/package/gh-pages)
+* **Deployment:** [Cloudflare Pages](https://pages.cloudflare.com/)
 
 ---
 
@@ -160,19 +160,32 @@ Ensure you have [Node.js](https://nodejs.org/) installed on your machine (versio
 | **Dev** | `npm run dev` | Runs the development server with Hot Module Replacement (HMR). |
 | **Build** | `npm run build` | Compiles and bundles production-ready assets into the `dist/` directory. |
 | **Preview** | `npm run preview` | Locally serves the production build to inspect prior to deployment. |
-| **Deploy** | `npm run deploy` | Runs `npm run build` and automatically pushes the `dist/` bundle to GitHub Pages. |
 
 ---
 
-## 🚀 Deployment
+## 🚀 Deployment (Cloudflare Pages)
 
-The project is configured for automated deployment via GitHub Pages using the `gh-pages` package:
+The project is configured for **Direct Git Builds** on [Cloudflare Pages](https://pages.cloudflare.com/):
 
-```bash
-npm run deploy
-```
+### Cloudflare Pages Build Settings:
+* **Framework preset:** `Vite`
+* **Build command:** `npm run build`
+* **Build output directory:** `dist`
+* **Root directory:** `/`
 
-This script triggers `predeploy` (`npm run build`) and publishes the generated `dist` folder directly to the `gh-pages` branch on GitHub.
+### SPA Routing & Security Headers:
+* `public/_redirects` ensures all client-side routes (e.g. `/history`, `/admin`, `/gallery`) resolve directly to `/index.html` with HTTP 200.
+* `public/_headers` enforces secure HTTP response headers (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, `Strict-Transport-Security`).
+
+### Environment Variables in Cloudflare Pages:
+Set the following under **Project Settings > Environment Variables**:
+* `VITE_GITHUB_TOKEN` *(Personal access token with `repo` scope for Admin Console content sync)*
+* `VITE_FIREBASE_API_KEY`
+* `VITE_FIREBASE_AUTH_DOMAIN`
+* `VITE_FIREBASE_PROJECT_ID`
+* `VITE_FIREBASE_STORAGE_BUCKET`
+* `VITE_FIREBASE_MESSAGING_SENDER_ID`
+* `VITE_FIREBASE_APP_ID`
 
 ---
 

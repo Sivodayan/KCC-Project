@@ -3273,7 +3273,7 @@ export default function AdminPage() {
                       <span className="text-slate-500 font-semibold">Automated Action:</span>
                       <span className="font-semibold text-emerald-700 flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                        GitHub Actions deploying to Pages
+                        Cloudflare Pages deploying updates
                       </span>
                     </div>
                   </div>
@@ -3311,7 +3311,7 @@ export default function AdminPage() {
                     <div>
                       <p className="font-semibold text-slate-800">Direct Git Push &amp; Automated Deployment</p>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        This atomic commit updates <span className="font-mono text-brand-forest font-bold">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span>, which immediately triggers the GitHub Pages build workflow.
+                        This atomic commit updates <span className="font-mono text-brand-forest font-bold">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span>, which triggers Cloudflare Pages direct build and deployment.
                       </p>
                     </div>
                   </div>
