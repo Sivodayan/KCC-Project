@@ -1,6 +1,6 @@
 {
   "hero": {
-    "title": "J/Kopay Christian College",
+    "title": "J/Kopay Christian College ",
     "tamilTitle": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "subtitle": "A well-established mixed school in Kopay, Jaffna, dedicated to delivering holistic secondary and collegiate education.",
     "image": "/assets/hero.jpg",
@@ -62,7 +62,8 @@
         "suffix": "+",
         "description": "Thriving global community supporting alma mater projects."
       }
-    ]
+    ],
+    "labs": 100
   },
   "gallery": [
     {
@@ -134,6 +135,13 @@
   ],
   "events": [
     {
+      "id": "post-1792766644228",
+      "postUrl": "https://www.facebook.com/share/p/1FEfdPX4xf/",
+      "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fp%2F1FEfdPX4xf%2F&show_text=true&width=500",
+      "width": 500,
+      "height": 645
+    },
+    {
       "id": "post-1",
       "postUrl": "https://www.facebook.com/permalink.php?story_fbid=pfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl&id=61575442051109",
       "iframeSrc": "https://www.facebook.com/plugins/post.php?href=https%3A%2F%2Fwww.facebook.com%2Fpermalink.php%3Fstory_fbid%3Dpfbid025Pz66BiqSUp3qStpPS7snhUrd5ypBQ5fMPu3cc5dkwSGjQp4tY1FZp53NsuNzDtLl%26id%3D61575442051109&show_text=true&width=500",
@@ -179,7 +187,7 @@
   "contact": {
     "address": "J/Kopay Christian College, Kopay, Jaffna, Sri Lanka",
     "phone": "021 223 0040",
-    "officeHours": "Mon – Fri, 8:00 AM – 3:30 PM",
+    "officeHours": "Mon – Fri, 8:00 AM – 1:30 PM",
     "email": "kcckopay@gmail.com",
     "mapsUrl": "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     "facebookUrl": "https://www.facebook.com/profile.php?id=61575442051109",
@@ -193,11 +201,7 @@
     "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "foundedYear": "1852",
     "motto": "Truth and Justice",
-    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்",
-    "vision": "The Ideal School in Peninsula",
-    "tamilVision": "குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
-    "mission": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
-    "tamilMission": "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
+    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்"
   },
   "announcement": {
     "enabled": false,
