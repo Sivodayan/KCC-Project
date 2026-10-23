@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
+import { useSiteContent, parseFacebookInput, resolveFacebookShareUrl } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
 import { commitFileToGitHub, checkGitHubProxyStatus } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
@@ -162,6 +162,54 @@ export default function AdminPage() {
   const [newEventInput, setNewEventInput] = useState('');
   const [newEventHeight, setNewEventHeight] = useState(645);
   const parsedNewEvent = parseFacebookInput(newEventInput);
+  const [isResolvingFbUrl, setIsResolvingFbUrl] = useState(false);
+  const [fbResolveNotice, setFbResolveNotice] = useState({ text: '', type: 'info' });
+
+  const handleAutoResolveFbUrl = useCallback(async (urlToResolve) => {
+    const url = (urlToResolve || newEventInput || '').trim();
+    if (!url || !url.includes('/share/')) return;
+    setIsResolvingFbUrl(true);
+    setFbResolveNotice({ text: 'Resolving mobile share link to permanent Facebook post URL...', type: 'info' });
+    try {
+      const canonical = await resolveFacebookShareUrl(url);
+      if (canonical && canonical !== url) {
+        setNewEventInput(canonical);
+        setFbResolveNotice({
+          text: '✓ Converted to permanent post URL! The iframe preview will now load correctly.',
+          type: 'success'
+        });
+        showToast('Converted to permanent Facebook post URL!', 'success');
+      } else {
+        setFbResolveNotice({
+          text: 'Could not auto-resolve this share link. Please see the tip below to copy the permanent URL from Facebook.',
+          type: 'warning'
+        });
+      }
+    } catch {
+      setFbResolveNotice({
+        text: 'Unable to resolve link. Please copy the permanent URL by clicking the post timestamp on Facebook.',
+        type: 'error'
+      });
+    } finally {
+      setIsResolvingFbUrl(false);
+    }
+  }, [newEventInput]);
+
+  useEffect(() => {
+    if (!newEventInput || !newEventInput.includes('/share/')) {
+      if (fbResolveNotice.text && fbResolveNotice.type !== 'success') {
+        setFbResolveNotice({ text: '', type: 'info' });
+      }
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      handleAutoResolveFbUrl(newEventInput);
+    }, 450);
+
+    return () => clearTimeout(timer);
+  }, [newEventInput, handleAutoResolveFbUrl, fbResolveNotice.text, fbResolveNotice.type]);
+
 
   // History Section States
   const [historySubTab, setHistorySubTab] = useState('milestones'); // 'milestones' | 'overview' | 'leadership'
@@ -2969,9 +3017,81 @@ export default function AdminPage() {
                         autoFocus
                         className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
                       />
-                      <p className="text-[11px] text-slate-500 mt-1">
-                        Tip: Open any post on Facebook, click the three dots (<span className="font-bold">···</span>), click <span className="font-semibold text-slate-700">"Copy link"</span>, and paste it here.
-                      </p>
+                      {/* Share Link Auto-Resolve Alert */}
+                      {(parsedNewEvent?.isShareUrl || newEventInput.includes('/share/')) && (
+                        <div className="mt-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3 sm:p-3.5 text-xs text-amber-900 space-y-2.5">
+                          <div className="flex items-start gap-2.5">
+                            <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div className="flex-1">
+                              <strong className="block font-bold text-amber-950">Mobile Share Link Detected (/share/p/...)</strong>
+                              <p className="mt-0.5 text-[11px] leading-relaxed text-amber-900/90">
+                                Facebook's iframe embed player cannot display temporary mobile share links and shows <em>"This Facebook post is no longer available"</em> unless converted to the post's permanent canonical URL.
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/70">
+                            <button
+                              type="button"
+                              disabled={isResolvingFbUrl}
+                              onClick={() => handleAutoResolveFbUrl()}
+                              className="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+                            >
+                              {isResolvingFbUrl ? (
+                                <>
+                                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                  </svg>
+                                  <span>Converting to Permanent URL...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                  </svg>
+                                  <span>Auto-Convert to Permanent URL</span>
+                                </>
+                              )}
+                            </button>
+                            <span className="text-[11px] text-amber-800">
+                              (Auto-resolves mobile redirect to post permalink)
+                            </span>
+                          </div>
+                        </div>
+                      )}
+
+                      {fbResolveNotice.text && (
+                        <div className={`mt-2.5 rounded-xl p-2.5 text-xs flex items-center gap-2 ${
+                          fbResolveNotice.type === 'success'
+                            ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                            : fbResolveNotice.type === 'warning'
+                            ? 'bg-amber-50 border border-amber-200 text-amber-800'
+                            : 'bg-rose-50 border border-rose-200 text-rose-800'
+                        }`}>
+                          {fbResolveNotice.type === 'success' ? (
+                            <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                          ) : (
+                            <svg className="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                          )}
+                          <span className="font-medium text-[11px]">{fbResolveNotice.text}</span>
+                        </div>
+                      )}
+
+                      <div className="mt-2.5 rounded-xl bg-brand-light/30 border border-brand-pale p-3 text-xs text-slate-600 space-y-1">
+                        <strong className="block text-slate-800 font-semibold">Tip to get the permanent post URL on Facebook:</strong>
+                        <ol className="list-decimal list-inside space-y-0.5 text-[11px] text-slate-600">
+                          <li>Click on the <strong>date / timestamp</strong> (e.g. <em>"2 hrs ago"</em> or the post date) on Facebook to open the post directly.</li>
+                          <li>Copy the URL from your browser address bar (it starts with <code className="font-mono text-brand-forest font-bold">facebook.com/permalink.php?story_fbid=...</code> or <code className="font-mono text-brand-forest font-bold">facebook.com/&lt;page&gt;/posts/...</code>).</li>
+                          <li>Or click the 3 dots (<span className="font-bold">···</span>) on the post &gt; <strong>Embed</strong> &gt; copy code.</li>
+                        </ol>
+                      </div>
                     </div>
 
                     {/* Retrieval Result & Live Iframe Preview */}

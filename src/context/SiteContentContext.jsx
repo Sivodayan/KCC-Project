@@ -43,7 +43,8 @@ export function parseFacebookInput(input) {
       postUrl,
       iframeSrc: rawSrc,
       width: 500,
-      height: 645
+      height: 645,
+      isShareUrl: postUrl.includes('/share/')
     };
   }
 
@@ -58,7 +59,8 @@ export function parseFacebookInput(input) {
       postUrl,
       iframeSrc: trimmed,
       width: 500,
-      height: 645
+      height: 645,
+      isShareUrl: postUrl.includes('/share/')
     };
   }
 
@@ -71,6 +73,7 @@ export function parseFacebookInput(input) {
     return null;
   }
 
+  const isShareUrl = cleanUrl.includes('/share/');
   const isVideo = cleanUrl.includes('/watch') || cleanUrl.includes('/reel') || cleanUrl.includes('/videos/');
   const plugin = isVideo ? 'video.php' : 'post.php';
   const iframeSrc = `https://www.facebook.com/plugins/${plugin}?href=${encodeURIComponent(cleanUrl)}&show_text=true&width=500`;
@@ -79,9 +82,37 @@ export function parseFacebookInput(input) {
     postUrl: cleanUrl,
     iframeSrc,
     width: 500,
-    height: 645
+    height: 645,
+    isShareUrl
   };
 }
+
+/**
+ * Resolves a temporary Facebook mobile share URL (e.g. /share/p/...) to its canonical permalink
+ * via the serverless resolver endpoint /api/resolve-facebook.
+ *
+ * @param {string} url - The Facebook share URL.
+ * @returns {Promise<string|null>} The canonical permalink or null if resolution fails.
+ */
+export async function resolveFacebookShareUrl(url) {
+  if (!url || typeof url !== 'string') return null;
+  const trimmed = url.trim();
+  if (!trimmed.includes('/share/')) return trimmed;
+
+  try {
+    const res = await fetch(`/api/resolve-facebook?url=${encodeURIComponent(trimmed)}`);
+    if (res.ok) {
+      const data = await res.json();
+      if (data?.canonicalUrl) {
+        return data.canonicalUrl;
+      }
+    }
+  } catch (err) {
+    console.warn('Unable to auto-resolve Facebook share link:', err);
+  }
+  return null;
+}
+
 
 /**
  * SiteContentProvider
