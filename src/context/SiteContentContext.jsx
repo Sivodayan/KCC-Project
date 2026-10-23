@@ -123,7 +123,24 @@ export function SiteContentProvider({ children }) {
           },
           gallery: Array.isArray(parsed?.gallery) ? parsed.gallery : (defaultSiteContent.gallery || []),
           events: Array.isArray(parsed?.events) ? parsed.events : FACEBOOK_POSTS,
-          contact: { ...defaultSiteContent.contact, ...parsed?.contact }
+          contact: { ...defaultSiteContent.contact, ...parsed?.contact },
+          history: {
+            ...defaultSiteContent.history,
+            ...parsed?.history,
+            overview: {
+              ...(defaultSiteContent.history?.overview || {}),
+              ...(parsed?.history?.overview || {})
+            },
+            milestones: Array.isArray(parsed?.history?.milestones)
+              ? parsed.history.milestones
+              : (defaultSiteContent.history?.milestones || []),
+            headmasters: Array.isArray(parsed?.history?.headmasters)
+              ? parsed.history.headmasters
+              : (defaultSiteContent.history?.headmasters || []),
+            managers: Array.isArray(parsed?.history?.managers)
+              ? parsed.history.managers
+              : (defaultSiteContent.history?.managers || [])
+          }
         };
       }
     } catch (e) {
@@ -298,6 +315,104 @@ export function SiteContentProvider({ children }) {
   const updatePerformance = useCallback((performanceData) => updateSection('performance', performanceData), [updateSection]);
   const updateContact = useCallback((contact) => updateSection('contact', contact), [updateSection]);
 
+  const updateHistory = useCallback((historyData) => {
+    saveContent(prev => ({
+      ...prev,
+      history: {
+        ...(prev.history || defaultSiteContent.history || {}),
+        ...historyData,
+        overview: {
+          ...((prev.history && prev.history.overview) || (defaultSiteContent.history && defaultSiteContent.history.overview) || {}),
+          ...(historyData?.overview || {})
+        }
+      }
+    }), { isContinuous: true });
+  }, [saveContent]);
+
+  const addHistoryMilestone = useCallback((newMilestone) => {
+    saveContent(prev => {
+      const currentList = prev.history?.milestones || defaultSiteContent.history?.milestones || [];
+      const item = {
+        id: `his-${Date.now()}`,
+        year: 'Year / Era',
+        yearTa: 'ஆண்டு / காலம்',
+        titleEn: 'New Milestone Title',
+        titleTa: 'புதிய மைல்கல் தலைப்பு',
+        descEn: '',
+        descTa: '',
+        quoteEn: '',
+        quoteTa: '',
+        image: '/assets/his1.jpg',
+        imageAlt: 'Milestone',
+        ...newMilestone
+      };
+      return {
+        ...prev,
+        history: {
+          ...(prev.history || defaultSiteContent.history || {}),
+          milestones: [...currentList, item]
+        }
+      };
+    }, { isContinuous: false });
+  }, [saveContent]);
+
+  const updateHistoryMilestone = useCallback((index, updatedData) => {
+    saveContent(prev => {
+      const currentList = [...(prev.history?.milestones || defaultSiteContent.history?.milestones || [])];
+      if (currentList[index]) {
+        currentList[index] = { ...currentList[index], ...updatedData };
+      }
+      return {
+        ...prev,
+        history: {
+          ...(prev.history || defaultSiteContent.history || {}),
+          milestones: currentList
+        }
+      };
+    }, { isContinuous: true });
+  }, [saveContent]);
+
+  const deleteHistoryMilestone = useCallback((index) => {
+    saveContent(prev => {
+      const currentList = (prev.history?.milestones || defaultSiteContent.history?.milestones || []).filter((_, idx) => idx !== index);
+      return {
+        ...prev,
+        history: {
+          ...(prev.history || defaultSiteContent.history || {}),
+          milestones: currentList
+        }
+      };
+    }, { isContinuous: false });
+  }, [saveContent]);
+
+  const moveHistoryMilestone = useCallback((index, direction) => {
+    saveContent(prev => {
+      const currentList = [...(prev.history?.milestones || defaultSiteContent.history?.milestones || [])];
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= currentList.length) return prev;
+      const temp = currentList[index];
+      currentList[index] = currentList[targetIndex];
+      currentList[targetIndex] = temp;
+      return {
+        ...prev,
+        history: {
+          ...(prev.history || defaultSiteContent.history || {}),
+          milestones: currentList
+        }
+      };
+    }, { isContinuous: false });
+  }, [saveContent]);
+
+  const updateLeadershipList = useCallback((category, list) => {
+    saveContent(prev => ({
+      ...prev,
+      history: {
+        ...(prev.history || defaultSiteContent.history || {}),
+        [category]: list
+      }
+    }), { isContinuous: false });
+  }, [saveContent]);
+
   const addGalleryImage = useCallback((newImg) => {
     saveContent(prev => {
       if (Array.isArray(newImg)) {
@@ -452,6 +567,12 @@ export function SiteContentProvider({ children }) {
     deleteEvent,
     updateEvent,
     updateContact,
+    updateHistory,
+    addHistoryMilestone,
+    updateHistoryMilestone,
+    deleteHistoryMilestone,
+    moveHistoryMilestone,
+    updateLeadershipList,
     resetToDefaults,
     exportJson,
     importJson

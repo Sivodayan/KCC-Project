@@ -68,6 +68,12 @@ export default function AdminPage() {
     deleteEvent,
     updateEvent,
     updateContact,
+    updateHistory,
+    addHistoryMilestone,
+    updateHistoryMilestone,
+    deleteHistoryMilestone,
+    moveHistoryMilestone,
+    updateLeadershipList,
     resetToDefaults,
     exportJson,
     importJson
@@ -157,6 +163,24 @@ export default function AdminPage() {
   const [newEventHeight, setNewEventHeight] = useState(645);
   const parsedNewEvent = parseFacebookInput(newEventInput);
 
+  // History Section States
+  const [historySubTab, setHistorySubTab] = useState('milestones'); // 'milestones' | 'overview' | 'leadership'
+  const [isAddMilestoneOpen, setIsAddMilestoneOpen] = useState(false);
+  const [newMilestone, setNewMilestone] = useState({
+    year: '',
+    yearTa: '',
+    titleEn: '',
+    titleTa: '',
+    descEn: '',
+    descTa: '',
+    quoteEn: '',
+    quoteTa: '',
+    image: '/assets/his1.jpg',
+    imageAlt: ''
+  });
+  const [newHeadmaster, setNewHeadmaster] = useState({ period: '', name: '' });
+  const [newManager, setNewManager] = useState({ period: '', name: '' });
+  const [expandedMilestones, setExpandedMilestones] = useState({});
 
   // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
@@ -1056,6 +1080,17 @@ export default function AdminPage() {
                 )
               },
               {
+                id: 'history',
+                label: 'History',
+                fullLabel: 'History & Heritage',
+                badge: (content.history?.milestones?.length || 12),
+                icon: (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                )
+              },
+              {
                 id: 'gallery',
                 label: 'Gallery',
                 fullLabel: 'Photo Gallery',
@@ -1326,6 +1361,813 @@ export default function AdminPage() {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {/* HISTORY & HERITAGE */}
+        {activeTab === 'history' && (
+          <div className="space-y-6">
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-bold text-brand-forest">
+                      History &amp; Archival Heritage
+                    </h2>
+                    <span className="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-brand-light text-brand-forest border border-brand-pale">
+                      {(content.history?.milestones?.length || 0)} Milestones
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mt-1">
+                    Manage historical treatises, chronological milestones, archival photographs (1849–present), and leadership lineages for the <span className="font-mono text-brand-forest font-semibold">/history</span> portal.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 self-start sm:self-auto shrink-0">
+                  <a
+                    href="/history"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-brand-light border border-brand-pale hover:bg-brand-pale/70 text-brand-forest text-xs font-bold transition shadow-2xs"
+                  >
+                    <span>View /history Page</span>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                  {historySubTab === 'milestones' && (
+                    <button
+                      type="button"
+                      onClick={() => setIsAddMilestoneOpen(true)}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-2xs cursor-pointer"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                      </svg>
+                      <span>Add Milestone</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Sub-Tab Navigation Bar */}
+              <div className="flex flex-wrap items-center gap-2 border-b border-brand-pale pb-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setHistorySubTab('milestones')}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+                    historySubTab === 'milestones'
+                      ? 'bg-brand-forest text-white shadow-2xs'
+                      : 'bg-brand-light text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
+                >
+                  Chronological Milestones ({(content.history?.milestones?.length || 0)})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistorySubTab('overview')}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+                    historySubTab === 'overview'
+                      ? 'bg-brand-forest text-white shadow-2xs'
+                      : 'bg-brand-light text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
+                >
+                  Treatise Overview &amp; Authors
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHistorySubTab('leadership')}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition cursor-pointer ${
+                    historySubTab === 'leadership'
+                      ? 'bg-brand-forest text-white shadow-2xs'
+                      : 'bg-brand-light text-slate-600 hover:text-brand-forest hover:bg-brand-pale/60'
+                  }`}
+                >
+                  Leadership Directory ({((content.history?.headmasters?.length || 0) + (content.history?.managers?.length || 0))})
+                </button>
+              </div>
+
+              {/* SUBTAB 1: CHRONOLOGICAL MILESTONES */}
+              {historySubTab === 'milestones' && (
+                <div className="mt-6 space-y-4">
+                  <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
+                    <span>
+                      Showing {content.history?.milestones?.length || 0} chronological milestones. You can reorder, edit bilingual narratives, quotes, and archival photos.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddMilestoneOpen(true)}
+                      className="text-brand-forest hover:underline font-bold inline-flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>+ New Milestone</span>
+                    </button>
+                  </div>
+
+                  {(!content.history?.milestones || content.history.milestones.length === 0) ? (
+                    <div className="p-8 text-center bg-brand-light/20 border border-brand-pale rounded-2xl">
+                      <p className="text-sm font-semibold text-slate-600">No milestones currently recorded.</p>
+                      <button
+                        type="button"
+                        onClick={() => setIsAddMilestoneOpen(true)}
+                        className="mt-3 px-4 py-2 rounded-full bg-brand-forest text-white text-xs font-bold cursor-pointer"
+                      >
+                        Add First Milestone
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {content.history.milestones.map((m, idx) => {
+                        const isExpanded = expandedMilestones[m.id || idx] !== false;
+                        return (
+                          <div
+                            key={m.id || idx}
+                            className="bg-brand-white border border-brand-pale hover:border-brand-soft/70 rounded-2xl p-4 sm:p-5 transition shadow-2xs space-y-4"
+                          >
+                            {/* Card Header Bar */}
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-brand-pale/60">
+                              <div className="flex items-center gap-2.5">
+                                <span className="w-6 h-6 rounded-full bg-brand-forest text-white text-xs font-bold flex items-center justify-center shrink-0">
+                                  {idx + 1}
+                                </span>
+                                <span className="px-2.5 py-0.5 rounded-full bg-brand-light border border-brand-pale text-brand-forest font-bold text-xs font-mono">
+                                  {m.year || m.yearTa || 'Era'}
+                                </span>
+                                <h3 className="font-bold text-sm text-slate-900 truncate">
+                                  {m.titleEn || m.titleTa || 'Untitled Milestone'}
+                                </h3>
+                              </div>
+
+                              <div className="flex items-center gap-1.5 self-end sm:self-auto shrink-0">
+                                <button
+                                  type="button"
+                                  disabled={idx === 0}
+                                  onClick={() => moveHistoryMilestone(idx, -1)}
+                                  className={`p-1.5 rounded-lg border text-slate-600 hover:text-brand-forest transition ${
+                                    idx === 0 ? 'opacity-30 cursor-not-allowed border-slate-200' : 'cursor-pointer hover:bg-brand-light border-brand-pale'
+                                  }`}
+                                  title="Move Earlier in Timeline"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 15l7-7 7 7" />
+                                  </svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  disabled={idx === (content.history.milestones.length - 1)}
+                                  onClick={() => moveHistoryMilestone(idx, 1)}
+                                  className={`p-1.5 rounded-lg border text-slate-600 hover:text-brand-forest transition ${
+                                    idx === (content.history.milestones.length - 1) ? 'opacity-30 cursor-not-allowed border-slate-200' : 'cursor-pointer hover:bg-brand-light border-brand-pale'
+                                  }`}
+                                  title="Move Later in Timeline"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setExpandedMilestones(prev => ({
+                                      ...prev,
+                                      [m.id || idx]: !isExpanded
+                                    }));
+                                  }}
+                                  className="p-1.5 rounded-lg border border-brand-pale hover:bg-brand-light text-slate-600 text-xs font-semibold cursor-pointer"
+                                  title={isExpanded ? 'Collapse' : 'Expand'}
+                                >
+                                  {isExpanded ? (
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                  ) : (
+                                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                  )}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm(`Delete milestone "${m.titleEn || m.titleTa}"?`)) {
+                                      deleteHistoryMilestone(idx);
+                                      showToast('Milestone removed', 'info');
+                                    }
+                                  }}
+                                  className="p-1.5 rounded-lg border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-700 transition cursor-pointer"
+                                  title="Delete Milestone"
+                                >
+                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
+
+                            {/* Collapsible Content */}
+                            {isExpanded && (
+                              <div className="space-y-4 pt-1">
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                  {/* Left: Archival Photo & Path */}
+                                  <div className="md:col-span-4 space-y-3 bg-brand-light/30 border border-brand-pale rounded-xl p-3">
+                                    <span className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Archival Photograph</span>
+                                    {m.image ? (
+                                      <div className="relative rounded-lg overflow-hidden bg-brand-pale/40 border border-brand-pale aspect-video flex items-center justify-center">
+                                        <GlassImage
+                                          src={m.image}
+                                          alt={m.imageAlt || m.titleEn}
+                                          containerClassName="w-full h-full flex items-center justify-center"
+                                          className="w-full h-full object-contain mx-auto"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <div className="rounded-lg bg-slate-100 text-slate-400 aspect-video flex items-center justify-center text-xs">
+                                        No Image Assigned
+                                      </div>
+                                    )}
+
+                                    <div>
+                                      <label className="block text-[10px] font-semibold text-slate-600 mb-1">Image Path / URL</label>
+                                      <input
+                                        type="text"
+                                        value={m.image || ''}
+                                        onChange={(e) => updateHistoryMilestone(idx, { image: e.target.value })}
+                                        placeholder="/assets/his1.jpg"
+                                        className="w-full px-2.5 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono focus:outline-none focus:border-brand-forest"
+                                      />
+                                    </div>
+
+                                    <div>
+                                      <span className="block text-[10px] font-semibold text-slate-500 mb-1.5">Quick Archival Presets:</span>
+                                      <div className="flex flex-wrap gap-1">
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                                          <button
+                                            key={n}
+                                            type="button"
+                                            onClick={() => updateHistoryMilestone(idx, { image: `/assets/his${n}.jpg` })}
+                                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition cursor-pointer ${
+                                              m.image === `/assets/his${n}.jpg`
+                                                ? 'bg-brand-forest text-white'
+                                                : 'bg-white border border-brand-pale text-slate-600 hover:bg-brand-light'
+                                            }`}
+                                          >
+                                            his{n}
+                                          </button>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
+
+                                  {/* Right: Bilingual Year, Titles, Narratives & Quotes */}
+                                  <div className="md:col-span-8 space-y-3.5">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">Era / Year (English)</label>
+                                        <input
+                                          type="text"
+                                          value={m.year || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { year: e.target.value })}
+                                          placeholder="e.g. 1849–1850"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">காலம் / ஆண்டு (Tamil)</label>
+                                        <input
+                                          type="text"
+                                          value={m.yearTa || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { yearTa: e.target.value })}
+                                          placeholder="எ.கா. 1849–1850"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold font-tamil focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">Title (English)</label>
+                                        <input
+                                          type="text"
+                                          value={m.titleEn || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { titleEn: e.target.value })}
+                                          placeholder="Milestone title in English"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">தலைப்பு (Tamil)</label>
+                                        <input
+                                          type="text"
+                                          value={m.titleTa || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { titleTa: e.target.value })}
+                                          placeholder="மைல்கல் தலைப்பு (தமிழ்)"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-bold font-tamil focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">Narrative Description (English)</label>
+                                        <textarea
+                                          rows={4}
+                                          value={m.descEn || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { descEn: e.target.value })}
+                                          placeholder="Historical account in English..."
+                                          className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs leading-relaxed focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-[11px] font-semibold text-slate-700 mb-1">வரலாற்றுக் குறிப்பு (Tamil)</label>
+                                        <textarea
+                                          rows={4}
+                                          value={m.descTa || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { descTa: e.target.value })}
+                                          placeholder="வரலாற்றுக் குறிப்பு (தமிழ்)..."
+                                          className="w-full px-3 py-2 rounded-lg bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil leading-relaxed focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                                      <div>
+                                        <label className="block text-[10px] font-semibold text-slate-500 mb-1">Archival Quote / Excerpt (English - Optional)</label>
+                                        <textarea
+                                          rows={2}
+                                          value={m.quoteEn || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { quoteEn: e.target.value })}
+                                          placeholder="“Historical blockquote quote...”"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-light/30 border border-brand-pale text-slate-800 text-xs italic focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                      <div>
+                                        <label className="block text-[10px] font-semibold text-slate-500 mb-1">ஆவண மேற்கோள் (Tamil - விருப்பத்தேர்வு)</label>
+                                        <textarea
+                                          rows={2}
+                                          value={m.quoteTa || ''}
+                                          onChange={(e) => updateHistoryMilestone(idx, { quoteTa: e.target.value })}
+                                          placeholder="“வரலாற்று ஆவண மேற்கோள்...”"
+                                          className="w-full px-3 py-1.5 rounded-lg bg-brand-light/30 border border-brand-pale text-slate-800 text-xs font-tamil italic focus:outline-none focus:border-brand-forest"
+                                        />
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* SUBTAB 2: TREATISE OVERVIEW & AUTHORS */}
+              {historySubTab === 'overview' && (
+                <div className="mt-6 space-y-6 max-w-4xl">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">Treatise Title (English)</label>
+                      <input
+                        type="text"
+                        value={content.history?.overview?.titleEn || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, titleEn: e.target.value } })}
+                        placeholder="CMS English School & Today’s Christian College"
+                        className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">Treatise Title (Tamil)</label>
+                      <input
+                        type="text"
+                        value={content.history?.overview?.titleTa || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, titleTa: e.target.value } })}
+                        placeholder="CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்"
+                        className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-tamil focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">Compiled By / Authors (English)</label>
+                      <input
+                        type="text"
+                        value={content.history?.overview?.authorsEn || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, authorsEn: e.target.value } })}
+                        placeholder="Rev. J. S. Ratnathikkam & Rev. A. M. Nathaniel"
+                        className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">ஆசிரியர்கள் / தொகுப்பாளர்கள் (Tamil)</label>
+                      <input
+                        type="text"
+                        value={content.history?.overview?.authorsTa || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, authorsTa: e.target.value } })}
+                        placeholder="வண. J. S. இரட்ணாதிக்கம் & வண. A. M. நத்தானியல்"
+                        className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-tamil focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">Lead / Brief Summary (English)</label>
+                      <textarea
+                        rows={2}
+                        value={content.history?.overview?.leadEn || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, leadEn: e.target.value } })}
+                        placeholder="An archival chronology tracing foundational origins..."
+                        className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs leading-relaxed focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+
+                    <div className="md:col-span-2">
+                      <label className="block text-xs font-semibold text-slate-700 mb-1.5">அறிமுக உரை (Tamil)</label>
+                      <textarea
+                        rows={2}
+                        value={content.history?.overview?.leadTa || ''}
+                        onChange={(e) => updateHistory({ overview: { ...content.history?.overview, leadTa: e.target.value } })}
+                        placeholder="1849 முதல் இன்றைய கல்லூரி வரையிலான வரலாற்றுத் தடங்களின் ஆவணத் தொகுப்பு..."
+                        className="w-full px-3.5 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil leading-relaxed focus:outline-none focus:border-brand-forest"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Header Banner Preview */}
+                  <div className="pt-4 border-t border-brand-pale">
+                    <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Portal Header Preview</span>
+                    <div className="bg-brand-light/50 border border-brand-pale rounded-2xl p-6 text-center space-y-2">
+                      <h4 className="text-xl font-bold text-brand-forest">{content.history?.overview?.titleEn || 'CMS English School'}</h4>
+                      <h5 className="text-base font-bold text-brand-forest font-tamil">{content.history?.overview?.titleTa || 'CMS ஆங்கிலப் பாடசாலை'}</h5>
+                      <p className="text-xs text-slate-600 font-medium">
+                        Compiled by: <span className="font-bold text-slate-800">{content.history?.overview?.authorsEn}</span>
+                      </p>
+                      {content.history?.overview?.leadEn && (
+                        <p className="text-xs text-slate-600 max-w-xl mx-auto italic pt-1">{content.history.overview.leadEn}</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* SUBTAB 3: LEADERSHIP DIRECTORY */}
+              {historySubTab === 'leadership' && (
+                <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {/* Headmasters Card */}
+                  <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-4 sm:p-6 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-brand-pale">
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-lg bg-brand-forest text-white text-xs font-bold flex items-center justify-center">
+                          HM
+                        </span>
+                        <div>
+                          <h3 className="font-bold text-sm text-brand-forest">Headmasters (தலைமையாசிரியர்கள்)</h3>
+                          <span className="text-[11px] text-slate-500">{(content.history?.headmasters?.length || 0)} Recorded</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Add Headmaster Row */}
+                    <div className="p-3 bg-brand-white border border-brand-pale rounded-xl space-y-2">
+                      <span className="block text-[11px] font-bold text-slate-700">Add New Headmaster</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                        <input
+                          type="text"
+                          value={newHeadmaster.period}
+                          onChange={(e) => setNewHeadmaster(prev => ({ ...prev, period: e.target.value }))}
+                          placeholder="Period (e.g. 1944–1948)"
+                          className="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-brand-pale text-xs"
+                        />
+                        <input
+                          type="text"
+                          value={newHeadmaster.name}
+                          onChange={(e) => setNewHeadmaster(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Full Name"
+                          className="sm:col-span-3 px-2.5 py-1.5 rounded-lg border border-brand-pale text-xs font-medium"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={!newHeadmaster.period.trim() || !newHeadmaster.name.trim()}
+                        onClick={() => {
+                          if (newHeadmaster.period.trim() && newHeadmaster.name.trim()) {
+                            const updated = [
+                              ...(content.history?.headmasters || []),
+                              { id: `hm-${Date.now()}`, period: newHeadmaster.period.trim(), name: newHeadmaster.name.trim() }
+                            ];
+                            updateLeadershipList('headmasters', updated);
+                            setNewHeadmaster({ period: '', name: '' });
+                            showToast('Headmaster added', 'success');
+                          }
+                        }}
+                        className="w-full py-1.5 rounded-lg bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer text-center"
+                      >
+                        + Add Headmaster
+                      </button>
+                    </div>
+
+                    {/* Headmasters List */}
+                    <div className="divide-y divide-brand-pale/70 max-h-[380px] overflow-y-auto pr-1">
+                      {(content.history?.headmasters || []).map((hm, idx) => (
+                        <div key={hm.id || idx} className="py-2.5 flex items-center justify-between gap-2">
+                          <input
+                            type="text"
+                            value={hm.period}
+                            onChange={(e) => {
+                              const updated = [...(content.history?.headmasters || [])];
+                              updated[idx] = { ...updated[idx], period: e.target.value };
+                              updateLeadershipList('headmasters', updated);
+                            }}
+                            className="w-24 sm:w-28 px-2 py-1 rounded bg-brand-white border border-brand-pale text-xs font-bold text-brand-forest shrink-0"
+                          />
+                          <input
+                            type="text"
+                            value={hm.name}
+                            onChange={(e) => {
+                              const updated = [...(content.history?.headmasters || [])];
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                              updateLeadershipList('headmasters', updated);
+                            }}
+                            className="flex-1 px-2 py-1 rounded bg-brand-white border border-brand-pale text-xs font-medium text-slate-800"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = (content.history?.headmasters || []).filter((_, i) => i !== idx);
+                              updateLeadershipList('headmasters', updated);
+                              showToast('Record removed', 'info');
+                            }}
+                            className="p-1 rounded text-rose-500 hover:bg-rose-100 transition cursor-pointer shrink-0"
+                            title="Delete"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Managers Card */}
+                  <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-4 sm:p-6 space-y-4">
+                    <div className="flex items-center justify-between pb-2 border-b border-brand-pale">
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 h-7 rounded-lg bg-brand-forest text-white text-xs font-bold flex items-center justify-center">
+                          M
+                        </span>
+                        <div>
+                          <h3 className="font-bold text-sm text-brand-forest">Managers (முகாமையாளர்கள்)</h3>
+                          <span className="text-[11px] text-slate-500">{(content.history?.managers?.length || 0)} Recorded</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Add Manager Row */}
+                    <div className="p-3 bg-brand-white border border-brand-pale rounded-xl space-y-2">
+                      <span className="block text-[11px] font-bold text-slate-700">Add New Manager</span>
+                      <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
+                        <input
+                          type="text"
+                          value={newManager.period}
+                          onChange={(e) => setNewManager(prev => ({ ...prev, period: e.target.value }))}
+                          placeholder="Period (e.g. 1960–1965)"
+                          className="sm:col-span-2 px-2.5 py-1.5 rounded-lg border border-brand-pale text-xs"
+                        />
+                        <input
+                          type="text"
+                          value={newManager.name}
+                          onChange={(e) => setNewManager(prev => ({ ...prev, name: e.target.value }))}
+                          placeholder="Full Name"
+                          className="sm:col-span-3 px-2.5 py-1.5 rounded-lg border border-brand-pale text-xs font-medium"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        disabled={!newManager.period.trim() || !newManager.name.trim()}
+                        onClick={() => {
+                          if (newManager.period.trim() && newManager.name.trim()) {
+                            const updated = [
+                              ...(content.history?.managers || []),
+                              { id: `m-${Date.now()}`, period: newManager.period.trim(), name: newManager.name.trim() }
+                            ];
+                            updateLeadershipList('managers', updated);
+                            setNewManager({ period: '', name: '' });
+                            showToast('Manager added', 'success');
+                          }
+                        }}
+                        className="w-full py-1.5 rounded-lg bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer text-center"
+                      >
+                        + Add Manager
+                      </button>
+                    </div>
+
+                    {/* Managers List */}
+                    <div className="divide-y divide-brand-pale/70 max-h-[380px] overflow-y-auto pr-1">
+                      {(content.history?.managers || []).map((mgr, idx) => (
+                        <div key={mgr.id || idx} className="py-2.5 flex items-center justify-between gap-2">
+                          <input
+                            type="text"
+                            value={mgr.period}
+                            onChange={(e) => {
+                              const updated = [...(content.history?.managers || [])];
+                              updated[idx] = { ...updated[idx], period: e.target.value };
+                              updateLeadershipList('managers', updated);
+                            }}
+                            className="w-24 sm:w-28 px-2 py-1 rounded bg-brand-white border border-brand-pale text-xs font-bold text-brand-forest shrink-0"
+                          />
+                          <input
+                            type="text"
+                            value={mgr.name}
+                            onChange={(e) => {
+                              const updated = [...(content.history?.managers || [])];
+                              updated[idx] = { ...updated[idx], name: e.target.value };
+                              updateLeadershipList('managers', updated);
+                            }}
+                            className="flex-1 px-2 py-1 rounded bg-brand-white border border-brand-pale text-xs font-medium text-slate-800"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = (content.history?.managers || []).filter((_, i) => i !== idx);
+                              updateLeadershipList('managers', updated);
+                              showToast('Record removed', 'info');
+                            }}
+                            className="p-1 rounded text-rose-500 hover:bg-rose-100 transition cursor-pointer shrink-0"
+                            title="Delete"
+                          >
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ADD MILESTONE MODAL */}
+            {isAddMilestoneOpen && (
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-auto animate-modal-content">
+                  <div className="shrink-0 bg-brand-forest px-4 sm:px-6 py-3 sm:py-4 text-white flex items-center justify-between">
+                    <div>
+                      <h3 className="font-bold text-sm sm:text-base text-white">Add Historical Milestone</h3>
+                      <p className="text-[11px] text-brand-light/90">Add a new chronological era to the college history archive</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAddMilestoneOpen(false)}
+                      className="text-white/80 hover:text-white p-1 rounded-lg cursor-pointer"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <form
+                    onSubmit={(e) => {
+                      e.preventDefault();
+                      if (!newMilestone.titleEn.trim() && !newMilestone.titleTa.trim()) {
+                        showToast('Please enter a milestone title', 'error');
+                        return;
+                      }
+                      addHistoryMilestone(newMilestone);
+                      setIsAddMilestoneOpen(false);
+                      setNewMilestone({
+                        year: '',
+                        yearTa: '',
+                        titleEn: '',
+                        titleTa: '',
+                        descEn: '',
+                        descTa: '',
+                        quoteEn: '',
+                        quoteTa: '',
+                        image: '/assets/his1.jpg',
+                        imageAlt: ''
+                      });
+                      showToast('Historical milestone added!', 'success');
+                    }}
+                    className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Era / Year (English)</label>
+                        <input
+                          type="text"
+                          value={newMilestone.year}
+                          onChange={(e) => setNewMilestone(prev => ({ ...prev, year: e.target.value }))}
+                          placeholder="e.g. 1950–1960"
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">காலம் / ஆண்டு (Tamil)</label>
+                        <input
+                          type="text"
+                          value={newMilestone.yearTa}
+                          onChange={(e) => setNewMilestone(prev => ({ ...prev, yearTa: e.target.value }))}
+                          placeholder="எ.கா. 1950–1960"
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-bold font-tamil"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">Title (English) *</label>
+                        <input
+                          type="text"
+                          required
+                          value={newMilestone.titleEn}
+                          onChange={(e) => setNewMilestone(prev => ({ ...prev, titleEn: e.target.value }))}
+                          placeholder="e.g. Science Laboratory Expansion"
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-bold"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-slate-700 mb-1">தலைப்பு (Tamil)</label>
+                        <input
+                          type="text"
+                          value={newMilestone.titleTa}
+                          onChange={(e) => setNewMilestone(prev => ({ ...prev, titleTa: e.target.value }))}
+                          placeholder="எ.கா. விஞ்ஞானகூட விஸ்தரிப்பு"
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-bold font-tamil"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Archival Image Path</label>
+                      <input
+                        type="text"
+                        value={newMilestone.image}
+                        onChange={(e) => setNewMilestone(prev => ({ ...prev, image: e.target.value }))}
+                        placeholder="/assets/his1.jpg"
+                        className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-mono"
+                      />
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                          <button
+                            key={n}
+                            type="button"
+                            onClick={() => setNewMilestone(prev => ({ ...prev, image: `/assets/his${n}.jpg` }))}
+                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition cursor-pointer ${
+                              newMilestone.image === `/assets/his${n}.jpg`
+                                ? 'bg-brand-forest text-white'
+                                : 'bg-brand-light border border-brand-pale text-slate-600'
+                            }`}
+                          >
+                            his{n}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">Narrative (English)</label>
+                      <textarea
+                        rows={3}
+                        value={newMilestone.descEn}
+                        onChange={(e) => setNewMilestone(prev => ({ ...prev, descEn: e.target.value }))}
+                        placeholder="Historical text in English..."
+                        className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs leading-relaxed"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-1">வரலாற்றுக் குறிப்பு (Tamil)</label>
+                      <textarea
+                        rows={3}
+                        value={newMilestone.descTa}
+                        onChange={(e) => setNewMilestone(prev => ({ ...prev, descTa: e.target.value }))}
+                        placeholder="வரலாற்றுக் குறிப்பு (தமிழ்)..."
+                        className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-tamil leading-relaxed"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-brand-pale">
+                      <button
+                        type="button"
+                        onClick={() => setIsAddMilestoneOpen(false)}
+                        className="px-4 py-2 rounded-full border border-brand-pale text-xs font-semibold text-slate-700 hover:bg-brand-light cursor-pointer"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-5 py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-2xs cursor-pointer"
+                      >
+                        Add Milestone
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -2169,10 +3011,7 @@ export default function AdminPage() {
                     Secured by Firebase Authentication 
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold self-start sm:self-auto">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  Authenticated
-                </span>
+                
               </div>
 
               <div className="max-w-xl bg-brand-light/30 border border-brand-pale rounded-2xl p-3.5 sm:p-5 space-y-2.5 sm:space-y-3 text-xs">
@@ -2521,6 +3360,12 @@ export default function AdminPage() {
                       </span>
                       <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
                         {content.events?.length || 0} School Events
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        {content.history?.milestones?.length || 0} History Milestones
+                      </span>
+                      <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
+                        {((content.history?.headmasters?.length || 0) + (content.history?.managers?.length || 0))} Leadership Records
                       </span>
                       <span className="px-2 py-0.5 rounded-md bg-brand-white border border-brand-pale font-medium text-slate-700">
                         8 Key Metrics
