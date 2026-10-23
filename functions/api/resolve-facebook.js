@@ -25,6 +25,21 @@ function cleanFacebookUrl(rawUrl) {
   }
 }
 
+/**
+ * Handle OPTIONS for preflight requests
+ */
+export async function onRequestOptions() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type',
+      'Access-Control-Max-Age': '86400'
+    }
+  });
+}
+
 export async function onRequestGet(context) {
   const urlParam = new URL(context.request.url).searchParams.get('url');
   if (!urlParam || !urlParam.trim()) {

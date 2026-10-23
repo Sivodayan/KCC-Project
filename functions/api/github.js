@@ -26,6 +26,26 @@ function utf8ToBase64(str) {
 }
 
 /**
+ * Extracts and sanitizes the GitHub token from Cloudflare environment or runtime.
+ * Supports multiple casing variations for resilience.
+ *
+ * @param {Object} context - Cloudflare Pages Function context
+ * @returns {string} Clean token or empty string
+ */
+function getSecretToken(context) {
+  const env = context?.env || context || {};
+  const val = (
+    env.GITHUB_TOKEN ||
+    env.github_token ||
+    env.GH_TOKEN ||
+    env.VITE_GITHUB_TOKEN ||
+    (typeof process !== 'undefined' && process.env?.GITHUB_TOKEN) ||
+    ''
+  );
+  return typeof val === 'string' ? val.trim() : '';
+}
+
+/**
  * Handle OPTIONS for preflight requests
  */
 export async function onRequestOptions() {
@@ -44,18 +64,22 @@ export async function onRequestOptions() {
  * Handle GET to check if GitHub publishing is configured server-side
  */
 export async function onRequestGet(context) {
-  const isConfigured = Boolean(context.env?.GITHUB_TOKEN && context.env.GITHUB_TOKEN.trim());
+  const token = getSecretToken(context);
+  const isConfigured = Boolean(token);
   return new Response(
     JSON.stringify({
       configured: isConfigured,
       targetRepo: 'Sivodayan/KCC-Project',
-      branch: 'main'
+      branch: 'main',
+      hasToken: isConfigured,
+      checkedAt: new Date().toISOString()
     }),
     {
       status: 200,
       headers: {
         'Content-Type': 'application/json',
-        'Cache-Control': 'no-store'
+        'Cache-Control': 'no-store, no-cache, must-revalidate',
+        'Access-Control-Allow-Origin': '*'
       }
     }
   );
@@ -65,15 +89,18 @@ export async function onRequestGet(context) {
  * Handle POST to perform atomic Git commit
  */
 export async function onRequestPost(context) {
-  const token = context.env?.GITHUB_TOKEN?.trim();
+  const token = getSecretToken(context);
   if (!token) {
     return new Response(
       JSON.stringify({
-        error: 'Cloudflare Pages secret GITHUB_TOKEN is not configured in project settings.'
+        error: 'Cloudflare Pages secret GITHUB_TOKEN is not configured or not yet active in this deployment. Please redeploy in Cloudflare dashboard.'
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }
@@ -86,7 +113,10 @@ export async function onRequestPost(context) {
       JSON.stringify({ error: 'Invalid JSON request body.' }),
       {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }
@@ -105,7 +135,10 @@ export async function onRequestPost(context) {
       JSON.stringify({ error: 'Missing required field: contentString.' }),
       {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }
@@ -116,7 +149,10 @@ export async function onRequestPost(context) {
       JSON.stringify({ error: 'Unauthorized repository target.' }),
       {
         status: 403,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }
@@ -126,7 +162,10 @@ export async function onRequestPost(context) {
       JSON.stringify({ error: 'Unauthorized path. Commits are restricted to src/data/.' }),
       {
         status: 403,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }
@@ -155,12 +194,24 @@ export async function onRequestPost(context) {
       if (getRes.status === 401) {
         return new Response(
           JSON.stringify({ error: 'GitHub authentication failed: Provided GITHUB_TOKEN is invalid or expired.' }),
-          { status: 401, headers: { 'Content-Type': 'application/json' } }
+          {
+            status: 401,
+            headers: {
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
+            }
+          }
         );
       }
       return new Response(
         JSON.stringify({ error: err.message || `Failed to fetch file metadata from GitHub (${getRes.status})` }),
-        { status: getRes.status, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: getRes.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
 
@@ -201,7 +252,13 @@ export async function onRequestPost(context) {
       }
       return new Response(
         JSON.stringify({ error: errMsg }),
-        { status: putRes.status, headers: { 'Content-Type': 'application/json' } }
+        {
+          status: putRes.status,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        }
       );
     }
 
@@ -221,7 +278,10 @@ export async function onRequestPost(context) {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   } catch (error) {
@@ -229,7 +289,10 @@ export async function onRequestPost(context) {
       JSON.stringify({ error: error.message || 'Internal error processing GitHub commit.' }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
       }
     );
   }

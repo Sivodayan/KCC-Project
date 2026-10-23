@@ -149,21 +149,55 @@ export async function fetchFileFromGitHub({ owner, repo, path, branch = 'main', 
 /**
  * Checks if the Cloudflare Pages Function /api/github proxy is available and configured.
  *
- * @returns {Promise<boolean>}
+ * @returns {Promise<{ready: boolean, isProxyActive: boolean, configured: boolean, reason?: string}>}
  */
 export async function checkGitHubProxyStatus() {
   try {
-    const res = await fetch('/api/github', { method: 'GET' });
-    const isJson = res.headers.get('content-type')?.includes('application/json');
+    const res = await fetch('/api/github', {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      cache: 'no-store'
+    });
+    const contentType = res.headers.get('content-type') || '';
+    const isJson = contentType.includes('application/json');
+
     if (res.ok && isJson) {
       const data = await res.json().catch(() => ({}));
-      return Boolean(data?.configured);
+      const configured = Boolean(data?.configured || data?.hasToken);
+      return {
+        ready: configured,
+        isProxyActive: true,
+        configured,
+        raw: data
+      };
     }
-    return false;
-  } catch {
-    return false;
+
+    if (isJson) {
+      const data = await res.json().catch(() => ({}));
+      return {
+        ready: false,
+        isProxyActive: true,
+        configured: false,
+        reason: data?.error || `HTTP ${res.status}`
+      };
+    }
+
+    return {
+      ready: false,
+      isProxyActive: false,
+      configured: false,
+      reason: 'Server returned HTML instead of JSON (/api/github Function not active yet)'
+    };
+  } catch (err) {
+    return {
+      ready: false,
+      isProxyActive: false,
+      configured: false,
+      reason: err.message || 'Network error reaching /api/github'
+    };
   }
 }
+
 
 /**
  * Commits updated file content to a branch.

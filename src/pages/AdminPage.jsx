@@ -313,12 +313,53 @@ export default function AdminPage() {
   const [commitResult, setCommitResult] = useState(null);
   const [commitError, setCommitError] = useState('');
   const [isServerProxyReady, setIsServerProxyReady] = useState(true);
+  const [proxyDetails, setProxyDetails] = useState({ ready: true, isChecking: true, isProxyActive: false, configured: false, reason: '' });
+  const [sessionTokenInput, setSessionTokenInput] = useState('');
+  const [showSessionTokenFallback, setShowSessionTokenFallback] = useState(false);
+  const [sessionTokenSaved, setSessionTokenSaved] = useState(
+    typeof window !== 'undefined' ? Boolean(sessionStorage.getItem(GITHUB_TOKEN_STORAGE_KEY)) : false
+  );
+
+  const checkProxy = useCallback(async () => {
+    setProxyDetails((prev) => ({ ...prev, isChecking: true }));
+    try {
+      const res = await checkGitHubProxyStatus();
+      const ready = typeof res === 'boolean' ? res : Boolean(res?.ready);
+      setIsServerProxyReady(ready);
+      setProxyDetails({
+        ready,
+        isChecking: false,
+        isProxyActive: Boolean(res?.isProxyActive),
+        configured: Boolean(res?.configured),
+        reason: res?.reason || ''
+      });
+      return ready;
+    } catch (e) {
+      setIsServerProxyReady(false);
+      setProxyDetails({ ready: false, isChecking: false, isProxyActive: false, configured: false, reason: e.message || 'Check failed' });
+      return false;
+    }
+  }, []);
 
   useEffect(() => {
-    checkGitHubProxyStatus().then((ready) => {
-      setIsServerProxyReady(ready);
-    });
-  }, []);
+    checkProxy();
+  }, [checkProxy]);
+
+  const handleSaveSessionToken = (e) => {
+    if (e) e.preventDefault();
+    const token = sessionTokenInput.trim();
+    if (!token) return;
+    sessionStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, token);
+    setSessionTokenSaved(true);
+    setSessionTokenInput('');
+    showToast('Temporary session token saved for this tab!', 'success');
+  };
+
+  const handleClearSessionToken = () => {
+    sessionStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
+    setSessionTokenSaved(false);
+    showToast('Temporary session token removed.', 'info');
+  };
 
   const getEffectiveGitHubToken = useCallback(() => {
     return (
@@ -327,7 +368,7 @@ export default function AdminPage() {
       localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) ||
       ''
     ).trim();
-  }, []);
+  }, [sessionTokenSaved]);
 
   // Leave page confirmation when uncommitted changes exist
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
@@ -360,6 +401,7 @@ export default function AdminPage() {
     setCommitResult(null);
     setCommitError('');
     setIsCommitModalOpen(true);
+    checkProxy();
   };
 
   const handleCommitToGitHub = async (e) => {
@@ -4103,14 +4145,105 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {!isServerProxyReady && !getEffectiveGitHubToken() && (
-                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
-                      <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      <span>
-                        <strong>GitHub Secret Missing:</strong> Please configure the encrypted secret <code className="font-mono font-bold">GITHUB_TOKEN</code> in your Cloudflare Pages environment variables.
-                      </span>
+                  {isServerProxyReady ? (
+                    <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                        <span className="font-medium truncate">
+                          Cloudflare Secret <code className="font-mono font-bold">GITHUB_TOKEN</code> Connected &amp; Ready
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={checkProxy}
+                        disabled={proxyDetails.isChecking}
+                        className="text-emerald-700 hover:text-emerald-900 text-[11px] font-semibold underline shrink-0 cursor-pointer"
+                        title="Re-verify Cloudflare Pages proxy"
+                      >
+                        {proxyDetails.isChecking ? 'Checking...' : 'Re-check'}
+                      </button>
+                    </div>
+                  ) : sessionTokenSaved ? (
+                    <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0"></span>
+                        <span className="font-medium truncate">
+                          Temporary session GitHub Token active (stored for this tab only).
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={handleClearSessionToken}
+                        className="text-rose-600 hover:text-rose-800 text-[11px] font-semibold underline shrink-0 cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs space-y-2.5">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="flex items-start gap-2">
+                          <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <div>
+                            <strong className="block font-bold text-amber-900">GitHub Secret Activation Pending</strong>
+                            <p className="text-[11px] text-amber-800 mt-0.5 leading-relaxed">
+                              {proxyDetails.isProxyActive
+                                ? 'Cloudflare Pages server function (/api/github) is active, but secrets configured in Cloudflare require a new deployment to take effect. If you just added GITHUB_TOKEN, trigger a Redeploy in the Cloudflare dashboard.'
+                                : 'Cloudflare Pages Functions are activating with your latest deployment. If GITHUB_TOKEN is added in Cloudflare dashboard, ensure a new deployment/redeploy has run.'}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={checkProxy}
+                          disabled={proxyDetails.isChecking}
+                          className="px-2.5 py-1 rounded-lg bg-amber-100 hover:bg-amber-200 text-amber-900 text-[11px] font-semibold transition shrink-0 cursor-pointer flex items-center gap-1"
+                          title="Re-check proxy status"
+                        >
+                          <svg className={`w-3 h-3 ${proxyDetails.isChecking ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                          <span>{proxyDetails.isChecking ? 'Checking...' : 'Re-check'}</span>
+                        </button>
+                      </div>
+
+                      {/* Temporary Session Token Fallback */}
+                      <div className="pt-2 border-t border-amber-200/80">
+                        <button
+                          type="button"
+                          onClick={() => setShowSessionTokenFallback(!showSessionTokenFallback)}
+                          className="text-[11px] text-amber-900 hover:text-amber-950 font-semibold underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>{showSessionTokenFallback ? '▾ Hide Temporary Session Token input' : '▸ Or publish immediately using a temporary session token'}</span>
+                        </button>
+
+                        {showSessionTokenFallback && (
+                          <div className="mt-2 p-2.5 bg-brand-white rounded-lg border border-amber-200 space-y-2">
+                            <p className="text-[11px] text-slate-600 leading-normal">
+                              Enter a GitHub Personal Access Token to publish right now. Saved only in this tab (<code className="font-mono text-[10px] bg-slate-100 px-1 py-0.5 rounded">sessionStorage</code>) and never committed:
+                            </p>
+                            <div className="flex gap-2">
+                              <input
+                                type="password"
+                                value={sessionTokenInput}
+                                onChange={(e) => setSessionTokenInput(e.target.value)}
+                                placeholder="ghp_..."
+                                className="flex-1 px-2.5 py-1.5 text-xs font-mono rounded-md border border-slate-300 focus:outline-none focus:ring-1 focus:ring-brand-forest bg-white"
+                              />
+                              <button
+                                type="button"
+                                onClick={handleSaveSessionToken}
+                                disabled={!sessionTokenInput.trim()}
+                                className="px-3 py-1.5 bg-brand-forest text-white text-xs font-bold rounded-md hover:bg-brand-forestHover transition cursor-pointer disabled:opacity-50"
+                              >
+                                Use Token
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
 
