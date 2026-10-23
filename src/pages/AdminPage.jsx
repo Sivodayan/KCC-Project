@@ -51,6 +51,8 @@ export default function AdminPage() {
   const {
     content,
     hasLocalOverrides,
+    hasUncommittedChanges,
+    markAsCommitted,
     canUndo,
     canRedo,
     undoCount,
@@ -210,6 +212,74 @@ export default function AdminPage() {
     return () => clearTimeout(timer);
   }, [newEventInput, handleAutoResolveFbUrl, fbResolveNotice.text, fbResolveNotice.type]);
 
+  // Manual Events State & Image Processor
+  const [eventModalTab, setEventModalTab] = useState('manual'); // 'manual' | 'facebook'
+  const [manualEventTitle, setManualEventTitle] = useState('');
+  const [manualEventTitleTa, setManualEventTitleTa] = useState('');
+  const [manualEventDate, setManualEventDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [manualEventCategory, setManualEventCategory] = useState('School Event');
+  const [manualEventLocation, setManualEventLocation] = useState('');
+  const [manualEventDescription, setManualEventDescription] = useState('');
+  const [manualEventDescriptionTa, setManualEventDescriptionTa] = useState('');
+  const [manualEventImage, setManualEventImage] = useState('');
+  const [isProcessingEventPhoto, setIsProcessingEventPhoto] = useState(false);
+  const [eventPhotoError, setEventPhotoError] = useState('');
+  const [eventPhotoCompress, setEventPhotoCompress] = useState(true);
+  const [eventPhotoStats, setEventPhotoStats] = useState(null);
+  const eventPhotoInputRef = useRef(null);
+
+  const handleEventPhotoFile = async (file) => {
+    if (!file) return;
+    try {
+      setIsProcessingEventPhoto(true);
+      setEventPhotoError('');
+      const res = await processImageFile(file, { compress: eventPhotoCompress });
+      setManualEventImage(res.dataUrl);
+      setEventPhotoStats({
+        originalSize: res.originalSize,
+        compressedSize: res.compressedSize,
+        reductionPercent: res.reductionPercent
+      });
+      showToast(`Photo optimized (${formatBytes(res.compressedSize)})!`, 'success');
+    } catch (err) {
+      setEventPhotoError(err.message || 'Failed to process image');
+      showToast(err.message || 'Image processing error', 'error');
+    } finally {
+      setIsProcessingEventPhoto(false);
+    }
+  };
+
+  const handleAddManualEvent = (e) => {
+    if (e) e.preventDefault();
+    if (!manualEventTitle.trim() && !manualEventTitleTa.trim() && !manualEventImage) {
+      showToast('Please provide an event title or photo', 'error');
+      return;
+    }
+    addEvent({
+      type: 'manual',
+      title: manualEventTitle.trim(),
+      titleTa: manualEventTitleTa.trim(),
+      date: manualEventDate || new Date().toISOString().slice(0, 10),
+      category: manualEventCategory.trim() || 'School Event',
+      location: manualEventLocation.trim(),
+      description: manualEventDescription.trim(),
+      descriptionTa: manualEventDescriptionTa.trim(),
+      image: manualEventImage
+    });
+    showToast('Event created successfully', 'success');
+    setManualEventTitle('');
+    setManualEventTitleTa('');
+    setManualEventDate(new Date().toISOString().slice(0, 10));
+    setManualEventCategory('School Event');
+    setManualEventLocation('');
+    setManualEventDescription('');
+    setManualEventDescriptionTa('');
+    setManualEventImage('');
+    setEventPhotoStats(null);
+    setEventPhotoError('');
+    setIsAddEventOpen(false);
+  };
+
 
   // History Section States
   const [historySubTab, setHistorySubTab] = useState('milestones'); // 'milestones' | 'overview' | 'leadership'
@@ -263,7 +333,7 @@ export default function AdminPage() {
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
 
   const handleReturnHome = () => {
-    if (hasLocalOverrides) {
+    if (hasUncommittedChanges) {
       setIsLeaveConfirmOpen(true);
     } else {
       navigate('/');
@@ -272,7 +342,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     const handleBeforeUnload = (e) => {
-      if (hasLocalOverrides) {
+      if (hasUncommittedChanges) {
         e.preventDefault();
         e.returnValue = 'You have uncommitted changes. Are you sure you want to leave?';
         return e.returnValue;
@@ -280,7 +350,7 @@ export default function AdminPage() {
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasLocalOverrides]);
+  }, [hasUncommittedChanges]);
 
   const handleOpenCommitModal = () => {
     commitContinuous();
@@ -317,6 +387,7 @@ export default function AdminPage() {
       });
 
       setCommitResult(result);
+      markAsCommitted(content);
       showToast(`Committed to GitHub! (${result.commitSha})`, 'success');
     } catch (err) {
       console.error('GitHub Commit Error:', err);
@@ -1088,13 +1159,21 @@ export default function AdminPage() {
               <button
                 type="button"
                 onClick={handleOpenCommitModal}
-                className="inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs shrink-0"
-                title="Commit changes directly to GitHub repository (Ctrl+S)"
+                className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-full text-white text-xs font-bold transition active:scale-95 cursor-pointer shadow-2xs shrink-0 ${
+                  hasUncommittedChanges
+                    ? 'bg-amber-600 hover:bg-amber-700 ring-2 ring-amber-400/40 shadow-amber-900/20'
+                    : 'bg-brand-forest hover:bg-brand-forestHover'
+                }`}
+                title={hasUncommittedChanges ? "You have uncommitted changes. Click to commit to GitHub (Ctrl+S)" : "All changes committed to GitHub (Ctrl+S)"}
               >
-                <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                  <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-                </svg>
-                <span>Save<span className="hidden sm:inline"> Changes</span></span>
+                {hasUncommittedChanges ? (
+                  <span className="w-2 h-2 rounded-full bg-amber-200 animate-pulse shrink-0" />
+                ) : (
+                  <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                    <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                  </svg>
+                )}
+                <span>{hasUncommittedChanges ? 'Save Changes *' : 'Save Changes'}</span>
                 <kbd className="hidden lg:inline-block px-1.5 py-0.2 rounded bg-white/20 text-[10px] font-mono font-medium text-white/90">
                   Ctrl+S
                 </kbd>
@@ -2817,20 +2896,37 @@ export default function AdminPage() {
                   </p>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNewEventInput('');
-                    setNewEventHeight(645);
-                    setIsAddEventOpen(true);
-                  }}
-                  className="w-full sm:w-auto justify-center px-4 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-stretch sm:self-auto"
-                >
-                  <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
-                  </svg>
-                  <span> Add Facebook Event</span>
-                </button>
+                <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEventModalTab('manual');
+                      setIsAddEventOpen(true);
+                    }}
+                    className="w-full sm:w-auto justify-center px-4 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-stretch sm:self-auto"
+                  >
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>+ Add Manual Event (Photo &amp; Text)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEventModalTab('facebook');
+                      setNewEventInput('');
+                      setNewEventHeight(645);
+                      setIsAddEventOpen(true);
+                    }}
+                    className="w-full sm:w-auto justify-center px-4 py-2.5 sm:py-2 rounded-full bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold flex items-center gap-1.5 transition cursor-pointer shadow-2xs shrink-0 self-stretch sm:self-auto"
+                  >
+                    <svg className="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                    <span>+ Embed FB Post</span>
+                  </button>
+                </div>
               </div>
 
               {/* Event Cards Grid */}
@@ -2844,21 +2940,34 @@ export default function AdminPage() {
                           <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                         </svg>
                       </div>
-                      <h3 className="text-sm font-bold text-slate-800">No Facebook Events Configured</h3>
+                      <h3 className="text-sm font-bold text-slate-800">No Events Configured Yet</h3>
                       <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
-                        Add posts from the school Facebook page by pasting their URLs to display them as interactive iframes.
+                        Add school event announcements with direct pictures and descriptions, or embed posts from the official Facebook page.
                       </p>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setNewEventInput('');
-                          setNewEventHeight(645);
-                          setIsAddEventOpen(true);
-                        }}
-                        className="mt-4 px-4 py-2 rounded-full bg-brand-forest text-white text-xs font-semibold cursor-pointer shadow-2xs"
-                      >
-                        Add First Event
-                      </button>
+                      <div className="flex items-center justify-center gap-2.5 mt-4 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEventModalTab('manual');
+                            setIsAddEventOpen(true);
+                          }}
+                          className="px-4 py-2 rounded-full bg-brand-forest text-white text-xs font-bold cursor-pointer shadow-2xs"
+                        >
+                          + Add Manual Event
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEventModalTab('facebook');
+                            setNewEventInput('');
+                            setNewEventHeight(645);
+                            setIsAddEventOpen(true);
+                          }}
+                          className="px-4 py-2 rounded-full bg-blue-600 text-white text-xs font-bold cursor-pointer shadow-2xs"
+                        >
+                          + Embed Facebook Post
+                        </button>
+                      </div>
                     </div>
                   );
                 }
@@ -2866,7 +2975,7 @@ export default function AdminPage() {
                 return (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between text-xs text-slate-500 font-medium pb-2 border-b border-brand-pale/60 flex-wrap gap-2">
-                      <span>Active Event Posts ({eventsList.length})</span>
+                      <span>Active Events &amp; Updates ({eventsList.length})</span>
                       <a
                         href="https://www.facebook.com/profile.php?id=61575442051109"
                         target="_blank"
@@ -2881,115 +2990,204 @@ export default function AdminPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                      {eventsList.map((post, idx) => (
-                      <div
-                        key={post.id || idx}
-                        className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
-                      >
-                        {/* Top Bar */}
-                        <div className="flex items-center justify-between gap-2 mb-3">
-                          <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
-                            #{idx + 1}
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <a
-                              href={post.postUrl || '#'}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1 hover:underline p-1 -m-1"
-                              title="View post on Facebook"
-                            >
-                              <span>View Post</span>
-                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                              </svg>
-                            </a>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                if (window.confirm('Remove this Facebook event card?')) {
-                                  deleteEvent(post.id);
-                                  showToast('Event removed', 'success');
-                                }
-                              }}
-                              className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
-                              title="Delete event"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                              </svg>
-                            </button>
-                          </div>
-                        </div>
+                      {eventsList.map((post, idx) => {
+                        const isManual = post.type === 'manual' || (!post.iframeSrc && (post.image || post.title));
 
-                        {/* Live Iframe Scaled Preview Container - Fully Responsive on Mobile */}
-                        <div className="w-full h-[360px] sm:h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
+                        if (isManual) {
+                          return (
+                            <div
+                              key={post.id || idx}
+                              className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
+                            >
+                              <div>
+                                {/* Top Bar */}
+                                <div className="flex items-center justify-between gap-2 mb-3">
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
+                                      #{idx + 1}
+                                    </span>
+                                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
+                                      Manual Post
+                                    </span>
+                                  </div>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
+                                        deleteEvent(post.id);
+                                        showToast('Event removed', 'success');
+                                      }
+                                    }}
+                                    className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                    title="Delete event"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                  </button>
+                                </div>
+
+                                {/* Picture Preview */}
+                                <div className="w-full h-44 rounded-xl overflow-hidden bg-white border border-brand-pale/80 shadow-2xs mb-3 flex items-center justify-center relative">
+                                  {post.image ? (
+                                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <div className="text-center p-3 text-slate-400 text-xs flex flex-col items-center">
+                                      <svg className="w-8 h-8 text-slate-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                      </svg>
+                                      <span>No Photo Attached</span>
+                                    </div>
+                                  )}
+                                  <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
+                                    {post.category || 'School Event'}
+                                  </span>
+                                  {post.date && (
+                                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
+                                      {post.date}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Text Details */}
+                                <div className="space-y-1">
+                                  <h4 className="text-sm font-bold text-slate-800 line-clamp-1">{post.title || 'Untitled Event'}</h4>
+                                  {post.titleTa && (
+                                    <p className="text-xs font-tamil text-brand-forest font-semibold line-clamp-1">{post.titleTa}</p>
+                                  )}
+                                  {post.location && (
+                                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                                      <span>📍</span>
+                                      <span>{post.location}</span>
+                                    </p>
+                                  )}
+                                  {post.description && (
+                                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed mt-1">{post.description}</p>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        }
+
+                        return (
                           <div
-                            className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
-                            style={{
-                              height: `${post.height || 645}px`,
-                              marginBottom: `-${(post.height || 645) * 0.38}px`,
-                            }}
+                            key={post.id || idx}
+                            className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
                           >
-                            <iframe
-                              src={post.iframeSrc}
-                              width={post.width || 500}
-                              height={post.height || 645}
-                              style={{ border: 'none', overflow: 'hidden' }}
-                              scrolling="no"
-                              frameBorder="0"
-                              allowFullScreen={true}
-                              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                              className="w-full h-full rounded-xl"
-                              title={`Facebook Event ${post.id}`}
-                            />
-                          </div>
-                        </div>
+                            {/* Top Bar */}
+                            <div className="flex items-center justify-between gap-2 mb-3">
+                              <div className="flex items-center gap-1.5">
+                                <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
+                                  #{idx + 1}
+                                </span>
+                                <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 text-[10px] font-bold uppercase tracking-wider">
+                                  FB Embed
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <a
+                                  href={post.postUrl || '#'}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1 hover:underline p-1 -m-1"
+                                  title="View post on Facebook"
+                                >
+                                  <span>View Post</span>
+                                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                                  </svg>
+                                </a>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    if (window.confirm('Remove this Facebook event card?')) {
+                                      deleteEvent(post.id);
+                                      showToast('Event removed', 'success');
+                                    }
+                                  }}
+                                  className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                  title="Delete event"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </div>
 
-                        {/* Card Info & Height Settings */}
-                        <div className="mt-3 pt-3 border-t border-brand-pale/60 space-y-2">
-                          <div className="flex items-center justify-between text-[11px]">
-                            <span className="font-semibold text-slate-600">Iframe Height (px):</span>
-                            <div className="flex items-center gap-1">
-                              <input
-                                type="number"
-                                min={300}
-                                max={1200}
-                                step={10}
-                                value={post.height || 645}
-                                onChange={(e) => updateEvent(post.id, { height: Number(e.target.value) || 645 })}
-                                className="w-20 px-2 py-1.5 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
-                              />
-                              <span className="text-slate-400">px</span>
+                            {/* Live Iframe Scaled Preview Container */}
+                            <div className="w-full h-[360px] sm:h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
+                              <div
+                                className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
+                                style={{
+                                  height: `${post.height || 645}px`,
+                                  marginBottom: `-${(post.height || 645) * 0.38}px`,
+                                }}
+                              >
+                                <iframe
+                                  src={post.iframeSrc}
+                                  width={post.width || 500}
+                                  height={post.height || 645}
+                                  style={{ border: 'none', overflow: 'hidden' }}
+                                  scrolling="no"
+                                  frameBorder="0"
+                                  allowFullScreen={true}
+                                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                  className="w-full h-full rounded-xl"
+                                  title={`Facebook Event ${post.id}`}
+                                />
+                              </div>
+                            </div>
+
+                            {/* Card Info & Height Settings */}
+                            <div className="mt-3 pt-3 border-t border-brand-pale/60 space-y-2">
+                              <div className="flex items-center justify-between text-[11px]">
+                                <span className="font-semibold text-slate-600">Iframe Height (px):</span>
+                                <div className="flex items-center gap-1">
+                                  <input
+                                    type="number"
+                                    min={300}
+                                    max={1200}
+                                    step={10}
+                                    value={post.height || 645}
+                                    onChange={(e) => updateEvent(post.id, { height: Number(e.target.value) || 645 })}
+                                    className="w-20 px-2 py-1.5 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
+                                  />
+                                  <span className="text-slate-400">px</span>
+                                </div>
+                              </div>
+
+                              <div className="truncate text-[10px] text-slate-400 font-mono bg-brand-white px-2 py-1 rounded border border-brand-pale/60" title={post.iframeSrc}>
+                                {post.iframeSrc}
+                              </div>
                             </div>
                           </div>
-
-                          <div className="truncate text-[10px] text-slate-400 font-mono bg-brand-white px-2 py-1 rounded border border-brand-pale/60" title={post.iframeSrc}>
-                            {post.iframeSrc}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              );
-            })()}
+                );
+              })()}
             </div>
 
-            {/* ADD EVENT MODAL (FB LINK TO IFRAME RETRIEVAL) */}
+            {/* ADD EVENT MODAL (MANUAL EVENT OR FB IFRAME) */}
             {isAddEventOpen && (
               <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
                 <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
+                  {/* Modal Header */}
                   <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
-                        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
                         </svg>
                       </div>
                       <div>
-                        <h3 className="text-sm sm:text-base font-bold">Add Facebook Event Post</h3>
-                        <p className="text-[10px] sm:text-[11px] text-brand-pale">Paste FB Link to Retrieve Iframe</p>
+                        <h3 className="text-sm sm:text-base font-bold">Add School Event Post</h3>
+                        <p className="text-[10px] sm:text-[11px] text-brand-pale">
+                          {eventModalTab === 'manual' ? 'Create Custom Post with Photo & Text' : 'Paste FB Link to Retrieve Iframe'}
+                        </p>
                       </div>
                     </div>
                     <button
@@ -3004,222 +3202,489 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                        Facebook Post URL or Iframe Embed Code
-                      </label>
-                      <textarea
-                        rows={3}
-                        value={newEventInput}
-                        onChange={(e) => setNewEventInput(e.target.value)}
-                        placeholder="Paste Facebook post URL or embed code..."
-                        autoFocus
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
-                      />
-                      {/* Share Link Auto-Resolve Alert */}
-                      {(parsedNewEvent?.isShareUrl || newEventInput.includes('/share/')) && (
-                        <div className="mt-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3 sm:p-3.5 text-xs text-amber-900 space-y-2.5">
-                          <div className="flex items-start gap-2.5">
-                            <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                            <div className="flex-1">
-                              <strong className="block font-bold text-amber-950">Mobile Share Link Detected (/share/p/...)</strong>
-                              <p className="mt-0.5 text-[11px] leading-relaxed text-amber-900/90">
-                                Facebook's iframe embed player cannot display temporary mobile share links and shows <em>"This Facebook post is no longer available"</em> unless converted to the post's permanent canonical URL.
-                              </p>
-                            </div>
-                          </div>
+                  {/* Mode Tabs */}
+                  <div className="flex border-b border-brand-pale bg-brand-light/40 px-4 sm:px-6 pt-3 gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setEventModalTab('manual')}
+                      className={`px-4 py-2 text-xs font-bold rounded-t-xl transition-all cursor-pointer border-t border-x ${
+                        eventModalTab === 'manual'
+                          ? 'bg-brand-white border-brand-pale text-brand-forest border-b-white -mb-px shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 border-transparent hover:bg-white/50'
+                      }`}
+                    >
+                      📷 Manual Event (Picture &amp; Text)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setEventModalTab('facebook')}
+                      className={`px-4 py-2 text-xs font-bold rounded-t-xl transition-all cursor-pointer border-t border-x ${
+                        eventModalTab === 'facebook'
+                          ? 'bg-brand-white border-brand-pale text-brand-forest border-b-white -mb-px shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900 border-transparent hover:bg-white/50'
+                      }`}
+                    >
+                      🌐 Facebook Embed
+                    </button>
+                  </div>
 
-                          <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/70">
-                            <button
-                              type="button"
-                              disabled={isResolvingFbUrl}
-                              onClick={() => handleAutoResolveFbUrl()}
-                              className="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+                  {/* TAB 1: MANUAL EVENT (PICTURE & TEXT) */}
+                  {eventModalTab === 'manual' && (
+                    <form onSubmit={handleAddManualEvent} className="flex-1 flex flex-col overflow-hidden">
+                      <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+                        {/* Photo Upload Box */}
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Event Picture / Poster
+                          </label>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            ref={eventPhotoInputRef}
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handleEventPhotoFile(file);
+                              e.target.value = '';
+                            }}
+                            className="hidden"
+                          />
+
+                          {manualEventImage ? (
+                            <div className="relative rounded-2xl border border-brand-pale overflow-hidden bg-brand-light/20 p-3 flex items-center gap-3">
+                              <img
+                                src={manualEventImage}
+                                alt="Event preview"
+                                className="w-20 h-20 rounded-xl object-cover border border-brand-pale shrink-0 shadow-2xs"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mb-1">
+                                  Photo Ready
+                                </span>
+                                {eventPhotoStats && (
+                                  <p className="text-[11px] text-slate-600">
+                                    Size: <strong>{formatBytes(eventPhotoStats.compressedSize)}</strong>
+                                    {eventPhotoStats.reductionPercent > 0 && (
+                                      <span className="text-emerald-700 font-semibold ml-1">
+                                        ({eventPhotoStats.reductionPercent}% smaller)
+                                      </span>
+                                    )}
+                                  </p>
+                                )}
+                                <div className="flex items-center gap-2 mt-2">
+                                  <button
+                                    type="button"
+                                    onClick={() => eventPhotoInputRef.current?.click()}
+                                    className="text-xs text-brand-forest hover:underline font-semibold cursor-pointer"
+                                  >
+                                    Change Photo
+                                  </button>
+                                  <span className="text-slate-300">•</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setManualEventImage('');
+                                      setEventPhotoStats(null);
+                                    }}
+                                    className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                                  >
+                                    Remove
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => eventPhotoInputRef.current?.click()}
+                              onDragOver={(e) => e.preventDefault()}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                const file = e.dataTransfer.files?.[0];
+                                if (file) handleEventPhotoFile(file);
+                              }}
+                              className="w-full border-2 border-dashed border-brand-pale hover:border-brand-forest rounded-2xl p-5 text-center cursor-pointer transition hover:bg-brand-light/30 flex flex-col items-center justify-center gap-2"
                             >
-                              {isResolvingFbUrl ? (
-                                <>
-                                  <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                              {isProcessingEventPhoto ? (
+                                <div className="flex flex-col items-center gap-2 py-2">
+                                  <svg className="w-6 h-6 animate-spin text-brand-forest" fill="none" viewBox="0 0 24 24">
                                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
                                   </svg>
-                                  <span>Converting to Permanent URL...</span>
-                                </>
+                                  <span className="text-xs font-semibold text-slate-600">Optimizing photo to WebP...</span>
+                                </div>
                               ) : (
                                 <>
-                                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                  </svg>
-                                  <span>Auto-Convert to Permanent URL</span>
+                                  <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-forest">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                  </div>
+                                  <div>
+                                    <span className="text-xs font-bold text-brand-forest hover:underline">Click to upload event photo</span>
+                                    <span className="text-xs text-slate-500"> or drag and drop</span>
+                                    <p className="text-[10px] text-slate-400 mt-0.5">JPEG, PNG, WebP up to 5 MB</p>
+                                  </div>
                                 </>
                               )}
-                            </button>
-                            <span className="text-[11px] text-amber-800">
-                              (Auto-resolves mobile redirect to post permalink)
-                            </span>
-                          </div>
-                        </div>
-                      )}
-
-                      {fbResolveNotice.text && (
-                        <div className={`mt-2.5 rounded-xl p-2.5 text-xs flex items-center gap-2 ${
-                          fbResolveNotice.type === 'success'
-                            ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
-                            : fbResolveNotice.type === 'warning'
-                            ? 'bg-amber-50 border border-amber-200 text-amber-800'
-                            : 'bg-rose-50 border border-rose-200 text-rose-800'
-                        }`}>
-                          {fbResolveNotice.type === 'success' ? (
-                            <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                          ) : (
-                            <svg className="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                          )}
-                          <span className="font-medium text-[11px]">{fbResolveNotice.text}</span>
-                        </div>
-                      )}
-
-                      <div className="mt-2.5 rounded-xl bg-brand-light/30 border border-brand-pale p-3 text-xs text-slate-600 space-y-1">
-                        <strong className="block text-slate-800 font-semibold">Tip to get the permanent post URL on Facebook:</strong>
-                        <ol className="list-decimal list-inside space-y-0.5 text-[11px] text-slate-600">
-                          <li>Click on the <strong>date / timestamp</strong> (e.g. <em>"2 hrs ago"</em> or the post date) on Facebook to open the post directly.</li>
-                          <li>Copy the URL from your browser address bar (it starts with <code className="font-mono text-brand-forest font-bold">facebook.com/permalink.php?story_fbid=...</code> or <code className="font-mono text-brand-forest font-bold">facebook.com/&lt;page&gt;/posts/...</code>).</li>
-                          <li>Or click the 3 dots (<span className="font-bold">···</span>) on the post &gt; <strong>Embed</strong> &gt; copy code.</li>
-                        </ol>
-                      </div>
-                    </div>
-
-                    {/* Retrieval Result & Live Iframe Preview */}
-                    {parsedNewEvent ? (
-                      <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 sm:p-4 space-y-3">
-                        <div className="flex items-center justify-between flex-wrap gap-2">
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span>Iframe Successfully Retrieved</span>
-                          </span>
-                          <span className="text-[11px] font-mono text-emerald-800 font-semibold">Width: 500px</span>
-                        </div>
-
-                        <div>
-                          <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                            Generated Iframe Embed URL:
-                          </span>
-                          <div className="p-2 rounded-lg bg-white border border-emerald-200 text-[10px] sm:text-[11px] font-mono text-slate-700 break-all select-all">
-                            {parsedNewEvent.iframeSrc}
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                          <div className="flex-1 min-w-0">
-                            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                              Canonical Post URL:
-                            </span>
-                            <div className="truncate text-xs font-mono text-blue-700">
-                              <a href={parsedNewEvent.postUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                {parsedNewEvent.postUrl} ↗
-                              </a>
                             </div>
-                          </div>
+                          )}
 
-                          <div className="w-full sm:w-32">
-                            <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
-                              Height (px):
-                            </span>
+                          {eventPhotoError && (
+                            <p className="text-xs text-rose-600 mt-1.5 font-medium">{eventPhotoError}</p>
+                          )}
+
+                          <div className="mt-2 flex items-center gap-2">
+                            <label className="inline-flex items-center gap-2 cursor-pointer text-xs text-slate-600 select-none">
+                              <input
+                                type="checkbox"
+                                checked={eventPhotoCompress}
+                                onChange={(e) => setEventPhotoCompress(e.target.checked)}
+                                className="rounded text-brand-forest focus:ring-brand-forest"
+                              />
+                              <span>Compress photo to WebP (Recommended)</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        {/* Title Fields */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                              Event Title (English) *
+                            </label>
                             <input
-                              type="number"
-                              min={300}
-                              max={1200}
-                              step={10}
-                              value={newEventHeight}
-                              onChange={(e) => setNewEventHeight(Number(e.target.value) || 645)}
-                              className="w-full px-2 py-1.5 rounded-lg bg-white border border-emerald-200 text-slate-800 text-base sm:text-xs font-mono font-bold"
+                              type="text"
+                              value={manualEventTitle}
+                              onChange={(e) => setManualEventTitle(e.target.value)}
+                              placeholder="e.g. Annual Prize Day Ceremony"
+                              className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                              தமிழ் தலைப்பு (Tamil Title)
+                            </label>
+                            <input
+                              type="text"
+                              value={manualEventTitleTa}
+                              onChange={(e) => setManualEventTitleTa(e.target.value)}
+                              placeholder="எ.கா. வருடாந்த பரிசளிப்பு விழா"
+                              className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest"
                             />
                           </div>
                         </div>
 
-                        {/* Live Preview of Iframe */}
-                        <div className="pt-2">
-                          <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                            Live Iframe Preview:
-                          </span>
-                          <div className="w-full h-[300px] sm:h-[320px] overflow-hidden rounded-xl bg-white border border-slate-200 flex justify-center items-start pt-2">
-                            <div
-                              className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
-                              style={{
-                                height: `${newEventHeight}px`,
-                                marginBottom: `-${newEventHeight * 0.45}px`,
-                              }}
-                            >
-                              <iframe
-                                src={parsedNewEvent.iframeSrc}
-                                width={500}
-                                height={newEventHeight}
-                                style={{ border: 'none', overflow: 'hidden' }}
-                                scrolling="no"
-                                frameBorder="0"
-                                allowFullScreen={true}
-                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-                                className="w-full h-full rounded-xl"
-                                title="Facebook Iframe Preview"
-                              />
-                            </div>
+                        {/* Date, Category, and Location */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                              Event Date *
+                            </label>
+                            <input
+                              type="date"
+                              value={manualEventDate}
+                              onChange={(e) => setManualEventDate(e.target.value)}
+                              className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                              Category / Tag
+                            </label>
+                            <input
+                              type="text"
+                              value={manualEventCategory}
+                              onChange={(e) => setManualEventCategory(e.target.value)}
+                              placeholder="e.g. Ceremony, Sports"
+                              className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                              Location (Optional)
+                            </label>
+                            <input
+                              type="text"
+                              value={manualEventLocation}
+                              onChange={(e) => setManualEventLocation(e.target.value)}
+                              placeholder="e.g. College Main Hall"
+                              className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                            />
                           </div>
                         </div>
-                      </div>
-                    ) : newEventInput.trim() ? (
-                      <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3 sm:p-3.5 text-xs text-rose-800 flex items-start gap-2">
-                        <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                        </svg>
+
+                        {/* Descriptions */}
                         <div>
-                          <p className="font-semibold">Unable to parse Facebook URL</p>
-                          <p className="text-[11px] text-rose-700 mt-0.5">
-                            Please ensure your input contains a link to Facebook (e.g. <code>https://www.facebook.com/...</code>) or an official Facebook iframe embed snippet.
-                          </p>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Event Description / Text (English)
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={manualEventDescription}
+                            onChange={(e) => setManualEventDescription(e.target.value)}
+                            placeholder="Provide details about the event, scheduled agenda, guest speakers, or announcements..."
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
+                          />
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            விபரங்கள் (Tamil Description - Optional)
+                          </label>
+                          <textarea
+                            rows={2}
+                            value={manualEventDescriptionTa}
+                            onChange={(e) => setManualEventDescriptionTa(e.target.value)}
+                            placeholder="நிகழ்வு பற்றிய விபரங்கள்..."
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
+                          />
                         </div>
                       </div>
-                    ) : null}
-                  </div>
 
-                  <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsAddEventOpen(false);
-                        setNewEventInput('');
-                      }}
-                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="button"
-                      disabled={!parsedNewEvent}
-                      onClick={() => {
-                        if (!parsedNewEvent) return;
-                        addEvent({
-                          ...parsedNewEvent,
-                          height: Number(newEventHeight) || 645
-                        });
-                        setNewEventInput('');
-                        setIsAddEventOpen(false);
-                        showToast('Facebook event added to Events page!', 'success');
-                      }}
-                      className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs text-center ${parsedNewEvent
-                          ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
-                          : 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                        }`}
-                    >
-                      Add Event to Page
-                    </button>
-                  </div>
+                      {/* Modal Footer */}
+                      <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsAddEventOpen(false);
+                            setManualEventTitle('');
+                            setManualEventTitleTa('');
+                            setManualEventImage('');
+                          }}
+                          className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="submit"
+                          className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs text-center"
+                        >
+                          Create Event
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* TAB 2: FACEBOOK EMBED */}
+                  {eventModalTab === 'facebook' && (
+                    <div className="flex-1 flex flex-col overflow-hidden">
+                      <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                            Facebook Post URL or Iframe Embed Code
+                          </label>
+                          <textarea
+                            rows={3}
+                            value={newEventInput}
+                            onChange={(e) => setNewEventInput(e.target.value)}
+                            placeholder="Paste Facebook post URL or embed code..."
+                            autoFocus
+                            className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
+                          />
+                          {/* Share Link Auto-Resolve Alert */}
+                          {(parsedNewEvent?.isShareUrl || newEventInput.includes('/share/')) && (
+                            <div className="mt-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3 sm:p-3.5 text-xs text-amber-900 space-y-2.5">
+                              <div className="flex items-start gap-2.5">
+                                <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <div className="flex-1">
+                                  <strong className="block font-bold text-amber-950">Mobile Share Link Detected (/share/p/...)</strong>
+                                  <p className="mt-0.5 text-[11px] leading-relaxed text-amber-900/90">
+                                    Facebook's iframe embed player cannot display temporary mobile share links and shows <em>"This Facebook post is no longer available"</em> unless converted to the post's permanent canonical URL.
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-amber-200/70">
+                                <button
+                                  type="button"
+                                  disabled={isResolvingFbUrl}
+                                  onClick={() => handleAutoResolveFbUrl()}
+                                  className="px-3.5 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50"
+                                >
+                                  {isResolvingFbUrl ? (
+                                    <>
+                                      <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                      </svg>
+                                      <span>Converting to Permanent URL...</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                      </svg>
+                                      <span>Auto-Convert to Permanent URL</span>
+                                    </>
+                                  )}
+                                </button>
+                                <span className="text-[11px] text-amber-800">
+                                  (Auto-resolves mobile redirect to post permalink)
+                                </span>
+                              </div>
+                            </div>
+                          )}
+
+                          {fbResolveNotice.text && (
+                            <div className={`mt-2.5 rounded-xl p-2.5 text-xs flex items-center gap-2 ${
+                              fbResolveNotice.type === 'success'
+                                ? 'bg-emerald-50 border border-emerald-200 text-emerald-800'
+                                : fbResolveNotice.type === 'warning'
+                                ? 'bg-amber-50 border border-amber-200 text-amber-800'
+                                : 'bg-rose-50 border border-rose-200 text-rose-800'
+                            }`}>
+                              {fbResolveNotice.type === 'success' ? (
+                                <svg className="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                              ) : (
+                                <svg className="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                              )}
+                              <span className="font-medium text-[11px]">{fbResolveNotice.text}</span>
+                            </div>
+                          )}
+
+                          <div className="mt-2.5 rounded-xl bg-brand-light/30 border border-brand-pale p-3 text-xs text-slate-600 space-y-1">
+                            <strong className="block text-slate-800 font-semibold">Tip to get the permanent post URL on Facebook:</strong>
+                            <ol className="list-decimal list-inside space-y-0.5 text-[11px] text-slate-600">
+                              <li>Click on the <strong>date / timestamp</strong> (e.g. <em>"2 hrs ago"</em> or the post date) on Facebook to open the post directly.</li>
+                              <li>Copy the URL from your browser address bar (it starts with <code className="font-mono text-brand-forest font-bold">facebook.com/permalink.php?story_fbid=...</code> or <code className="font-mono text-brand-forest font-bold">facebook.com/&lt;page&gt;/posts/...</code>).</li>
+                              <li>Or click the 3 dots (<span className="font-bold">···</span>) on the post &gt; <strong>Embed</strong> &gt; copy code.</li>
+                            </ol>
+                          </div>
+                        </div>
+
+                        {/* Retrieval Result & Live Iframe Preview */}
+                        {parsedNewEvent ? (
+                          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 sm:p-4 space-y-3">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-600 text-white text-[11px] font-bold">
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Iframe Successfully Retrieved</span>
+                              </span>
+                              <span className="text-[11px] font-mono text-emerald-800 font-semibold">Width: 500px</span>
+                            </div>
+
+                            <div>
+                              <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                Generated Iframe Embed URL:
+                              </span>
+                              <div className="p-2 rounded-lg bg-white border border-emerald-200 text-[10px] sm:text-[11px] font-mono text-slate-700 break-all select-all">
+                                {parsedNewEvent.iframeSrc}
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                              <div className="flex-1 min-w-0">
+                                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                  Canonical Post URL:
+                                </span>
+                                <div className="truncate text-xs font-mono text-blue-700">
+                                  <a href={parsedNewEvent.postUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                                    {parsedNewEvent.postUrl} ↗
+                                  </a>
+                                </div>
+                              </div>
+
+                              <div className="w-full sm:w-32">
+                                <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                                  Height (px):
+                                </span>
+                                <input
+                                  type="number"
+                                  min={300}
+                                  max={1200}
+                                  step={10}
+                                  value={newEventHeight}
+                                  onChange={(e) => setNewEventHeight(Number(e.target.value) || 645)}
+                                  className="w-full px-2 py-1.5 rounded-lg bg-white border border-emerald-200 text-slate-800 text-base sm:text-xs font-mono font-bold"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Live Preview of Iframe */}
+                            <div className="pt-2">
+                              <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                Live Iframe Preview:
+                              </span>
+                              <div className="w-full h-[300px] sm:h-[320px] overflow-hidden rounded-xl bg-white border border-slate-200 flex justify-center items-start pt-2">
+                                <div
+                                  className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
+                                  style={{
+                                    height: `${newEventHeight}px`,
+                                    marginBottom: `-${newEventHeight * 0.45}px`,
+                                  }}
+                                >
+                                  <iframe
+                                    src={parsedNewEvent.iframeSrc}
+                                    width={500}
+                                    height={newEventHeight}
+                                    style={{ border: 'none', overflow: 'hidden' }}
+                                    scrolling="no"
+                                    frameBorder="0"
+                                    allowFullScreen={true}
+                                    allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                                    className="w-full h-full rounded-xl"
+                                    title="Facebook Iframe Preview"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : newEventInput.trim() ? (
+                          <div className="rounded-xl border border-rose-200 bg-rose-50/70 p-3 sm:p-3.5 text-xs text-rose-800 flex items-start gap-2">
+                            <svg className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <div>
+                              <p className="font-semibold">Unable to parse Facebook URL</p>
+                              <p className="text-[11px] text-rose-700 mt-0.5">
+                                Please ensure your input contains a link to Facebook (e.g. <code>https://www.facebook.com/...</code>) or an official Facebook iframe embed snippet.
+                              </p>
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+
+                      <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsAddEventOpen(false);
+                            setNewEventInput('');
+                          }}
+                          className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!parsedNewEvent}
+                          onClick={() => {
+                            if (!parsedNewEvent) return;
+                            addEvent({
+                              ...parsedNewEvent,
+                              height: Number(newEventHeight) || 645
+                            });
+                            setNewEventInput('');
+                            setIsAddEventOpen(false);
+                            showToast('Facebook event added to Events page!', 'success');
+                          }}
+                          className={`w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full text-xs font-bold transition cursor-pointer shadow-2xs text-center ${parsedNewEvent
+                              ? 'bg-brand-forest hover:bg-brand-forestHover text-white'
+                              : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                            }`}
+                        >
+                          Add Facebook Post
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             )}
