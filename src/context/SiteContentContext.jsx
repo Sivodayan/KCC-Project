@@ -114,6 +114,75 @@ export async function resolveFacebookShareUrl(url) {
 }
 
 
+const COMMITTED_STORAGE_KEY = 'kcc_last_committed_content_v1';
+
+/**
+ * Normalizes raw site content objects against defaultSiteContent structure.
+ */
+function normalizeSiteContent(raw) {
+  if (!raw || typeof raw !== 'object') return null;
+  const savedPrinciples = raw?.principles || {};
+  const isLegacyVision = !savedPrinciples.vision ||
+    savedPrinciples.vision?.english?.includes('cultivate disciplined') ||
+    savedPrinciples.vision?.tamil?.includes('தொலைநோக்குத்');
+  const isLegacyMission = !savedPrinciples.mission ||
+    savedPrinciples.mission?.english?.includes('balanced education') ||
+    savedPrinciples.mission?.tamil?.includes('கல்வித் தேர்ச்சி');
+
+  const resolvedPrinciples = {
+    ...defaultSiteContent.principles,
+    ...savedPrinciples,
+    ...(isLegacyVision ? { vision: defaultSiteContent.principles.vision } : {}),
+    ...(isLegacyMission ? { mission: defaultSiteContent.principles.mission } : {})
+  };
+
+  return {
+    ...defaultSiteContent,
+    ...raw,
+    hero: { ...defaultSiteContent.hero, ...raw?.hero },
+    principles: resolvedPrinciples,
+    performance: {
+      ...defaultSiteContent.performance,
+      ...raw?.performance
+    },
+    gallery: Array.isArray(raw?.gallery) ? raw.gallery : (defaultSiteContent.gallery || []),
+    events: Array.isArray(raw?.events) ? raw.events : (defaultSiteContent.events || FACEBOOK_POSTS),
+    contact: { ...defaultSiteContent.contact, ...raw?.contact },
+    history: {
+      ...defaultSiteContent.history,
+      ...raw?.history,
+      overview: {
+        ...(defaultSiteContent.history?.overview || {}),
+        ...(raw?.history?.overview || {})
+      },
+      milestones: Array.isArray(raw?.history?.milestones)
+        ? raw.history.milestones
+        : (defaultSiteContent.history?.milestones || []),
+      headmasters: Array.isArray(raw?.history?.headmasters)
+        ? raw.history.headmasters
+        : (defaultSiteContent.history?.headmasters || []),
+      managers: Array.isArray(raw?.history?.managers)
+        ? raw.history.managers
+        : (defaultSiteContent.history?.managers || [])
+    }
+  };
+}
+
+const defaultBaseContent = normalizeSiteContent(defaultSiteContent);
+
+/**
+ * Performs canonical deep equality check by stringifying payload
+ */
+function areContentsEqual(a, b) {
+  if (a === b) return true;
+  if (!a || !b) return false;
+  try {
+    return JSON.stringify(a) === JSON.stringify(b);
+  } catch {
+    return false;
+  }
+}
+
 /**
  * SiteContentProvider
  * Centralized content state provider for user-customizable text, stats, gallery, events, and contact information.
@@ -123,64 +192,41 @@ export async function resolveFacebookShareUrl(url) {
  * 3. Packaged JSON defaults from siteContent.json (fallback)
  */
 export function SiteContentProvider({ children }) {
+  // Baseline committed content (either from last committed snapshot in localStorage or code defaults)
+  const [committedContent, setCommittedContent] = useState(() => {
+    try {
+      const saved = localStorage.getItem(COMMITTED_STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        const normalized = normalizeSiteContent(parsed);
+        if (normalized) return normalized;
+      }
+    } catch (e) {
+      console.warn('Failed to parse cached committed content:', e);
+    }
+    return defaultBaseContent;
+  });
+
+  const committedBaseRef = useRef(committedContent);
+  committedBaseRef.current = committedContent;
+
   const [content, setContent] = useState(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        const savedPrinciples = parsed?.principles || {};
-        const isLegacyVision = !savedPrinciples.vision ||
-          savedPrinciples.vision?.english?.includes('cultivate disciplined') ||
-          savedPrinciples.vision?.tamil?.includes('தொலைநோக்குத்');
-        const isLegacyMission = !savedPrinciples.mission ||
-          savedPrinciples.mission?.english?.includes('balanced education') ||
-          savedPrinciples.mission?.tamil?.includes('கல்வித் தேர்ச்சி');
-
-        const resolvedPrinciples = {
-          ...defaultSiteContent.principles,
-          ...savedPrinciples,
-          ...(isLegacyVision ? { vision: defaultSiteContent.principles.vision } : {}),
-          ...(isLegacyMission ? { mission: defaultSiteContent.principles.mission } : {})
-        };
-
-        return {
-          ...defaultSiteContent,
-          ...parsed,
-          hero: { ...defaultSiteContent.hero, ...parsed?.hero },
-          principles: resolvedPrinciples,
-          performance: {
-            ...defaultSiteContent.performance,
-            ...parsed?.performance
-          },
-          gallery: Array.isArray(parsed?.gallery) ? parsed.gallery : (defaultSiteContent.gallery || []),
-          events: Array.isArray(parsed?.events) ? parsed.events : FACEBOOK_POSTS,
-          contact: { ...defaultSiteContent.contact, ...parsed?.contact },
-          history: {
-            ...defaultSiteContent.history,
-            ...parsed?.history,
-            overview: {
-              ...(defaultSiteContent.history?.overview || {}),
-              ...(parsed?.history?.overview || {})
-            },
-            milestones: Array.isArray(parsed?.history?.milestones)
-              ? parsed.history.milestones
-              : (defaultSiteContent.history?.milestones || []),
-            headmasters: Array.isArray(parsed?.history?.headmasters)
-              ? parsed.history.headmasters
-              : (defaultSiteContent.history?.headmasters || []),
-            managers: Array.isArray(parsed?.history?.managers)
-              ? parsed.history.managers
-              : (defaultSiteContent.history?.managers || [])
-          }
-        };
+        const normalized = normalizeSiteContent(parsed);
+        if (normalized) return normalized;
       }
     } catch (e) {
       console.warn('Failed to parse cached site content:', e);
     }
-    return {
-      ...defaultSiteContent,
-      events: Array.isArray(defaultSiteContent.events) ? defaultSiteContent.events : FACEBOOK_POSTS
-    };
+    return defaultBaseContent;
+  });
+
+  // Track if current in-memory content genuinely differs from committed baseline
+  const [hasUncommittedChanges, setHasUncommittedChanges] = useState(() => {
+    return !areContentsEqual(content, committedContent);
   });
 
   const [hasLocalOverrides, setHasLocalOverrides] = useState(() => {
@@ -263,6 +309,8 @@ export function SiteContentProvider({ children }) {
     }
 
     setContent(next);
+    const isDirty = !areContentsEqual(next, committedBaseRef.current);
+    setHasUncommittedChanges(isDirty);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
       setHasLocalOverrides(true);
@@ -287,6 +335,8 @@ export function SiteContentProvider({ children }) {
     setFuture(newFuture);
 
     setContent(previousState);
+    const isDirty = !areContentsEqual(previousState, committedBaseRef.current);
+    setHasUncommittedChanges(isDirty);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(previousState));
       setHasLocalOverrides(true);
@@ -313,6 +363,8 @@ export function SiteContentProvider({ children }) {
     setFuture(newFuture);
 
     setContent(nextState);
+    const isDirty = !areContentsEqual(nextState, committedBaseRef.current);
+    setHasUncommittedChanges(isDirty);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(nextState));
       setHasLocalOverrides(true);
@@ -494,11 +546,28 @@ export function SiteContentProvider({ children }) {
         if (!parsed) return prev;
         newEvent = {
           id: `post-${Date.now()}`,
+          type: 'facebook',
           ...parsed
+        };
+      } else if (eventOrFbUrl.type === 'manual' || eventOrFbUrl.image || eventOrFbUrl.title) {
+        newEvent = {
+          id: eventOrFbUrl.id || `event-${Date.now()}`,
+          type: 'manual',
+          title: eventOrFbUrl.title || '',
+          titleTa: eventOrFbUrl.titleTa || '',
+          date: eventOrFbUrl.date || new Date().toISOString().slice(0, 10),
+          description: eventOrFbUrl.description || '',
+          descriptionTa: eventOrFbUrl.descriptionTa || '',
+          image: eventOrFbUrl.image || '',
+          images: Array.isArray(eventOrFbUrl.images) ? eventOrFbUrl.images : [],
+          category: eventOrFbUrl.category || 'School Event',
+          location: eventOrFbUrl.location || '',
+          createdAt: eventOrFbUrl.createdAt || new Date().toISOString()
         };
       } else {
         newEvent = {
           id: eventOrFbUrl.id || `post-${Date.now()}`,
+          type: 'facebook',
           postUrl: eventOrFbUrl.postUrl,
           iframeSrc: eventOrFbUrl.iframeSrc,
           width: eventOrFbUrl.width || 500,
@@ -531,6 +600,19 @@ export function SiteContentProvider({ children }) {
     }), { isContinuous: false });
   }, [saveContent]);
 
+  const markAsCommitted = useCallback((committedData) => {
+    const target = committedData || contentRef.current;
+    const normalized = normalizeSiteContent(target) || target;
+    committedBaseRef.current = normalized;
+    setCommittedContent(normalized);
+    setHasUncommittedChanges(false);
+    try {
+      localStorage.setItem(COMMITTED_STORAGE_KEY, JSON.stringify(normalized));
+    } catch (err) {
+      console.warn('Failed to save committed baseline to storage:', err);
+    }
+  }, []);
+
   const resetToDefaults = useCallback(() => {
     try {
       commitContinuous();
@@ -542,7 +624,11 @@ export function SiteContentProvider({ children }) {
       setFuture([]);
 
       localStorage.removeItem(STORAGE_KEY);
-      setContent(defaultSiteContent);
+      localStorage.removeItem(COMMITTED_STORAGE_KEY);
+      committedBaseRef.current = defaultBaseContent;
+      setCommittedContent(defaultBaseContent);
+      setContent(defaultBaseContent);
+      setHasUncommittedChanges(false);
       setHasLocalOverrides(false);
       return true;
     } catch (e) {
@@ -577,6 +663,9 @@ export function SiteContentProvider({ children }) {
   const value = {
     content,
     hasLocalOverrides,
+    hasUncommittedChanges,
+    markAsCommitted,
+    committedContent,
     defaultContent: defaultSiteContent,
     canUndo: past.length > 0,
     canRedo: future.length > 0,
