@@ -64,14 +64,25 @@ export async function onRequestOptions() {
  * Handle GET to check if GitHub publishing is configured server-side
  */
 export async function onRequestGet(context) {
+  const env = context?.env || context || {};
   const token = getSecretToken(context);
   const isConfigured = Boolean(token);
+  const allKeys = Object.keys(env);
+  const nonSensitiveKeys = allKeys.filter(k => k !== 'ASSETS' && !k.toLowerCase().includes('token') && !k.toLowerCase().includes('secret') && !k.toLowerCase().includes('key'));
+  const hasTokenKey = Boolean(
+    env.GITHUB_TOKEN || env.github_token || env.GH_TOKEN || env.VITE_GITHUB_TOKEN
+  );
+
   return new Response(
     JSON.stringify({
       configured: isConfigured,
       targetRepo: 'Sivodayan/KCC-Project',
       branch: 'main',
       hasToken: isConfigured,
+      hasTokenKey,
+      tokenLength: token ? token.length : 0,
+      totalKeys: allKeys.length,
+      sampleKeys: nonSensitiveKeys,
       checkedAt: new Date().toISOString()
     }),
     {
