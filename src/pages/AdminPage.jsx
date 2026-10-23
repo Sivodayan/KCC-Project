@@ -175,12 +175,18 @@ export default function AdminPage() {
     descTa: '',
     quoteEn: '',
     quoteTa: '',
-    image: '/assets/his1.jpg',
+    image: '',
     imageAlt: ''
   });
   const [newHeadmaster, setNewHeadmaster] = useState({ period: '', name: '' });
   const [newManager, setNewManager] = useState({ period: '', name: '' });
   const [expandedMilestones, setExpandedMilestones] = useState({});
+  const milestoneFileInputRef = useRef(null);
+  const milestoneCardFileInputRef = useRef(null);
+  const [replaceMilestoneIdx, setReplaceMilestoneIdx] = useState(null);
+  const [isProcessingMilestonePhoto, setIsProcessingMilestonePhoto] = useState(false);
+  const [milestonePhotoStats, setMilestonePhotoStats] = useState(null);
+  const [milestonePhotoError, setMilestonePhotoError] = useState('');
 
   // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
@@ -627,6 +633,38 @@ export default function AdminPage() {
       setIsProcessingPhoto(false);
       setReplaceCardIndex(null);
       e.target.value = '';
+    }
+  };
+
+  const handleMilestoneFileSelect = async (file) => {
+    if (!file) return;
+    try {
+      setIsProcessingMilestonePhoto(true);
+      setMilestonePhotoError('');
+      const result = await processImageFile(file, { compress: true, maxWidth: 1600, maxHeight: 1200 });
+      setNewMilestone(prev => ({
+        ...prev,
+        image: result.dataUrl
+      }));
+      setMilestonePhotoStats(result);
+      showToast(`Archival photo processed (${formatBytes(result.compressedSize)})!`, 'success');
+    } catch (err) {
+      setMilestonePhotoError(err.message || 'Failed to process image');
+      showToast(err.message || 'Image processing failed', 'error');
+    } finally {
+      setIsProcessingMilestonePhoto(false);
+    }
+  };
+
+  const handleMilestoneCardPhotoUpload = async (idx, file) => {
+    if (!file) return;
+    try {
+      showToast('Processing photo...', 'info');
+      const result = await processImageFile(file, { compress: true, maxWidth: 1600, maxHeight: 1200 });
+      updateHistoryMilestone(idx, { image: result.dataUrl });
+      showToast(`Archival photo updated (${formatBytes(result.compressedSize)})!`, 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to process image', 'error');
     }
   };
 
@@ -1483,6 +1521,20 @@ export default function AdminPage() {
                     </div>
                   ) : (
                     <div className="space-y-4">
+                      <input
+                        type="file"
+                        ref={milestoneCardFileInputRef}
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file && replaceMilestoneIdx !== null) {
+                            handleMilestoneCardPhotoUpload(replaceMilestoneIdx, file);
+                          }
+                          e.target.value = '';
+                          setReplaceMilestoneIdx(null);
+                        }}
+                      />
                       {content.history.milestones.map((m, idx) => {
                         const isExpanded = expandedMilestones[m.id || idx] !== false;
                         return (
@@ -1591,6 +1643,20 @@ export default function AdminPage() {
                                         No Image Assigned
                                       </div>
                                     )}
+
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        setReplaceMilestoneIdx(idx);
+                                        milestoneCardFileInputRef.current?.click();
+                                      }}
+                                      className="w-full py-1.5 px-3 rounded-lg bg-brand-white hover:bg-brand-light border border-brand-pale text-brand-forest font-semibold text-xs transition flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs"
+                                    >
+                                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                      </svg>
+                                      <span>Upload Image Directly</span>
+                                    </button>
 
                                     <div>
                                       <label className="block text-[10px] font-semibold text-slate-600 mb-1">Image Path / URL</label>
@@ -2053,9 +2119,11 @@ export default function AdminPage() {
                         descTa: '',
                         quoteEn: '',
                         quoteTa: '',
-                        image: '/assets/his1.jpg',
+                        image: '',
                         imageAlt: ''
                       });
+                      setMilestonePhotoStats(null);
+                      setMilestonePhotoError('');
                       showToast('Historical milestone added!', 'success');
                     }}
                     className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1"
@@ -2107,31 +2175,146 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-700 mb-1">Archival Image Path</label>
-                      <input
-                        type="text"
-                        value={newMilestone.image}
-                        onChange={(e) => setNewMilestone(prev => ({ ...prev, image: e.target.value }))}
-                        placeholder="/assets/his1.jpg"
-                        className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-xs font-mono"
-                      />
-                      <div className="flex flex-wrap gap-1 mt-1.5">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                    {/* Direct Image Upload */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <label className="block text-xs font-semibold text-slate-700">
+                          Archival Photograph
+                        </label>
+                        {newMilestone.image && (
                           <button
-                            key={n}
                             type="button"
-                            onClick={() => setNewMilestone(prev => ({ ...prev, image: `/assets/his${n}.jpg` }))}
-                            className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition cursor-pointer ${
-                              newMilestone.image === `/assets/his${n}.jpg`
-                                ? 'bg-brand-forest text-white'
-                                : 'bg-brand-light border border-brand-pale text-slate-600'
-                            }`}
+                            onClick={() => {
+                              setNewMilestone(prev => ({ ...prev, image: '' }));
+                              setMilestonePhotoStats(null);
+                            }}
+                            className="text-[11px] text-rose-600 hover:underline font-semibold cursor-pointer"
                           >
-                            his{n}
+                            Remove Photo
                           </button>
-                        ))}
+                        )}
                       </div>
+
+                      {/* Hidden File Input for Milestone Upload */}
+                      <input
+                        type="file"
+                        ref={milestoneFileInputRef}
+                        accept="image/jpeg,image/png,image/webp,image/gif"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleMilestoneFileSelect(file);
+                          e.target.value = '';
+                        }}
+                      />
+
+                      {/* Dropzone Box */}
+                      <div
+                        onClick={() => milestoneFileInputRef.current?.click()}
+                        onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const file = e.dataTransfer?.files?.[0];
+                          if (file) handleMilestoneFileSelect(file);
+                        }}
+                        className={`border-2 border-dashed rounded-xl p-4 sm:p-5 text-center cursor-pointer transition-all ${
+                          isProcessingMilestonePhoto
+                            ? 'border-brand-forest bg-brand-light/50 animate-pulse'
+                            : newMilestone.image
+                            ? 'border-emerald-300 bg-emerald-50/40'
+                            : 'border-brand-pale hover:border-brand-forest/70 hover:bg-brand-light/30 bg-brand-light/10'
+                        }`}
+                      >
+                        {isProcessingMilestonePhoto ? (
+                          <div className="py-2 space-y-2">
+                            <div className="w-8 h-8 mx-auto text-brand-forest animate-spin">
+                              <svg className="w-full h-full" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                              </svg>
+                            </div>
+                            <p className="text-xs font-semibold text-brand-forest">Optimizing image to WebP format...</p>
+                          </div>
+                        ) : newMilestone.image ? (
+                          <div className="space-y-3">
+                            <div className="h-36 w-full rounded-lg overflow-hidden bg-slate-900/5 border border-emerald-200 relative flex items-center justify-center">
+                              <GlassImage
+                                src={newMilestone.image}
+                                alt="Milestone preview"
+                                containerClassName="w-full h-full flex items-center justify-center"
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                            <div className="flex items-center justify-between text-xs text-slate-600 px-1">
+                              <span className="font-semibold text-emerald-700 flex items-center gap-1">
+                                <svg className="w-3.5 h-3.5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                                </svg>
+                                Image Ready
+                              </span>
+                              <span className="text-brand-forest hover:underline font-bold text-[11px]">
+                                Click to replace image
+                              </span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="py-3 space-y-2">
+                            <div className="w-11 h-11 mx-auto rounded-full bg-brand-light border border-brand-pale flex items-center justify-center text-brand-forest shadow-2xs">
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                              </svg>
+                            </div>
+                            <div>
+                              <p className="text-xs font-bold text-slate-800">
+                                Click to upload photo from your device or drag &amp; drop
+                              </p>
+                              <p className="text-[11px] text-slate-500 mt-0.5">
+                                JPG, PNG, WEBP, GIF up to 5MB (automatically converted to high-quality WebP)
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {milestonePhotoError && (
+                        <p className="text-xs text-rose-600 font-medium">{milestonePhotoError}</p>
+                      )}
+
+                      {/* Optional Presets / Link Accordion */}
+                      <details className="text-xs text-slate-500 group pt-1">
+                        <summary className="cursor-pointer hover:text-brand-forest font-semibold flex items-center gap-1 select-none">
+                          <span>Or select from historic archive presets (his1–his12)</span>
+                          <svg className="w-3.5 h-3.5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                          </svg>
+                        </summary>
+                        <div className="mt-2 space-y-2 p-3 bg-brand-light/30 border border-brand-pale rounded-xl">
+                          <input
+                            type="text"
+                            value={newMilestone.image}
+                            onChange={(e) => setNewMilestone(prev => ({ ...prev, image: e.target.value }))}
+                            placeholder="/assets/his1.jpg or image URL"
+                            className="w-full px-3 py-1.5 rounded-lg bg-brand-white border border-brand-pale text-xs font-mono"
+                          />
+                          <div className="flex flex-wrap gap-1">
+                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => (
+                              <button
+                                key={n}
+                                type="button"
+                                onClick={() => setNewMilestone(prev => ({ ...prev, image: `/assets/his${n}.jpg` }))}
+                                className={`px-1.5 py-0.5 rounded text-[10px] font-mono font-semibold transition cursor-pointer ${
+                                  newMilestone.image === `/assets/his${n}.jpg`
+                                    ? 'bg-brand-forest text-white'
+                                    : 'bg-brand-white border border-brand-pale text-slate-600 hover:bg-brand-light'
+                                }`}
+                              >
+                                his{n}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </details>
                     </div>
 
                     <div>
