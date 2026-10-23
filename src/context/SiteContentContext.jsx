@@ -97,14 +97,26 @@ export function SiteContentProvider({ children }) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        const savedPrinciples = parsed?.principles || {};
+        const isLegacyVision = !savedPrinciples.vision ||
+          savedPrinciples.vision?.english?.includes('cultivate disciplined') ||
+          savedPrinciples.vision?.tamil?.includes('தொலைநோக்குத்');
+        const isLegacyMission = !savedPrinciples.mission ||
+          savedPrinciples.mission?.english?.includes('balanced education') ||
+          savedPrinciples.mission?.tamil?.includes('கல்வித் தேர்ச்சி');
+
+        const resolvedPrinciples = {
+          ...defaultSiteContent.principles,
+          ...savedPrinciples,
+          ...(isLegacyVision ? { vision: defaultSiteContent.principles.vision } : {}),
+          ...(isLegacyMission ? { mission: defaultSiteContent.principles.mission } : {})
+        };
+
         return {
           ...defaultSiteContent,
           ...parsed,
           hero: { ...defaultSiteContent.hero, ...parsed?.hero },
-          principles: {
-            ...defaultSiteContent.principles,
-            ...parsed?.principles
-          },
+          principles: resolvedPrinciples,
           performance: {
             ...defaultSiteContent.performance,
             ...parsed?.performance

@@ -1341,7 +1341,7 @@ export default function AdminPage() {
 
                 {/* Mission */}
                 <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
-                  <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Mission (பணி இலக்கு)</div>
+                  <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Mission (நோக்கக்கூற்று)</div>
                   <div>
                     <label className="block text-[10px] font-semibold text-slate-500 mb-1">English</label>
                     <textarea

@@ -14,14 +14,14 @@
       "description": "Standing firm in unwavering truth and moral justice since 1852."
     },
     "vision": {
-      "english": "To cultivate disciplined, visionary leaders of intellect and character.",
-      "tamil": "ஒழுக்கமும், நுண்ணறிவும், பண்பும் கொண்ட தொலைநோக்குத் தலைவர்களை உருவாக்குதல்.",
-      "description": "Empowering students through academic mastery, spiritual fortitude, and leadership."
+      "english": "\"The Ideal School in Peninsula\"",
+      "tamil": "“குடாநாட்டின் முன்மாதிரிப் பாடசாலை”",
+      "description": "The Ideal School in Peninsula · குடாநாட்டின் முன்மாதிரிப் பாடசாலை"
     },
     "mission": {
-      "english": "Providing balanced education fostering academic brilliance, ethics, and civic responsibility.",
-      "tamil": "கல்வித் தேர்ச்சி, நற்பண்புகள் மற்றும் சமூகப் பொறுப்புணர்வுடன் கூடிய முழுமையான கல்வியை வழங்குதல்.",
-      "description": "Delivering holistic curriculum in an inclusive Christian environment."
+      "english": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
+      "tamil": "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்.",
+      "description": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education."
     },
     "customCards": [
       {
@@ -191,7 +191,11 @@
     "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "foundedYear": "1852",
     "motto": "Truth and Justice",
-    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்"
+    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்",
+    "vision": "The Ideal School in Peninsula",
+    "tamilVision": "குடாநாட்டின் முன்மாதிரிப் பாடசாலை",
+    "mission": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
+    "tamilMission": "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
   },
   "announcement": {
     "enabled": false,

@@ -57,19 +57,19 @@ const searchItems = [
     action: "navigate"
   },
   {
-    title: "Motto: Truth and Justice",
+    title: "Motto: Truth and Justice (மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்)",
     category: "Heritage",
     url: "motto",
     action: "navigate"
   },
   {
-    title: "Vision: The Ideal School in Peninsula",
+    title: "Vision: The Ideal School in Peninsula (தூரநோக்கு: குடாநாட்டின் முன்மாதிரிப் பாடசாலை)",
     category: "Heritage",
     url: "motto",
     action: "navigate"
   },
   {
-    title: "Mission Statement",
+    title: "Mission Statement (நோக்கக்கூற்று: சுயமரியாதை, விழுமியங்கள்...)",
     category: "Heritage",
     url: "motto",
     action: "navigate"

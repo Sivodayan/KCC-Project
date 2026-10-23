@@ -11,13 +11,13 @@ export default function Principles() {
   };
 
   const vision = principles.vision || {
-    english: "\"THE IDEAL SCHOOL IN PENINSULA\"",
+    english: "\"The Ideal School in Peninsula\"",
     tamil: "“குடாநாட்டின் முன்மாதிரிப் பாடசாலை”"
   };
 
   const mission = principles.mission || {
     english: "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
-    tamil: "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள் மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
+    tamil: "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்."
   };
 
   const [flippedCards, setFlippedCards] = useState({});
@@ -37,7 +37,7 @@ export default function Principles() {
     <section className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="reveal-item stagger-1 h-[290px] sm:h-[310px] lg:h-[300px]">
+          <div className="reveal-item stagger-1 h-[310px] sm:h-[325px] lg:h-[320px]">
             <div
               role="button"
               tabIndex={0}
@@ -47,7 +47,7 @@ export default function Principles() {
               onKeyDown={(e) => handleKeyDown(e, 'motto')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-front bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale">
                       Motto
@@ -60,7 +60,7 @@ export default function Principles() {
                   </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-back bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest font-tamil">
                       மகுடவாசகம்
@@ -76,7 +76,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className="reveal-item stagger-2 h-[290px] sm:h-[310px] lg:h-[300px]">
+          <div className="reveal-item stagger-2 h-[310px] sm:h-[325px] lg:h-[320px]">
             <div
               role="button"
               tabIndex={0}
@@ -86,7 +86,7 @@ export default function Principles() {
               onKeyDown={(e) => handleKeyDown(e, 'vision')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Vision
@@ -99,7 +99,7 @@ export default function Principles() {
                   </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       தூரநோக்கு
@@ -115,7 +115,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className="reveal-item stagger-3 h-[290px] sm:h-[310px] lg:h-[300px]">
+          <div className="reveal-item stagger-3 h-[310px] sm:h-[325px] lg:h-[320px]">
             <div
               role="button"
               tabIndex={0}
@@ -125,27 +125,27 @@ export default function Principles() {
               onKeyDown={(e) => handleKeyDown(e, 'mission')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-white text-slate-800 p-7 sm:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Mission Statement
                     </span>
                   </div>
-                  <div className="flex-1 flex items-center pt-1">
-                    <p className="text-sm sm:text-[14.5px] lg:text-[15px] text-slate-700 leading-relaxed font-normal">
+                  <div className="flex-1 flex items-center pt-1 overflow-y-auto custom-scrollbar">
+                    <p className="text-sm sm:text-[14px] lg:text-[14.5px] text-slate-700 leading-relaxed font-normal">
                       {mission.english}
                     </p>
                   </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-forest text-brand-white p-7 sm:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       நோக்கக்கூற்று
                     </span>
                   </div>
-                  <div className="flex-1 flex items-center pt-1">
-                    <p className="text-xs sm:text-[13.5px] lg:text-[14px] text-brand-light font-tamil leading-[1.85] font-normal">
+                  <div className="flex-1 flex items-center pt-1 overflow-y-auto custom-scrollbar">
+                    <p className="text-xs sm:text-[13px] lg:text-[13.5px] text-brand-light font-tamil leading-[1.8] font-normal">
                       {mission.tamil}
                     </p>
                   </div>
