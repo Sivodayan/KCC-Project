@@ -42,7 +42,9 @@
     "alQual": 78,
     "clubs": 18,
     "houses": 4,
-    "labs": 100,
+    "grades": "6 – 13",
+    "gradeMin": 6,
+    "gradeMax": 13,
     "customStats": [
       {
         "id": "stat_smart_rooms",

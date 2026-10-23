@@ -12,6 +12,20 @@ export default function Performance() {
   const { content } = useSiteContent();
   const perf = content?.performance || {};
 
+  // Parse grade numbers if provided as string (e.g., '6 – 13') or numeric defaults
+  let gradeMinTarget = 6;
+  let gradeMaxTarget = 13;
+  if (perf.grades) {
+    const match = String(perf.grades).match(/(\d+)\s*(?:–|-|to)\s*(\d+)/i);
+    if (match) {
+      gradeMinTarget = parseInt(match[1], 10);
+      gradeMaxTarget = parseInt(match[2], 10);
+    }
+  } else if (perf.gradeMin != null && perf.gradeMax != null) {
+    gradeMinTarget = Number(perf.gradeMin);
+    gradeMaxTarget = Number(perf.gradeMax);
+  }
+
   const targets = {
     founded: perf.founded ?? 1852,
     students: perf.students ?? 386,
@@ -20,7 +34,8 @@ export default function Performance() {
     alQual: perf.alQual ?? 78,
     clubs: perf.clubs ?? 18,
     houses: perf.houses ?? 4,
-    labs: perf.labs ?? 100
+    gradeMin: gradeMinTarget,
+    gradeMax: gradeMaxTarget
   };
 
   const [statsAnimated, setStatsAnimated] = useState(false);
@@ -32,7 +47,8 @@ export default function Performance() {
     alQual: 0,
     clubs: 0,
     houses: 0,
-    labs: 0
+    gradeMin: 0,
+    gradeMax: 0
   });
 
   const performanceRef = useRef(null);
@@ -62,7 +78,8 @@ export default function Performance() {
               alQual: Math.floor(ease * targets.alQual),
               clubs: Math.floor(ease * targets.clubs),
               houses: Math.floor(ease * targets.houses),
-              labs: Math.floor(ease * targets.labs)
+              gradeMin: Math.floor(ease * targets.gradeMin),
+              gradeMax: Math.floor(ease * targets.gradeMax)
             });
 
             if (progress < 1) {
@@ -76,7 +93,8 @@ export default function Performance() {
                 alQual: targets.alQual,
                 clubs: targets.clubs,
                 houses: targets.houses,
-                labs: targets.labs
+                gradeMin: targets.gradeMin,
+                gradeMax: targets.gradeMax
               });
             }
           }
@@ -89,7 +107,7 @@ export default function Performance() {
 
     observer.observe(performanceRef.current);
     return () => observer.disconnect();
-  }, [statsAnimated, targets.founded, targets.students, targets.staff, targets.olPass, targets.alQual, targets.clubs, targets.houses, targets.labs]);
+  }, [statsAnimated, targets.founded, targets.students, targets.staff, targets.olPass, targets.alQual, targets.clubs, targets.houses, targets.gradeMin, targets.gradeMax]);
 
   return (
     <section ref={performanceRef} className="py-16 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="performance">
@@ -115,7 +133,7 @@ export default function Performance() {
               {counterValues.students}+
             </p>
             <p className="text-xs uppercase font-bold text-brand-sage dark:text-emerald-400 mt-2">Enrolled Students</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Primary to Collegiate</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Secondary to Collegiate</p>
           </div>
 
           <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
@@ -132,6 +150,14 @@ export default function Performance() {
             </p>
             <p className="text-xs uppercase font-bold text-brand-sage dark:text-emerald-400 mt-2">G.C.E. O/L Pass Rate</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">National Examination</p>
+          </div>
+
+          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+            <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
+              {statsAnimated ? `${counterValues.gradeMin} – ${counterValues.gradeMax}` : `${targets.gradeMin} – ${targets.gradeMax}`}
+            </p>
+            <p className="text-xs uppercase font-bold text-brand-sage dark:text-emerald-400 mt-2">School Grades</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Grades from 6 to 13</p>
           </div>
 
           <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
@@ -158,13 +184,6 @@ export default function Performance() {
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Annual Sports Division</p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
-            <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
-              {counterValues.labs}%
-            </p>
-            <p className="text-xs uppercase font-bold text-brand-sage dark:text-emerald-400 mt-2">Lab Coverage</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Science &amp; ICT Units</p>
-          </div>
         </div>
       </div>
     </section>

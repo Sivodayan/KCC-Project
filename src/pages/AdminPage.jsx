@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
-import { commitFileToGitHub, verifyGitHubToken } from '../utils/githubSync.js';
+import { commitFileToGitHub } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import {
@@ -17,31 +17,20 @@ import {
 
 const LAST_ACTIVE_KEY = 'kcc_admin_last_active';
 const GITHUB_TOKEN_STORAGE_KEY = 'kcc_admin_github_token';
+const ENV_GITHUB_TOKEN = (
+  import.meta.env.VITE_GITHUB_TOKEN ||
+  import.meta.env.GITHUB_TOKEN ||
+  ''
+).trim();
 const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
 const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
-// Configurable Administrator Authorization Whitelist
-// Can be customized via VITE_ADMIN_EMAILS in .env / Vercel (comma-separated list)
-const DEFAULT_ADMIN_EMAILS = [
-  'admin@kcc.lk',
-  'principal@kcc.lk',
-  'kcckopay@gmail.com',
-  'sivodayan17@gmail.com'
-];
-
-const envAdminEmails = (import.meta.env.VITE_ADMIN_EMAILS || '')
-  .split(',')
-  .map((e) => e.trim().toLowerCase())
-  .filter(Boolean);
-
-export const AUTHORIZED_ADMIN_EMAILS = Array.from(
-  new Set([...DEFAULT_ADMIN_EMAILS.map((e) => e.toLowerCase()), ...envAdminEmails])
-);
-
+/**
+ * Validates whether a user is authenticated by Firebase.
+ * User account provisioning and access control are managed directly in Firebase Console.
+ */
 export function isAuthorizedAdmin(user) {
-  if (!user || !user.email) return false;
-  if (import.meta.env.VITE_ALLOW_ANY_AUTH === 'true') return true;
-  return AUTHORIZED_ADMIN_EMAILS.includes(user.email.trim().toLowerCase());
+  return Boolean(user && (user.uid || user.email));
 }
 
 /**
@@ -101,23 +90,11 @@ export default function AdminPage() {
   const [resetError, setResetError] = useState('');
 
   useEffect(() => {
-    const unsubscribe = subscribeToAuth(async (user) => {
-      if (user) {
-        if (isAuthorizedAdmin(user)) {
-          setFirebaseUser(user);
-          setAuthError('');
-          sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
-        } else {
-          try {
-            await logOutFirebase();
-          } catch (e) {
-            console.warn(e);
-          }
-          setFirebaseUser(null);
-          setAuthError(
-            `Access Denied: The account "${user.email}" is not registered on the administrators whitelist. Please sign in with an approved administrator account or contact the school administration.`
-          );
-        }
+    const unsubscribe = subscribeToAuth((user) => {
+      if (user && isAuthorizedAdmin(user)) {
+        setFirebaseUser(user);
+        setAuthError('');
+        sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
       } else {
         setFirebaseUser(null);
       }
@@ -126,7 +103,7 @@ export default function AdminPage() {
     return () => unsubscribe();
   }, []);
 
-  const isAuthenticated = Boolean(firebaseUser && isAuthorizedAdmin(firebaseUser));
+  const isAuthenticated = Boolean(firebaseUser);
 
   const [activeTab, setActiveTab] = useState('hero');
   const tabsContainerRef = useRef(null);
@@ -183,15 +160,19 @@ export default function AdminPage() {
 
   // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
-  const [githubToken, setGithubToken] = useState(() => {
-    return sessionStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) || '';
-  });
-  const [showGithubToken, setShowGithubToken] = useState(false);
   const [commitMessage, setCommitMessage] = useState('');
   const [isCommitting, setIsCommitting] = useState(false);
   const [commitResult, setCommitResult] = useState(null);
   const [commitError, setCommitError] = useState('');
-  const [saveTokenChoice, setSaveTokenChoice] = useState(true);
+
+  const getEffectiveGitHubToken = useCallback(() => {
+    return (
+      ENV_GITHUB_TOKEN ||
+      sessionStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) ||
+      localStorage.getItem(GITHUB_TOKEN_STORAGE_KEY) ||
+      ''
+    ).trim();
+  }, []);
 
   // Leave page confirmation when uncommitted changes exist
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
@@ -216,11 +197,6 @@ export default function AdminPage() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasLocalOverrides]);
 
-  // GitHub User Profile Verification (for Settings tab)
-  const [verifiedUser, setVerifiedUser] = useState(null);
-  const [isVerifyingToken, setIsVerifyingToken] = useState(false);
-  const [tokenVerifyError, setTokenVerifyError] = useState('');
-
   const handleOpenCommitModal = () => {
     commitContinuous();
     const now = new Date();
@@ -233,8 +209,9 @@ export default function AdminPage() {
 
   const handleCommitToGitHub = async (e) => {
     if (e) e.preventDefault();
-    if (!githubToken.trim()) {
-      setCommitError('GitHub Personal Access Token (PAT) is required.');
+    const token = getEffectiveGitHubToken();
+    if (!token) {
+      setCommitError('GitHub Personal Access Token is not configured. Please configure VITE_GITHUB_TOKEN in your environment variables.');
       return;
     }
 
@@ -243,20 +220,13 @@ export default function AdminPage() {
     setCommitResult(null);
 
     try {
-      if (saveTokenChoice) {
-        localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
-      } else {
-        localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
-        sessionStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
-      }
-
       const contentString = JSON.stringify(content, null, 2);
       const result = await commitFileToGitHub({
         owner: 'Sivodayan',
         repo: 'KCC-Project',
         path: 'src/data/siteContent.json',
         branch: 'main',
-        token: githubToken.trim(),
+        token,
         contentString,
         commitMessage: commitMessage.trim() || undefined
       });
@@ -270,35 +240,6 @@ export default function AdminPage() {
     } finally {
       setIsCommitting(false);
     }
-  };
-
-  const handleVerifyToken = async () => {
-    if (!githubToken.trim()) {
-      setTokenVerifyError('Please enter a Personal Access Token first.');
-      return;
-    }
-    setIsVerifyingToken(true);
-    setTokenVerifyError('');
-    try {
-      const user = await verifyGitHubToken(githubToken.trim());
-      setVerifiedUser(user);
-      localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
-      showToast(`Verified GitHub identity: @${user.login}`, 'success');
-    } catch (err) {
-      setVerifiedUser(null);
-      setTokenVerifyError(err.message || 'Verification failed');
-      showToast(err.message || 'Verification failed', 'error');
-    } finally {
-      setIsVerifyingToken(false);
-    }
-  };
-
-  const handleClearToken = () => {
-    localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
-    sessionStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
-    setGithubToken('');
-    setVerifiedUser(null);
-    showToast('GitHub token cleared from browser storage.', 'info');
   };
 
   // Global Keyboard shortcuts:
@@ -334,7 +275,7 @@ export default function AdminPage() {
         e.preventDefault();
         if (isCommitModalOpen) {
           // If modal is open, trigger commit submit
-          if (!isCommitting && githubToken.trim()) {
+          if (!isCommitting && getEffectiveGitHubToken()) {
             handleCommitToGitHub();
           }
         } else {
@@ -365,7 +306,7 @@ export default function AdminPage() {
     isAuthenticated,
     isCommitModalOpen,
     isCommitting,
-    githubToken,
+    getEffectiveGitHubToken,
     isAddGalleryOpen,
     isAddEventOpen,
     isLeaveConfirmOpen,
@@ -381,17 +322,10 @@ export default function AdminPage() {
     try {
       const result = await signInWithGoogle();
       const user = result.user;
-      if (isAuthorizedAdmin(user)) {
+      if (user && isAuthorizedAdmin(user)) {
         setFirebaseUser(user);
         sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
         showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
-      } else {
-        await logOutFirebase();
-        setFirebaseUser(null);
-        setAuthError(
-          `Access Denied: The account "${user.email}" is not registered on the administrators whitelist. Please sign in with an approved administrator account.`
-        );
-        showToast('Access Denied: Unauthorized account', 'error');
       }
     } catch (err) {
       console.error('Google Sign-In Error:', err);
@@ -423,17 +357,10 @@ export default function AdminPage() {
     try {
       const result = await signInWithEmail(emailInput.trim(), passwordInput);
       const user = result.user;
-      if (isAuthorizedAdmin(user)) {
+      if (user && isAuthorizedAdmin(user)) {
         setFirebaseUser(user);
         sessionStorage.setItem(LAST_ACTIVE_KEY, String(Date.now()));
         showToast(`Welcome, ${user.displayName || user.email}!`, 'success');
-      } else {
-        await logOutFirebase();
-        setFirebaseUser(null);
-        setAuthError(
-          `Access Denied: The account "${user.email}" is not registered on the administrators whitelist.`
-        );
-        showToast('Access Denied: Unauthorized account', 'error');
       }
     } catch (err) {
       console.error('Email Sign-In Error:', err);
@@ -1384,15 +1311,15 @@ export default function AdminPage() {
                   { key: 'alQual', label: 'University Qualifying (%)', val: content.performance?.alQual },
                   { key: 'clubs', label: 'Clubs & Societies', val: content.performance?.clubs },
                   { key: 'houses', label: 'Competitive Houses', val: content.performance?.houses },
-                  { key: 'labs', label: 'Lab Coverage (%)', val: content.performance?.labs }
+                  { key: 'grades', label: 'Grades Offered', val: content.performance?.grades || '6 – 13', isText: true }
                 ].map(stat => (
                   <div key={stat.key} className="bg-brand-light/30 border border-brand-pale rounded-xl sm:rounded-2xl p-3 sm:p-4">
                     <span className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1 truncate" title={stat.label}>{stat.label}</span>
                     <input
-                      type="number"
-                      step="any"
+                      type={stat.isText ? "text" : "number"}
+                      step={stat.isText ? undefined : "any"}
                       value={stat.val ?? ''}
-                      onChange={(e) => updatePerformance({ [stat.key]: Number(e.target.value) })}
+                      onChange={(e) => updatePerformance({ [stat.key]: stat.isText ? e.target.value : Number(e.target.value) })}
                       className="w-full px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-brand-white border border-brand-pale text-brand-forest font-mono font-bold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                     />
                   </div>
@@ -2355,138 +2282,6 @@ export default function AdminPage() {
 
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-                <h2 className="text-base sm:text-lg font-bold text-brand-forest">GitHub Publishing Token &amp; Sync</h2>
-                {githubToken ? (
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 self-start sm:self-auto">
-                    Token Saved
-                  </span>
-                ) : (
-                  <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200 self-start sm:self-auto">
-                    No Token Saved
-                  </span>
-                )}
-              </div>
-              <p className="text-xs text-slate-600 mb-4">
-                Save your GitHub Personal Access Token (PAT) with <span className="font-mono font-bold text-slate-800">repo</span> permission to commit website updates directly from this console. Commits trigger automated GitHub Actions deployment.
-              </p>
-
-              <div className="space-y-4 max-w-xl">
-                <div>
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                    <label className="block text-xs font-semibold text-slate-700">
-                      Personal Access Token (PAT)
-                    </label>
-                    <a
-                      href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1 self-start sm:self-auto"
-                    >
-                      <span>Create Token on GitHub ('repo' scope)</span>
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <div className="relative flex-1">
-                      <input
-                        type={showGithubToken ? 'text' : 'password'}
-                        value={githubToken}
-                        onChange={(e) => setGithubToken(e.target.value)}
-                        placeholder="ghp_... or github_pat_..."
-                        className="w-full px-3.5 py-2.5 sm:py-2 pr-14 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowGithubToken(prev => !prev)}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 px-2.5 py-1 text-slate-500 hover:text-slate-800 text-xs font-semibold cursor-pointer"
-                      >
-                        {showGithubToken ? 'Hide' : 'Show'}
-                      </button>
-                    </div>
-                    <button
-                      type="button"
-                      disabled={isVerifyingToken || !githubToken.trim()}
-                      onClick={handleVerifyToken}
-                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-brand-light border border-brand-pale hover:bg-brand-pale/70 text-brand-forest text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
-                    >
-                      {isVerifyingToken ? 'Verifying...' : 'Verify Token'}
-                    </button>
-                    {githubToken && (
-                      <button
-                        type="button"
-                        onClick={handleClearToken}
-                        className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-xl bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 text-xs font-bold transition cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
-                      >
-                        Clear Token
-                      </button>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-slate-500 mt-2">
-                    <span className="font-semibold text-slate-700">Security Recommendation:</span> Use a GitHub Fine-Grained Personal Access Token restricted strictly to <span className="font-mono font-bold text-brand-forest">Sivodayan/KCC-Project</span> with <span className="font-mono">Contents: Read and write</span> permissions.
-                  </p>
-                </div>
-
-                {verifiedUser && (
-                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center gap-3">
-                    {verifiedUser.avatarUrl && (
-                      <GlassImage
-                        src={verifiedUser.avatarUrl}
-                        alt={verifiedUser.login}
-                        containerClassName="w-8 h-8 rounded-full shrink-0"
-                        className="w-8 h-8 rounded-full border border-emerald-300 object-cover"
-                        showIcon={false}
-                      />
-                    )}
-                    <div>
-                      <span className="font-bold block">Verified GitHub Identity: @{verifiedUser.login}</span>
-                      <span className="text-[11px] text-emerald-700">{verifiedUser.name || verifiedUser.login} • Authenticated with repository write access</span>
-                    </div>
-                  </div>
-                )}
-
-                {tokenVerifyError && (
-                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-700">
-                    {tokenVerifyError}
-                  </div>
-                )}
-
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 pt-1">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (githubToken.trim()) {
-                        localStorage.setItem(GITHUB_TOKEN_STORAGE_KEY, githubToken.trim());
-                        showToast('GitHub token saved successfully!', 'success');
-                      } else {
-                        showToast('Token field is empty', 'error');
-                      }
-                    }}
-                    className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs text-center justify-center flex items-center"
-                  >
-                    Save Token
-                  </button>
-                  {githubToken && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        localStorage.removeItem(GITHUB_TOKEN_STORAGE_KEY);
-                        setGithubToken('');
-                        setVerifiedUser(null);
-                        showToast('GitHub token removed from storage', 'info');
-                      }}
-                      className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale hover:bg-rose-50 hover:text-rose-600 text-slate-600 text-xs font-semibold transition cursor-pointer text-center justify-center flex items-center"
-                    >
-                      Clear Token
-                    </button>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                 <h2 className="text-base sm:text-lg font-bold text-brand-forest">Workflow &amp; Keyboard Shortcuts</h2>
                 <div className="flex items-center gap-2">
                   <span className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-brand-light text-brand-forest border border-brand-pale">
@@ -2694,60 +2489,16 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  <div>
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 mb-1.5">
-                      <label className="block text-xs font-semibold text-slate-700">
-                        GitHub Personal Access Token (PAT)
-                      </label>
-                      <a
-                        href="https://github.com/settings/tokens/new?scopes=repo&description=KCC+Admin+Panel"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[11px] text-brand-forest hover:underline font-medium inline-flex items-center gap-1 self-start sm:self-auto"
-                      >
-                        <span>Create Token on GitHub</span>
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
+                  {!getEffectiveGitHubToken() && (
+                    <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
+                      <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>
+                        <strong>GitHub Token Missing:</strong> Please configure <code className="font-mono font-bold">VITE_GITHUB_TOKEN</code> in your Cloudflare / hosting environment variables.
+                      </span>
                     </div>
-                    <div className="relative">
-                      <input
-                        type={showGithubToken ? 'text' : 'password'}
-                        value={githubToken}
-                        onChange={(e) => setGithubToken(e.target.value)}
-                        placeholder="ghp_... or github_pat_..."
-                        required
-                        className="w-full px-3.5 py-2.5 sm:py-2 pr-10 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowGithubToken(prev => !prev)}
-                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-                        title={showGithubToken ? 'Hide token' : 'Show token'}
-                      >
-                        {showGithubToken ? (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
-                          </svg>
-                        ) : (
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                          </svg>
-                        )}
-                      </button>
-                    </div>
-                    <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
-                      <input
-                        type="checkbox"
-                        checked={saveTokenChoice}
-                        onChange={(e) => setSaveTokenChoice(e.target.checked)}
-                        className="rounded border-brand-pale text-brand-forest focus:ring-brand-forest/20"
-                      />
-                      <span className="text-[11px] text-slate-500">Save token in browser localStorage for future commits</span>
-                    </label>
-                  </div>
+                  )}
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-700 mb-1.5">
@@ -2795,10 +2546,10 @@ export default function AdminPage() {
 
                     <button
                       type="submit"
-                      disabled={isCommitting || !githubToken.trim()}
+                      disabled={isCommitting || !getEffectiveGitHubToken()}
                       title="Commit & Publish to GitHub (Ctrl+Enter or Ctrl+S)"
                       className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
-                        isCommitting || !githubToken.trim() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        isCommitting || !getEffectiveGitHubToken() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                       }`}
                     >
                       {isCommitting ? (

@@ -105,8 +105,8 @@ const searchItems = [
     action: "navigate"
   },
   {
-    title: "Science & ICT Smart Laboratories",
-    category: "Facilities",
+    title: "Grades 6 to 13 (Secondary & Collegiate)",
+    category: "Academics",
     url: "performance",
     action: "navigate"
   },
