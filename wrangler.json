@@ -2,5 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "kcc-project",
   "compatibility_date": "2026-10-23",
-  "pages_build_output_dir": "./dist"
+  "assets": {
+    "directory": "./dist"
+  }
 }
