@@ -146,6 +146,41 @@ export async function fetchFileFromGitHub({ owner, repo, path, branch = 'main', 
  * @param {string} [params.commitMessage] - Custom commit message.
  * @returns {Promise<{success: boolean, commitSha: string, fullSha: string, commitUrl: string, branch: string, timestamp: string}>}
  */
+/**
+ * Checks if the Cloudflare Pages Function /api/github proxy is available and configured.
+ *
+ * @returns {Promise<boolean>}
+ */
+export async function checkGitHubProxyStatus() {
+  try {
+    const res = await fetch('/api/github', { method: 'GET' });
+    const isJson = res.headers.get('content-type')?.includes('application/json');
+    if (res.ok && isJson) {
+      const data = await res.json().catch(() => ({}));
+      return Boolean(data?.configured);
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Commits updated file content to a branch.
+ * Prioritizes the secure Cloudflare Pages Function server-side proxy (/api/github)
+ * so GITHUB_TOKEN remains an encrypted server secret without ever being exposed in the browser.
+ * Falls back to direct client-side commit for local development if a local token is present.
+ *
+ * @param {Object} params
+ * @param {string} [params.owner='Sivodayan'] - Repository owner.
+ * @param {string} [params.repo='KCC-Project'] - Repository name.
+ * @param {string} [params.path='src/data/siteContent.json'] - Target file path.
+ * @param {string} [params.branch='main'] - Target branch.
+ * @param {string} [params.token] - Optional local PAT for local dev fallback.
+ * @param {string} params.contentString - Raw stringified content to commit.
+ * @param {string} [params.commitMessage] - Custom commit message.
+ * @returns {Promise<{success: boolean, commitSha: string, fullSha: string, commitUrl: string, branch: string, timestamp: string}>}
+ */
 export async function commitFileToGitHub({
   owner = 'Sivodayan',
   repo = 'KCC-Project',
@@ -155,12 +190,53 @@ export async function commitFileToGitHub({
   contentString,
   commitMessage
 }) {
-  if (!token || !token.trim()) {
-    throw new Error('GitHub Personal Access Token is required to commit changes.');
+  const msg = commitMessage?.trim() || `Update website content via KCC Admin Panel [${new Date().toISOString()}]`;
+
+  // 1. Primary path: Use Cloudflare Pages Function server-side proxy (/api/github)
+  try {
+    const proxyRes = await fetch('/api/github', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        owner,
+        repo,
+        path,
+        branch,
+        contentString,
+        commitMessage: msg
+      })
+    });
+
+    const isJson = proxyRes.headers.get('content-type')?.includes('application/json');
+
+    // If Cloudflare Pages Function responded with a JSON API response
+    if (isJson) {
+      const data = await proxyRes.json().catch(() => ({}));
+      if (!proxyRes.ok) {
+        throw new Error(data.error || `Server commit failed (${proxyRes.status})`);
+      }
+      return data;
+    }
+  } catch (err) {
+    // If the server proxy returned a deliberate error, surface it
+    if (err.message && !err.message.includes('Failed to fetch')) {
+      throw err;
+    }
   }
 
-  const cleanToken = token.trim();
-  const msg = commitMessage?.trim() || `Update website content via KCC Admin Panel [${new Date().toISOString()}]`;
+  // 2. Fallback path: Direct client-side commit (used for local development)
+  const cleanToken = (
+    token ||
+    import.meta.env.VITE_GITHUB_TOKEN ||
+    import.meta.env.GITHUB_TOKEN ||
+    ''
+  ).trim();
+
+  if (!cleanToken) {
+    throw new Error('Cloudflare Pages server proxy /api/github is not available, and no local GITHUB_TOKEN was found in .env.');
+  }
 
   // Query existing file SHA to support atomic in-place update
   const fileInfo = await fetchFileFromGitHub({
@@ -187,7 +263,7 @@ export async function commitFileToGitHub({
   const putRes = await fetch(putUrl, {
     method: 'PUT',
     headers: {
-      Authorization: `token ${cleanToken}`,
+      Authorization: `Bearer ${cleanToken}`,
       Accept: 'application/vnd.github.v3+json',
       'Content-Type': 'application/json'
     },

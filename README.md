@@ -179,7 +179,7 @@ The project is configured for **Direct Git Builds** on [Cloudflare Pages](https:
 
 ### Environment Variables in Cloudflare Pages:
 Set the following under **Project Settings > Environment Variables**:
-* `VITE_GITHUB_TOKEN` *(Personal access token with `repo` scope for Admin Console content sync)*
+* `GITHUB_TOKEN` *(**Encrypted secret** - Personal access token with `repo` scope, securely accessed by serverless Pages Function `/api/github`)*
 * `VITE_FIREBASE_API_KEY`
 * `VITE_FIREBASE_AUTH_DOMAIN`
 * `VITE_FIREBASE_PROJECT_ID`

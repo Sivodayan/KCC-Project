@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput } from '../context/SiteContentContext.jsx';
 import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
-import { commitFileToGitHub } from '../utils/githubSync.js';
+import { commitFileToGitHub, checkGitHubProxyStatus } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import {
@@ -188,6 +188,13 @@ export default function AdminPage() {
   const [isCommitting, setIsCommitting] = useState(false);
   const [commitResult, setCommitResult] = useState(null);
   const [commitError, setCommitError] = useState('');
+  const [isServerProxyReady, setIsServerProxyReady] = useState(true);
+
+  useEffect(() => {
+    checkGitHubProxyStatus().then((ready) => {
+      setIsServerProxyReady(ready);
+    });
+  }, []);
 
   const getEffectiveGitHubToken = useCallback(() => {
     return (
@@ -234,8 +241,8 @@ export default function AdminPage() {
   const handleCommitToGitHub = async (e) => {
     if (e) e.preventDefault();
     const token = getEffectiveGitHubToken();
-    if (!token) {
-      setCommitError('GitHub Personal Access Token is not configured. Please configure VITE_GITHUB_TOKEN in your environment variables.');
+    if (!token && !isServerProxyReady) {
+      setCommitError('GitHub publishing is not configured. Please set the encrypted GITHUB_TOKEN secret in Cloudflare Pages environment variables.');
       return;
     }
 
@@ -299,7 +306,7 @@ export default function AdminPage() {
         e.preventDefault();
         if (isCommitModalOpen) {
           // If modal is open, trigger commit submit
-          if (!isCommitting && getEffectiveGitHubToken()) {
+          if (!isCommitting && (isServerProxyReady || getEffectiveGitHubToken())) {
             handleCommitToGitHub();
           }
         } else {
@@ -3311,7 +3318,7 @@ export default function AdminPage() {
                     <div>
                       <p className="font-semibold text-slate-800">Direct Git Push &amp; Automated Deployment</p>
                       <p className="text-[11px] text-slate-500 mt-0.5">
-                        This atomic commit updates <span className="font-mono text-brand-forest font-bold">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span>, which triggers Cloudflare Pages direct build and deployment.
+                        This atomic commit updates <span className="font-mono text-brand-forest font-bold">src/data/siteContent.json</span> on branch <span className="font-mono font-bold">main</span> via the Cloudflare Pages serverless proxy (<span className="font-mono font-semibold">/api/github</span>), which triggers Cloudflare Pages direct build and deployment.
                       </p>
                     </div>
                   </div>
@@ -3328,13 +3335,13 @@ export default function AdminPage() {
                     </div>
                   )}
 
-                  {!getEffectiveGitHubToken() && (
+                  {!isServerProxyReady && !getEffectiveGitHubToken() && (
                     <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
                       <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>
                       <span>
-                        <strong>GitHub Token Missing:</strong> Please configure <code className="font-mono font-bold">VITE_GITHUB_TOKEN</code> in your Cloudflare / hosting environment variables.
+                        <strong>GitHub Secret Missing:</strong> Please configure the encrypted secret <code className="font-mono font-bold">GITHUB_TOKEN</code> in your Cloudflare Pages environment variables.
                       </span>
                     </div>
                   )}
@@ -3391,10 +3398,10 @@ export default function AdminPage() {
 
                     <button
                       type="submit"
-                      disabled={isCommitting || !getEffectiveGitHubToken()}
+                      disabled={isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken())}
                       title="Commit & Publish to GitHub (Ctrl+Enter or Ctrl+S)"
                       className={`inline-flex items-center justify-center gap-2 w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition shadow-md active:scale-95 ${
-                        isCommitting || !getEffectiveGitHubToken() ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                        isCommitting || (!isServerProxyReady && !getEffectiveGitHubToken()) ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
                       }`}
                     >
                       {isCommitting ? (
