@@ -326,9 +326,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 </svg>
               </button>
             ) : null}
-            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-semibold text-slate-400 dark:text-emerald-400/70 bg-slate-100 dark:bg-emerald-950/60 border border-slate-200 dark:border-emerald-500/30 rounded-md shrink-0 select-none">
-              ESC
-            </kbd>
+            
           </div>
         </div>
 
@@ -496,22 +494,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         </div>
 
         <div className="p-3 bg-brand-light/50 dark:bg-[#0b140d] border-t border-brand-pale dark:border-emerald-950/70 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-4">
-          <div className="flex items-center gap-3">
-            {hasQuery && !isSearching && filteredItems.length > 0 && (
-              <>
-                <span>
-                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↑</kbd>{' '}
-                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↓</kbd> navigate
-                </span>
-                <span>
-                  <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">↵</kbd> select
-                </span>
-              </>
-            )}
-            <span>
-              <kbd className="bg-brand-white dark:bg-[#152317] border border-brand-pale dark:border-emerald-500/30 text-slate-600 dark:text-emerald-300 px-1 rounded shadow-2xs">esc</kbd> close
-            </span>
-          </div>
+          
           <span className="font-medium text-brand-forest dark:text-emerald-400">
             {isSearching ? (
               <span className="inline-flex items-center gap-1.5 text-xs text-brand-forest dark:text-emerald-400">
