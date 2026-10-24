@@ -9,6 +9,17 @@ import {
   onRequestOptions as fbOptions
 } from './functions/api/resolve-facebook.js';
 
+function withNoIndex(response) {
+  if (!response) return response;
+  const headers = new Headers(response.headers);
+  headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers
+  });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -17,33 +28,33 @@ export default {
     if (url.pathname === '/api/github') {
       const context = { request, env, ctx };
       if (request.method === 'OPTIONS') {
-        return githubOptions(context);
+        return withNoIndex(await githubOptions(context));
       }
       if (request.method === 'GET') {
-        return githubGet(context);
+        return withNoIndex(await githubGet(context));
       }
       if (request.method === 'POST') {
-        return githubPost(context);
+        return withNoIndex(await githubPost(context));
       }
-      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      return withNoIndex(new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
         headers: { 'Content-Type': 'application/json' }
-      });
+      }));
     }
 
     // 2. Facebook canonical resolver proxy endpoint (/api/resolve-facebook)
     if (url.pathname === '/api/resolve-facebook') {
       const context = { request, env, ctx };
       if (request.method === 'OPTIONS') {
-        return fbOptions(context);
+        return withNoIndex(await fbOptions(context));
       }
       if (request.method === 'GET') {
-        return fbGet(context);
+        return withNoIndex(await fbGet(context));
       }
-      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      return withNoIndex(new Response(JSON.stringify({ error: 'Method not allowed' }), {
         status: 405,
         headers: { 'Content-Type': 'application/json' }
-      });
+      }));
     }
 
     // 3. Fallback to Cloudflare Static Assets

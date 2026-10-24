@@ -14,9 +14,20 @@
   <meta name="geo.region" content="LK-4">
   <meta name="geo.placename" content="Kopay, Jaffna, Sri Lanka">
 
+  <!-- Canonical URL & Multilingual Alternates -->
+  <link rel="canonical" href="https://kcc-project.sivodayan18.workers.dev/">
+  <link rel="alternate" hreflang="en" href="https://kcc-project.sivodayan18.workers.dev/?lang=en">
+  <link rel="alternate" hreflang="ta" href="https://kcc-project.sivodayan18.workers.dev/?lang=ta">
+  <link rel="alternate" hreflang="x-default" href="https://kcc-project.sivodayan18.workers.dev/">
+
+  <!-- Google Search Console Verification -->
+  <!-- If verifying via HTML tag in Google Search Console, insert your verification code into the content attribute below: -->
+  <meta name="google-site-verification" content="">
+
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="J/Kopay Christian College">
+  <meta property="og:url" content="https://kcc-project.sivodayan18.workers.dev/">
   <meta property="og:title" content="J/Kopay Christian College">
   <meta property="og:description"
     content="Official portal of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, historic heritage, and collegiate education.">
@@ -25,41 +36,72 @@
   <meta property="og:locale:alternate" content="ta_LK">
 
   <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://kcc-project.sivodayan18.workers.dev/">
   <meta name="twitter:title" content="J/Kopay Christian College">
   <meta name="twitter:description"
     content="Official portal of J/Kopay Christian College, Kopay, Jaffna. Established 1852.">
   <meta name="twitter:image" content="/assets/logo.png">
 
-  <!-- Google Search Structured Data (JSON-LD) for School -->
+  <!-- Google Search Structured Data (JSON-LD) for School & WebSite -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "School",
-    "name": "J/Kopay Christian College",
-    "alternateName": [
-      "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
-      "Kopay Christian College",
-      "KCC Jaffna"
-    ],
-    "logo": "/assets/logo.png",
-    "image": "/assets/hero.jpg",
-    "description": "Well-established secondary and collegiate school in Kopay, Jaffna, Sri Lanka, founded in 1852.",
-    "foundingDate": "1852",
-    "slogan": "Truth and Justice",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Kopay",
-      "addressLocality": "Jaffna",
-      "addressRegion": "Northern Province",
-      "addressCountry": "LK"
-    },
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "telephone": "+94-21-223-0040",
-      "contactType": "Administrative Office",
-      "email": "kcckopay@gmail.com"
-    }
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://kcc-project.sivodayan18.workers.dev/#website",
+        "url": "https://kcc-project.sivodayan18.workers.dev/",
+        "name": "J/Kopay Christian College",
+        "alternateName": [
+          "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
+          "Kopay Christian College",
+          "KCC Jaffna",
+          "Kopay College"
+        ],
+        "inLanguage": ["en", "ta"]
+      },
+      {
+        "@type": "School",
+        "@id": "https://kcc-project.sivodayan18.workers.dev/#school",
+        "name": "J/Kopay Christian College",
+        "alternateName": [
+          "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
+          "Kopay Christian College",
+          "KCC Jaffna",
+          "Kopay College"
+        ],
+        "url": "https://kcc-project.sivodayan18.workers.dev/",
+        "logo": "https://kcc-project.sivodayan18.workers.dev/assets/logo.png",
+        "image": "https://kcc-project.sivodayan18.workers.dev/assets/hero.jpg",
+        "description": "Well-established secondary and collegiate school in Kopay, Jaffna, Sri Lanka, founded in 1852.",
+        "foundingDate": "1852",
+        "slogan": "Truth and Justice",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Kopay",
+          "addressLocality": "Jaffna",
+          "addressRegion": "Northern Province",
+          "postalCode": "40000",
+          "addressCountry": "LK"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": 9.6833,
+          "longitude": 80.0500
+        },
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "telephone": "+94-21-223-0040",
+          "contactType": "Administrative Office",
+          "email": "kcckopay@gmail.com",
+          "availableLanguage": ["English", "Tamil"]
+        },
+        "sameAs": [
+          "https://www.facebook.com/kcckopay"
+        ]
+      }
+    ]
   }
   </script>
 

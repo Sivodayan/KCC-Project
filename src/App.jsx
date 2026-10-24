@@ -112,6 +112,8 @@ export default function App() {
     const ogTitle = document.querySelector('meta[property="og:title"]');
     const ogDesc = document.querySelector('meta[property="og:description"]');
     const robotsMeta = document.querySelector('meta[name="robots"]');
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    const ogUrl = document.querySelector('meta[property="og:url"]');
 
     let pageTitle = "J/Kopay Christian College";
     let descContent = "Official portal of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Established in 1852. Academic excellence, history, traditions, and collegiate education.";
@@ -148,6 +150,12 @@ export default function App() {
     if (metaDesc) metaDesc.setAttribute("content", descContent);
     if (ogTitle) ogTitle.setAttribute("content", pageTitle);
     if (ogDesc) ogDesc.setAttribute("content", descContent);
+
+    if (typeof window !== 'undefined') {
+      const canonicalHref = `${window.location.origin}${location.pathname}`;
+      if (canonicalLink) canonicalLink.setAttribute("href", canonicalHref);
+      if (ogUrl) ogUrl.setAttribute("content", canonicalHref);
+    }
   }, [location.pathname, historyLang]);
 
   const handleNavigate = useCallback((page) => {
