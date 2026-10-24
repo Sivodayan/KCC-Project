@@ -8,6 +8,8 @@ pnpm-debug.log*
 lerna-debug.log*
 firebase-debug.log*
 firestore-debug.log*
+database-debug.log*
+pubsub-debug.log*
 ui-debug.log*
 
 # Diagnostic reports
@@ -31,10 +33,16 @@ coverage
 
 # Dependency directories
 node_modules/
+jspm_packages/
 
-# Production build outputs
+# Production build outputs & caches
 dist/
 dist-ssr/
+build/
+out/
+.parcel-cache/
+.turbo/
+*.tsbuildinfo
 
 # Local env files and secrets
 .env
@@ -52,24 +60,33 @@ service-account.json
 *.pem
 *.key
 
-# Firebase cache
+# Cloudflare, Firebase & Hosting platforms
+.wrangler/
+.cloudflare/
+.mf/
+.vercel/
 .firebase/
+.runtimeconfig.json
 
-# Agent skills and lockfiles
+# Agent & AI artifacts
 .agents/
 skills-lock.json
+.gemini/
 
-# Editor directories and files
+# Editor & OS files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-workspace
 .DS_Store
+.DS_Store?
+._*
 Thumbs.db
-
-# Hosting platforms
-.vercel
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/

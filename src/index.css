@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Scroll offset for sticky header */
 :root {
   --nav-height: 4.8rem;
