@@ -1616,34 +1616,263 @@ export default function AdminPage() {
         {/* PERFORMANCE */}
         {activeTab === 'performance' && (
           <div className="space-y-6">
+            {/* 1. SECTION HEADINGS & SUBTITLE */}
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
-              <h2 className="text-base sm:text-lg font-bold text-brand-forest mb-1.5 sm:mb-2">Key Numbers &amp; Performance</h2>
-              <p className="text-xs text-slate-600 mb-4 sm:mb-6">
-                Update the 8 official statistics displayed on the Key Numbers &amp; Performance grid.
-              </p>
+              <div className="flex items-center justify-between pb-3 mb-5 border-b border-brand-pale/60 flex-wrap gap-2">
+                <div>
+                  <h2 className="text-base sm:text-lg font-bold text-brand-forest">
+                    Performance Section Headings &amp; Intro
+                  </h2>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Edit the main title and descriptive text shown above the key statistics grid.
+                  </p>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold">
+                  Section Header
+                </span>
+              </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+              <div className="grid grid-cols-1 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Section Heading / Title
+                  </label>
+                  <input
+                    type="text"
+                    value={content.performance?.title ?? 'Key Numbers & Performance'}
+                    onChange={(e) => updatePerformance({ title: e.target.value })}
+                    placeholder="Key Numbers & Performance"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                    Section Subtitle / Description Text
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={content.performance?.subtitle ?? 'Measurable records reflecting academic commitment, teacher mentorship, and co-curricular vibrancy.'}
+                    onChange={(e) => updatePerformance({ subtitle: e.target.value })}
+                    placeholder="Measurable records reflecting academic commitment, teacher mentorship, and co-curricular vibrancy."
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 2. ALL 8 STATISTIC METRIC TILES */}
+            <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
+              <div className="flex items-center justify-between pb-3 mb-6 border-b border-brand-pale/60 flex-wrap gap-2">
+                <div>
+                  <h3 className="text-base sm:text-lg font-bold text-brand-forest">
+                    Key Performance Metrics ({8} Tiles)
+                  </h3>
+                  <p className="text-xs text-slate-600 mt-0.5">
+                    Edit every tile's numeric value, heading/title, subtitle descriptor, and optional suffix.
+                  </p>
+                </div>
+                <span className="px-2.5 py-1 rounded-full bg-brand-light text-brand-forest font-semibold text-[11px] border border-brand-pale">
+                  Live Synced
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 sm:gap-6">
                 {[
-                  { key: 'founded', label: 'Founded Year', val: content.performance?.founded },
-                  { key: 'students', label: 'Enrolled Students', val: content.performance?.students },
-                  { key: 'staff', label: 'Teaching Staff', val: content.performance?.staff },
-                  { key: 'olPass', label: 'G.C.E. O/L Pass Rate (%)', val: content.performance?.olPass },
-                  { key: 'alQual', label: 'University Qualifying (%)', val: content.performance?.alQual },
-                  { key: 'clubs', label: 'Clubs & Societies', val: content.performance?.clubs },
-                  { key: 'houses', label: 'Competitive Houses', val: content.performance?.houses },
-                  { key: 'grades', label: 'Grades Offered', val: content.performance?.grades || '6 – 13', isText: true }
-                ].map(stat => (
-                  <div key={stat.key} className="bg-brand-light/30 border border-brand-pale rounded-xl sm:rounded-2xl p-3 sm:p-4">
-                    <span className="block text-[10px] sm:text-[11px] font-semibold text-slate-600 mb-1 truncate" title={stat.label}>{stat.label}</span>
-                    <input
-                      type={stat.isText ? "text" : "number"}
-                      step={stat.isText ? undefined : "any"}
-                      value={stat.val ?? ''}
-                      onChange={(e) => updatePerformance({ [stat.key]: stat.isText ? e.target.value : Number(e.target.value) })}
-                      className="w-full px-2.5 sm:px-3 py-1.5 rounded-lg sm:rounded-xl bg-brand-white border border-brand-pale text-brand-forest font-mono font-bold text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
-                    />
-                  </div>
-                ))}
+                  {
+                    id: 'founded',
+                    defaultHeading: 'Founded Year',
+                    defaultSub: 'Peninsula Heritage',
+                    defaultVal: 1852,
+                    defaultSuffix: '',
+                    isText: false,
+                    valueKey: 'founded',
+                    labelKey: 'foundedLabel',
+                    subKey: 'foundedSub',
+                    suffixKey: 'foundedSuffix',
+                  },
+                  {
+                    id: 'students',
+                    defaultHeading: 'Enrolled Students',
+                    defaultSub: 'Secondary to Collegiate',
+                    defaultVal: 386,
+                    defaultSuffix: '+',
+                    isText: false,
+                    valueKey: 'students',
+                    labelKey: 'studentsLabel',
+                    subKey: 'studentsSub',
+                    suffixKey: 'studentsSuffix',
+                  },
+                  {
+                    id: 'staff',
+                    defaultHeading: 'Teaching Staff',
+                    defaultSub: 'Dedicated Faculty',
+                    defaultVal: 46,
+                    defaultSuffix: '',
+                    isText: false,
+                    valueKey: 'staff',
+                    labelKey: 'staffLabel',
+                    subKey: 'staffSub',
+                    suffixKey: 'staffSuffix',
+                  },
+                  {
+                    id: 'olPass',
+                    defaultHeading: 'G.C.E. O/L Pass Rate',
+                    defaultSub: 'National Examination',
+                    defaultVal: 94.2,
+                    defaultSuffix: '%',
+                    isText: false,
+                    step: 'any',
+                    valueKey: 'olPass',
+                    labelKey: 'olPassLabel',
+                    subKey: 'olPassSub',
+                    suffixKey: 'olPassSuffix',
+                  },
+                  {
+                    id: 'grades',
+                    defaultHeading: 'School Grades',
+                    defaultSub: 'Grades from 6 to 13',
+                    defaultVal: '6 – 13',
+                    defaultSuffix: '',
+                    isText: true,
+                    valueKey: 'grades',
+                    labelKey: 'gradesLabel',
+                    subKey: 'gradesSub',
+                    suffixKey: 'gradesSuffix',
+                  },
+                  {
+                    id: 'alQual',
+                    defaultHeading: 'University Qualifying',
+                    defaultSub: 'G.C.E. A/L Streams',
+                    defaultVal: 78,
+                    defaultSuffix: '%',
+                    isText: false,
+                    valueKey: 'alQual',
+                    labelKey: 'alQualLabel',
+                    subKey: 'alQualSub',
+                    suffixKey: 'alQualSuffix',
+                  },
+                  {
+                    id: 'clubs',
+                    defaultHeading: 'Clubs & Societies',
+                    defaultSub: 'Co-Curricular Groups',
+                    defaultVal: 18,
+                    defaultSuffix: '',
+                    isText: false,
+                    valueKey: 'clubs',
+                    labelKey: 'clubsLabel',
+                    subKey: 'clubsSub',
+                    suffixKey: 'clubsSuffix',
+                  },
+                  {
+                    id: 'houses',
+                    defaultHeading: 'Competitive Houses',
+                    defaultSub: 'Annual Sports Division',
+                    defaultVal: 4,
+                    defaultSuffix: '',
+                    isText: false,
+                    valueKey: 'houses',
+                    labelKey: 'housesLabel',
+                    subKey: 'housesSub',
+                    suffixKey: 'housesSuffix',
+                  },
+                ].map((stat, sIdx) => {
+                  const currentVal = content.performance?.[stat.valueKey] ?? stat.defaultVal;
+                  const currentLabel = content.performance?.[stat.labelKey] ?? stat.defaultHeading;
+                  const currentSub = content.performance?.[stat.subKey] ?? stat.defaultSub;
+                  const currentSuffix = content.performance?.[stat.suffixKey] ?? stat.defaultSuffix;
+
+                  return (
+                    <div
+                      key={stat.id}
+                      className="rounded-2xl border border-brand-pale bg-brand-light/20 p-4 sm:p-5 flex flex-col justify-between shadow-2xs hover:border-brand-forest/40 transition-all space-y-4"
+                    >
+                      {/* Top Header of Card */}
+                      <div className="flex items-center justify-between gap-2 border-b border-brand-pale/60 pb-2.5">
+                        <span className="px-2 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
+                          #{sIdx + 1}
+                        </span>
+                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          Metric Tile
+                        </span>
+                      </div>
+
+                      {/* Live Mini Preview Box */}
+                      <div className="p-3.5 rounded-xl bg-white border border-brand-pale shadow-2xs text-center">
+                        <p className="text-2xl sm:text-3xl font-extrabold text-brand-forest font-sans">
+                          {currentVal}{currentSuffix}
+                        </p>
+                        <p className="text-[11px] uppercase font-bold text-emerald-800 mt-1 line-clamp-1">
+                          {currentLabel}
+                        </p>
+                        <p className="text-[10px] text-slate-500 mt-0.5 line-clamp-1">
+                          {currentSub}
+                        </p>
+                      </div>
+
+                      {/* Inputs for Value, Heading, Subtitle, Suffix */}
+                      <div className="space-y-3 pt-1">
+                        {/* Value and Suffix */}
+                        <div className="grid grid-cols-3 gap-2">
+                          <div className="col-span-2">
+                            <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                              Value / Number *
+                            </label>
+                            <input
+                              type={stat.isText ? "text" : "number"}
+                              step={stat.step || (stat.isText ? undefined : "any")}
+                              value={currentVal}
+                              onChange={(e) => updatePerformance({
+                                [stat.valueKey]: stat.isText ? e.target.value : (e.target.value === '' ? '' : Number(e.target.value))
+                              })}
+                              className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-brand-pale text-brand-forest font-mono font-bold text-sm focus:outline-none focus:border-brand-forest"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                              Suffix
+                            </label>
+                            <input
+                              type="text"
+                              value={currentSuffix}
+                              onChange={(e) => updatePerformance({ [stat.suffixKey]: e.target.value })}
+                              placeholder="+, %"
+                              className="w-full px-2 py-1.5 rounded-lg bg-white border border-brand-pale text-slate-800 text-xs font-mono font-bold text-center focus:outline-none focus:border-brand-forest"
+                            />
+                          </div>
+                        </div>
+
+                        {/* Heading / Label */}
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                            Card Heading / Title *
+                          </label>
+                          <input
+                            type="text"
+                            value={currentLabel}
+                            onChange={(e) => updatePerformance({ [stat.labelKey]: e.target.value })}
+                            placeholder={stat.defaultHeading}
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-brand-pale text-slate-800 text-xs font-semibold focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+
+                        {/* Subtitle / Description */}
+                        <div>
+                          <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
+                            Card Subtitle / Description
+                          </label>
+                          <input
+                            type="text"
+                            value={currentSub}
+                            onChange={(e) => updatePerformance({ [stat.subKey]: e.target.value })}
+                            placeholder={stat.defaultSub}
+                            className="w-full px-2.5 py-1.5 rounded-lg bg-white border border-brand-pale text-slate-700 text-xs focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
