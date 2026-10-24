@@ -14,7 +14,7 @@ ui-debug.log*
 
 # Diagnostic reports
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-
+KCC Project.code-workspace
 # Runtime data
 pids
 *.pid
