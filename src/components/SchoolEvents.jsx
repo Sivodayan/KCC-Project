@@ -136,6 +136,8 @@ function ManualEventCard({ post }) {
     }
   })();
 
+  const hasImage = Boolean(post.image && post.image.trim());
+
   return (
     <>
       <div
@@ -144,9 +146,11 @@ function ManualEventCard({ post }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setIsDetailOpen(true)}
-        className={`relative w-full max-w-[360px] h-[480px] bg-white dark:bg-[#0e1710] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col cursor-pointer group active:scale-[0.99] select-none ${
+        className={`relative w-full max-w-[360px] h-[480px] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col cursor-pointer group active:scale-[0.99] select-none ${
+          hasImage ? 'bg-slate-900 text-white' : 'bg-white dark:bg-[#0e1710] text-slate-800 dark:text-slate-100'
+        } ${
           isHovered
-            ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/15 dark:shadow-[0_20px_40px_rgba(0,0,0,0.6)] border-brand-forest/40 dark:border-emerald-400/50 ring-2 ring-brand-forest/20 dark:ring-emerald-400/20'
+            ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/20 dark:shadow-[0_20px_40px_rgba(0,0,0,0.7)] border-brand-forest/40 dark:border-emerald-400/50 ring-2 ring-brand-forest/25 dark:ring-emerald-400/25'
             : 'shadow-sm border-slate-200/90 dark:border-emerald-500/25 hover:shadow-md dark:hover:border-emerald-500/40'
         }`}
         role="button"
@@ -158,95 +162,169 @@ function ManualEventCard({ post }) {
           }
         }}
       >
-        {/* Radial highlight glow */}
-        <div
-          className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
-          style={{
-            opacity: isHovered ? 1 : 0,
-            background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.12), rgba(27, 77, 62, 0.05), transparent 70%)`,
-          }}
-        />
-
-        {/* Top edge gradient stripe on hover */}
-        <div
-          className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${
-            isHovered ? 'opacity-100' : 'opacity-0'
-          }`}
-        />
-
-        {/* Media Header (Picture or Themed Crest Banner) */}
-        <div className="relative w-full h-[220px] bg-gradient-to-br from-brand-forest/10 via-brand-light to-emerald-950/20 dark:from-emerald-950 dark:to-black overflow-hidden shrink-0">
-          {post.image ? (
+        {hasImage ? (
+          <>
+            {/* Full Card Cover Image */}
             <img
               src={post.image}
               alt={post.title || 'School Event'}
-              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
             />
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center p-4 text-center">
+            {/* Multi-stop dark gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20 pointer-events-none" />
+
+            {/* Radial highlight glow */}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
+              style={{
+                opacity: isHovered ? 1 : 0,
+                background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.2), rgba(27, 77, 62, 0.1), transparent 70%)`,
+              }}
+            />
+
+            {/* Top edge gradient stripe on hover */}
+            <div
+              className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-opacity duration-300 z-20 ${
+                isHovered ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+
+            {/* Badges Overlay at Top */}
+            <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-20 pointer-events-none">
+              <span className="px-3 py-1 rounded-full bg-brand-forest/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider shadow-md border border-white/20">
+                {post.category || 'School Event'}
+              </span>
+              {formattedDate && (
+                <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold shadow-md border border-white/15">
+                  {formattedDate}
+                </span>
+              )}
+            </div>
+
+            {/* Card Content Overlay at Bottom */}
+            <div className="relative z-10 mt-auto p-5 space-y-2 flex flex-col justify-end">
+              {post.title && (
+                <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-2 leading-snug drop-shadow-md">
+                  {post.title}
+                </h3>
+              )}
+              {post.titleTa && (
+                <p className="text-xs font-tamil font-semibold text-emerald-300 line-clamp-1 drop-shadow-sm">
+                  {post.titleTa}
+                </p>
+              )}
+              {post.location && (
+                <div className="flex items-center gap-1.5 text-[11px] text-white/80 pt-0.5">
+                  <svg className="w-3.5 h-3.5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span className="truncate">{post.location}</span>
+                </div>
+              )}
+              {post.description && (
+                <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5 drop-shadow-xs">
+                  {post.description}
+                </p>
+              )}
+
+              <div className="pt-3 border-t border-white/15 flex items-center justify-between mt-1">
+                <span className="text-xs font-bold text-emerald-300 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  <span>View Details</span>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span className="text-[10px] text-white/60 uppercase tracking-wider font-semibold">
+                  KCC Updates
+                </span>
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Text-only fallback card */
+          <>
+            {/* Radial highlight glow */}
+            <div
+              className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
+              style={{
+                opacity: isHovered ? 1 : 0,
+                background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.12), rgba(27, 77, 62, 0.05), transparent 70%)`,
+              }}
+            />
+
+            {/* Top edge gradient stripe on hover */}
+            <div
+              className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${
+                isHovered ? 'opacity-100' : 'opacity-0'
+              }`}
+            />
+
+            {/* Media Header (Themed Crest Banner) */}
+            <div className="relative w-full h-[200px] bg-gradient-to-br from-brand-forest/10 via-brand-light to-emerald-950/20 dark:from-emerald-950 dark:to-black overflow-hidden shrink-0 flex flex-col items-center justify-center p-4 text-center">
               <div className="w-14 h-14 rounded-2xl bg-white/80 dark:bg-emerald-900/60 p-2 shadow-xs mb-2 flex items-center justify-center">
                 <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <span className="text-[11px] font-bold text-brand-forest dark:text-emerald-300 uppercase tracking-widest">
                 KCC Event
               </span>
-            </div>
-          )}
 
-          {/* Badges Overlay */}
-          <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
-            <span className="px-2.5 py-0.5 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-2xs">
-              {post.category || 'Event'}
-            </span>
-            {formattedDate && (
-              <span className="px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs text-slate-800 dark:text-slate-200 text-[10px] font-bold shadow-2xs">
-                {formattedDate}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Card Body */}
-        <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between overflow-hidden">
-          <div className="space-y-1.5 min-w-0">
-            {post.title && (
-              <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-brand-forest dark:group-hover:text-emerald-300 transition-colors line-clamp-2 leading-snug">
-                {post.title}
-              </h3>
-            )}
-            {post.titleTa && (
-              <p className="text-xs font-tamil font-semibold text-brand-forest dark:text-emerald-400 line-clamp-1">
-                {post.titleTa}
-              </p>
-            )}
-            {post.location && (
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 pt-0.5">
-                <svg className="w-3.5 h-3.5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span className="truncate">{post.location}</span>
+              {/* Badges Overlay */}
+              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
+                <span className="px-2.5 py-0.5 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-2xs">
+                  {post.category || 'Event'}
+                </span>
+                {formattedDate && (
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs text-slate-800 dark:text-slate-200 text-[10px] font-bold shadow-2xs">
+                    {formattedDate}
+                  </span>
+                )}
               </div>
-            )}
-            {post.description && (
-              <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed pt-1">
-                {post.description}
-              </p>
-            )}
-          </div>
+            </div>
 
-          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between mt-auto">
-            <span className="text-xs font-bold text-brand-forest dark:text-emerald-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
-              <span>View Details</span>
-              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-              </svg>
-            </span>
-            <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-              KCC Updates
-            </span>
-          </div>
-        </div>
+            {/* Card Body */}
+            <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between overflow-hidden">
+              <div className="space-y-1.5 min-w-0">
+                {post.title && (
+                  <h3 className="text-base sm:text-lg font-bold text-slate-800 dark:text-slate-100 group-hover:text-brand-forest dark:group-hover:text-emerald-300 transition-colors line-clamp-2 leading-snug">
+                    {post.title}
+                  </h3>
+                )}
+                {post.titleTa && (
+                  <p className="text-xs font-tamil font-semibold text-brand-forest dark:text-emerald-400 line-clamp-1">
+                    {post.titleTa}
+                  </p>
+                )}
+                {post.location && (
+                  <div className="flex items-center gap-1.5 text-[11px] text-slate-500 dark:text-slate-400 pt-0.5">
+                    <svg className="w-3.5 h-3.5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span className="truncate">{post.location}</span>
+                  </div>
+                )}
+                {post.description && (
+                  <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed pt-1">
+                    {post.description}
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between mt-auto">
+                <span className="text-xs font-bold text-brand-forest dark:text-emerald-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1">
+                  <span>View Details</span>
+                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                  </svg>
+                </span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
+                  KCC Updates
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Expanded Modal View for Full Picture and Text */}

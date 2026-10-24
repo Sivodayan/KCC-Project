@@ -3041,78 +3041,139 @@ export default function AdminPage() {
                         const isManual = post.type === 'manual' || (!post.iframeSrc && (post.image || post.title));
 
                         if (isManual) {
+                          const hasImg = Boolean(post.image && post.image.trim());
                           return (
                             <div
                               key={post.id || idx}
-                              className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
+                              className={`border rounded-xl sm:rounded-2xl overflow-hidden shadow-2xs flex flex-col justify-between relative transition-all ${
+                                hasImg
+                                  ? 'h-[360px] bg-slate-900 border-slate-700/60'
+                                  : 'bg-brand-light/20 border-brand-pale p-3.5 sm:p-4'
+                              }`}
                             >
-                              <div>
-                                {/* Top Bar */}
-                                <div className="flex items-center justify-between gap-2 mb-3">
-                                  <div className="flex items-center gap-1.5">
-                                    <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
-                                      #{idx + 1}
-                                    </span>
-                                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
-                                      Manual Post
-                                    </span>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    onClick={() => {
-                                      if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
-                                        deleteEvent(post.id);
-                                        showToast('Event removed', 'success');
-                                      }
-                                    }}
-                                    className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
-                                    title="Delete event"
-                                  >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                  </button>
-                                </div>
+                              {hasImg ? (
+                                <>
+                                  {/* Full Cover Image */}
+                                  <img
+                                    src={post.image}
+                                    alt={post.title || 'Event'}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
 
-                                {/* Picture Preview */}
-                                <div className="w-full h-44 rounded-xl overflow-hidden bg-white border border-brand-pale/80 shadow-2xs mb-3 flex items-center justify-center relative">
-                                  {post.image ? (
-                                    <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
-                                  ) : (
+                                  {/* Top Bar Floating */}
+                                  <div className="relative z-10 p-3 sm:p-3.5 flex items-center justify-between gap-2">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold shadow-xs">
+                                        #{idx + 1}
+                                      </span>
+                                      <span className="px-2.5 py-0.5 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider border border-white/20">
+                                        {post.category || 'Manual Post'}
+                                      </span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
+                                          deleteEvent(post.id);
+                                          showToast('Event removed', 'success');
+                                        }
+                                      }}
+                                      className="text-white/80 hover:text-rose-400 p-1.5 rounded-lg bg-black/50 hover:bg-rose-950/80 transition cursor-pointer"
+                                      title="Delete event"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+
+                                  {/* Bottom Content Scrim */}
+                                  <div className="relative z-10 mt-auto p-4 space-y-1 text-white">
+                                    {post.date && (
+                                      <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-white text-[10px] font-semibold mb-1">
+                                        📅 {post.date}
+                                      </span>
+                                    )}
+                                    <h4 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">{post.title || 'Untitled Event'}</h4>
+                                    {post.titleTa && (
+                                      <p className="text-xs font-tamil text-emerald-300 font-semibold line-clamp-1">{post.titleTa}</p>
+                                    )}
+                                    {post.location && (
+                                      <p className="text-[11px] text-white/80 truncate flex items-center gap-1">
+                                        <span>📍</span>
+                                        <span>{post.location}</span>
+                                      </p>
+                                    )}
+                                    {post.description && (
+                                      <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5">{post.description}</p>
+                                    )}
+                                  </div>
+                                </>
+                              ) : (
+                                <div>
+                                  {/* Top Bar */}
+                                  <div className="flex items-center justify-between gap-2 mb-3">
+                                    <div className="flex items-center gap-1.5">
+                                      <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
+                                        #{idx + 1}
+                                      </span>
+                                      <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold uppercase tracking-wider">
+                                        Manual Post
+                                      </span>
+                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
+                                          deleteEvent(post.id);
+                                          showToast('Event removed', 'success');
+                                        }
+                                      }}
+                                      className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                      title="Delete event"
+                                    >
+                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                      </svg>
+                                    </button>
+                                  </div>
+
+                                  <div className="w-full h-44 rounded-xl overflow-hidden bg-brand-light/30 border border-brand-pale/80 shadow-2xs mb-3 flex items-center justify-center relative">
                                     <div className="text-center p-3 text-slate-400 text-xs flex flex-col items-center">
                                       <svg className="w-8 h-8 text-slate-300 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                       </svg>
                                       <span>No Photo Attached</span>
                                     </div>
-                                  )}
-                                  <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
-                                    {post.category || 'School Event'}
-                                  </span>
-                                  {post.date && (
-                                    <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
-                                      {post.date}
+                                    <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
+                                      {post.category || 'School Event'}
                                     </span>
-                                  )}
-                                </div>
+                                    {post.date && (
+                                      <span className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-black/70 text-white text-[10px] font-semibold">
+                                        {post.date}
+                                      </span>
+                                    )}
+                                  </div>
 
-                                {/* Text Details */}
-                                <div className="space-y-1">
-                                  <h4 className="text-sm font-bold text-slate-800 line-clamp-1">{post.title || 'Untitled Event'}</h4>
-                                  {post.titleTa && (
-                                    <p className="text-xs font-tamil text-brand-forest font-semibold line-clamp-1">{post.titleTa}</p>
-                                  )}
-                                  {post.location && (
-                                    <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
-                                      <span>📍</span>
-                                      <span>{post.location}</span>
-                                    </p>
-                                  )}
-                                  {post.description && (
-                                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed mt-1">{post.description}</p>
-                                  )}
+                                  {/* Text Details */}
+                                  <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-slate-800 line-clamp-1">{post.title || 'Untitled Event'}</h4>
+                                    {post.titleTa && (
+                                      <p className="text-xs font-tamil text-brand-forest font-semibold line-clamp-1">{post.titleTa}</p>
+                                    )}
+                                    {post.location && (
+                                      <p className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                                        <span>📍</span>
+                                        <span>{post.location}</span>
+                                      </p>
+                                    )}
+                                    {post.description && (
+                                      <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed mt-1">{post.description}</p>
+                                    )}
+                                  </div>
                                 </div>
-                              </div>
+                              )}
                             </div>
                           );
                         }
@@ -3297,27 +3358,73 @@ export default function AdminPage() {
                           />
 
                           {manualEventImage ? (
-                            <div className="relative rounded-2xl border border-brand-pale overflow-hidden bg-brand-light/20 p-3 flex items-center gap-3">
-                              <img
-                                src={manualEventImage}
-                                alt="Event preview"
-                                className="w-20 h-20 rounded-xl object-cover border border-brand-pale shrink-0 shadow-2xs"
-                              />
-                              <div className="flex-1 min-w-0">
-                                <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mb-1">
-                                  Photo Ready
-                                </span>
-                                {eventPhotoStats && (
-                                  <p className="text-[11px] text-slate-600">
-                                    Size: <strong>{formatBytes(eventPhotoStats.compressedSize)}</strong>
-                                    {eventPhotoStats.reductionPercent > 0 && (
-                                      <span className="text-emerald-700 font-semibold ml-1">
-                                        ({eventPhotoStats.reductionPercent}% smaller)
-                                      </span>
-                                    )}
-                                  </p>
-                                )}
-                                <div className="flex items-center gap-2 mt-2">
+                            <div className="space-y-3">
+                              {/* Live Card Full-Cover Preview */}
+                              <div className="relative w-full max-w-[280px] mx-auto h-[360px] rounded-2xl overflow-hidden shadow-lg border border-slate-700/60 flex flex-col justify-between bg-slate-900 group">
+                                <img
+                                  src={manualEventImage}
+                                  alt="Event preview"
+                                  className="absolute inset-0 w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
+
+                                {/* Top Bar Floating */}
+                                <div className="relative z-10 p-3 flex items-center justify-between gap-2">
+                                  <span className="px-2.5 py-1 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-xs border border-white/20">
+                                    {manualEventCategory || 'School Event'}
+                                  </span>
+                                  {manualEventDate && (
+                                    <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold shadow-xs border border-white/15">
+                                      {manualEventDate}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* Bottom Content Scrim */}
+                                <div className="relative z-10 p-4 space-y-1 text-white">
+                                  <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[9px] font-bold uppercase tracking-wider mb-1">
+                                    Full Card Cover Preview
+                                  </span>
+                                  <h4 className="text-sm font-bold text-white line-clamp-2 drop-shadow-sm">
+                                    {manualEventTitle || 'Event Title will appear here...'}
+                                  </h4>
+                                  {manualEventTitleTa && (
+                                    <p className="text-xs font-tamil text-emerald-300 font-semibold line-clamp-1">
+                                      {manualEventTitleTa}
+                                    </p>
+                                  )}
+                                  {manualEventLocation && (
+                                    <p className="text-[11px] text-white/80 truncate flex items-center gap-1">
+                                      <span>📍</span>
+                                      <span>{manualEventLocation}</span>
+                                    </p>
+                                  )}
+                                  {manualEventDesc && (
+                                    <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5">
+                                      {manualEventDesc}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
+
+                              {/* Photo Stats & Actions */}
+                              <div className="flex items-center justify-between bg-brand-light/40 border border-brand-pale rounded-xl px-3 py-2 text-xs">
+                                <div>
+                                  <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mr-2">
+                                    Photo Ready
+                                  </span>
+                                  {eventPhotoStats && (
+                                    <span className="text-[11px] text-slate-600">
+                                      {formatBytes(eventPhotoStats.compressedSize)}
+                                      {eventPhotoStats.reductionPercent > 0 && (
+                                        <span className="text-emerald-700 font-semibold ml-1">
+                                          (-{eventPhotoStats.reductionPercent}%)
+                                        </span>
+                                      )}
+                                    </span>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2">
                                   <button
                                     type="button"
                                     onClick={() => eventPhotoInputRef.current?.click()}
