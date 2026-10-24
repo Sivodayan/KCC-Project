@@ -280,6 +280,72 @@ export default function AdminPage() {
     setIsAddEventOpen(false);
   };
 
+  // Edit Manual Event State
+  const [editingEvent, setEditingEvent] = useState(null);
+  const [isProcessingEditPhoto, setIsProcessingEditPhoto] = useState(false);
+  const [editPhotoError, setEditPhotoError] = useState('');
+  const [editPhotoCompress, setEditPhotoCompress] = useState(true);
+  const [editPhotoStats, setEditPhotoStats] = useState(null);
+  const editEventPhotoInputRef = useRef(null);
+
+  const handleOpenEditEvent = (post) => {
+    setEditingEvent({
+      id: post.id,
+      title: post.title || '',
+      titleTa: post.titleTa || '',
+      date: post.date || new Date().toISOString().slice(0, 10),
+      category: post.category || 'School Event',
+      location: post.location || '',
+      description: post.description || '',
+      descriptionTa: post.descriptionTa || '',
+      image: post.image || '',
+    });
+    setEditPhotoStats(null);
+    setEditPhotoError('');
+  };
+
+  const handleEditEventPhotoFile = async (file) => {
+    if (!file) return;
+    try {
+      setIsProcessingEditPhoto(true);
+      setEditPhotoError('');
+      const res = await processImageFile(file, { compress: editPhotoCompress });
+      setEditingEvent(prev => prev ? { ...prev, image: res.dataUrl } : null);
+      setEditPhotoStats({
+        originalSize: res.originalSize,
+        compressedSize: res.compressedSize,
+        reductionPercent: res.reductionPercent
+      });
+      showToast(`Photo updated (${formatBytes(res.compressedSize)})!`, 'success');
+    } catch (err) {
+      setEditPhotoError(err.message || 'Failed to process image');
+      showToast(err.message || 'Image processing error', 'error');
+    } finally {
+      setIsProcessingEditPhoto(false);
+    }
+  };
+
+  const handleSaveEditEvent = (e) => {
+    if (e) e.preventDefault();
+    if (!editingEvent) return;
+    if (!editingEvent.title.trim() && !editingEvent.titleTa.trim() && !editingEvent.image) {
+      showToast('Please provide an event title or photo', 'error');
+      return;
+    }
+    updateEvent(editingEvent.id, {
+      title: editingEvent.title.trim(),
+      titleTa: editingEvent.titleTa.trim(),
+      date: editingEvent.date,
+      category: editingEvent.category.trim() || 'School Event',
+      location: editingEvent.location.trim(),
+      description: editingEvent.description.trim(),
+      descriptionTa: editingEvent.descriptionTa.trim(),
+      image: editingEvent.image
+    });
+    showToast('Event updated successfully', 'success');
+    setEditingEvent(null);
+  };
+
 
   // History Section States
   const [historySubTab, setHistorySubTab] = useState('milestones'); // 'milestones' | 'overview' | 'leadership'
@@ -3071,30 +3137,55 @@ export default function AdminPage() {
                                         {post.category || 'Manual Post'}
                                       </span>
                                     </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
-                                          deleteEvent(post.id);
-                                          showToast('Event removed', 'success');
-                                        }
-                                      }}
-                                      className="text-white/80 hover:text-rose-400 p-1.5 rounded-lg bg-black/50 hover:bg-rose-950/80 transition cursor-pointer"
-                                      title="Delete event"
-                                    >
-                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                      </svg>
-                                    </button>
+                                    <div className="flex items-center gap-1.5">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenEditEvent(post)}
+                                        className="text-white hover:text-emerald-300 px-2.5 py-1 rounded-lg bg-black/60 hover:bg-black/85 transition cursor-pointer flex items-center gap-1 text-[11px] font-semibold border border-white/20 shadow-xs"
+                                        title="Edit event text & details"
+                                      >
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        <span>Edit</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
+                                            deleteEvent(post.id);
+                                            showToast('Event removed', 'success');
+                                          }
+                                        }}
+                                        className="text-white/80 hover:text-rose-400 p-1.5 rounded-lg bg-black/60 hover:bg-rose-950/80 transition cursor-pointer border border-white/20 shadow-xs"
+                                        title="Delete event"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                      </button>
+                                    </div>
                                   </div>
 
                                   {/* Bottom Content Scrim */}
                                   <div className="relative z-10 mt-auto p-4 space-y-1 text-white">
-                                    {post.date && (
-                                      <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-white text-[10px] font-semibold mb-1">
-                                        📅 {post.date}
-                                      </span>
-                                    )}
+                                    <div className="flex items-center justify-between gap-2 mb-1">
+                                      {post.date ? (
+                                        <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-white text-[10px] font-semibold">
+                                          📅 {post.date}
+                                        </span>
+                                      ) : <span />}
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenEditEvent(post)}
+                                        className="text-[11px] text-emerald-300 hover:text-white font-bold flex items-center gap-1 hover:underline cursor-pointer"
+                                      >
+                                        <span>Edit text</span>
+                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                      </button>
+                                    </div>
                                     <h4 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">{post.title || 'Untitled Event'}</h4>
                                     {post.titleTa && (
                                       <p className="text-xs font-tamil text-emerald-300 font-semibold line-clamp-1">{post.titleTa}</p>
@@ -3122,21 +3213,34 @@ export default function AdminPage() {
                                         Manual Post
                                       </span>
                                     </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
-                                          deleteEvent(post.id);
-                                          showToast('Event removed', 'success');
-                                        }
-                                      }}
-                                      className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
-                                      title="Delete event"
-                                    >
-                                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                      </svg>
-                                    </button>
+                                    <div className="flex items-center gap-1">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenEditEvent(post)}
+                                        className="text-brand-forest hover:text-emerald-700 px-2 py-1 rounded-lg hover:bg-emerald-50 transition cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                                        title="Edit event text & details"
+                                      >
+                                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                                        </svg>
+                                        <span>Edit</span>
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (window.confirm(`Remove event "${post.title || 'Untitled'}"?`)) {
+                                            deleteEvent(post.id);
+                                            showToast('Event removed', 'success');
+                                          }
+                                        }}
+                                        className="text-slate-400 hover:text-rose-600 p-1.5 -m-1 rounded-lg hover:bg-rose-50 transition cursor-pointer"
+                                        title="Delete event"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                      </button>
+                                    </div>
                                   </div>
 
                                   <div className="w-full h-44 rounded-xl overflow-hidden bg-brand-light/30 border border-brand-pale/80 shadow-2xs mb-3 flex items-center justify-center relative">
@@ -3839,6 +3943,311 @@ export default function AdminPage() {
                       </div>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* EDIT MANUAL EVENT MODAL */}
+            {editingEvent && (
+              <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+                <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
+                  {/* Modal Header */}
+                  <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <h3 className="text-sm sm:text-base font-bold">Edit Event Text &amp; Details</h3>
+                        <p className="text-[10px] sm:text-[11px] text-brand-pale">
+                          Update titles, descriptions, date, location, or picture
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingEvent(null)}
+                      className="text-white/80 hover:text-white p-1.5 rounded-lg hover:bg-white/10 cursor-pointer"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSaveEditEvent} className="flex-1 flex flex-col overflow-hidden">
+                    <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
+                      {/* Photo Box & Live Preview */}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          Event Picture / Poster
+                        </label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          ref={editEventPhotoInputRef}
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleEditEventPhotoFile(file);
+                            e.target.value = '';
+                          }}
+                          className="hidden"
+                        />
+
+                        {editingEvent.image ? (
+                          <div className="space-y-3">
+                            {/* Live Card Full-Cover Preview */}
+                            <div className="relative w-full max-w-[280px] mx-auto h-[360px] rounded-2xl overflow-hidden shadow-lg border border-slate-700/60 flex flex-col justify-between bg-slate-900 group">
+                              <img
+                                src={editingEvent.image}
+                                alt="Event preview"
+                                className="absolute inset-0 w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
+
+                              {/* Top Bar Floating */}
+                              <div className="relative z-10 p-3 flex items-center justify-between gap-2">
+                                <span className="px-2.5 py-1 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-xs border border-white/20">
+                                  {editingEvent.category || 'School Event'}
+                                </span>
+                                {editingEvent.date && (
+                                  <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold shadow-xs border border-white/15">
+                                    {editingEvent.date}
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Bottom Content Scrim */}
+                              <div className="relative z-10 p-4 space-y-1 text-white">
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[9px] font-bold uppercase tracking-wider mb-1">
+                                  Full Card Cover Preview
+                                </span>
+                                <h4 className="text-sm font-bold text-white line-clamp-2 drop-shadow-sm">
+                                  {editingEvent.title || 'Event Title will appear here...'}
+                                </h4>
+                                {editingEvent.titleTa && (
+                                  <p className="text-xs font-tamil text-emerald-300 font-semibold line-clamp-1">
+                                    {editingEvent.titleTa}
+                                  </p>
+                                )}
+                                {editingEvent.location && (
+                                  <p className="text-[11px] text-white/80 truncate flex items-center gap-1">
+                                    <span>📍</span>
+                                    <span>{editingEvent.location}</span>
+                                  </p>
+                                )}
+                                {editingEvent.description && (
+                                  <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5">
+                                    {editingEvent.description}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Photo Stats & Actions */}
+                            <div className="flex items-center justify-between bg-brand-light/40 border border-brand-pale rounded-xl px-3 py-2 text-xs">
+                              <div>
+                                <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mr-2">
+                                  Photo Attached
+                                </span>
+                                {editPhotoStats && (
+                                  <span className="text-[11px] text-slate-600">
+                                    {formatBytes(editPhotoStats.compressedSize)}
+                                    {editPhotoStats.reductionPercent > 0 && (
+                                      <span className="text-emerald-700 font-semibold ml-1">
+                                        (-{editPhotoStats.reductionPercent}%)
+                                      </span>
+                                    )}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => editEventPhotoInputRef.current?.click()}
+                                  className="text-xs text-brand-forest hover:underline font-semibold cursor-pointer"
+                                >
+                                  Change Photo
+                                </button>
+                                <span className="text-slate-300">•</span>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingEvent(prev => prev ? { ...prev, image: '' } : null);
+                                    setEditPhotoStats(null);
+                                  }}
+                                  className="text-xs text-rose-600 hover:underline font-semibold cursor-pointer"
+                                >
+                                  Remove Photo
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => editEventPhotoInputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              const file = e.dataTransfer.files?.[0];
+                              if (file) handleEditEventPhotoFile(file);
+                            }}
+                            className="w-full border-2 border-dashed border-brand-pale hover:border-brand-forest rounded-2xl p-5 text-center cursor-pointer transition hover:bg-brand-light/30 flex flex-col items-center justify-center gap-2"
+                          >
+                            {isProcessingEditPhoto ? (
+                              <div className="flex flex-col items-center gap-2 py-2">
+                                <svg className="w-6 h-6 animate-spin text-brand-forest" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                </svg>
+                                <span className="text-xs font-semibold text-slate-600">Optimizing photo to WebP...</span>
+                              </div>
+                            ) : (
+                              <>
+                                <div className="w-10 h-10 rounded-full bg-brand-light flex items-center justify-center text-brand-forest">
+                                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                  </svg>
+                                </div>
+                                <div>
+                                  <span className="text-xs font-bold text-brand-forest hover:underline">Click to upload event photo</span>
+                                  <span className="text-xs text-slate-500"> or drag and drop</span>
+                                  <p className="text-[10px] text-slate-400 mt-0.5">JPEG, PNG, WebP up to 5 MB</p>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+
+                        {editPhotoError && (
+                          <p className="text-xs text-rose-600 mt-1.5 font-medium">{editPhotoError}</p>
+                        )}
+
+                        <div className="mt-2 flex items-center gap-2">
+                          <label className="inline-flex items-center gap-2 cursor-pointer text-xs text-slate-600 select-none">
+                            <input
+                              type="checkbox"
+                              checked={editPhotoCompress}
+                              onChange={(e) => setEditPhotoCompress(e.target.checked)}
+                              className="rounded text-brand-forest focus:ring-brand-forest"
+                            />
+                            <span>Compress photo to WebP (Recommended)</span>
+                          </label>
+                        </div>
+                      </div>
+
+                      {/* Title Fields */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Event Title (English) *
+                          </label>
+                          <input
+                            type="text"
+                            value={editingEvent.title}
+                            onChange={(e) => setEditingEvent(prev => ({ ...prev, title: e.target.value }))}
+                            placeholder="e.g. Annual Prize Day Ceremony"
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            தமிழ் தலைப்பு (Tamil Title)
+                          </label>
+                          <input
+                            type="text"
+                            value={editingEvent.titleTa}
+                            onChange={(e) => setEditingEvent(prev => ({ ...prev, titleTa: e.target.value }))}
+                            placeholder="எ.கா. வருடாந்த பரிசளிப்பு விழா"
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Date, Category, and Location */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Event Date *
+                          </label>
+                          <input
+                            type="date"
+                            value={editingEvent.date}
+                            onChange={(e) => setEditingEvent(prev => ({ ...prev, date: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Category / Tag
+                          </label>
+                          <input
+                            type="text"
+                            value={editingEvent.category}
+                            onChange={(e) => setEditingEvent(prev => ({ ...prev, category: e.target.value }))}
+                            placeholder="e.g. Ceremony, Sports"
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                            Location (Optional)
+                          </label>
+                          <input
+                            type="text"
+                            value={editingEvent.location}
+                            onChange={(e) => setEditingEvent(prev => ({ ...prev, location: e.target.value }))}
+                            placeholder="e.g. College Main Hall"
+                            className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Descriptions */}
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          Event Description / Text (English)
+                        </label>
+                        <textarea
+                          rows={3}
+                          value={editingEvent.description}
+                          onChange={(e) => setEditingEvent(prev => ({ ...prev, description: e.target.value }))}
+                          placeholder="Provide details about the event, scheduled agenda, guest speakers, or announcements..."
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs focus:outline-none focus:border-brand-forest leading-relaxed"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                          விபரங்கள் (Tamil Description - Optional)
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={editingEvent.descriptionTa}
+                          onChange={(e) => setEditingEvent(prev => ({ ...prev, descriptionTa: e.target.value }))}
+                          placeholder="நிகழ்வு பற்றிய விபரங்கள்..."
+                          className="w-full px-3 py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-xs font-tamil focus:outline-none focus:border-brand-forest leading-relaxed"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Modal Footer */}
+                    <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => setEditingEvent(null)}
+                        className="w-full sm:w-auto px-4 py-2.5 sm:py-2 rounded-full bg-brand-white border border-brand-pale text-slate-700 text-xs font-semibold hover:bg-brand-light cursor-pointer text-center"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="w-full sm:w-auto px-5 py-2.5 sm:py-2 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition cursor-pointer shadow-2xs text-center"
+                      >
+                        Save Changes
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             )}
