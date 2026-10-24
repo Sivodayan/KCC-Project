@@ -969,7 +969,7 @@ export default function AdminPage() {
                     type="email"
                     value={resetEmail}
                     onChange={(e) => setResetEmail(e.target.value)}
-                    placeholder="admin@kcc.lk"
+                    placeholder="admin@jkcc.edu.lk"
                     required
                     className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white dark:bg-[#0e160f] border border-brand-pale dark:border-emerald-800/40 text-slate-800 dark:text-slate-100 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                   />
@@ -1067,7 +1067,7 @@ export default function AdminPage() {
                       type="email"
                       value={emailInput}
                       onChange={(e) => setEmailInput(e.target.value)}
-                      placeholder="admin@kcc.lk"
+                      placeholder="admin@jkcc.edu.lk"
                       required
                       className="w-full px-3.5 py-2.5 sm:py-2 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest"
                     />

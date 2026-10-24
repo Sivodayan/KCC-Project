@@ -17,7 +17,7 @@ A modern, responsive, and bilingual web portal for **J/Kopay Christian College**
 ## 🌐 Live Demo
 
 Visit the deployed website:  
-👉 **[https://sivodayan.github.io/KCC-Project/](https://sivodayan.github.io/KCC-Project/)**
+👉 **[https://jkcc.edu.lk/](https://jkcc.edu.lk/)**
 
 ---
 
