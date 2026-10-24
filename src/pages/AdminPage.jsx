@@ -3399,9 +3399,9 @@ export default function AdminPage() {
                                       <span>{manualEventLocation}</span>
                                     </p>
                                   )}
-                                  {manualEventDesc && (
+                                  {manualEventDescription && (
                                     <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5">
-                                      {manualEventDesc}
+                                      {manualEventDescription}
                                     </p>
                                   )}
                                 </div>
