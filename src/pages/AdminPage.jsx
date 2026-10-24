@@ -3111,9 +3111,9 @@ export default function AdminPage() {
                           return (
                             <div
                               key={post.id || idx}
-                              className={`border rounded-xl sm:rounded-2xl overflow-hidden shadow-2xs flex flex-col justify-between relative transition-all ${
+                              className={`h-[480px] border rounded-xl sm:rounded-2xl overflow-hidden shadow-2xs flex flex-col justify-between relative transition-all ${
                                 hasImg
-                                  ? 'h-[360px] bg-slate-900 border-slate-700/60'
+                                  ? 'bg-slate-900 border-slate-700/60'
                                   : 'bg-brand-light/20 border-brand-pale p-3.5 sm:p-4'
                               }`}
                             >
@@ -3168,10 +3168,10 @@ export default function AdminPage() {
                                   </div>
 
                                   {/* Bottom Content Scrim */}
-                                  <div className="relative z-10 mt-auto p-4 space-y-1 text-white">
+                                  <div className="relative z-10 mt-auto p-4 sm:p-5 space-y-1.5 text-white">
                                     <div className="flex items-center justify-between gap-2 mb-1">
                                       {post.date ? (
-                                        <span className="inline-block px-2 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-white text-[10px] font-semibold">
+                                        <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-xs text-white text-[10px] font-semibold">
                                           📅 {post.date}
                                         </span>
                                       ) : <span />}
@@ -3186,7 +3186,7 @@ export default function AdminPage() {
                                         </svg>
                                       </button>
                                     </div>
-                                    <h4 className="text-sm font-bold text-white line-clamp-1 drop-shadow-sm">{post.title || 'Untitled Event'}</h4>
+                                    <h4 className="text-base font-bold text-white line-clamp-2 drop-shadow-sm leading-snug">{post.title || 'Untitled Event'}</h4>
                                     {post.titleTa && (
                                       <p className="text-xs font-tamil text-emerald-300 font-semibold line-clamp-1">{post.titleTa}</p>
                                     )}
@@ -3197,7 +3197,7 @@ export default function AdminPage() {
                                       </p>
                                     )}
                                     {post.description && (
-                                      <p className="text-xs text-white/85 line-clamp-2 leading-relaxed pt-0.5">{post.description}</p>
+                                      <p className="text-xs text-white/85 line-clamp-3 leading-relaxed pt-0.5">{post.description}</p>
                                     )}
                                   </div>
                                 </>
@@ -3285,10 +3285,10 @@ export default function AdminPage() {
                         return (
                           <div
                             key={post.id || idx}
-                            className="bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
+                            className="h-[480px] bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
                           >
                             {/* Top Bar */}
-                            <div className="flex items-center justify-between gap-2 mb-3">
+                            <div className="flex items-center justify-between gap-2 mb-2">
                               <div className="flex items-center gap-1.5">
                                 <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
                                   #{idx + 1}
@@ -3329,12 +3329,12 @@ export default function AdminPage() {
                             </div>
 
                             {/* Live Iframe Scaled Preview Container */}
-                            <div className="w-full h-[360px] sm:h-[400px] overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
+                            <div className="flex-1 w-full min-h-0 overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
                               <div
                                 className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
                                 style={{
                                   height: `${post.height || 645}px`,
-                                  marginBottom: `-${(post.height || 645) * 0.38}px`,
+                                  marginBottom: `-${(post.height || 645) * 0.42}px`,
                                 }}
                               >
                                 <iframe
@@ -3353,7 +3353,7 @@ export default function AdminPage() {
                             </div>
 
                             {/* Card Info & Height Settings */}
-                            <div className="mt-3 pt-3 border-t border-brand-pale/60 space-y-2">
+                            <div className="mt-2.5 pt-2 border-t border-brand-pale/60 space-y-1.5 shrink-0">
                               <div className="flex items-center justify-between text-[11px]">
                                 <span className="font-semibold text-slate-600">Iframe Height (px):</span>
                                 <div className="flex items-center gap-1">
@@ -3364,13 +3364,13 @@ export default function AdminPage() {
                                     step={10}
                                     value={post.height || 645}
                                     onChange={(e) => updateEvent(post.id, { height: Number(e.target.value) || 645 })}
-                                    className="w-20 px-2 py-1.5 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
+                                    className="w-20 px-2 py-1 rounded bg-brand-white border border-brand-pale text-slate-800 text-xs font-mono font-semibold text-right focus:outline-none focus:border-brand-forest"
                                   />
                                   <span className="text-slate-400">px</span>
                                 </div>
                               </div>
 
-                              <div className="truncate text-[10px] text-slate-400 font-mono bg-brand-white px-2 py-1 rounded border border-brand-pale/60" title={post.iframeSrc}>
+                              <div className="truncate text-[10px] text-slate-400 font-mono bg-brand-white px-2 py-0.5 rounded border border-brand-pale/60" title={post.iframeSrc}>
                                 {post.iframeSrc}
                               </div>
                             </div>
