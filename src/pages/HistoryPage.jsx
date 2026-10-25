@@ -9,11 +9,70 @@ import LeadershipDirectory from '../components/LeadershipDirectory.jsx';
  * Dedicated archival history portal for J/Kopay Christian College.
  * Dynamically switches between English and Tamil historical treatises,
  * re-mounting child timeline and leadership directory components via keyed instances.
- * Automatically scrolls to top on language toggle or route entry.
+ * Automatically scrolls to top on language toggle or route entry,
+ * and coordinates smooth entrance transitions for all milestone and leadership cards.
  */
 export default function HistoryPage({ lang = 'en' }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [lang]);
+
+  // Viewport scroll & entrance transition observer for history cards
+  useEffect(() => {
+    let observer = null;
+
+    const revealCards = () => {
+      const items = document.querySelectorAll('.history-card-reveal:not(.is-visible)');
+      if (!items.length) return;
+
+      const triggerBottom = window.innerHeight * 0.95;
+
+      items.forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        if (top < triggerBottom) {
+          el.classList.add('is-visible');
+          if (observer) observer.unobserve(el);
+        } else if (observer) {
+          observer.observe(el);
+        }
+      });
+    };
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          threshold: 0.08,
+          rootMargin: '0px 0px -40px 0px',
+        }
+      );
+    }
+
+    revealCards();
+    const rafId = requestAnimationFrame(revealCards);
+    const t1 = setTimeout(revealCards, 80);
+    const t2 = setTimeout(revealCards, 240);
+    const t3 = setTimeout(revealCards, 600);
+
+    window.addEventListener('scroll', revealCards, { passive: true });
+    window.addEventListener('resize', revealCards, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener('scroll', revealCards);
+      window.removeEventListener('resize', revealCards);
+      if (observer) observer.disconnect();
+    };
   }, [lang]);
 
   return (

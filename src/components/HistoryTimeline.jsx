@@ -1,6 +1,91 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import GlassImage from './GlassImage.jsx';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
+
+/**
+ * MilestoneCard Component
+ *
+ * Renders an individual historical milestone with:
+ * - Fluid entrance transitions (fade-in, slide-up, scale-up)
+ * - Dot and year marker entrance animations linked to timeline spine
+ * - Elevated hover effects with shadow and border glows
+ * - Full dark mode styling and bilingual Tamil/English content resolution
+ */
+function MilestoneCard({ m, idx, lang }) {
+  const isTa = lang === 'ta';
+  const isAlternate = idx % 2 === 1;
+  const yearDisplay = isTa ? (m.yearTa || m.year) : (m.year || m.yearTa);
+  const titleDisplay = isTa ? (m.titleTa || m.titleEn) : (m.titleEn || m.titleTa);
+  const descDisplay = isTa ? (m.descTa || m.descEn) : (m.descEn || m.descTa);
+  const quoteDisplay = isTa ? (m.quoteTa || m.quoteEn) : (m.quoteEn || m.quoteTa);
+  const paragraphs = (descDisplay || '').split('\n').filter(p => p.trim());
+  const staggerDelay = Math.min(idx % 4, 3) * 75;
+
+  return (
+    <div 
+      className="history-card-reveal relative pl-6 sm:pl-10 group"
+      style={{ transitionDelay: `${staggerDelay}ms` }}
+    >
+      {/* Spine marker dot with scale entrance & hover expansion */}
+      <span className="history-dot-reveal absolute -left-[7px] top-5 w-3.5 h-3.5 rounded-full bg-brand-forest dark:bg-emerald-500 ring-4 ring-brand-light dark:ring-emerald-950/80 transition-all duration-300 group-hover:scale-125 group-hover:ring-brand-forest/30 dark:group-hover:ring-emerald-400/40" />
+
+      {/* Desktop year label with slide-in entrance */}
+      <span className="history-year-reveal hidden sm:block absolute -left-28 top-3.5 w-20 text-right font-bold text-brand-forest dark:text-emerald-400 text-xs transition-colors duration-200">
+        {yearDisplay}
+      </span>
+
+      {/* Main Milestone Card with lift & shadow hover transitions */}
+      <div className="bg-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-900/40 rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out">
+        {/* Mobile year pill */}
+        <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/50 text-brand-forest dark:text-emerald-300 text-[11px] font-bold mb-2.5 transition-colors">
+          {yearDisplay}
+        </span>
+
+        <h2 className="text-lg sm:text-xl font-bold text-brand-forest dark:text-emerald-300 transition-colors">
+          {titleDisplay}
+        </h2>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          {isAlternate && m.image && (
+            <div className="lg:col-span-5 order-2 lg:order-1 bg-brand-light/30 dark:bg-emerald-950/20 border border-brand-pale dark:border-emerald-900/40 rounded-xl p-2.5 shadow-2xs transition-all duration-300 hover:shadow-md hover:border-brand-forest/30 dark:hover:border-emerald-500/30">
+              <GlassImage
+                src={m.image}
+                alt={m.imageAlt || titleDisplay}
+                containerClassName="w-full min-h-[220px] flex items-center justify-center overflow-hidden rounded-lg"
+                className="w-full max-h-[460px] object-contain mx-auto transition-transform duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
+          )}
+
+          <div className={`${m.image ? 'lg:col-span-7' : 'lg:col-span-12'} ${isAlternate ? 'order-1 lg:order-2' : ''} space-y-4 text-slate-800 dark:text-slate-200 text-sm sm:text-base ${isTa ? 'leading-loose' : 'leading-relaxed'}`}>
+            {paragraphs.map((p, pIdx) => (
+              <p key={pIdx}>{p}</p>
+            ))}
+
+            {quoteDisplay && (
+              <blockquote className="border-l-4 border-brand-forest dark:border-emerald-400 bg-brand-light/70 dark:bg-[#132817] rounded-r-2xl p-4 italic text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed shadow-xs dark:shadow-none transition-all duration-200 hover:bg-brand-light dark:hover:bg-[#18351d]">
+                {quoteDisplay}
+              </blockquote>
+            )}
+          </div>
+
+          {!isAlternate && m.image && (
+            <div className="lg:col-span-5 bg-brand-light/30 dark:bg-emerald-950/20 border border-brand-pale dark:border-emerald-900/40 rounded-xl p-2.5 shadow-2xs transition-all duration-300 hover:shadow-md hover:border-brand-forest/30 dark:hover:border-emerald-500/30">
+              <GlassImage
+                src={m.image}
+                alt={m.imageAlt || titleDisplay}
+                containerClassName="w-full min-h-[220px] flex items-center justify-center overflow-hidden rounded-lg"
+                className="w-full max-h-[460px] object-contain mx-auto transition-transform duration-500 group-hover:scale-[1.02]"
+                loading="lazy"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /**
  * HistoryTimeline Component
@@ -9,6 +94,7 @@ import { useSiteContent } from '../context/SiteContentContext.jsx';
  * Dynamically rendered from centralized content context (siteContent.json / admin edits).
  * Supports bilingual rendering (Tamil treatise vs English treatise)
  * with alternating milestone spine, blockquotes, and archival photographs.
+ * Every milestone card enters with a smooth viewport-triggered transition.
  */
 export default function HistoryTimeline({ lang = 'en' }) {
   const { content } = useSiteContent();
@@ -16,172 +102,52 @@ export default function HistoryTimeline({ lang = 'en' }) {
   const overview = history.overview || {};
   const milestones = history.milestones || [];
 
-  if (lang === 'ta') {
-    return (
-      <article className="space-y-10 font-tamil">
-        <header className="text-center max-w-3xl mx-auto space-y-2 pb-6 mb-8">
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-snug">
-            {overview.titleTa || "CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்"}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium">
-            ஆசிரியர்கள்:{' '}
-            <span className="text-slate-800 font-bold">
-              {overview.authorsTa || "வண. J. S. இரட்ணாதிக்கம் & வண. A. M. நத்தானியல்"}
-            </span>
-          </p>
-          {overview.leadTa && (
-            <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto pt-1 leading-relaxed">
-              {overview.leadTa}
-            </p>
-          )}
-        </header>
+  // Check initial visibility whenever milestones update
+  useEffect(() => {
+    const triggerBottom = window.innerHeight * 0.95;
+    const items = document.querySelectorAll('.history-card-reveal:not(.is-visible)');
+    items.forEach((el) => {
+      if (el.getBoundingClientRect().top < triggerBottom) {
+        el.classList.add('is-visible');
+      }
+    });
+  }, [milestones]);
 
-        <div className="relative border-l-2 border-brand-pale ml-3 sm:ml-28 space-y-8">
-          {milestones.map((m, idx) => {
-            const isAlternate = idx % 2 === 1;
-            const yearDisplay = m.yearTa || m.year;
-            const titleDisplay = m.titleTa || m.titleEn;
-            const descDisplay = m.descTa || m.descEn;
-            const quoteDisplay = m.quoteTa || m.quoteEn;
-            const paragraphs = (descDisplay || '').split('\n').filter(p => p.trim());
-
-            return (
-              <div key={m.id || idx} className="relative pl-6 sm:pl-10 group">
-                <span className="absolute -left-[7px] top-5 w-3.5 h-3.5 rounded-full bg-brand-forest ring-4 ring-brand-light" />
-                <span className="hidden sm:block absolute -left-28 top-3.5 w-20 text-right font-bold text-brand-forest text-xs">
-                  {yearDisplay}
-                </span>
-
-                <div className="bg-white border border-brand-pale rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-md transition-shadow">
-                  <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light border border-brand-pale text-brand-forest text-[11px] font-bold mb-2.5">
-                    {yearDisplay}
-                  </span>
-                  <h2 className="text-lg sm:text-xl font-bold text-brand-forest">
-                    {titleDisplay}
-                  </h2>
-                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    {isAlternate && m.image && (
-                      <div className="lg:col-span-5 order-2 lg:order-1 bg-brand-light/30 border border-brand-pale rounded-xl p-2.5 shadow-2xs">
-                        <GlassImage
-                          src={m.image}
-                          alt={m.imageAlt || titleDisplay}
-                          containerClassName="w-full min-h-[220px] flex items-center justify-center"
-                          className="w-full max-h-[460px] object-contain mx-auto"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
-                    <div className={`${m.image ? 'lg:col-span-7' : 'lg:col-span-12'} ${isAlternate ? 'order-1 lg:order-2' : ''} space-y-4 text-slate-800 text-sm sm:text-base leading-loose`}>
-                      {paragraphs.map((p, pIdx) => (
-                        <p key={pIdx}>{p}</p>
-                      ))}
-                      {quoteDisplay && (
-                        <blockquote className="border-l-4 border-brand-forest dark:border-emerald-400 bg-brand-light/70 dark:bg-[#132817] rounded-r-2xl p-4 italic text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed shadow-xs dark:shadow-none">
-                          {quoteDisplay}
-                        </blockquote>
-                      )}
-                    </div>
-                    {!isAlternate && m.image && (
-                      <div className="lg:col-span-5 bg-brand-light/30 border border-brand-pale rounded-xl p-2.5 shadow-2xs">
-                        <GlassImage
-                          src={m.image}
-                          alt={m.imageAlt || titleDisplay}
-                          containerClassName="w-full min-h-[220px] flex items-center justify-center"
-                          className="w-full max-h-[460px] object-contain mx-auto"
-                          loading="lazy"
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </article>
-    );
-  }
+  const isTa = lang === 'ta';
 
   return (
-    <article className="space-y-10">
-      <header className="text-center max-w-3xl mx-auto space-y-2 pb-6 mb-8">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
-          {overview.titleEn || "CMS English School & Today’s Christian College"}
+    <article className={`space-y-10 ${isTa ? 'font-tamil' : ''}`}>
+      <header className="history-card-reveal text-center max-w-3xl mx-auto space-y-2 pb-6 mb-8">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest dark:text-emerald-400 tracking-tight leading-snug">
+          {isTa 
+            ? (overview.titleTa || "CMS ஆங்கிலப் பாடசாலையும் இன்றைய கிறிஸ்தவ கல்லூரியும்")
+            : (overview.titleEn || "CMS English School & Today’s Christian College")}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 font-medium">
-          Compiled by:{' '}
-          <span className="text-slate-800 font-bold">
-            {overview.authorsEn || "Rev. J. S. Ratnathikkam & Rev. A. M. Nathaniel"}
+        <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-medium">
+          {isTa ? 'ஆசிரியர்கள்: ' : 'Compiled by: '}
+          <span className="text-slate-800 dark:text-slate-200 font-bold">
+            {isTa 
+              ? (overview.authorsTa || "வண. J. S. இரட்ணாதிக்கம் & வண. A. M. நத்தானியல்")
+              : (overview.authorsEn || "Rev. J. S. Ratnathikkam & Rev. A. M. Nathaniel")}
           </span>
         </p>
-        {overview.leadEn && (
-          <p className="text-xs sm:text-sm text-slate-600 max-w-2xl mx-auto pt-1 leading-relaxed">
-            {overview.leadEn}
+        {(isTa ? overview.leadTa : overview.leadEn) && (
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-2xl mx-auto pt-1 leading-relaxed">
+            {isTa ? overview.leadTa : overview.leadEn}
           </p>
         )}
       </header>
 
-      <div className="relative border-l-2 border-brand-pale ml-3 sm:ml-28 space-y-8">
-        {milestones.map((m, idx) => {
-          const isAlternate = idx % 2 === 1;
-          const yearDisplay = m.year || m.yearTa;
-          const titleDisplay = m.titleEn || m.titleTa;
-          const descDisplay = m.descEn || m.descTa;
-          const quoteDisplay = m.quoteEn || m.quoteTa;
-          const paragraphs = (descDisplay || '').split('\n').filter(p => p.trim());
-
-          return (
-            <div key={m.id || idx} className="relative pl-6 sm:pl-10 group">
-              <span className="absolute -left-[7px] top-5 w-3.5 h-3.5 rounded-full bg-brand-forest ring-4 ring-brand-light" />
-              <span className="hidden sm:block absolute -left-28 top-3.5 w-20 text-right font-bold text-brand-forest text-xs">
-                {yearDisplay}
-              </span>
-
-              <div className="bg-white border border-brand-pale rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-md transition-shadow">
-                <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light border border-brand-pale text-brand-forest text-[11px] font-bold mb-2.5">
-                  {yearDisplay}
-                </span>
-                <h2 className="text-lg sm:text-xl font-bold text-brand-forest">
-                  {titleDisplay}
-                </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                  {isAlternate && m.image && (
-                    <div className="lg:col-span-5 order-2 lg:order-1 bg-brand-light/30 border border-brand-pale rounded-xl p-2.5 shadow-2xs">
-                      <GlassImage
-                        src={m.image}
-                        alt={m.imageAlt || titleDisplay}
-                        containerClassName="w-full min-h-[220px] flex items-center justify-center"
-                        className="w-full max-h-[460px] object-contain mx-auto"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                  <div className={`${m.image ? 'lg:col-span-7' : 'lg:col-span-12'} ${isAlternate ? 'order-1 lg:order-2' : ''} space-y-4 text-slate-800 text-sm sm:text-base leading-loose`}>
-                    {paragraphs.map((p, pIdx) => (
-                      <p key={pIdx}>{p}</p>
-                    ))}
-                    {quoteDisplay && (
-                      <blockquote className="border-l-4 border-brand-forest dark:border-emerald-400 bg-brand-light/70 dark:bg-[#132817] rounded-r-2xl p-4 italic text-slate-800 dark:text-slate-100 text-xs sm:text-sm leading-relaxed shadow-xs dark:shadow-none">
-                        {quoteDisplay}
-                      </blockquote>
-                    )}
-                  </div>
-                  {!isAlternate && m.image && (
-                    <div className="lg:col-span-5 bg-brand-light/30 border border-brand-pale rounded-xl p-2.5 shadow-2xs">
-                      <GlassImage
-                        src={m.image}
-                        alt={m.imageAlt || titleDisplay}
-                        containerClassName="w-full min-h-[220px] flex items-center justify-center"
-                        className="w-full max-h-[460px] object-contain mx-auto"
-                        loading="lazy"
-                      />
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          );
-        })}
+      {/* Central timeline spine with smooth vertical accent */}
+      <div className="relative border-l-2 border-brand-pale dark:border-emerald-900/40 ml-3 sm:ml-28 space-y-8">
+        {milestones.map((m, idx) => (
+          <MilestoneCard 
+            key={m.id || idx} 
+            m={m} 
+            idx={idx} 
+            lang={lang} 
+          />
+        ))}
       </div>
     </article>
   );
