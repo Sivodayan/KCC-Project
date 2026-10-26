@@ -117,7 +117,7 @@ export default function Performance() {
       className="py-16 sm:py-24 lg:py-28 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors scroll-mt-[var(--nav-height)]"
       id="performance"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
         <div className={`text-center max-w-2xl mx-auto mb-10 sm:mb-12 reveal-item ${visibleClass}`} data-revealed={statsAnimated ? "true" : undefined}>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-forest dark:text-emerald-400 mt-1 tracking-tight">
             {perf.title || 'Key Numbers & Performance'}

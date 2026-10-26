@@ -33,7 +33,7 @@ const searchItems = [
     action: "external"
   },
   {
-    title: "School Life Journal & 3D Digital Gallery",
+    title: "School Life Journal & Digital Gallery",
     category: "Gallery",
     url: "gallery",
     action: "navigate"
@@ -370,7 +370,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
           >
-            3D Gallery
+            Gallery
           </button>
           <button
             type="button"

@@ -31,7 +31,7 @@ export default function Principles() {
         setIsRevealed(true);
         observer.disconnect();
       }
-    }, { threshold: 0.1 });
+    }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
     observer.observe(principlesRef.current);
     return () => observer.disconnect();
   }, []);
@@ -51,9 +51,9 @@ export default function Principles() {
 
   return (
     <section ref={principlesRef} className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className={`reveal-item stagger-1 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
+          <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-100 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
@@ -92,7 +92,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className={`reveal-item stagger-2 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
+          <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-250 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
@@ -131,7 +131,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className={`reveal-item stagger-3 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
+          <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-400 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
@@ -144,7 +144,7 @@ export default function Principles() {
                 <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
-                      Mission Statement
+                      Mission
                     </span>
                   </div>
                   <div className="flex-1 flex items-center pt-1 overflow-y-auto custom-scrollbar">

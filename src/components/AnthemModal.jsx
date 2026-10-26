@@ -79,7 +79,7 @@ export default function AnthemModal({ isOpen, onClose }) {
                   return (
                     <p key={currentLineIndex} className="py-0.5">
                       <span
-                        className="animate-anthem-line inline-block transition-all duration-200 ease-out hover:scale-105 hover:text-brand-forest dark:hover:text-emerald-400 cursor-default select-text origin-center"
+                        className="animate-anthem-line inline-block transition-all duration-300 ease-out hover:scale-[1.03] hover:text-brand-forest dark:hover:text-emerald-300 cursor-default select-text origin-center"
                         style={{ animationDelay: `${delay}ms` }}
                       >
                         {line}
