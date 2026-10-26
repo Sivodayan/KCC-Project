@@ -193,16 +193,13 @@ function ManualEventCard({ post }) {
             />
 
             {/* Badges Overlay at Top */}
-            <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between gap-2 z-20 pointer-events-none">
-              <span className="px-3 py-1 rounded-full bg-brand-forest/90 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider shadow-md border border-white/20">
-                {post.category || 'School Event'}
-              </span>
-              {formattedDate && (
+            {formattedDate && (
+              <div className="absolute top-3.5 right-3.5 z-20 pointer-events-none">
                 <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold shadow-md border border-white/15">
                   {formattedDate}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
 
             {/* Card Content Overlay at Bottom */}
             <div className="relative z-10 mt-auto p-5 space-y-2 flex flex-col justify-end">
@@ -238,9 +235,6 @@ function ManualEventCard({ post }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
-                <span className="text-[10px] text-white/60 uppercase tracking-wider font-semibold">
-                  KCC Updates
-                </span>
               </div>
             </div>
           </>
@@ -273,16 +267,13 @@ function ManualEventCard({ post }) {
               </span>
 
               {/* Badges Overlay */}
-              <div className="absolute top-3 left-3 right-3 flex items-center justify-between gap-2 z-10 pointer-events-none">
-                <span className="px-2.5 py-0.5 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-2xs">
-                  {post.category || 'Event'}
-                </span>
-                {formattedDate && (
+              {formattedDate && (
+                <div className="absolute top-3 right-3 z-10 pointer-events-none">
                   <span className="px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs text-slate-800 dark:text-slate-200 text-[10px] font-bold shadow-2xs">
                     {formattedDate}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
 
             {/* Card Body */}
@@ -321,9 +312,6 @@ function ManualEventCard({ post }) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
                   </svg>
                 </span>
-                <span className="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">
-                  KCC Updates
-                </span>
               </div>
             </div>
           </>
@@ -342,11 +330,8 @@ function ManualEventCard({ post }) {
             {/* Header */}
             <div className="bg-brand-forest dark:bg-emerald-950 px-4 sm:px-6 py-3.5 text-white flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 min-w-0">
-                <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[10px] font-bold uppercase tracking-wider shrink-0">
-                  {post.category || 'School Event'}
-                </span>
                 {formattedDate && (
-                  <span className="text-xs text-brand-pale truncate">
+                  <span className="text-xs text-brand-pale truncate font-semibold">
                     {formattedDate}
                   </span>
                 )}

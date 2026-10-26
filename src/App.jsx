@@ -136,7 +136,7 @@ export default function App() {
         descContent = "Explore latest sports meets, academic exhibitions, cultural festivals, prize givings, and school milestones from the official Facebook community of Kopay Christian College.";
       } else if (path.startsWith('/gallery')) {
         pageTitle = "Photo Gallery";
-        descContent = "Explore our 3D digital photo gallery showcasing collegiate life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
+        descContent = "Explore our photo gallery showcasing school life, laboratory sessions, sports meets, and historic moments at J/Kopay Christian College.";
       } else if (path.startsWith('/contact')) {
         pageTitle = "Contact Us";
         descContent = "Contact the administration office of J/Kopay Christian College, Kopay, Jaffna, Sri Lanka. Telephone: 021 223 0040. Email: kcckopay@gmail.com.";
