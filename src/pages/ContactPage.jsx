@@ -14,8 +14,8 @@ export default function ContactPage() {
   }, []);
 
   return (
-    <main className="flex-grow py-4 sm:py-6 bg-brand-white dark:bg-[#0b120c] transition-colors">
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
+    <main className="flex-grow py-4 sm:py-6 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3 animate-fade-in">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
           <Link
             to="/"
@@ -27,11 +27,11 @@ export default function ContactPage() {
           <span className="text-slate-800 dark:text-slate-200 font-semibold">Contact &amp; Inquiries</span>
         </nav>
       </div>
-      <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4">
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest tracking-tight leading-tight">
+      <header className="text-center max-w-3xl mx-auto pt-4 pb-6 px-4 animate-fade-up">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest dark:text-emerald-400 tracking-tight leading-tight">
           Contact Us
         </h1>
-        <p className="text-slate-600 text-sm sm:text-base mt-2 max-w-xl mx-auto">
+        <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base mt-2 max-w-xl mx-auto">
           Reach out to the administrative office of J/Kopay Christian College for admissions, inquiries, or official records.
         </p>
       </header>

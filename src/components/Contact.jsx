@@ -21,9 +21,9 @@ export default function Contact() {
   return (
     <section className="py-6 sm:py-8 bg-brand-white dark:bg-[#0b120c] border-t border-brand-pale dark:border-emerald-950/60 transition-colors" id="contact">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-brand-forest rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 text-brand-white shadow-lg border border-brand-soft/40">
+        <div className="bg-brand-forest rounded-2xl sm:rounded-3xl p-5 sm:p-6 lg:p-7 text-brand-white shadow-lg border border-brand-soft/40 reveal-item">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
-            <div className="lg:col-span-5 flex flex-col justify-between space-y-4">
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-4 reveal-item stagger-1">
               <div>
                 <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white leading-tight">
                   Contact Us
@@ -118,7 +118,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="lg:col-span-4 flex flex-col justify-between space-y-3">
+            <div className="lg:col-span-4 flex flex-col justify-between space-y-3 reveal-item stagger-2">
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">
                   Quick Navigation
@@ -178,7 +178,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="lg:col-span-3 flex flex-col items-center lg:items-end justify-center">
+            <div className="lg:col-span-3 flex flex-col items-center lg:items-end justify-center reveal-item stagger-3">
               <div className="w-full max-w-sm rounded-xl overflow-hidden bg-brand-white text-slate-800 shadow-md border border-brand-pale">
                 <div className="px-3 py-2 bg-brand-light/80 border-b border-brand-pale flex items-center justify-between gap-2">
                   <span className="text-[11px] font-bold text-slate-900 leading-tight flex items-center gap-1.5">

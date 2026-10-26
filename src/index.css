@@ -19,26 +19,162 @@ html {
   will-change: opacity, transform;
 }
 
-.reveal-item.is-visible {
+.reveal-item.is-visible,
+.reveal-item[data-revealed="true"] {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Staggered Delay Helpers */
-.stagger-1 {
-  transition-delay: 80ms;
+.stagger-1 { transition-delay: 70ms; animation-delay: 70ms; }
+.stagger-2 { transition-delay: 140ms; animation-delay: 140ms; }
+.stagger-3 { transition-delay: 210ms; animation-delay: 210ms; }
+.stagger-4 { transition-delay: 280ms; animation-delay: 280ms; }
+.stagger-5 { transition-delay: 350ms; animation-delay: 350ms; }
+.stagger-6 { transition-delay: 420ms; animation-delay: 420ms; }
+.stagger-7 { transition-delay: 490ms; animation-delay: 490ms; }
+.stagger-8 { transition-delay: 560ms; animation-delay: 560ms; }
+.stagger-9 { transition-delay: 630ms; animation-delay: 630ms; }
+.stagger-10 { transition-delay: 700ms; animation-delay: 700ms; }
+.stagger-11 { transition-delay: 770ms; animation-delay: 770ms; }
+.stagger-12 { transition-delay: 840ms; animation-delay: 840ms; }
+
+/* Page Route Entrance Animation */
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.stagger-2 {
-  transition-delay: 160ms;
+.animate-page-enter {
+  animation: pageEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.stagger-3 {
-  transition-delay: 240ms;
+/* Header Navbar Entrance Animation */
+@keyframes navSlideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-24px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.stagger-4 {
-  transition-delay: 320ms;
+.animate-nav-enter {
+  animation: navSlideDown 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* General Element Fade & Slide Entrance Animations */
+@keyframes fadeInFast {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeInFast 0.45s ease-out forwards;
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fadeSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Anthem Page Staggered Line-by-Line Entrance Transitions */
+@keyframes anthemLineEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+    filter: blur(3px);
+  }
+  60% {
+    filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0px);
+  }
+}
+
+.animate-anthem-line {
+  opacity: 0;
+  animation: anthemLineEnter 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: opacity, transform, filter;
+}
+
+@keyframes anthemTitleEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-anthem-title {
+  animation: anthemTitleEnter 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes anthemCardEnter {
+  0% {
+    opacity: 0;
+    transform: translateY(22px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-anthem-card {
+  animation: anthemCardEnter 0.75s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+@keyframes anthemBadgeEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(-16px) scale(0.92);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.animate-anthem-badge {
+  animation: anthemBadgeEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+@keyframes subtleWatermarkFloat {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.025) rotate(1deg);
+  }
+}
+
+.animate-watermark {
+  animation: subtleWatermarkFloat 18s ease-in-out infinite;
 }
 
 /* Accessibility: Respect Reduced Motion */
@@ -46,9 +182,20 @@ html {
   .reveal-item,
   .history-card-reveal,
   .history-dot-reveal,
-  .history-year-reveal {
+  .history-year-reveal,
+  .animate-page-enter,
+  .animate-nav-enter,
+  .animate-fade-in,
+  .animate-fade-up,
+  .animate-anthem-line,
+  .animate-anthem-title,
+  .animate-anthem-card,
+  .animate-anthem-badge,
+  .animate-watermark {
     opacity: 1 !important;
     transform: none !important;
+    filter: none !important;
+    animation: none !important;
     transition: none !important;
   }
 }

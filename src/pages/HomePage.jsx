@@ -70,11 +70,11 @@ export default function HomePage({ onNavigate }) {
   }, []);
 
   return (
-    <main className="flex-grow">
+    <main className="flex-grow animate-page-enter">
       <Hero onExploreHistory={() => onNavigate('history')} />
       <Principles />
       <Performance />
-      <Gallery />
+      <Gallery showArrows={false} />
       <Contact />
     </main>
   );

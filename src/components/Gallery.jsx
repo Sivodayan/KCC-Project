@@ -21,7 +21,7 @@ const defaultJournalGallery = [
  * Computes angular offsets and perspective depth matrices dynamically
  * based on distance from the active center index.
  */
-export default function Gallery({ showHeader = true }) {
+export default function Gallery({ showHeader = true, showArrows = true }) {
   const { content } = useSiteContent();
   const journalGallery = (content?.gallery && content.gallery.length > 0) ? content.gallery : defaultJournalGallery;
 
@@ -191,7 +191,7 @@ export default function Gallery({ showHeader = true }) {
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
 
 
-        <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden">
+        <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden reveal-item">
           <div
             ref={stageRef}
             onClick={handleStageClick}
@@ -323,30 +323,34 @@ export default function Gallery({ showHeader = true }) {
             })}
           </div>
 
-          <button
-            type="button"
-            onClick={() => focusIndex(currentIndex - 1)}
-            aria-label="Previous image"
-            className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {showArrows && (
+            <>
+              <button
+                type="button"
+                onClick={() => focusIndex(currentIndex - 1)}
+                aria-label="Previous image"
+                className="hidden sm:flex absolute left-4 lg:left-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
 
-          <button
-            type="button"
-            onClick={() => focusIndex(currentIndex + 1)}
-            aria-label="Next image"
-            className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+              <button
+                type="button"
+                onClick={() => focusIndex(currentIndex + 1)}
+                aria-label="Next image"
+                className="hidden sm:flex absolute right-4 lg:right-8 top-1/2 -translate-y-1/2 z-40 w-11 h-11 rounded-full bg-brand-white/90 border border-brand-pale text-brand-forest hover:bg-brand-white hover:scale-105 transition-all shadow-md items-center justify-center cursor-pointer"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </>
+          )}
         </div>
 
-        <div className="flex items-center justify-center gap-1.5 mt-4 sm:mt-6">
+        <div className="flex items-center justify-center gap-1.5 mt-4 sm:mt-6 reveal-item stagger-2">
           {journalGallery.map((_, dotIdx) => (
             <button
               key={dotIdx}

@@ -200,6 +200,62 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [navigate, location.pathname]);
 
+  // Global scroll & route change entrance observer for all .reveal-item and .history-card-reveal elements
+  useEffect(() => {
+    let observer = null;
+
+    const revealElements = () => {
+      const items = document.querySelectorAll('.reveal-item:not(.is-visible), .history-card-reveal:not(.is-visible)');
+      if (!items.length) return;
+
+      const triggerBottom = window.innerHeight * 0.94;
+      items.forEach((el) => {
+        const top = el.getBoundingClientRect().top;
+        if (top < triggerBottom) {
+          el.classList.add('is-visible');
+          el.setAttribute('data-revealed', 'true');
+          if (observer) observer.unobserve(el);
+        } else if (observer) {
+          observer.observe(el);
+        }
+      });
+    };
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              entry.target.setAttribute('data-revealed', 'true');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.05, rootMargin: '0px 0px -25px 0px' }
+      );
+    }
+
+    revealElements();
+    const rafId = requestAnimationFrame(revealElements);
+    const t1 = setTimeout(revealElements, 80);
+    const t2 = setTimeout(revealElements, 220);
+    const t3 = setTimeout(revealElements, 550);
+
+    window.addEventListener('scroll', revealElements, { passive: true });
+    window.addEventListener('resize', revealElements, { passive: true });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      window.removeEventListener('scroll', revealElements);
+      window.removeEventListener('resize', revealElements);
+      if (observer) observer.disconnect();
+    };
+  }, [location.pathname]);
+
   // Global hotkeys for accessible search invocation
   useEffect(() => {
     function handleKeyDown(e) {

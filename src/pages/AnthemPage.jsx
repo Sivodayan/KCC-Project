@@ -15,8 +15,8 @@ export default function AnthemPage() {
   }, []);
 
   return (
-    <main className="flex-grow py-4 sm:py-6 bg-brand-white dark:bg-[#0b120c] transition-colors">
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3">
+    <main className="flex-grow py-4 sm:py-6 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">
+      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-3 animate-fade-in">
         <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
           <Link
             to="/"

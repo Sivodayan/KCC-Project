@@ -112,37 +112,31 @@ export default function AboutDropdown({ currentPage, onNavigate, onOpenAnthem })
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('history')}
-            className={`about-dropdown-item w-full flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${currentPage === 'history' ? 'is-active-item' : ''
-              }`}
+            className={`about-dropdown-item w-full flex items-center px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${
+              currentPage === 'history' ? 'is-active-item' : ''
+            }`}
           >
             <span>History</span>
-            {currentPage === 'history' && (
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-forest dark:bg-emerald-400 shrink-0" />
-            )}
           </button>
           <button
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('anthem')}
-            className={`about-dropdown-item w-full flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${currentPage === 'anthem' ? 'is-active-item' : ''
-              }`}
+            className={`about-dropdown-item w-full flex items-center px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${
+              currentPage === 'anthem' ? 'is-active-item' : ''
+            }`}
           >
             <span>Anthem</span>
-            {currentPage === 'anthem' && (
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-forest dark:bg-emerald-400 shrink-0" />
-            )}
           </button>
           <button
             type="button"
             role="menuitem"
             onClick={() => handleItemClick('motto')}
-            className={`about-dropdown-item w-full flex items-center justify-between px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${currentPage === 'motto' ? 'is-active-item' : ''
-              }`}
+            className={`about-dropdown-item w-full flex items-center px-3.5 py-2 text-sm font-medium rounded-xl cursor-pointer active:scale-[0.98] ${
+              currentPage === 'motto' ? 'is-active-item' : ''
+            }`}
           >
             <span>Motto</span>
-            {currentPage === 'motto' && (
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-forest dark:bg-emerald-400 shrink-0" />
-            )}
           </button>
         </div>
       )}

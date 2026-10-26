@@ -40,10 +40,11 @@ function EventCard({ post }) {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative w-full max-w-[360px] h-[480px] bg-white dark:bg-[#0e1710] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group active:scale-[0.99] select-none ${isHovered
-          ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/15 dark:shadow-[0_20px_40px_rgba(0,0,0,0.6)] border-brand-forest/40 dark:border-emerald-400/50 ring-2 ring-brand-forest/20 dark:ring-emerald-400/20'
-          : 'shadow-sm border-slate-200/90 dark:border-emerald-500/25 hover:shadow-md dark:hover:border-emerald-500/40'
-        }`}
+      className={`relative w-full max-w-[360px] h-[480px] bg-white dark:bg-[#0e1710] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col justify-center items-center p-2.5 cursor-pointer group select-none ${
+        isHovered
+          ? '-translate-y-1.5 border-brand-soft/60 dark:border-emerald-500/40 shadow-[0_18px_40px_-10px_rgba(25,103,22,0.13),0_6px_16px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_22px_48px_-12px_rgba(16,185,129,0.18),0_8px_24px_-4px_rgba(0,0,0,0.75)]'
+          : 'shadow-sm border-slate-200/90 dark:border-white/10 hover:shadow-md'
+      }`}
     >
       <a
         href={postUrl}
@@ -61,13 +62,15 @@ function EventCard({ post }) {
         className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, rgba(24, 119, 242, 0.12), rgba(27, 77, 62, 0.05), transparent 70%)`,
+          background: `radial-gradient(420px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.08), rgba(25, 103, 22, 0.02), transparent 70%)`,
         }}
       />
 
+      {/* Top subtle ambient highlight */}
       <div
-        className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${isHovered ? 'opacity-100' : 'opacity-0'
-          }`}
+        className={`pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-pale dark:via-emerald-400/40 to-transparent transition-opacity duration-300 z-10 ${
+          isHovered ? 'opacity-100' : 'opacity-0'
+        }`}
       />
 
       <div
@@ -146,12 +149,12 @@ function ManualEventCard({ post }) {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         onClick={() => setIsDetailOpen(true)}
-        className={`relative w-full max-w-[360px] h-[480px] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col cursor-pointer group active:scale-[0.99] select-none ${
+        className={`relative w-full max-w-[360px] h-[480px] rounded-3xl border transition-all duration-300 ease-out overflow-hidden flex flex-col cursor-pointer group select-none ${
           hasImage ? 'bg-slate-900 text-white' : 'bg-white dark:bg-[#0e1710] text-slate-800 dark:text-slate-100'
         } ${
           isHovered
-            ? '-translate-y-2 scale-[1.02] shadow-2xl shadow-brand-forest/20 dark:shadow-[0_20px_40px_rgba(0,0,0,0.7)] border-brand-forest/40 dark:border-emerald-400/50 ring-2 ring-brand-forest/25 dark:ring-emerald-400/25'
-            : 'shadow-sm border-slate-200/90 dark:border-emerald-500/25 hover:shadow-md dark:hover:border-emerald-500/40'
+            ? '-translate-y-1.5 border-brand-soft/60 dark:border-emerald-500/40 shadow-[0_18px_40px_-10px_rgba(25,103,22,0.13),0_6px_16px_-4px_rgba(0,0,0,0.06)] dark:shadow-[0_22px_48px_-12px_rgba(16,185,129,0.18),0_8px_24px_-4px_rgba(0,0,0,0.75)]'
+            : 'shadow-sm border-slate-200/90 dark:border-white/10 hover:shadow-md'
         }`}
         role="button"
         tabIndex={0}
@@ -249,13 +252,13 @@ function ManualEventCard({ post }) {
               className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
               style={{
                 opacity: isHovered ? 1 : 0,
-                background: `radial-gradient(360px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.12), rgba(27, 77, 62, 0.05), transparent 70%)`,
+                background: `radial-gradient(420px circle at ${mousePos.x}px ${mousePos.y}px, rgba(16, 185, 129, 0.08), rgba(25, 103, 22, 0.02), transparent 70%)`,
               }}
             />
 
-            {/* Top edge gradient stripe on hover */}
+            {/* Top subtle ambient highlight */}
             <div
-              className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-brand-forest to-transparent transition-opacity duration-300 z-10 ${
+              className={`pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-pale dark:via-emerald-400/40 to-transparent transition-opacity duration-300 z-10 ${
                 isHovered ? 'opacity-100' : 'opacity-0'
               }`}
             />
@@ -437,10 +440,19 @@ export default function SchoolEvents() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 justify-items-center items-stretch">
           {posts.map((post, idx) => {
             const isManual = post.type === 'manual' || (!post.iframeSrc && (post.image || post.title));
-            if (isManual) {
-              return <ManualEventCard key={post.id || `manual-${idx}`} post={post} />;
-            }
-            return <EventCard key={post.id || `fb-${idx}`} post={post} />;
+            const staggerClass = `stagger-${(idx % 6) + 1}`;
+            return (
+              <div
+                key={post.id || (isManual ? `manual-${idx}` : `fb-${idx}`)}
+                className={`reveal-item ${staggerClass} w-full flex justify-center h-full`}
+              >
+                {isManual ? (
+                  <ManualEventCard post={post} />
+                ) : (
+                  <EventCard post={post} />
+                )}
+              </div>
+            );
           })}
         </div>
       </div>

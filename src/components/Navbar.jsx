@@ -20,7 +20,7 @@ export default function Navbar({
   }
 
   return (
-    <header className="w-full border-b border-brand-pale dark:border-emerald-900/40 bg-brand-white/95 dark:bg-[#0b120c]/95 backdrop-blur-md sticky top-0 z-40 transition-colors duration-150" id="mainHeader">
+    <header className="w-full border-b border-brand-pale dark:border-emerald-900/40 bg-brand-white/95 dark:bg-[#0b120c]/95 backdrop-blur-md sticky top-0 z-40 transition-colors duration-150 animate-nav-enter" id="mainHeader">
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex items-center justify-between py-3.5" aria-label="Main Navigation">
           <button
