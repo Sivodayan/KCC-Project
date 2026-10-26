@@ -245,6 +245,17 @@ export default function App() {
     window.addEventListener('scroll', revealElements, { passive: true });
     window.addEventListener('resize', revealElements, { passive: true });
 
+    let mutationObserver = null;
+    if (typeof MutationObserver !== 'undefined') {
+      mutationObserver = new MutationObserver(() => {
+        revealElements();
+      });
+      mutationObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'data-theme-transition']
+      });
+    }
+
     return () => {
       cancelAnimationFrame(rafId);
       clearTimeout(t1);
@@ -253,6 +264,7 @@ export default function App() {
       window.removeEventListener('scroll', revealElements);
       window.removeEventListener('resize', revealElements);
       if (observer) observer.disconnect();
+      if (mutationObserver) mutationObserver.disconnect();
     };
   }, [location.pathname]);
 

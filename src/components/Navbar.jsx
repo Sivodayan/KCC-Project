@@ -29,7 +29,7 @@ export default function Navbar({
             className="group flex items-center gap-3 cursor-pointer text-left focus:outline-none shrink-0"
           >
             <div
-              className="school-crest-badge shrink-0 rounded-xl p-1 shadow-xs transition-all flex items-center justify-center border-0 dark:border dark:border-emerald-500/20"
+              className="school-crest-badge shrink-0 rounded-xl p-1 shadow-xs transition-all flex items-center justify-center border border-transparent dark:border-emerald-500/20"
               style={{ height: '48px', width: 'auto', minWidth: '44px', maxWidth: '54px', backgroundColor: '#ffffff' }}
             >
               <img

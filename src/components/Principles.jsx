@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
 export default function Principles() {
@@ -21,6 +21,20 @@ export default function Principles() {
   };
 
   const [flippedCards, setFlippedCards] = useState({});
+  const [isRevealed, setIsRevealed] = useState(false);
+  const principlesRef = useRef(null);
+
+  useEffect(() => {
+    if (!principlesRef.current) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setIsRevealed(true);
+        observer.disconnect();
+      }
+    }, { threshold: 0.1 });
+    observer.observe(principlesRef.current);
+    return () => observer.disconnect();
+  }, []);
 
   const toggleFlip = (cardKey) => {
     setFlippedCards(prev => ({ ...prev, [cardKey]: !prev[cardKey] }));
@@ -33,11 +47,13 @@ export default function Principles() {
     }
   };
 
+  const visibleClass = isRevealed ? 'is-visible' : '';
+
   return (
-    <section className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section ref={principlesRef} className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="reveal-item stagger-1 h-[310px] sm:h-[325px] lg:h-[320px]">
+          <div className={`reveal-item stagger-1 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
             <div
               role="button"
               tabIndex={0}
@@ -76,7 +92,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className="reveal-item stagger-2 h-[310px] sm:h-[325px] lg:h-[320px]">
+          <div className={`reveal-item stagger-2 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
             <div
               role="button"
               tabIndex={0}
@@ -115,7 +131,7 @@ export default function Principles() {
             </div>
           </div>
 
-          <div className="reveal-item stagger-3 h-[310px] sm:h-[325px] lg:h-[320px]">
+          <div className={`reveal-item stagger-3 ${visibleClass} h-[310px] sm:h-[325px] lg:h-[320px]`} data-revealed={isRevealed ? "true" : undefined}>
             <div
               role="button"
               tabIndex={0}

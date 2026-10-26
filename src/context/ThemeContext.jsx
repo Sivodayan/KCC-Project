@@ -167,27 +167,44 @@ export function ThemeProvider({ children }) {
       });
 
       transition.ready.then(() => {
-        const clipPath = [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${endRadius}px at ${x}px ${y}px)`,
-        ];
+        const keyframes = isShrinking
+          ? [
+              {
+                clipPath: `circle(${endRadius}px at ${x}px ${y}px)`,
+                opacity: 1,
+              },
+              {
+                clipPath: `circle(0px at ${x}px ${y}px)`,
+                opacity: 0,
+              },
+            ]
+          : [
+              {
+                clipPath: `circle(0px at ${x}px ${y}px)`,
+              },
+              {
+                clipPath: `circle(${endRadius}px at ${x}px ${y}px)`,
+              },
+            ];
 
-        document.documentElement.animate(
-          {
-            clipPath: isShrinking ? [...clipPath].reverse() : clipPath,
-          },
-          {
-            duration: 440,
-            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
-            fill: 'forwards',
-            pseudoElement: isShrinking ? '::view-transition-old(root)' : '::view-transition-new(root)',
-          }
-        );
+        document.documentElement.animate(keyframes, {
+          duration: 440,
+          easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+          fill: 'forwards',
+          pseudoElement: isShrinking ? '::view-transition-old(root)' : '::view-transition-new(root)',
+        });
       });
 
-      transition.finished.finally(() => {
-        document.documentElement.removeAttribute('data-theme-transition');
-      });
+      transition.finished
+        .catch(() => {})
+        .finally(() => {
+          // Wait for browser to commit live DOM before restoring standard CSS transitions
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              document.documentElement.removeAttribute('data-theme-transition');
+            });
+          });
+        });
       return;
     }
 

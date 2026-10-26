@@ -109,11 +109,17 @@ export default function Performance() {
     return () => observer.disconnect();
   }, [statsAnimated, targets.founded, targets.students, targets.staff, targets.olPass, targets.alQual, targets.clubs, targets.houses, targets.gradeMin, targets.gradeMax]);
 
+  const visibleClass = statsAnimated ? 'is-visible' : '';
+
   return (
-    <section ref={performanceRef} className="py-16 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="performance">
-      <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12 reveal-item">
-          <h2 className="text-3xl font-extrabold text-brand-forest dark:text-emerald-400 mt-1 tracking-tight">
+    <section
+      ref={performanceRef}
+      className="py-16 sm:py-24 lg:py-28 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors scroll-mt-[var(--nav-height)]"
+      id="performance"
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className={`text-center max-w-2xl mx-auto mb-10 sm:mb-12 reveal-item ${visibleClass}`} data-revealed={statsAnimated ? "true" : undefined}>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-forest dark:text-emerald-400 mt-1 tracking-tight">
             {perf.title || 'Key Numbers & Performance'}
           </h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">
@@ -121,8 +127,8 @@ export default function Performance() {
           </p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-1 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.founded}{perf.foundedSuffix ?? ''}
             </p>
@@ -134,7 +140,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-2 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.students}{perf.studentsSuffix ?? '+'}
             </p>
@@ -146,7 +152,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-3 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.staff}{perf.staffSuffix ?? ''}
             </p>
@@ -158,7 +164,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.olPass}{perf.olPassSuffix ?? '%'}
             </p>
@@ -170,7 +176,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-4 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {statsAnimated ? `${counterValues.gradeMin} – ${counterValues.gradeMax}` : (perf.grades || `${targets.gradeMin} – ${targets.gradeMax}`)}{perf.gradesSuffix ?? ''}
             </p>
@@ -182,7 +188,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-1 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-1 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.alQual}{perf.alQualSuffix ?? '%'}
             </p>
@@ -194,7 +200,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-2 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-2 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.clubs}{perf.clubsSuffix ?? ''}
             </p>
@@ -206,7 +212,7 @@ export default function Performance() {
             </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item stagger-3 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1">
+          <div className={`p-5 sm:p-6 rounded-2xl bg-brand-light dark:bg-[#111d13] border border-brand-pale dark:border-emerald-500/20 text-center reveal-item ${visibleClass} stagger-3 transition-all duration-200 hover:border-brand-soft dark:hover:border-emerald-400/50 hover:-translate-y-1 shadow-2xs dark:shadow-[0_4px_20px_rgba(0,0,0,0.4)] flex flex-col justify-center min-h-[148px] sm:min-h-[156px]`} data-revealed={statsAnimated ? "true" : undefined}>
             <p className="text-3xl lg:text-4xl font-extrabold text-brand-forest dark:text-emerald-300 font-sans">
               {counterValues.houses}{perf.housesSuffix ?? ''}
             </p>
@@ -217,7 +223,6 @@ export default function Performance() {
               {perf.housesSub || 'Annual Sports Division'}
             </p>
           </div>
-
         </div>
       </div>
     </section>
