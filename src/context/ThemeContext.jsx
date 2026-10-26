@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { flushSync } from 'react-dom';
 
 const ThemeContext = createContext();
 
@@ -109,22 +110,173 @@ export function ThemeProvider({ children }) {
     }
   }, []);
 
-  const resetToSystem = useCallback(() => {
-    setTheme('system');
-  }, [setTheme]);
+  // Helper to run circular view transition or fallback spreading/shrinking from the button
+  const runThemeTransition = useCallback((event, targetDark, applyChange) => {
+    // If not in browser or reduced motion is preferred
+    if (
+      typeof document === 'undefined' ||
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+      applyChange();
+      return;
+    }
 
-  // Smart toggle: switches between Dark and Light mode.
+    // Determine center coordinate of the trigger button (or click coordinate)
+    let x = Math.round(window.innerWidth / 2);
+    let y = Math.round(window.innerHeight / 2);
+
+    const targetEl = event?.currentTarget || event?.target;
+    if (targetEl && typeof targetEl.getBoundingClientRect === 'function') {
+      const rect = targetEl.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        x = Math.round(rect.left + rect.width / 2);
+        y = Math.round(rect.top + rect.height / 2);
+      }
+    } else if (event?.clientX !== undefined && event?.clientY !== undefined && (event.clientX !== 0 || event.clientY !== 0)) {
+      x = event.clientX;
+      y = event.clientY;
+    }
+
+    // Compute maximum distance to the furthest screen corner with a safety buffer
+    const endRadius = Math.ceil(
+      Math.hypot(
+        Math.max(x, window.innerWidth - x),
+        Math.max(y, window.innerHeight - y)
+      )
+    ) + 16;
+
+    // If target is dark: SPREAD outward from button
+    // If target is light: SHRINK back into the button
+    const isShrinking = !targetDark;
+
+    // Modern View Transitions API (Chrome, Edge, Safari 18+)
+    if (typeof document.startViewTransition === 'function') {
+      document.documentElement.setAttribute(
+        'data-theme-transition',
+        isShrinking ? 'shrink' : 'expand'
+      );
+
+      const transition = document.startViewTransition(() => {
+        try {
+          flushSync(() => {
+            applyChange();
+          });
+        } catch {
+          applyChange();
+        }
+      });
+
+      transition.ready.then(() => {
+        const clipPath = [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${endRadius}px at ${x}px ${y}px)`,
+        ];
+
+        document.documentElement.animate(
+          {
+            clipPath: isShrinking ? [...clipPath].reverse() : clipPath,
+          },
+          {
+            duration: 440,
+            easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            fill: 'forwards',
+            pseudoElement: isShrinking ? '::view-transition-old(root)' : '::view-transition-new(root)',
+          }
+        );
+      });
+
+      transition.finished.finally(() => {
+        document.documentElement.removeAttribute('data-theme-transition');
+      });
+      return;
+    }
+
+    // Fallback for browsers without View Transitions API
+    const ripple = document.createElement('div');
+    ripple.style.position = 'fixed';
+    ripple.style.left = `${x}px`;
+    ripple.style.top = `${y}px`;
+    ripple.style.borderRadius = '50%';
+    ripple.style.transform = 'translate(-50%, -50%)';
+    ripple.style.pointerEvents = 'none';
+    ripple.style.zIndex = '999999';
+    ripple.style.backgroundColor = '#0b120c';
+
+    const size = endRadius * 2;
+
+    if (isShrinking) {
+      // Dark to Light fallback: start dark overlay full size, apply light theme, then shrink into button
+      ripple.style.width = `${size}px`;
+      ripple.style.height = `${size}px`;
+      ripple.style.transition = 'width 0.42s cubic-bezier(0.4, 0, 0.2, 1), height 0.42s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease 0.35s';
+      document.body.appendChild(ripple);
+
+      applyChange();
+
+      requestAnimationFrame(() => {
+        ripple.style.width = '0px';
+        ripple.style.height = '0px';
+      });
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 450);
+    } else {
+      // Light to Dark fallback: start at button and expand outward
+      ripple.style.width = '0px';
+      ripple.style.height = '0px';
+      ripple.style.transition = 'width 0.42s cubic-bezier(0.4, 0, 0.2, 1), height 0.42s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease 0.35s';
+      document.body.appendChild(ripple);
+
+      requestAnimationFrame(() => {
+        ripple.style.width = `${size}px`;
+        ripple.style.height = `${size}px`;
+      });
+
+      setTimeout(() => {
+        applyChange();
+        ripple.style.opacity = '0';
+        setTimeout(() => {
+          ripple.remove();
+        }, 260);
+      }, 200);
+    }
+  }, []);
+
+  const resetToSystem = useCallback((event) => {
+    runThemeTransition(event, systemPrefersDark, () => {
+      const root = document.documentElement;
+      if (systemPrefersDark) {
+        root.classList.add('dark');
+        root.style.colorScheme = 'dark';
+      } else {
+        root.classList.remove('dark');
+        root.style.colorScheme = 'light';
+      }
+      setTheme('system');
+    });
+  }, [systemPrefersDark, setTheme, runThemeTransition]);
+
+  // Smart toggle: switches between Dark and Light mode with circular spreading effect.
   // If switching brings the theme in line with the active OS system theme,
   // it automatically returns to 'system' mode to keep automatic sync alive.
-  const toggleTheme = useCallback(() => {
+  const toggleTheme = useCallback((event) => {
     const nextDark = !isDark;
     const matchesSystem = (nextDark === systemPrefersDark);
-    if (matchesSystem) {
-      setTheme('system');
-    } else {
-      setTheme(nextDark ? 'dark' : 'light');
-    }
-  }, [isDark, systemPrefersDark, setTheme]);
+    const targetMode = matchesSystem ? 'system' : (nextDark ? 'dark' : 'light');
+
+    runThemeTransition(event, nextDark, () => {
+      const root = document.documentElement;
+      if (nextDark) {
+        root.classList.add('dark');
+        root.style.colorScheme = 'dark';
+      } else {
+        root.classList.remove('dark');
+        root.style.colorScheme = 'light';
+      }
+      setTheme(targetMode);
+    });
+  }, [isDark, systemPrefersDark, setTheme, runThemeTransition]);
 
   return (
     <ThemeContext.Provider

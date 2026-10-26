@@ -14,10 +14,10 @@ export default function ThemeToggle({ className = '', variant = 'default', ...pr
   return (
     <button
       type="button"
-      onClick={toggleTheme}
+      onClick={(e) => toggleTheme(e)}
       onDoubleClick={(e) => {
         e.stopPropagation();
-        resetToSystem();
+        resetToSystem(e);
       }}
       aria-label={`Current theme is ${isDark ? 'Dark' : 'Light'} (${isSystem ? 'System Auto' : 'Manual'}). Click to switch to ${isDark ? 'Light' : 'Dark'} mode.`}
       title={

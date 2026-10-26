@@ -1344,3 +1344,42 @@ html.dark ::-webkit-scrollbar-thumb {
 html.dark ::-webkit-scrollbar-thumb:hover {
   background: #28472d;
 }
+
+/* Circular View Transition for Theme Toggle */
+::view-transition-group(root) {
+  animation-duration: 0.45s;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  height: 100%;
+  overflow: clip;
+}
+
+/* Default (Expand: Light -> Dark): new dark theme expands on top */
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 99999;
+}
+
+/* Shrink mode (Dark -> Light): old dark theme stays on top and shrinks into button */
+html[data-theme-transition="shrink"]::view-transition-old(root) {
+  z-index: 99999;
+}
+
+html[data-theme-transition="shrink"]::view-transition-new(root) {
+  z-index: 1;
+}
+
+/* Suppress all competing CSS transitions on the DOM while the circular transition runs */
+html[data-theme-transition] *,
+html[data-theme-transition] *::before,
+html[data-theme-transition] *::after {
+  transition: none !important;
+}
