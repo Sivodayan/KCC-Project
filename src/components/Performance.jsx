@@ -122,9 +122,6 @@ export default function Performance() {
           <h2 className="text-3xl sm:text-4xl font-extrabold text-brand-forest dark:text-emerald-400 mt-1 tracking-tight">
             {perf.title || 'Key Numbers & Performance'}
           </h2>
-          <p className="text-slate-600 dark:text-slate-400 text-sm mt-2">
-            {perf.subtitle || 'Measurable records reflecting academic commitment, teacher mentorship, and co-curricular vibrancy.'}
-          </p>
         </div>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
