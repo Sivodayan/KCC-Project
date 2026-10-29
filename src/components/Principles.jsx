@@ -53,17 +53,18 @@ export default function Principles() {
     <section ref={principlesRef} className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* MOTTO CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-100 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
               aria-label="Motto card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.motto ? 'is-flipped' : ''}`}
+              className={`group flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.motto ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('motto')}
               onKeyDown={(e) => handleKeyDown(e, 'motto')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-front bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale">
                       Motto
@@ -74,9 +75,15 @@ export default function Principles() {
                       {motto.english}
                     </h3>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-pale dark:text-emerald-300 group-hover:text-white transition-colors">
+                      <span className="font-tamil">தமிழ்</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-back bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest font-tamil">
                       மகுடவாசகம்
@@ -87,22 +94,29 @@ export default function Principles() {
                       <span className="block">{motto.tamil}</span>
                     </h3>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-forest dark:text-emerald-400 group-hover:text-brand-forestHover transition-colors">
+                      <span>English</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* VISION CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-250 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
               aria-label="Vision card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.vision ? 'is-flipped' : ''}`}
+              className={`group flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.vision ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('vision')}
               onKeyDown={(e) => handleKeyDown(e, 'vision')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Vision
@@ -113,9 +127,15 @@ export default function Principles() {
                       {vision.english}
                     </h3>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-forest dark:text-emerald-400 group-hover:text-brand-forestHover transition-colors">
+                      <span className="font-tamil">தமிழ்</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       தூரநோக்கு
@@ -126,22 +146,29 @@ export default function Principles() {
                       <span className="block">{vision.tamil}</span>
                     </h3>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-pale dark:text-emerald-300 group-hover:text-white transition-colors">
+                      <span>English</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
+          {/* MISSION CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-400 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
               tabIndex={0}
               aria-label="Mission Statement card - hover or tap to flip between English and Tamil"
-              className={`flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.mission ? 'is-flipped' : ''}`}
+              className={`group flip-card w-full h-full cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-forest rounded-3xl shadow-sm hover:shadow-xl transition-shadow duration-300 ${flippedCards.mission ? 'is-flipped' : ''}`}
               onClick={() => toggleFlip('mission')}
               onKeyDown={(e) => handleKeyDown(e, 'mission')}
             >
               <div className="flip-card-inner">
-                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col">
+                <div className="flip-card-front bg-brand-white text-slate-800 p-6 sm:p-7 lg:p-8 border border-brand-pale flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-forest">
                       Mission
@@ -152,9 +179,15 @@ export default function Principles() {
                       {mission.english}
                     </p>
                   </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-forest dark:text-emerald-400 group-hover:text-brand-forestHover transition-colors">
+                      <span className="font-tamil">தமிழ்</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col">
+                <div className="flip-card-back bg-brand-forest text-brand-white p-6 sm:p-7 lg:p-8 border border-brand-soft/40 flex flex-col justify-between">
                   <div>
                     <span className="text-xs uppercase font-extrabold tracking-widest text-brand-pale font-tamil">
                       நோக்கக்கூற்று
@@ -164,6 +197,12 @@ export default function Principles() {
                     <p className="text-xs sm:text-[13px] lg:text-[13.5px] text-brand-light font-tamil leading-[1.8] font-normal">
                       {mission.tamil}
                     </p>
+                  </div>
+                  <div className="flex justify-end pt-2">
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-pale dark:text-emerald-300 group-hover:text-white transition-colors">
+                      <span>English</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">&rarr;</span>
+                    </span>
                   </div>
                 </div>
               </div>
