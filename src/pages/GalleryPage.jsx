@@ -2,13 +2,6 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Gallery from '../components/Gallery.jsx';
 
-/**
- * GalleryPage Component
- *
- * Dedicated route view presenting the collegiate visual archive.
- * Features categorized media filter tabs (All, Campus, Academics, Sports, Culture)
- * and full-resolution lightbox inspection.
- */
 export default function GalleryPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

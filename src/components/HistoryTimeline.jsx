@@ -2,15 +2,6 @@ import React, { useEffect } from 'react';
 import GlassImage from './GlassImage.jsx';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
-/**
- * MilestoneCard Component
- *
- * Renders an individual historical milestone with:
- * - Fluid entrance transitions (fade-in, slide-up, scale-up)
- * - Dot and year marker entrance animations linked to timeline spine
- * - Elevated hover effects with shadow and border glows
- * - Full dark mode styling and bilingual Tamil/English content resolution
- */
 function MilestoneCard({ m, idx, lang }) {
   const isTa = lang === 'ta';
   const isAlternate = idx % 2 === 1;
@@ -26,17 +17,13 @@ function MilestoneCard({ m, idx, lang }) {
       className="history-card-reveal relative pl-6 sm:pl-10 group"
       style={{ transitionDelay: `${staggerDelay}ms` }}
     >
-      {/* Spine marker dot with scale entrance & hover expansion */}
       <span className="history-dot-reveal absolute -left-[7px] top-5 w-3.5 h-3.5 rounded-full bg-brand-forest dark:bg-emerald-500 ring-4 ring-brand-light dark:ring-emerald-950/80 transition-all duration-300 group-hover:scale-125 group-hover:ring-brand-forest/30 dark:group-hover:ring-emerald-400/40" />
 
-      {/* Desktop year label with slide-in entrance */}
       <span className="history-year-reveal hidden sm:block absolute -left-28 top-3.5 w-20 text-right font-bold text-brand-forest dark:text-emerald-400 text-xs transition-colors duration-200">
         {yearDisplay}
       </span>
 
-      {/* Main Milestone Card with lift & shadow hover transitions */}
       <div className="bg-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-900/40 rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out">
-        {/* Mobile year pill */}
         <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/50 text-brand-forest dark:text-emerald-300 text-[11px] font-bold mb-2.5 transition-colors">
           {yearDisplay}
         </span>
@@ -87,22 +74,12 @@ function MilestoneCard({ m, idx, lang }) {
   );
 }
 
-/**
- * HistoryTimeline Component
- *
- * Archival chronology presentation for J/Kopay Christian College.
- * Dynamically rendered from centralized content context (siteContent.json / admin edits).
- * Supports bilingual rendering (Tamil treatise vs English treatise)
- * with alternating milestone spine, blockquotes, and archival photographs.
- * Every milestone card enters with a smooth viewport-triggered transition.
- */
 export default function HistoryTimeline({ lang = 'en' }) {
   const { content } = useSiteContent();
   const history = content?.history || {};
   const overview = history.overview || {};
   const milestones = history.milestones || [];
 
-  // Check initial visibility whenever milestones update
   useEffect(() => {
     const triggerBottom = window.innerHeight * 0.95;
     const items = document.querySelectorAll('.history-card-reveal:not(.is-visible)');
@@ -138,7 +115,6 @@ export default function HistoryTimeline({ lang = 'en' }) {
         )}
       </header>
 
-      {/* Central timeline spine with smooth vertical accent */}
       <div className="relative border-l-2 border-brand-pale dark:border-emerald-900/40 ml-3 sm:ml-28 space-y-8">
         {milestones.map((m, idx) => (
           <MilestoneCard 

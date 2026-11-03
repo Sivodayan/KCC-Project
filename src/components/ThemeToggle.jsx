@@ -1,13 +1,6 @@
 import React from 'react';
 import { useTheme } from '../context/ThemeContext.jsx';
 
-/**
- * ThemeToggle Component
- *
- * A single, direct toggle button that displays the active theme ("Dark" or "Light").
- * System dark mode is detected automatically behind the scenes.
- * Clicking immediately toggles between Dark and Light mode without any dropdown.
- */
 export default function ThemeToggle({ className = '', variant = 'default', ...props }) {
   const { isDark, isSystem, toggleTheme, resetToSystem } = useTheme();
 

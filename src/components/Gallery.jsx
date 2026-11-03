@@ -16,11 +16,6 @@ const defaultJournalGallery = [
   { src: "/assets/gal_(11).jpeg" }
 ];
 
-/**
- * Interactive 3D Cylindrical Gallery Carousel
- * Computes angular offsets and perspective depth matrices dynamically
- * based on distance from the active center index.
- */
 export default function Gallery({ showHeader = true, showArrows = true }) {
   const { content } = useSiteContent();
   const journalGallery = (content?.gallery && content.gallery.length > 0) ? content.gallery : defaultJournalGallery;
@@ -189,7 +184,6 @@ export default function Gallery({ showHeader = true, showArrows = true }) {
       id="gallery"
     >
       <div className="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8">
-
 
         <div className="relative w-full flex items-center justify-center py-4 sm:py-6 overflow-hidden reveal-item">
           <div

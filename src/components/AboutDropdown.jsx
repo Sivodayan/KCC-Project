@@ -1,14 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-/**
- * AboutDropdown Component
- *
- * Header navigation dropdown managing access to institutional sub-sections
- * (History, Anthem, Motto).
- *
- * Implements resilient hover-intent heuristics with a 180ms hysteresis buffer,
- * click-outside listener teardown, Escape key trapping, and strict ARIA compliance.
- */
 export default function AboutDropdown({ currentPage, onNavigate, onOpenAnthem }) {
   const [isOpen, setIsOpen] = useState(false);
   const timeoutRef = useRef(null);

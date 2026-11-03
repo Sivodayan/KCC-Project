@@ -26,10 +26,6 @@ function scrollToElementWithNavOffset(el) {
   });
 }
 
-/**
- * Root Application Component
- * Manages routing, global modals, SEO metadata sync, and SPA redirects.
- */
 export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,12 +49,10 @@ export default function App() {
   const currentPage = getActivePageName();
   const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
 
-  // Handle SPA redirects from static hosts (GitHub Pages 404.html) and legacy hash URLs
   useEffect(() => {
     const redirectPath = sessionStorage.getItem('redirect_path');
     if (redirectPath) {
       sessionStorage.removeItem('redirect_path');
-      // Ensure redirectPath is a safe relative path to prevent open redirect vulnerabilities
       if (typeof redirectPath === 'string' && redirectPath.startsWith('/') && !redirectPath.startsWith('//')) {
         navigate(redirectPath, { replace: true });
         return;
@@ -105,7 +99,6 @@ export default function App() {
     setSearchParams(nextParams, { replace: true });
   }, [searchParams, setSearchParams]);
 
-  // Synchronize document title, OpenGraph metadata, and indexing directives per route
   useEffect(() => {
     const path = location.pathname.toLowerCase();
     const metaDesc = document.querySelector('meta[name="description"]');
@@ -121,7 +114,6 @@ export default function App() {
     if (path.startsWith('/admin')) {
       pageTitle = "Admin Portal";
       descContent = "Administration portal for J/Kopay Christian College.";
-      // Enforce strict noindex for Admin portal to prevent search engine indexing
       if (robotsMeta) robotsMeta.setAttribute("content", "noindex, nofollow");
     } else {
       if (robotsMeta) robotsMeta.setAttribute("content", "index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1");
@@ -200,7 +192,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [navigate, location.pathname]);
 
-  // Global scroll & route change entrance observer for all .reveal-item and .history-card-reveal elements
   useEffect(() => {
     let observer = null;
 
@@ -268,7 +259,6 @@ export default function App() {
     };
   }, [location.pathname]);
 
-  // Global hotkeys for accessible search invocation
   useEffect(() => {
     function handleKeyDown(e) {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
@@ -286,7 +276,6 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
 
-  // Dedicated full-screen layout for admin console
   if (isAdminRoute) {
     return (
       <SiteContentProvider>

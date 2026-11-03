@@ -1,9 +1,3 @@
-/**
- * Footer Component
- *
- * Institutional footer displaying college identity, bilingual geographic metadata,
- * and copyright credentials across all application routes.
- */
 export default function Footer() {
   return (
     <footer className="bg-brand-white dark:bg-[#081009] border-t border-brand-pale dark:border-emerald-950/60 py-4 sm:py-5 text-xs text-slate-500 transition-colors reveal-item">

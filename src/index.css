@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Scroll offset for sticky header */
 :root {
   --nav-height: 4.8rem;
 }
@@ -11,7 +10,6 @@ html {
   scroll-padding-top: var(--nav-height);
 }
 
-/* Scroll Entrance Transition */
 .reveal-item {
   opacity: 0;
   transform: translateY(28px);
@@ -25,7 +23,6 @@ html {
   transform: translateY(0);
 }
 
-/* Staggered Delay Helpers */
 .stagger-1 {
   transition-delay: 70ms;
   animation-delay: 70ms;
@@ -86,7 +83,6 @@ html {
   animation-delay: 840ms;
 }
 
-/* Page Route Entrance Animation */
 @keyframes pageEnter {
   0% {
     opacity: 0;
@@ -103,7 +99,6 @@ html {
   animation: pageEnter 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Header Navbar Entrance Animation */
 @keyframes navSlideDown {
   0% {
     opacity: 0;
@@ -120,7 +115,6 @@ html {
   animation: navSlideDown 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* General Element Fade & Slide Entrance Animations */
 @keyframes fadeInFast {
   from {
     opacity: 0;
@@ -151,7 +145,6 @@ html {
   animation: fadeSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Anthem Page Staggered Line-by-Line Entrance Transitions */
 @keyframes anthemLineEnter {
   0% {
     opacity: 0;
@@ -241,7 +234,6 @@ html {
   animation: subtleWatermarkFloat 18s ease-in-out infinite;
 }
 
-/* Accessibility: Respect Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
 
   .reveal-item,
@@ -265,7 +257,6 @@ html {
   }
 }
 
-/* History Timeline & Archival Card Scroll Entrance & Micro-Transitions */
 .history-card-reveal {
   opacity: 0;
   transform: translateY(32px) scale(0.985);
@@ -308,7 +299,6 @@ html {
   transform: translateX(0);
 }
 
-/* Navbar Link Hover Indicator */
 .nav-link {
   position: relative;
   transition: color 200ms ease, background-color 200ms ease;
@@ -332,7 +322,6 @@ html {
   left: 10%;
 }
 
-/* 3D Digital Journal Carousel (Pinterest Inspired) */
 .journal-stage {
   perspective: 1200px;
   transform-style: preserve-3d;
@@ -369,7 +358,6 @@ html {
   cursor: default;
 }
 
-/* Universal Hover to Zoom Effect for Center, Next, and Previous Images */
 .journal-card:hover .journal-img,
 .journal-card.is-hover-zoomed .journal-img {
   transform: scale(1.10);
@@ -388,7 +376,6 @@ html {
   filter: brightness(1.08) drop-shadow(0 25px 35px rgba(0, 0, 0, 0.65)) !important;
 }
 
-/* Dramatic 3D Fan-In Entry Transition for Gallery Cards */
 .journal-card.is-entering {
   transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.95s ease, filter 0.95s ease !important;
 }
@@ -407,7 +394,6 @@ html {
   }
 }
 
-/* History Content Fade In */
 .fade-content {
   animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -424,7 +410,6 @@ html {
   }
 }
 
-/* 3D Flip Card Interactive System (Flicker-Free, Mobile & Desktop Optimized) */
 .flip-card {
   perspective: 1200px;
   -webkit-perspective: 1200px;
@@ -466,13 +451,11 @@ html {
   -webkit-transform: rotateY(180deg);
 }
 
-/* Click/Tap Toggle State (Essential for Mobile touch screens) */
 .flip-card.is-flipped .flip-card-inner {
   transform: rotateY(180deg);
   -webkit-transform: rotateY(180deg);
 }
 
-/* Desktop Hover Support (Smooth, No pointer-events toggle or z-index flash) */
 @media (hover: hover) and (pointer: fine) {
   .flip-card:hover .flip-card-inner {
     transform: rotateY(180deg);
@@ -480,7 +463,6 @@ html {
   }
 }
 
-/* Hero Entrance Animations */
 @keyframes heroFadeUp {
   from {
     opacity: 0;
@@ -507,7 +489,6 @@ html {
   animation: heroFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.24s forwards;
 }
 
-/* Hero background campus photo - feathered left edge so no physical image cut is ever visible on desktop */
 @media (min-width: 640px) {
   .hero-bg-photo {
     -webkit-mask-image: linear-gradient(to right,
@@ -525,7 +506,6 @@ html {
   }
 }
 
-/* Hero Cinematic Multi-Stop Gradients & Scrims (Flawless optical easing curve) */
 .hero-scrim-desktop {
   background: linear-gradient(90deg,
       #124817 0%,
@@ -580,7 +560,6 @@ html.dark .hero-scrim-mobile {
       rgba(7, 19, 9, 0) 95%);
 }
 
-/* Atmospheric Ambient Vignette & Warm Tint - Zero hard edges */
 .hero-ambient-vignette {
   background: radial-gradient(circle at 20% 40%,
       rgba(74, 222, 128, 0.08) 0%,
@@ -607,7 +586,6 @@ html.dark .hero-ambient-vignette {
       rgba(2, 8, 3, 0) 65%);
 }
 
-/* Modal Entrance Animations */
 @keyframes modalBackdropFadeIn {
   from {
     opacity: 0;
@@ -638,7 +616,6 @@ html.dark .hero-ambient-vignette {
   animation: modalContentPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Gallery Caption Animation */
 @keyframes captionFadeUp {
   from {
     opacity: 0;
@@ -655,11 +632,6 @@ html.dark .hero-ambient-vignette {
   animation: captionFadeUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* ==========================================================================
-   Instagram-Style Glassmorphism Loading Placeholders & Swiping Shimmer
-   ========================================================================== */
-
-/* Continuous, rhythmic Instagram shimmer swipe across elements */
 @keyframes instaGlassSwipe {
   0% {
     transform: translateX(-150%) skewX(-20deg);
@@ -670,7 +642,6 @@ html.dark .hero-ambient-vignette {
   }
 }
 
-/* Diagonal glass beam swipe for larger card containers */
 @keyframes instaDiagonalSwipe {
   0% {
     transform: translateX(-150%) skewX(-25deg);
@@ -708,10 +679,6 @@ html.dark .hero-ambient-vignette {
     transform: translateX(100%);
   }
 }
-
-/* ==========================================================================
-   Professional Search Modal Indeterminate Progress Beam & Shimmer
-   ========================================================================== */
 
 @keyframes indeterminateProgress {
   0% {
@@ -783,7 +750,6 @@ html.dark .search-progress-track {
   animation-delay: 0.85s;
 }
 
-/* Glassy container with frosted blur, subtle border & inner specular gradient */
 .glass-surface {
   background: linear-gradient(135deg,
       rgba(255, 255, 255, 0.82) 0%,
@@ -798,7 +764,6 @@ html.dark .search-progress-track {
     inset 0 -1px 1px 0 rgba(25, 103, 22, 0.05);
 }
 
-/* Institutional dark mode frosted glass */
 html.dark .glass-surface {
   background: linear-gradient(135deg,
       rgba(17, 30, 20, 0.85) 0%,
@@ -813,7 +778,6 @@ html.dark .glass-surface {
     inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Dark variant for Hero or dark containers */
 .glass-surface-dark {
   background: linear-gradient(135deg,
       rgba(19, 82, 17, 0.7) 0%,
@@ -836,7 +800,6 @@ html.dark .glass-surface-dark {
   border-color: rgba(74, 222, 128, 0.22) !important;
 }
 
-/* Emerald tinted glass for school accent */
 .glass-surface-emerald {
   background: linear-gradient(135deg,
       rgba(233, 248, 231, 0.88) 0%,
@@ -861,7 +824,6 @@ html.dark .glass-surface-emerald {
     inset 0 1px 2px 0 rgba(74, 222, 128, 0.22) !important;
 }
 
-/* Instagram-Style Active Swiping Light Wave (Light Frosted Surface) */
 .glass-shimmer {
   position: relative;
   overflow: hidden;
@@ -894,7 +856,6 @@ html.dark .glass-shimmer::after {
       rgba(74, 222, 128, 0) 100%) !important;
 }
 
-/* Instagram-Style Active Swiping Light Wave (Dark Surfaces) */
 .glass-shimmer-dark {
   position: relative;
   overflow: hidden;
@@ -927,7 +888,6 @@ html.dark .glass-shimmer-dark::after {
       rgba(74, 222, 128, 0) 100%) !important;
 }
 
-/* Diagonal glass beam swipe for larger card containers */
 .glass-swipe-diagonal {
   position: relative;
   overflow: hidden;
@@ -960,12 +920,10 @@ html.dark .glass-swipe-diagonal::before {
       transparent 100%) !important;
 }
 
-/* Subtle breathing glow effect */
 .glass-pulse {
   animation: glassPulseGlow 3s infinite ease-in-out;
 }
 
-/* Route transition top loader with radiant specular glow */
 .glass-route-bar {
   background: linear-gradient(90deg, #196716, #3bb537, #86efac, #3bb537, #196716);
   background-size: 200% 100%;
@@ -973,26 +931,17 @@ html.dark .glass-swipe-diagonal::before {
   animation: glassRouteProgress 1.4s infinite linear;
 }
 
-/* ==========================================================================
-   Admin Console Mobile Optimizations
-   ========================================================================== */
-
-/* Smooth momentum scrolling for admin tabs on iOS & Android */
 .admin-tabs-scroll {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE / Edge */
-}
+    -ms-overflow-style: none;
+  }
 
 .admin-tabs-scroll::-webkit-scrollbar {
   display: none;
-  /* Chrome, Safari, Opera */
-}
+  }
 
-/* Responsive Facebook Iframe Post Previews (Prevents mobile overflow) */
 .admin-fb-wrapper {
   --fb-scale: 0.52;
   width: 500px;
@@ -1019,10 +968,6 @@ html.dark .glass-swipe-diagonal::before {
   }
 }
 
-/* ==========================================================================
-   KCC Institutional Dark Theme System (Obsidian Emerald Palette)
-   ========================================================================== */
-
 html.dark {
   color-scheme: dark;
 }
@@ -1036,7 +981,6 @@ html.dark body {
   color: #f1f5f9 !important;
 }
 
-/* School crest logo container - clean, high-contrast crisp background without glow */
 .school-crest-badge {
   border: 1px solid transparent !important;
 }
@@ -1056,12 +1000,10 @@ html.dark button .school-crest-badge {
   border: 1px solid rgba(74, 222, 128, 0.2) !important;
 }
 
-/* Ensure logo images are not distorted into circles and maintain authentic shield crest height */
 img[src*="logo.png"]:not(.keep-round) {
   border-radius: 0.5rem !important;
 }
 
-/* Header and Nav Island in Dark Mode */
 html.dark #mainHeader {
   background-color: rgba(9, 15, 10, 0.92) !important;
   backdrop-filter: blur(18px) saturate(160%) !important;
@@ -1077,7 +1019,6 @@ html.dark #mainHeader .bg-brand-light {
   box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5) !important;
 }
 
-/* Obsidian Card & Surface Backgrounds */
 html.dark .bg-brand-white,
 html.dark [class*="bg-brand-white"] {
   background-color: #0f1911 !important;
@@ -1097,7 +1038,6 @@ html.dark .bg-slate-100 {
   background-color: #152217 !important;
 }
 
-/* Glowing Emerald & Subtle Obsidian Borders */
 html.dark .border-brand-pale,
 html.dark [class*="border-brand-pale"] {
   border-color: rgba(74, 222, 128, 0.18) !important;
@@ -1108,7 +1048,6 @@ html.dark .border-slate-100 {
   border-color: rgba(74, 222, 128, 0.14) !important;
 }
 
-/* High-Contrast Dynamic Typography */
 html.dark .text-slate-900,
 html.dark .text-slate-800 {
   color: #f8fafc !important;
@@ -1130,7 +1069,6 @@ html.dark .text-slate-400 {
   color: #64748b !important;
 }
 
-/* Luminous Emerald Accent for Dark Mode Headers & Badges */
 html.dark .text-brand-forest {
   color: #4ade80 !important;
   text-shadow: 0 0 24px rgba(74, 222, 128, 0.2);
@@ -1152,12 +1090,10 @@ html.dark .hover\:text-brand-forestHover:hover {
   color: #86efac !important;
 }
 
-/* Active Nav Link Underline */
 html.dark .nav-link::after {
   background-color: #4ade80;
 }
 
-/* Brand Buttons, Pills & Any Opacity Variants */
 html.dark .bg-brand-pale,
 html.dark [class*="bg-brand-pale"] {
   background-color: rgba(74, 222, 128, 0.18) !important;
@@ -1169,7 +1105,6 @@ html.dark [class*="bg-brand-pale"]:hover {
   background-color: rgba(74, 222, 128, 0.26) !important;
 }
 
-/* Active Navigation Links & Tabs - Crisp, luminous emerald contrast */
 html.dark .nav-link.is-active,
 html.dark .nav-link[class*="is-active"],
 html.dark [class*="nav-link"][class*="is-active"] {
@@ -1188,7 +1123,6 @@ html.dark .nav-link:not(.is-active):hover {
   background-color: rgba(74, 222, 128, 0.14) !important;
 }
 
-/* Blockquotes across History and entire application - high-contrast emerald obsidian glass */
 html.dark blockquote,
 html.dark [class*="blockquote"] {
   background-color: rgba(18, 36, 21, 0.88) !important;
@@ -1202,21 +1136,18 @@ html.dark blockquote span {
   color: #f1f5f9 !important;
 }
 
-/* Hero Section in Dark Mode */
 html.dark #about .bg-brand-forest {
   background: linear-gradient(135deg, #0f3014 0%, #0a1f0e 50%, #07170a 100%) !important;
   border-color: rgba(74, 222, 128, 0.3) !important;
   box-shadow: 0 16px 48px -8px rgba(0, 0, 0, 0.75), 0 0 24px rgba(74, 222, 128, 0.12) !important;
 }
 
-/* Contact Banner in Dark Mode */
 html.dark #contact .bg-brand-forest {
   background: linear-gradient(135deg, #0e2d13 0%, #091e0d 60%, #07170a 100%) !important;
   border-color: rgba(74, 222, 128, 0.28) !important;
   box-shadow: 0 12px 36px -6px rgba(0, 0, 0, 0.7) !important;
 }
 
-/* Interactive Flip Cards in Dark Mode */
 html.dark .flip-card-front.bg-brand-forest,
 html.dark .flip-card-back.bg-brand-forest {
   background: linear-gradient(135deg, #13421b 0%, #0d2812 100%) !important;
@@ -1231,7 +1162,6 @@ html.dark .flip-card-back.bg-brand-white {
   box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6) !important;
 }
 
-/* Performance Metric Tiles in Dark Mode */
 html.dark #performance .bg-brand-light {
   background: linear-gradient(135deg, #111d13 0%, #0d160f 100%) !important;
   border-color: rgba(74, 222, 128, 0.2) !important;
@@ -1243,7 +1173,6 @@ html.dark #performance .bg-brand-light:hover {
   box-shadow: 0 12px 30px -4px rgba(74, 222, 128, 0.16) !important;
 }
 
-/* 3D Gallery Stage in Dark Mode */
 html.dark .journal-card .journal-img {
   box-shadow: 0 14px 40px -8px rgba(0, 0, 0, 0.8), 0 0 1px rgba(74, 222, 128, 0.3) !important;
 }
@@ -1252,7 +1181,6 @@ html.dark .journal-card.is-active-center .journal-img {
   box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.9), 0 0 24px rgba(74, 222, 128, 0.2) !important;
 }
 
-/* Form Controls & Inputs */
 html.dark input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not(.search-box-input):not(.bg-transparent),
 html.dark textarea,
 html.dark select {
@@ -1273,7 +1201,6 @@ html.dark select:focus {
   box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.25) !important;
 }
 
-/* Dark Mode Search Box Container with Rounded Border */
 .search-box-wrapper {
   border-radius: 1rem;
 }
@@ -1300,7 +1227,6 @@ html.dark input.bg-transparent {
   border-radius: 0 !important;
 }
 
-/* Frosted Obsidian Glassmorphism */
 html.dark .glass-surface {
   background: linear-gradient(135deg,
       rgba(17, 27, 18, 0.88) 0%,
@@ -1321,7 +1247,6 @@ html.dark .glass-surface-emerald {
   box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.65) !important;
 }
 
-/* About Dropdown Menu - Harmonized Light & Dark Theme */
 .about-dropdown-menu {
   animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -1394,7 +1319,6 @@ html.dark .animate-modal-content {
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85) !important;
 }
 
-/* Obsidian Custom Scrollbars */
 html.dark ::-webkit-scrollbar {
   width: 9px;
   height: 9px;
@@ -1414,7 +1338,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   background: #28472d;
 }
 
-/* Circular View Transition for Theme Toggle */
 ::view-transition-image-pair(root) {
   isolation: isolate;
 }
@@ -1425,7 +1348,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   mix-blend-mode: normal;
 }
 
-/* Default (Expand: Light -> Dark): new dark theme expands on top */
 ::view-transition-old(root) {
   z-index: 1;
 }
@@ -1434,7 +1356,6 @@ html.dark ::-webkit-scrollbar-thumb:hover {
   z-index: 99999;
 }
 
-/* Shrink mode (Dark -> Light): old dark theme stays on top and shrinks into button */
 html[data-theme-transition="shrink"]::view-transition-old(root) {
   z-index: 99999;
 }
@@ -1443,7 +1364,6 @@ html[data-theme-transition="shrink"]::view-transition-new(root) {
   z-index: 1;
 }
 
-/* Suppress all competing CSS transitions on the DOM while the circular transition runs */
 html[data-theme-transition] *,
 html[data-theme-transition] *::before,
 html[data-theme-transition] *::after {

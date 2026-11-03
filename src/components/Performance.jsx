@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
-/**
- * Exponential easing out curve for fluid numeral interpolation.
- */
 function easeOutExpo(x) {
   return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
 }
@@ -12,7 +9,6 @@ export default function Performance() {
   const { content } = useSiteContent();
   const perf = content?.performance || {};
 
-  // Parse grade numbers if provided as string (e.g., '6 – 13') or numeric defaults
   let gradeMinTarget = 6;
   let gradeMaxTarget = 13;
   if (perf.grades) {
@@ -53,7 +49,6 @@ export default function Performance() {
 
   const performanceRef = useRef(null);
 
-  // Trigger smooth counter animation when section enters viewport
   useEffect(() => {
     if (!performanceRef.current) return;
 

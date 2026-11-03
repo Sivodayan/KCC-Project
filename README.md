@@ -38,13 +38,6 @@ Visit the deployed website:
 * **Multi-Input Controls:** Supports side-peek click navigation, mouse wheel scrolling, swipe gestures, keyboard arrow keys, indicator dots, and uninterrupted continuous auto-play rotation (does not pause on hover).
 * **Viewport Triggered Fan-in:** Dynamic 3D fan-in entrance animation initialized once the gallery section enters the viewport.
 
-### 🎀 Grand Inauguration Ceremony Simulator (`inauguration/`)
-* **Dedicated Ceremony Launch App:** A standalone, self-contained application located in the [`inauguration/`](file:///d:/Documents/Projects/HTML/KCC%20Project/inauguration/index.html) directory, built to simulate an official web portal dedication on auditorium stage screens or event displays.
-* **School Brand Identity:** Implements the official school design system, colors (Forest Green `#196716`, Pale Mint `#C5E1C1`, and White `#FDFEFD`), Google fonts (*Plus Jakarta Sans* & *Noto Sans Tamil*), and official assets (`logo.png`, `hero.jpg`, and campus highlights).
-* **Interactive Ribbon Cutting:** Cutting the ribbon with the central golden college crest medallion or the scissors button triggers realistic snip audio and parting physics.
-* **Celebration & Auto-Redirect:** Plays celebratory fanfare, bursts school-color confetti, presents the dedication modal, and automatically redirects straight into the website.
-* **How to Run:** Open [`inauguration/index.html`](file:///d:/Documents/Projects/HTML/KCC%20Project/inauguration/index.html) directly in any web browser.
-
 ### ⚡ Performance & Academic Metrics
 * **Animated Statistics Counters:** Easing counter animations (`easeOutExpo`) showing key metrics triggered when scrolled into view:
   * **1852** — Year founded

@@ -24,7 +24,6 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 1. GitHub API proxy endpoint (/api/github)
     if (url.pathname === '/api/github') {
       const context = { request, env, ctx };
       if (request.method === 'OPTIONS') {
@@ -42,7 +41,6 @@ export default {
       }));
     }
 
-    // 2. Facebook canonical resolver proxy endpoint (/api/resolve-facebook)
     if (url.pathname === '/api/resolve-facebook') {
       const context = { request, env, ctx };
       if (request.method === 'OPTIONS') {
@@ -57,7 +55,6 @@ export default {
       }));
     }
 
-    // 3. Fallback to Cloudflare Static Assets
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       return env.ASSETS.fetch(request);
     }

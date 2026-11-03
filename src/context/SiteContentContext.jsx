@@ -5,9 +5,6 @@ import { FACEBOOK_POSTS } from '../data/facebookEvents.js';
 const STORAGE_KEY = 'kcc_site_content_v1';
 const SiteContentContext = createContext(null);
 
-/**
- * Checks if a URL string belongs strictly to official HTTPS Facebook domains.
- */
 export function isTrustedFacebookUrl(urlString) {
   try {
     const parsed = new URL(urlString);
@@ -20,17 +17,11 @@ export function isTrustedFacebookUrl(urlString) {
   }
 }
 
-/**
- * Utility to parse any Facebook URL or iframe embed snippet
- * and format it into a standardized Facebook plugin iframe embed URL.
- * Strictly validates domain safety to prevent non-Facebook URL injection.
- */
 export function parseFacebookInput(input) {
   if (!input || typeof input !== 'string') return null;
   const trimmed = input.trim();
   if (!trimmed) return null;
 
-  // Case 1: Pasted iframe code (e.g. <iframe src="https://www.facebook.com/plugins/post.php?href=..." ...></iframe>)
   const iframeMatch = trimmed.match(/src=["']([^"']+)["']/i);
   if (iframeMatch) {
     const rawSrc = iframeMatch[1];
@@ -48,7 +39,6 @@ export function parseFacebookInput(input) {
     };
   }
 
-  // Case 2: Already a facebook plugin URL (plugins/post.php or plugins/video.php)
   if (trimmed.includes('facebook.com/plugins/')) {
     if (!isTrustedFacebookUrl(trimmed)) {
       return null;
@@ -64,7 +54,6 @@ export function parseFacebookInput(input) {
     };
   }
 
-  // Case 3: Standard Facebook URL (post, permalink, reel, video, photo)
   let cleanUrl = trimmed.replace('m.facebook.com', 'www.facebook.com');
   if (!cleanUrl.startsWith('http://') && !cleanUrl.startsWith('https://')) {
     cleanUrl = 'https://' + cleanUrl;
@@ -87,13 +76,6 @@ export function parseFacebookInput(input) {
   };
 }
 
-/**
- * Resolves a temporary Facebook mobile share URL (e.g. /share/p/...) to its canonical permalink
- * via the serverless resolver endpoint /api/resolve-facebook.
- *
- * @param {string} url - The Facebook share URL.
- * @returns {Promise<string|null>} The canonical permalink or null if resolution fails.
- */
 export async function resolveFacebookShareUrl(url) {
   if (!url || typeof url !== 'string') return null;
   const trimmed = url.trim();
@@ -113,12 +95,8 @@ export async function resolveFacebookShareUrl(url) {
   return null;
 }
 
-
 const COMMITTED_STORAGE_KEY = 'kcc_last_committed_content_v1';
 
-/**
- * Normalizes raw site content objects against defaultSiteContent structure.
- */
 function normalizeSiteContent(raw) {
   if (!raw || typeof raw !== 'object') return null;
   const savedPrinciples = raw?.principles || {};
@@ -170,9 +148,6 @@ function normalizeSiteContent(raw) {
 
 const defaultBaseContent = normalizeSiteContent(defaultSiteContent);
 
-/**
- * Performs canonical deep equality check by stringifying payload
- */
 function areContentsEqual(a, b) {
   if (a === b) return true;
   if (!a || !b) return false;
@@ -183,16 +158,7 @@ function areContentsEqual(a, b) {
   }
 }
 
-/**
- * SiteContentProvider
- * Centralized content state provider for user-customizable text, stats, gallery, events, and contact information.
- * Supports:
- * 1. Active React component state (in-memory)
- * 2. Browser localStorage overrides (persists edits across reloads)
- * 3. Packaged JSON defaults from siteContent.json (fallback)
- */
 export function SiteContentProvider({ children }) {
-  // Baseline committed content (either from last committed snapshot in localStorage or code defaults)
   const [committedContent, setCommittedContent] = useState(() => {
     try {
       const saved = localStorage.getItem(COMMITTED_STORAGE_KEY);
@@ -224,7 +190,6 @@ export function SiteContentProvider({ children }) {
     return defaultBaseContent;
   });
 
-  // Track if current in-memory content genuinely differs from committed baseline
   const [hasUncommittedChanges, setHasUncommittedChanges] = useState(() => {
     return !areContentsEqual(content, committedContent);
   });
@@ -237,7 +202,6 @@ export function SiteContentProvider({ children }) {
     }
   });
 
-  // Undo / Redo History Stack Management
   const MAX_HISTORY = 40;
   const [past, setPast] = useState([]);
   const [future, setFuture] = useState([]);
@@ -269,13 +233,11 @@ export function SiteContentProvider({ children }) {
     const current = contentRef.current;
     const next = typeof updater === 'function' ? updater(current) : updater;
 
-    // Skip redundant updates
     if (JSON.stringify(current) === JSON.stringify(next)) {
       return;
     }
 
     if (isContinuous) {
-      // If we are starting a continuous typing/editing sequence, record snapshot of state before typing started
       if (!typingSessionRef.current.active) {
         typingSessionRef.current.active = true;
         const newPast = [...pastRef.current.slice(-(MAX_HISTORY - 1)), current];
@@ -285,7 +247,6 @@ export function SiteContentProvider({ children }) {
         setFuture([]);
       }
 
-      // Debounce the typing session so user pauses reset the session boundary
       if (typingSessionRef.current.timer) {
         clearTimeout(typingSessionRef.current.timer);
       }
@@ -294,7 +255,6 @@ export function SiteContentProvider({ children }) {
         typingSessionRef.current.timer = null;
       }, 750);
     } else {
-      // Discrete action (e.g. upload, delete image, add event): seal any ongoing typing session
       if (typingSessionRef.current.timer) {
         clearTimeout(typingSessionRef.current.timer);
         typingSessionRef.current.timer = null;

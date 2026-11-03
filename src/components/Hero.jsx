@@ -31,7 +31,6 @@ export default function Hero({ onExploreHistory }) {
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-brand-forest dark:bg-[#071309] shadow-2xl dark:shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9),_0_0_35px_rgba(74,222,128,0.12)] border border-brand-soft/40 dark:border-emerald-500/30 min-h-[550px] lg:min-h-[550px] flex items-center">
 
-          {/* Background School Archway Image Container */}
           <div className="absolute inset-0 z-0 overflow-hidden">
             <GlassImage
               src={image}
@@ -43,17 +42,13 @@ export default function Hero({ onExploreHistory }) {
               fallbackSrc="/assets/hero.jpg"
             />
 
-            {/* Desktop Scrim: Multi-stop optical easing curve that seamlessly dissolves into the campus photo */}
             <div className="hidden sm:block absolute inset-0 hero-scrim-desktop pointer-events-none" />
 
-            {/* Mobile Scrim: Top-to-bottom gentle fade preventing text clash */}
             <div className="sm:hidden absolute inset-0 hero-scrim-mobile pointer-events-none" />
 
-            {/* Ambient Lighting Vignette: Subtle radial spotlight behind typography + grounded bottom shadow */}
             <div className="absolute inset-0 hero-ambient-vignette pointer-events-none" />
           </div>
 
-          {/* Hero Typography & Content */}
           <div className="relative z-10 max-w-2xl px-6 sm:px-12 py-12 lg:py-16 text-left">
             <div className="space-y-3 mb-5 animate-hero-1">
               <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-white tracking-tight leading-[1.14] drop-shadow-xs">

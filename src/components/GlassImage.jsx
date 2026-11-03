@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-/**
- * GlassImage Component
- * Drop-in replacement for standard <img> tags.
- * Displays a premium frosted glass loading placeholder with animated light shimmer
- * until the image finishes loading, then smoothly cross-fades the image in.
- */
 export default function GlassImage({
   src,
   alt = '',
   className = '',
   containerClassName = '',
-  variant = 'light', // 'light' | 'dark' | 'emerald' | 'none'
+  variant = 'light', 
   showIcon = true,
   fallbackSrc = '/assets/hero.jpg',
   aspectRatio,
@@ -27,7 +21,6 @@ export default function GlassImage({
   const [isError, setIsError] = useState(false);
   const imgRef = useRef(null);
 
-  // Check if image is already cached by browser
   useEffect(() => {
     setIsLoaded(false);
     setIsError(false);
@@ -45,7 +38,6 @@ export default function GlassImage({
   const handleError = (e) => {
     if (!isError && fallbackSrc && src !== fallbackSrc) {
       setIsError(true);
-      // Attempt fallback image if provided
       if (imgRef.current) {
         imgRef.current.src = fallbackSrc;
       }
@@ -72,7 +64,6 @@ export default function GlassImage({
       }}
       className={`relative overflow-hidden ${containerClassName}`}
     >
-      {/* Frosted Glass Loading Placeholder with Instagram Swipe Wave */}
       <div
         aria-hidden="true"
         className={`absolute inset-0 z-10 flex items-center justify-center transition-all duration-700 ease-out pointer-events-none ${getPlaceholderSurface()} ${
@@ -80,7 +71,6 @@ export default function GlassImage({
         }`}
       />
 
-      {/* Actual Image */}
       <img
         ref={imgRef}
         src={src}

@@ -2,13 +2,6 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SchoolEvents from '../components/SchoolEvents.jsx';
 
-/**
- * EventsPage Component
- *
- * Dedicated route view displaying scheduled collegiate functions, prize days,
- * and academic ceremonies. Enforces viewport reset to the scroll origin on mount
- * and provides breadcrumb navigation back to the primary landing experience.
- */
 export default function EventsPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

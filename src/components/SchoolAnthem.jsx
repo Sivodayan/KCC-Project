@@ -45,16 +45,6 @@ export const ANTHEM_STANZAS = [
 
 export const ANTHEM_TAMIL_TEXT = ANTHEM_STANZAS.map(s => s.lines.join('\n')).join('\n\n');
 
-/**
- * SchoolAnthem Component
- *
- * Primary archival presentation of the J/Kopay Christian College Anthem (பாடசாலைக் கீதம்).
- * Rendered in Tamil typography with Hamsadhvani melodic arrangement context.
- * Features line-by-line staggered entry transitions that glide sequentially into view.
- *
- * Provides native print dialog invocation (`window.print()`), copy-to-clipboard
- * with transient UI confirmation, and navigational links to the heritage timeline.
- */
 export default function SchoolAnthem() {
   const [copied, setCopied] = useState(false);
 

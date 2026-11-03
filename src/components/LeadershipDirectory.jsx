@@ -1,23 +1,11 @@
 import React, { useEffect } from 'react';
 import { useSiteContent } from '../context/SiteContentContext.jsx';
 
-/**
- * LeadershipDirectory Component
- *
- * Archival record detailing the institutional leadership lineage of J/Kopay Christian College,
- * including historical Headmasters (தலைமையாசிரியர்கள்) and Managers (முகாமையாளர்கள்)
- * from 1880 through the modern era.
- *
- * Dynamically rendered from SiteContentContext (editable via Admin Page).
- * Supports bilingual rendering (`lang === 'ta'` vs English default).
- * Both leadership cards come with smooth entrance and hover elevation transitions.
- */
 export default function LeadershipDirectory({ lang = 'en' }) {
   const { content } = useSiteContent();
   const headmasters = content?.history?.headmasters || [];
   const managers = content?.history?.managers || [];
 
-  // Check initial visibility whenever leadership arrays load or update
   useEffect(() => {
     const triggerBottom = window.innerHeight * 0.95;
     const items = document.querySelectorAll('.history-card-reveal:not(.is-visible)');
@@ -32,7 +20,6 @@ export default function LeadershipDirectory({ lang = 'en' }) {
 
   return (
     <section className={`grid grid-cols-1 md:grid-cols-2 gap-6 pt-8 pb-12 ${isTa ? 'font-tamil' : ''}`}>
-      {/* Headmasters Card */}
       <div 
         className="history-card-reveal bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-7 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out"
         style={{ transitionDelay: '80ms' }}
@@ -58,7 +45,6 @@ export default function LeadershipDirectory({ lang = 'en' }) {
         </div>
       </div>
 
-      {/* Managers Card */}
       <div 
         className="history-card-reveal bg-brand-light dark:bg-[#101b12] rounded-2xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-7 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out"
         style={{ transitionDelay: '180ms' }}

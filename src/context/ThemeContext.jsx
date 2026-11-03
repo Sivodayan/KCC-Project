@@ -6,23 +6,12 @@ const ThemeContext = createContext();
 export const THEME_STORAGE_KEY = 'kcc_theme_v2';
 const LEGACY_STORAGE_KEY = 'kcc_theme';
 
-/**
- * ThemeProvider Component
- * 
- * Manages theme state ('system' | 'dark' | 'light'), automatically detecting
- * and synchronizing with the user's OS / browser color scheme preferences in real-time.
- * By default, detects system theme and applies it. Users can still manually switch themes
- * via the toggle button, and switching back to match the system theme restores automatic tracking.
- */
 export function ThemeProvider({ children }) {
-  // Real-time system dark mode preference tracking
   const [systemPrefersDark, setSystemPrefersDark] = useState(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return false;
     return window.matchMedia('(prefers-color-scheme: dark)').matches;
   });
 
-  // Stored mode preference: 'system' | 'dark' | 'light'
-  // Defaults to 'system' so it automatically detects OS / browser color scheme
   const [theme, setThemeState] = useState(() => {
     try {
       if (typeof window !== 'undefined' && localStorage.getItem(LEGACY_STORAGE_KEY)) {
@@ -38,11 +27,9 @@ export function ThemeProvider({ children }) {
     }
   });
 
-  // Computed boolean indicating if the screen is currently dark
   const isDark = theme === 'system' ? systemPrefersDark : theme === 'dark';
   const isSystem = theme === 'system';
 
-  // Listen to system OS theme changes dynamically
   useEffect(() => {
     if (typeof window === 'undefined' || !window.matchMedia) return;
 
@@ -51,13 +38,10 @@ export function ThemeProvider({ children }) {
       const prefersDark = Boolean(e.matches);
       setSystemPrefersDark(prefersDark);
       
-      // When system OS theme changes (e.g. Windows Dark/Light setting change),
-      // adapt to the new system theme automatically and re-sync
       setThemeState('system');
       try {
         localStorage.removeItem(THEME_STORAGE_KEY);
       } catch {
-        // ignore
       }
     };
 
@@ -67,7 +51,6 @@ export function ThemeProvider({ children }) {
       mediaQuery.addListener(handleSystemChange);
     }
 
-    // Set initial value in case it changed between initial render and effect
     setSystemPrefersDark(mediaQuery.matches);
 
     return () => {
@@ -79,7 +62,6 @@ export function ThemeProvider({ children }) {
     };
   }, []);
 
-  // Synchronize <html> root class, colorScheme style, and mobile theme-color meta tag
   useEffect(() => {
     const root = document.documentElement;
     if (isDark) {
@@ -90,7 +72,6 @@ export function ThemeProvider({ children }) {
       root.style.colorScheme = 'light';
     }
 
-    // Update browser address bar color for mobile devices
     const metaThemeColor = document.getElementById('meta-theme-color') || document.querySelector('meta[name="theme-color"]');
     if (metaThemeColor) {
       metaThemeColor.setAttribute('content', isDark ? '#0b120c' : '#196716');
@@ -110,9 +91,7 @@ export function ThemeProvider({ children }) {
     }
   }, []);
 
-  // Helper to run circular view transition or fallback spreading/shrinking from the button
   const runThemeTransition = useCallback((event, targetDark, applyChange) => {
-    // If not in browser or reduced motion is preferred
     if (
       typeof document === 'undefined' ||
       window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -121,7 +100,6 @@ export function ThemeProvider({ children }) {
       return;
     }
 
-    // Determine center coordinate of the trigger button (or click coordinate)
     let x = Math.round(window.innerWidth / 2);
     let y = Math.round(window.innerHeight / 2);
 
@@ -137,7 +115,6 @@ export function ThemeProvider({ children }) {
       y = event.clientY;
     }
 
-    // Compute maximum distance to the furthest screen corner with a safety buffer
     const endRadius = Math.ceil(
       Math.hypot(
         Math.max(x, window.innerWidth - x),
@@ -145,11 +122,8 @@ export function ThemeProvider({ children }) {
       )
     ) + 16;
 
-    // If target is dark: SPREAD outward from button
-    // If target is light: SHRINK back into the button
     const isShrinking = !targetDark;
 
-    // Modern View Transitions API (Chrome, Edge, Safari 18+)
     if (typeof document.startViewTransition === 'function') {
       document.documentElement.setAttribute(
         'data-theme-transition',
@@ -198,7 +172,6 @@ export function ThemeProvider({ children }) {
       transition.finished
         .catch(() => {})
         .finally(() => {
-          // Wait for browser to commit live DOM before restoring standard CSS transitions
           requestAnimationFrame(() => {
             requestAnimationFrame(() => {
               document.documentElement.removeAttribute('data-theme-transition');
@@ -208,7 +181,6 @@ export function ThemeProvider({ children }) {
       return;
     }
 
-    // Fallback for browsers without View Transitions API
     const ripple = document.createElement('div');
     ripple.style.position = 'fixed';
     ripple.style.left = `${x}px`;
@@ -222,7 +194,6 @@ export function ThemeProvider({ children }) {
     const size = endRadius * 2;
 
     if (isShrinking) {
-      // Dark to Light fallback: start dark overlay full size, apply light theme, then shrink into button
       ripple.style.width = `${size}px`;
       ripple.style.height = `${size}px`;
       ripple.style.transition = 'width 0.42s cubic-bezier(0.4, 0, 0.2, 1), height 0.42s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease 0.35s';
@@ -239,7 +210,6 @@ export function ThemeProvider({ children }) {
         ripple.remove();
       }, 450);
     } else {
-      // Light to Dark fallback: start at button and expand outward
       ripple.style.width = '0px';
       ripple.style.height = '0px';
       ripple.style.transition = 'width 0.42s cubic-bezier(0.4, 0, 0.2, 1), height 0.42s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.18s ease 0.35s';
@@ -274,9 +244,6 @@ export function ThemeProvider({ children }) {
     });
   }, [systemPrefersDark, setTheme, runThemeTransition]);
 
-  // Smart toggle: switches between Dark and Light mode with circular spreading effect.
-  // If switching brings the theme in line with the active OS system theme,
-  // it automatically returns to 'system' mode to keep automatic sync alive.
   const toggleTheme = useCallback((event) => {
     const nextDark = !isDark;
     const matchesSystem = (nextDark === systemPrefersDark);

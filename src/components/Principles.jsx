@@ -53,7 +53,6 @@ export default function Principles() {
     <section ref={principlesRef} className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* MOTTO CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-100 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
@@ -105,7 +104,6 @@ export default function Principles() {
             </div>
           </div>
 
-          {/* VISION CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-250 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"
@@ -157,7 +155,6 @@ export default function Principles() {
             </div>
           </div>
 
-          {/* MISSION CARD */}
           <div className={`h-[310px] sm:h-[325px] lg:h-[320px] transition-all duration-700 ease-out delay-400 transform ${isRevealed ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-16 scale-[0.94]'}`}>
             <div
               role="button"

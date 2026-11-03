@@ -9,7 +9,6 @@ function EventCard({ post }) {
   const [isIframeLoaded, setIsIframeLoaded] = useState(false);
   const cardRef = useRef(null);
 
-  // Safety fallback: if iframe load event is delayed or tracking blocker suppresses onLoad
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsIframeLoaded(true);
@@ -55,7 +54,6 @@ function EventCard({ post }) {
         title="Open post on Facebook"
       />
 
-      {/* Glassy loading skeleton placeholder until iframe completes loading */}
       {!isIframeLoaded && <GlassEventSkeleton />}
 
       <div
@@ -66,7 +64,6 @@ function EventCard({ post }) {
         }}
       />
 
-      {/* Top subtle ambient highlight */}
       <div
         className={`pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-pale dark:via-emerald-400/40 to-transparent transition-opacity duration-300 z-10 ${
           isHovered ? 'opacity-100' : 'opacity-0'
@@ -119,7 +116,6 @@ function ManualEventCard({ post }) {
   const [isDetailOpen, setIsDetailOpen] = useState(false);
   const cardRef = useRef(null);
 
-  // Close modal on Escape key
   useEffect(() => {
     if (!isDetailOpen) return;
     const handleKeyDown = (e) => {
@@ -129,7 +125,6 @@ function ManualEventCard({ post }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isDetailOpen]);
 
-  // Lock background scroll when modal is open
   useEffect(() => {
     if (isDetailOpen) {
       document.body.style.overflow = 'hidden';
@@ -189,16 +184,13 @@ function ManualEventCard({ post }) {
       >
         {hasImage ? (
           <>
-            {/* Full Card Cover Image */}
             <img
               src={post.image}
               alt={post.title || 'School Event'}
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
             />
-            {/* Multi-stop dark gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20 pointer-events-none" />
 
-            {/* Radial highlight glow */}
             <div
               className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
               style={{
@@ -207,14 +199,12 @@ function ManualEventCard({ post }) {
               }}
             />
 
-            {/* Top edge gradient stripe on hover */}
             <div
               className={`pointer-events-none absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent transition-opacity duration-300 z-20 ${
                 isHovered ? 'opacity-100' : 'opacity-0'
               }`}
             />
 
-            {/* Badges Overlay at Top */}
             {formattedDate && (
               <div className="absolute top-3.5 right-3.5 z-20 pointer-events-none">
                 <span className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold shadow-md border border-white/15">
@@ -223,7 +213,6 @@ function ManualEventCard({ post }) {
               </div>
             )}
 
-            {/* Card Content Overlay at Bottom */}
             <div className="relative z-10 mt-auto p-5 space-y-2 flex flex-col justify-end">
               {post.title && (
                 <h3 className="text-base sm:text-lg font-bold text-white group-hover:text-emerald-300 transition-colors line-clamp-2 leading-snug drop-shadow-md">
@@ -261,9 +250,7 @@ function ManualEventCard({ post }) {
             </div>
           </>
         ) : (
-          /* Text-only fallback card */
           <>
-            {/* Radial highlight glow */}
             <div
               className="pointer-events-none absolute inset-0 rounded-3xl transition-opacity duration-300 z-10"
               style={{
@@ -272,14 +259,12 @@ function ManualEventCard({ post }) {
               }}
             />
 
-            {/* Top subtle ambient highlight */}
             <div
               className={`pointer-events-none absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-pale dark:via-emerald-400/40 to-transparent transition-opacity duration-300 z-10 ${
                 isHovered ? 'opacity-100' : 'opacity-0'
               }`}
             />
 
-            {/* Media Header (Themed Crest Banner) */}
             <div className="relative w-full h-[200px] bg-gradient-to-br from-brand-forest/10 via-brand-light to-emerald-950/20 dark:from-emerald-950 dark:to-black overflow-hidden shrink-0 flex flex-col items-center justify-center p-4 text-center">
               <div className="w-14 h-14 rounded-2xl bg-white/80 dark:bg-emerald-900/60 p-2 shadow-xs mb-2 flex items-center justify-center">
                 <img src="/assets/logo.png" alt="Logo" className="w-full h-full object-contain" />
@@ -288,7 +273,6 @@ function ManualEventCard({ post }) {
                 KCC Event
               </span>
 
-              {/* Badges Overlay */}
               {formattedDate && (
                 <div className="absolute top-3 right-3 z-10 pointer-events-none">
                   <span className="px-2.5 py-0.5 rounded-full bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs text-slate-800 dark:text-slate-200 text-[10px] font-bold shadow-2xs">
@@ -298,7 +282,6 @@ function ManualEventCard({ post }) {
               )}
             </div>
 
-            {/* Card Body */}
             <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between overflow-hidden">
               <div className="space-y-1.5 min-w-0">
                 {post.title && (
@@ -340,7 +323,6 @@ function ManualEventCard({ post }) {
         )}
       </div>
 
-      {/* Expanded Big Modal View for Full Picture and Text */}
       {isDetailOpen && (
         <div
           className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 md:p-8 overflow-y-auto animate-modal-backdrop"
@@ -349,7 +331,6 @@ function ManualEventCard({ post }) {
           }}
         >
           <div className="bg-white dark:bg-[#0c150e] border border-slate-200 dark:border-emerald-800/40 rounded-2xl sm:rounded-3xl max-w-5xl xl:max-w-6xl w-full overflow-hidden shadow-2xl my-auto max-h-[94vh] flex flex-col animate-modal-content">
-            {/* Header */}
             <div className="bg-gradient-to-r from-brand-forest via-emerald-900 to-brand-forest dark:from-emerald-950 dark:via-black dark:to-emerald-950 px-5 sm:px-7 py-4 text-white flex items-center justify-between shrink-0 border-b border-white/10">
               <div className="flex items-center gap-3 min-w-0">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
@@ -377,7 +358,6 @@ function ManualEventCard({ post }) {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="overflow-y-auto p-5 sm:p-7 lg:p-9 space-y-6">
               {post.image && (
                 <div className="w-full max-h-[500px] sm:max-h-[580px] lg:max-h-[640px] overflow-hidden rounded-2xl bg-black/5 dark:bg-black/60 border border-slate-200/80 dark:border-emerald-900/50 flex items-center justify-center shadow-inner">
@@ -440,7 +420,6 @@ function ManualEventCard({ post }) {
               )}
             </div>
 
-            {/* Footer */}
             <div className="px-5 sm:px-7 py-4 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60 flex items-center justify-between shrink-0">
               <span className="text-xs text-slate-400 dark:text-slate-500 hidden sm:inline">
                 Press <kbd className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono text-[11px]">Esc</kbd> or click outside to close

@@ -49,7 +49,6 @@ export default function Navbar({
             </div>
           </button>
 
-          {/* Right End: Navigation Bar Island + Theme Toggle */}
           <div className="hidden md:flex items-center gap-2.5 shrink-0 ml-auto">
             <div className="flex items-center bg-brand-light dark:bg-[#122015] border border-brand-pale dark:border-emerald-800/40 px-3 py-1.5 rounded-full space-x-1 text-sm font-medium">
               <button
@@ -323,7 +322,6 @@ export default function Navbar({
             </div>
           )}
 
-          {/* Theme Mode Switcher for Mobile */}
           <div className="pt-2 border-t border-brand-pale dark:border-emerald-900/40 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
               Appearance

@@ -2,13 +2,6 @@ import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import SchoolAnthem from '../components/SchoolAnthem.jsx';
 
-/**
- * AnthemPage Component
- *
- * Dedicated route view for the college anthem (பாடசாலைக் கீதம்).
- * Renders the full Tamil stanzas set to the traditional Hamsadhvani raga,
- * along with print formatting controls and links to collegiate history.
- */
 export default function AnthemPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

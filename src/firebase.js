@@ -9,16 +9,6 @@ import {
   onAuthStateChanged
 } from 'firebase/auth';
 
-/**
- * Firebase Client Configuration
- * Populate these in your .env or .env.local file:
- * VITE_FIREBASE_API_KEY=...
- * VITE_FIREBASE_AUTH_DOMAIN=...
- * VITE_FIREBASE_PROJECT_ID=...
- * VITE_FIREBASE_STORAGE_BUCKET=...
- * VITE_FIREBASE_MESSAGING_SENDER_ID=...
- * VITE_FIREBASE_APP_ID=...
- */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || '',
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || '',
@@ -52,9 +42,6 @@ if (isFirebaseConfigured) {
 
 export { auth, googleProvider };
 
-/**
- * Sign in using Google OAuth Popup
- */
 export async function signInWithGoogle() {
   if (!isFirebaseConfigured || !auth || !googleProvider) {
     throw new Error('Firebase credentials are not configured. Please add your VITE_FIREBASE_* keys to .env');
@@ -62,9 +49,6 @@ export async function signInWithGoogle() {
   return await signInWithPopup(auth, googleProvider);
 }
 
-/**
- * Sign in using Email and Password
- */
 export async function signInWithEmail(email, password) {
   if (!isFirebaseConfigured || !auth) {
     throw new Error('Firebase credentials are not configured. Please add your VITE_FIREBASE_* keys to .env');
@@ -72,9 +56,6 @@ export async function signInWithEmail(email, password) {
   return await signInWithEmailAndPassword(auth, email, password);
 }
 
-/**
- * Send Password Reset Email
- */
 export async function sendPasswordReset(email) {
   if (!isFirebaseConfigured || !auth) {
     throw new Error('Firebase credentials are not configured. Please add your VITE_FIREBASE_* keys to .env');
@@ -82,18 +63,12 @@ export async function sendPasswordReset(email) {
   return await sendPasswordResetEmail(auth, email);
 }
 
-/**
- * Sign out from Firebase Auth session
- */
 export async function logOutFirebase() {
   if (auth) {
     return await signOut(auth);
   }
 }
 
-/**
- * Listen to auth state transitions
- */
 export function subscribeToAuth(callback) {
   if (!auth) {
     callback(null);
@@ -101,4 +76,3 @@ export function subscribeToAuth(callback) {
   }
   return onAuthStateChanged(auth, callback);
 }
-

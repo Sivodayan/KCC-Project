@@ -22,30 +22,13 @@ const ENV_GITHUB_TOKEN = (
   import.meta.env.GITHUB_TOKEN ||
   ''
 ).trim();
-const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes of inactivity
+const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000; 
 const GITHUB_REPO_URL = 'https://github.com/Sivodayan/KCC-Project';
 
-/**
- * Validates whether a user is authenticated by Firebase.
- * User account provisioning and access control are managed directly in Firebase Console.
- */
 export function isAuthorizedAdmin(user) {
   return Boolean(user && (user.uid || user.email));
 }
 
-/**
- * AdminPage Component
- *
- * Hidden management console for J/Kopay Christian College.
- * Contains only the actual customizable sections from the real website:
- * 1. Hero Section
- * 2. Motto, Vision & Mission
- * 3. Key Numbers & Performance
- * 4. Photo Gallery (PC file upload & URL management)
- * 5. School Events (Facebook iframe embeds)
- * 6. Contact Information
- * 7. Settings & Repository Backup
- */
 export default function AdminPage() {
   const navigate = useNavigate();
   const {
@@ -81,7 +64,6 @@ export default function AdminPage() {
     importJson
   } = useSiteContent();
 
-  // Firebase Authentication States
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [isAuthChecking, setIsAuthChecking] = useState(true);
   const [emailInput, setEmailInput] = useState('');
@@ -90,7 +72,6 @@ export default function AdminPage() {
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
-  // Forgot Password States
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState('');
   const [resetSuccess, setResetSuccess] = useState(false);
@@ -116,7 +97,6 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState('hero');
   const tabsContainerRef = useRef(null);
 
-  // Auto-scroll active tab into view horizontally on mobile / touch viewports
   useEffect(() => {
     if (!isAuthenticated) return;
     const tabEl = document.getElementById(`admin-tab-${activeTab}`);
@@ -212,8 +192,7 @@ export default function AdminPage() {
     return () => clearTimeout(timer);
   }, [newEventInput, handleAutoResolveFbUrl, fbResolveNotice.text, fbResolveNotice.type]);
 
-  // Manual Events State & Image Processor
-  const [eventModalTab, setEventModalTab] = useState('manual'); // 'manual' | 'facebook'
+  const [eventModalTab, setEventModalTab] = useState('manual'); 
   const [manualEventTitle, setManualEventTitle] = useState('');
   const [manualEventTitleTa, setManualEventTitleTa] = useState('');
   const [manualEventDate, setManualEventDate] = useState(() => new Date().toISOString().slice(0, 10));
@@ -280,7 +259,6 @@ export default function AdminPage() {
     setIsAddEventOpen(false);
   };
 
-  // Edit Manual Event State
   const [editingEvent, setEditingEvent] = useState(null);
   const [isProcessingEditPhoto, setIsProcessingEditPhoto] = useState(false);
   const [editPhotoError, setEditPhotoError] = useState('');
@@ -346,9 +324,7 @@ export default function AdminPage() {
     setEditingEvent(null);
   };
 
-
-  // History Section States
-  const [historySubTab, setHistorySubTab] = useState('milestones'); // 'milestones' | 'overview' | 'leadership'
+  const [historySubTab, setHistorySubTab] = useState('milestones'); 
   const [isAddMilestoneOpen, setIsAddMilestoneOpen] = useState(false);
   const [newMilestone, setNewMilestone] = useState({
     year: '',
@@ -372,7 +348,6 @@ export default function AdminPage() {
   const [milestonePhotoStats, setMilestonePhotoStats] = useState(null);
   const [milestonePhotoError, setMilestonePhotoError] = useState('');
 
-  // GitHub Direct Commit State
   const [isCommitModalOpen, setIsCommitModalOpen] = useState(false);
   const [commitMessage, setCommitMessage] = useState('');
   const [isCommitting, setIsCommitting] = useState(false);
@@ -436,7 +411,6 @@ export default function AdminPage() {
     ).trim();
   }, [sessionTokenSaved]);
 
-  // Leave page confirmation when uncommitted changes exist
   const [isLeaveConfirmOpen, setIsLeaveConfirmOpen] = useState(false);
 
   const handleReturnHome = () => {
@@ -511,16 +485,10 @@ export default function AdminPage() {
     }
   };
 
-  // Global Keyboard shortcuts:
-  // - Commit changes: Ctrl+S / Cmd+S (opens modal or commits) & Ctrl+Enter / Cmd+Enter
-  // - Undo: Ctrl+Z / Cmd+Z
-  // - Redo: Ctrl+Y / Ctrl+Shift+Z / Cmd+Shift+Z
-  // - Escape: Dismiss active modal
   useEffect(() => {
     if (!isAuthenticated) return;
 
     const handleKeyDown = (e) => {
-      // Escape closes open modals
       if (e.key === 'Escape') {
         if (isCommitModalOpen && !isCommitting) {
           setIsCommitModalOpen(false);
@@ -539,29 +507,24 @@ export default function AdminPage() {
 
       const key = e.key.toLowerCase();
 
-      // Commit changes: Ctrl+S / Cmd+S or Ctrl+Enter / Cmd+Enter
       if (key === 's' || e.key === 'Enter') {
         e.preventDefault();
         if (isCommitModalOpen) {
-          // If modal is open, trigger commit submit
           if (!isCommitting && (isServerProxyReady || getEffectiveGitHubToken())) {
             handleCommitToGitHub();
           }
         } else {
-          // Open commit modal
           handleOpenCommitModal();
         }
         return;
       }
 
-      // Redo: Ctrl+Y or Ctrl+Shift+Z / Cmd+Shift+Z
       if (key === 'y' || (key === 'z' && e.shiftKey)) {
         e.preventDefault();
         handleRedo();
         return;
       }
 
-      // Undo: Ctrl+Z / Cmd+Z (without shift)
       if (key === 'z' && !e.shiftKey) {
         e.preventDefault();
         handleUndo();
@@ -691,7 +654,6 @@ export default function AdminPage() {
     showToast('Logged out of Admin Panel', 'info');
   };
 
-  // Inactivity auto-logout watcher (15 minutes idle timeout)
   useEffect(() => {
     if (!isAuthenticated) return;
 
@@ -704,13 +666,11 @@ export default function AdminPage() {
       if (timeoutId) clearTimeout(timeoutId);
       if (warningTimeoutId) clearTimeout(warningTimeoutId);
 
-      // Warning 1 minute before timeout
       const warningDelay = Math.max(INACTIVITY_TIMEOUT_MS - 60 * 1000, 1000);
       warningTimeoutId = setTimeout(() => {
         showToast('Session warning: Inactive for 14 minutes. Auto-lock will occur in 1 minute.', 'error');
       }, warningDelay);
 
-      // Automatic logout on full timeout
       timeoutId = setTimeout(() => {
         handleLogout('Session expired due to 15 minutes of inactivity.');
         showToast('Logged out due to inactivity', 'error');
@@ -720,7 +680,6 @@ export default function AdminPage() {
     let lastRecorded = 0;
     const handleUserActivity = () => {
       const now = Date.now();
-      // Throttle activity recording to at most once every 2 seconds
       if (now - lastRecorded > 2000) {
         lastRecorded = now;
         resetInactivityTimer();
@@ -737,7 +696,6 @@ export default function AdminPage() {
       }
     };
 
-    // Initialize timer on mount
     resetInactivityTimer();
 
     const activityEvents = ['mousemove', 'mousedown', 'keydown', 'touchstart', 'scroll', 'click'];
@@ -944,10 +902,8 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* FIREBASE AUTHENTICATION (GOOGLE + EMAIL & PASSWORD + FORGOT PASSWORD) */}
           <div className="space-y-4">
             {isForgotPassword ? (
-              /* Forgot / Reset Password View */
               <form onSubmit={handleForgotPassword} className="space-y-4">
                 <div className="p-3 rounded-xl bg-brand-light dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-800/40 text-xs">
                   <div className="font-bold text-brand-forest dark:text-emerald-400 mb-1 flex items-center gap-1.5">
@@ -1030,9 +986,7 @@ export default function AdminPage() {
                 </div>
               </form>
             ) : (
-              /* Normal Sign-In Form */
               <>
-                {/* Google Sign-In */}
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
@@ -1048,7 +1002,6 @@ export default function AdminPage() {
                   <span>Continue with Google</span>
                 </button>
 
-                {/* Divider */}
                 <div className="relative flex items-center justify-center my-3">
                   <div className="border-t border-brand-pale w-full" />
                   <span className="bg-brand-white px-2.5 text-[11px] text-slate-400 font-medium uppercase tracking-wider shrink-0">
@@ -1057,7 +1010,6 @@ export default function AdminPage() {
                   <div className="border-t border-brand-pale w-full" />
                 </div>
 
-                {/* Email / Password Form */}
                 <form onSubmit={handleEmailSignIn} className="space-y-3">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -1217,7 +1169,6 @@ export default function AdminPage() {
             </div>
 
             <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
-              {/* Undo / Redo History Controls */}
               <div className="inline-flex items-center rounded-full bg-brand-white border border-brand-pale p-0.5 shadow-2xs">
                 <button
                   type="button"
@@ -1268,7 +1219,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* Commit to GitHub Button */}
               <button
                 type="button"
                 onClick={handleOpenCommitModal}
@@ -1292,7 +1242,6 @@ export default function AdminPage() {
                 </kbd>
               </button>
 
-              {/* Authenticated Firebase User Badge */}
               <div
                 className="hidden md:inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-white border border-brand-pale text-xs shadow-2xs"
                 title={`Signed in as ${firebaseUser?.email || 'Admin'}`}
@@ -1311,10 +1260,8 @@ export default function AdminPage() {
                 </span>
               </div>
 
-              {/* Appearance Theme Switcher */}
               <ThemeToggle variant="compact" />
 
-              {/* Logout button */}
               <button
                 type="button"
                 onClick={() => handleLogout()}
@@ -1328,7 +1275,6 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Touch-Friendly Horizontal Scrolling Navigation Tabs */}
           <div
             ref={tabsContainerRef}
             className="admin-tabs-scroll flex items-center gap-1.5 py-2 border-t border-brand-pale/70 text-xs px-0.5"
@@ -1452,7 +1398,6 @@ export default function AdminPage() {
       </header>
 
       <main className="flex-grow max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-        {/* HERO SECTION */}
         {activeTab === 'hero' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -1530,7 +1475,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* MOTTO, VISION & MISSION */}
         {activeTab === 'principles' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -1540,7 +1484,6 @@ export default function AdminPage() {
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                {/* Motto */}
                 <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Motto (மகுடவாசகம்)</div>
                   <div>
@@ -1563,7 +1506,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Vision */}
                 <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Vision (தூரநோக்கு)</div>
                   <div>
@@ -1586,7 +1528,6 @@ export default function AdminPage() {
                   </div>
                 </div>
 
-                {/* Mission */}
                 <div className="bg-brand-light/40 border border-brand-pale rounded-xl sm:rounded-2xl p-4 sm:p-5 space-y-3">
                   <div className="text-xs font-bold text-brand-forest uppercase tracking-wider">Mission (நோக்கக்கூற்று)</div>
                   <div>
@@ -1613,10 +1554,8 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* PERFORMANCE */}
         {activeTab === 'performance' && (
           <div className="space-y-6">
-            {/* 1. SECTION HEADINGS & SUBTITLE */}
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex items-center justify-between pb-3 mb-5 border-b border-brand-pale/60 flex-wrap gap-2">
                 <div>
@@ -1661,7 +1600,6 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* 2. ALL 8 STATISTIC METRIC TILES */}
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
               <div className="flex items-center justify-between pb-3 mb-6 border-b border-brand-pale/60 flex-wrap gap-2">
                 <div>
@@ -1787,7 +1725,6 @@ export default function AdminPage() {
                       key={stat.id}
                       className="rounded-2xl border border-brand-pale bg-brand-light/20 p-4 sm:p-5 flex flex-col justify-between shadow-2xs hover:border-brand-forest/40 transition-all space-y-4"
                     >
-                      {/* Top Header of Card */}
                       <div className="flex items-center justify-between gap-2 border-b border-brand-pale/60 pb-2.5">
                         <span className="px-2 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
                           #{sIdx + 1}
@@ -1797,7 +1734,6 @@ export default function AdminPage() {
                         </span>
                       </div>
 
-                      {/* Live Mini Preview Box */}
                       <div className="p-3.5 rounded-xl bg-white border border-brand-pale shadow-2xs text-center">
                         <p className="text-2xl sm:text-3xl font-extrabold text-brand-forest font-sans">
                           {currentVal}{currentSuffix}
@@ -1810,9 +1746,7 @@ export default function AdminPage() {
                         </p>
                       </div>
 
-                      {/* Inputs for Value, Heading, Subtitle, Suffix */}
                       <div className="space-y-3 pt-1">
-                        {/* Value and Suffix */}
                         <div className="grid grid-cols-3 gap-2">
                           <div className="col-span-2">
                             <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
@@ -1842,7 +1776,6 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Heading / Label */}
                         <div>
                           <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
                             Card Heading / Title *
@@ -1856,7 +1789,6 @@ export default function AdminPage() {
                           />
                         </div>
 
-                        {/* Subtitle / Description */}
                         <div>
                           <label className="block text-[10px] font-bold text-slate-600 uppercase tracking-wider mb-1">
                             Card Subtitle / Description
@@ -1878,7 +1810,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* HISTORY & HERITAGE */}
         {activeTab === 'history' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -1924,7 +1855,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Sub-Tab Navigation Bar */}
               <div className="flex flex-wrap items-center gap-2 border-b border-brand-pale pb-3 pt-1">
                 <button
                   type="button"
@@ -1961,7 +1891,6 @@ export default function AdminPage() {
                 </button>
               </div>
 
-              {/* SUBTAB 1: CHRONOLOGICAL MILESTONES */}
               {historySubTab === 'milestones' && (
                 <div className="mt-6 space-y-4">
                   <div className="flex items-center justify-between text-xs text-slate-500 mb-2">
@@ -2011,7 +1940,6 @@ export default function AdminPage() {
                             key={m.id || idx}
                             className="bg-brand-white border border-brand-pale hover:border-brand-soft/70 rounded-2xl p-4 sm:p-5 transition shadow-2xs space-y-4"
                           >
-                            {/* Card Header Bar */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-brand-pale/60">
                               <div className="flex items-center gap-2.5">
                                 <span className="w-6 h-6 rounded-full bg-brand-forest text-white text-xs font-bold flex items-center justify-center shrink-0">
@@ -2091,11 +2019,9 @@ export default function AdminPage() {
                               </div>
                             </div>
 
-                            {/* Collapsible Content */}
                             {isExpanded && (
                               <div className="space-y-4 pt-1">
                                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                                  {/* Left: Archival Photo & Path */}
                                   <div className="md:col-span-4 space-y-3 bg-brand-light/30 border border-brand-pale rounded-xl p-3">
                                     <span className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">Archival Photograph</span>
                                     {m.image ? (
@@ -2159,7 +2085,6 @@ export default function AdminPage() {
                                     </div>
                                   </div>
 
-                                  {/* Right: Bilingual Year, Titles, Narratives & Quotes */}
                                   <div className="md:col-span-8 space-y-3.5">
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                       <div>
@@ -2264,7 +2189,6 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {/* SUBTAB 2: TREATISE OVERVIEW & AUTHORS */}
               {historySubTab === 'overview' && (
                 <div className="mt-6 space-y-6 max-w-4xl">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
@@ -2335,7 +2259,6 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Header Banner Preview */}
                   <div className="pt-4 border-t border-brand-pale">
                     <span className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Portal Header Preview</span>
                     <div className="bg-brand-light/50 border border-brand-pale rounded-2xl p-6 text-center space-y-2">
@@ -2352,10 +2275,8 @@ export default function AdminPage() {
                 </div>
               )}
 
-              {/* SUBTAB 3: LEADERSHIP DIRECTORY */}
               {historySubTab === 'leadership' && (
                 <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Headmasters Card */}
                   <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-4 sm:p-6 space-y-4">
                     <div className="flex items-center justify-between pb-2 border-b border-brand-pale">
                       <div className="flex items-center gap-2">
@@ -2369,7 +2290,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Add Headmaster Row */}
                     <div className="p-3 bg-brand-white border border-brand-pale rounded-xl space-y-2">
                       <span className="block text-[11px] font-bold text-slate-700">Add New Headmaster</span>
                       <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
@@ -2408,7 +2328,6 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    {/* Headmasters List */}
                     <div className="divide-y divide-brand-pale/70 max-h-[380px] overflow-y-auto pr-1">
                       {(content.history?.headmasters || []).map((hm, idx) => (
                         <div key={hm.id || idx} className="py-2.5 flex items-center justify-between gap-2">
@@ -2451,7 +2370,6 @@ export default function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Managers Card */}
                   <div className="bg-brand-light/40 border border-brand-pale rounded-2xl p-4 sm:p-6 space-y-4">
                     <div className="flex items-center justify-between pb-2 border-b border-brand-pale">
                       <div className="flex items-center gap-2">
@@ -2465,7 +2383,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Add Manager Row */}
                     <div className="p-3 bg-brand-white border border-brand-pale rounded-xl space-y-2">
                       <span className="block text-[11px] font-bold text-slate-700">Add New Manager</span>
                       <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
@@ -2504,7 +2421,6 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    {/* Managers List */}
                     <div className="divide-y divide-brand-pale/70 max-h-[380px] overflow-y-auto pr-1">
                       {(content.history?.managers || []).map((mgr, idx) => (
                         <div key={mgr.id || idx} className="py-2.5 flex items-center justify-between gap-2">
@@ -2550,7 +2466,6 @@ export default function AdminPage() {
               )}
             </div>
 
-            {/* ADD MILESTONE MODAL */}
             {isAddMilestoneOpen && (
               <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
                 <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-auto animate-modal-content">
@@ -2644,7 +2559,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Direct Image Upload */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
                         <label className="block text-xs font-semibold text-slate-700">
@@ -2664,7 +2578,6 @@ export default function AdminPage() {
                         )}
                       </div>
 
-                      {/* Hidden File Input for Milestone Upload */}
                       <input
                         type="file"
                         ref={milestoneFileInputRef}
@@ -2677,7 +2590,6 @@ export default function AdminPage() {
                         }}
                       />
 
-                      {/* Dropzone Box */}
                       <div
                         onClick={() => milestoneFileInputRef.current?.click()}
                         onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
@@ -2750,7 +2662,6 @@ export default function AdminPage() {
                         <p className="text-xs text-rose-600 font-medium">{milestonePhotoError}</p>
                       )}
 
-                      {/* Optional Presets / Link Accordion */}
                       <details className="text-xs text-slate-500 group pt-1">
                         <summary className="cursor-pointer hover:text-brand-forest font-semibold flex items-center gap-1 select-none">
                           <span>Or select from historic archive presets (his1–his12)</span>
@@ -2830,10 +2741,8 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* PHOTO GALLERY */}
         {activeTab === 'gallery' && (
           <div className="space-y-6">
-            {/* Hidden file pickers for PC image uploads */}
             <input
               type="file"
               ref={multiFileInputRef}
@@ -2906,7 +2815,6 @@ export default function AdminPage() {
                         #{idx + 1}
                       </span>
 
-                      {/* Replace from PC/Phone button on hover / touch */}
                       <button
                         type="button"
                         onClick={() => {
@@ -2965,11 +2873,9 @@ export default function AdminPage() {
               </div>
             </div>
 
-            {/* ADD PHOTO MODAL WITH FILE UPLOAD & AUTO URL RETRIEVAL */}
             {isAddGalleryOpen && (
               <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
                 <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
-                  {/* Hidden file input for modal */}
                   <input
                     type="file"
                     ref={modalFileInputRef}
@@ -3006,7 +2912,6 @@ export default function AdminPage() {
                   </div>
 
                   <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
-                    {/* Compression Options Toggle Card */}
                     <div className="bg-brand-light/30 border border-brand-pale rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3">
                       <div className="flex-1 pr-2">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
@@ -3036,7 +2941,6 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    {/* File Upload Dropzone */}
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
@@ -3084,7 +2988,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Error Banner */}
                     {photoUploadError && (
                       <div className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700 font-medium flex items-center gap-2">
                         <svg className="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -3094,7 +2997,6 @@ export default function AdminPage() {
                       </div>
                     )}
 
-                    {/* Live Preview & Compression Analytics */}
                     {newGallerySrc && (
                       <div className="rounded-xl border border-emerald-200 bg-emerald-50/40 p-3 sm:p-3.5 space-y-3">
                         <div className="flex items-center justify-between">
@@ -3129,7 +3031,6 @@ export default function AdminPage() {
                           />
                         </div>
 
-                        {/* Live Compression Metrics */}
                         {photoStats && (
                           <div className="bg-brand-white border border-emerald-200/80 rounded-xl p-2.5 sm:p-3 grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs">
                             <div className="p-1.5 bg-slate-50 rounded-lg">
@@ -3160,7 +3061,6 @@ export default function AdminPage() {
                       </div>
                     )}
 
-                    {/* Fetched URL Input */}
                     <div>
                       <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                         2. Fetched Image URL / Data URL
@@ -3223,7 +3123,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* SCHOOL EVENTS (FACEBOOK IFRAME EMBEDS) */}
         {activeTab === 'events' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -3271,7 +3170,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* Event Cards Grid */}
               {(() => {
                 const eventsList = Array.isArray(content?.events) ? content.events : [];
                 if (eventsList.length === 0) {
@@ -3348,7 +3246,6 @@ export default function AdminPage() {
                             >
                               {hasImg ? (
                                 <>
-                                  {/* Full Cover Image */}
                                   <img
                                     src={post.image}
                                     alt={post.title || 'Event'}
@@ -3356,7 +3253,6 @@ export default function AdminPage() {
                                   />
                                   <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
 
-                                  {/* Top Bar Floating */}
                                   <div className="relative z-10 p-3 sm:p-3.5 flex items-center justify-between gap-2">
                                     <div className="flex items-center gap-1.5">
                                       <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold shadow-xs">
@@ -3396,7 +3292,6 @@ export default function AdminPage() {
                                     </div>
                                   </div>
 
-                                  {/* Bottom Content Scrim */}
                                   <div className="relative z-10 mt-auto p-4 sm:p-5 space-y-1.5 text-white">
                                     <div className="flex items-center justify-between gap-2 mb-1">
                                       {post.date ? (
@@ -3432,7 +3327,6 @@ export default function AdminPage() {
                                 </>
                               ) : (
                                 <div>
-                                  {/* Top Bar */}
                                   <div className="flex items-center justify-between gap-2 mb-3">
                                     <div className="flex items-center gap-1.5">
                                       <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
@@ -3489,7 +3383,6 @@ export default function AdminPage() {
                                     )}
                                   </div>
 
-                                  {/* Text Details */}
                                   <div className="space-y-1">
                                     <h4 className="text-sm font-bold text-slate-800 line-clamp-1">{post.title || 'Untitled Event'}</h4>
                                     {post.titleTa && (
@@ -3516,7 +3409,6 @@ export default function AdminPage() {
                             key={post.id || idx}
                             className="h-[480px] bg-brand-light/20 border border-brand-pale rounded-xl sm:rounded-2xl p-3.5 sm:p-4 shadow-2xs flex flex-col justify-between"
                           >
-                            {/* Top Bar */}
                             <div className="flex items-center justify-between gap-2 mb-2">
                               <div className="flex items-center gap-1.5">
                                 <span className="px-2.5 py-0.5 rounded-full bg-brand-forest text-white text-[10px] font-bold">
@@ -3557,7 +3449,6 @@ export default function AdminPage() {
                               </div>
                             </div>
 
-                            {/* Live Iframe Scaled Preview Container */}
                             <div className="flex-1 w-full min-h-0 overflow-hidden rounded-xl bg-white border border-brand-pale/80 shadow-2xs flex justify-center items-start pt-2 relative">
                               <div
                                 className="admin-fb-wrapper shrink-0 flex justify-center origin-top pointer-events-auto"
@@ -3581,7 +3472,6 @@ export default function AdminPage() {
                               </div>
                             </div>
 
-                            {/* Card Info & Height Settings */}
                             <div className="mt-2.5 pt-2 border-t border-brand-pale/60 space-y-1.5 shrink-0">
                               <div className="flex items-center justify-between text-[11px]">
                                 <span className="font-semibold text-slate-600">Iframe Height (px):</span>
@@ -3612,11 +3502,9 @@ export default function AdminPage() {
               })()}
             </div>
 
-            {/* ADD EVENT MODAL (MANUAL EVENT OR FB IFRAME) */}
             {isAddEventOpen && (
               <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
                 <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
-                  {/* Modal Header */}
                   <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
@@ -3643,7 +3531,6 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  {/* Mode Tabs */}
                   <div className="flex border-b border-brand-pale bg-brand-light/40 px-4 sm:px-6 pt-3 gap-2 shrink-0">
                     <button
                       type="button"
@@ -3669,11 +3556,9 @@ export default function AdminPage() {
                     </button>
                   </div>
 
-                  {/* TAB 1: MANUAL EVENT (PICTURE & TEXT) */}
                   {eventModalTab === 'manual' && (
                     <form onSubmit={handleAddManualEvent} className="flex-1 flex flex-col overflow-hidden">
                       <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
-                        {/* Photo Upload Box */}
                         <div>
                           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                             Event Picture / Poster
@@ -3692,7 +3577,6 @@ export default function AdminPage() {
 
                           {manualEventImage ? (
                             <div className="space-y-3">
-                              {/* Live Card Full-Cover Preview */}
                               <div className="relative w-full max-w-[280px] mx-auto h-[360px] rounded-2xl overflow-hidden shadow-lg border border-slate-700/60 flex flex-col justify-between bg-slate-900 group">
                                 <img
                                   src={manualEventImage}
@@ -3701,7 +3585,6 @@ export default function AdminPage() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
 
-                                {/* Top Bar Floating */}
                                 <div className="relative z-10 p-3 flex items-center justify-between gap-2">
                                   <span className="px-2.5 py-1 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-xs border border-white/20">
                                     {manualEventCategory || 'School Event'}
@@ -3713,7 +3596,6 @@ export default function AdminPage() {
                                   )}
                                 </div>
 
-                                {/* Bottom Content Scrim */}
                                 <div className="relative z-10 p-4 space-y-1 text-white">
                                   <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[9px] font-bold uppercase tracking-wider mb-1">
                                     Full Card Cover Preview
@@ -3740,7 +3622,6 @@ export default function AdminPage() {
                                 </div>
                               </div>
 
-                              {/* Photo Stats & Actions */}
                               <div className="flex items-center justify-between bg-brand-light/40 border border-brand-pale rounded-xl px-3 py-2 text-xs">
                                 <div>
                                   <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mr-2">
@@ -3832,7 +3713,6 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Title Fields */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div>
                             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
@@ -3860,7 +3740,6 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Date, Category, and Location */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                           <div>
                             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
@@ -3899,7 +3778,6 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Descriptions */}
                         <div>
                           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                             Event Description / Text (English)
@@ -3927,7 +3805,6 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Modal Footer */}
                       <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                         <button
                           type="button"
@@ -3951,7 +3828,6 @@ export default function AdminPage() {
                     </form>
                   )}
 
-                  {/* TAB 2: FACEBOOK EMBED */}
                   {eventModalTab === 'facebook' && (
                     <div className="flex-1 flex flex-col overflow-hidden">
                       <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
@@ -3967,7 +3843,6 @@ export default function AdminPage() {
                             autoFocus
                             className="w-full px-3.5 py-2.5 rounded-xl bg-brand-white border border-brand-pale text-slate-800 text-base sm:text-xs font-mono focus:outline-none focus:ring-2 focus:ring-brand-forest/20 focus:border-brand-forest leading-relaxed"
                           />
-                          {/* Share Link Auto-Resolve Alert */}
                           {(parsedNewEvent?.isShareUrl || newEventInput.includes('/share/')) && (
                             <div className="mt-2.5 rounded-xl border border-amber-300 bg-amber-50 p-3 sm:p-3.5 text-xs text-amber-900 space-y-2.5">
                               <div className="flex items-start gap-2.5">
@@ -4044,7 +3919,6 @@ export default function AdminPage() {
                           </div>
                         </div>
 
-                        {/* Retrieval Result & Live Iframe Preview */}
                         {parsedNewEvent ? (
                           <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-3 sm:p-4 space-y-3">
                             <div className="flex items-center justify-between flex-wrap gap-2">
@@ -4094,7 +3968,6 @@ export default function AdminPage() {
                               </div>
                             </div>
 
-                            {/* Live Preview of Iframe */}
                             <div className="pt-2">
                               <span className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
                                 Live Iframe Preview:
@@ -4176,11 +4049,9 @@ export default function AdminPage() {
               </div>
             )}
 
-            {/* EDIT MANUAL EVENT MODAL */}
             {editingEvent && (
               <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
                 <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-xl w-full overflow-hidden shadow-2xl my-auto max-h-[92vh] flex flex-col animate-modal-content">
-                  {/* Modal Header */}
                   <div className="bg-brand-forest p-3.5 sm:p-5 text-white flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-lg bg-white/10 flex items-center justify-center text-white">
@@ -4206,7 +4077,6 @@ export default function AdminPage() {
 
                   <form onSubmit={handleSaveEditEvent} className="flex-1 flex flex-col overflow-hidden">
                     <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
-                      {/* Photo Box & Live Preview */}
                       <div>
                         <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                           Event Picture / Poster
@@ -4225,7 +4095,6 @@ export default function AdminPage() {
 
                         {editingEvent.image ? (
                           <div className="space-y-3">
-                            {/* Live Card Full-Cover Preview */}
                             <div className="relative w-full max-w-[280px] mx-auto h-[360px] rounded-2xl overflow-hidden shadow-lg border border-slate-700/60 flex flex-col justify-between bg-slate-900 group">
                               <img
                                 src={editingEvent.image}
@@ -4234,7 +4103,6 @@ export default function AdminPage() {
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/25 pointer-events-none" />
 
-                              {/* Top Bar Floating */}
                               <div className="relative z-10 p-3 flex items-center justify-between gap-2">
                                 <span className="px-2.5 py-1 rounded-full bg-brand-forest/90 backdrop-blur-xs text-white text-[10px] font-bold uppercase tracking-wider shadow-xs border border-white/20">
                                   {editingEvent.category || 'School Event'}
@@ -4246,7 +4114,6 @@ export default function AdminPage() {
                                 )}
                               </div>
 
-                              {/* Bottom Content Scrim */}
                               <div className="relative z-10 p-4 space-y-1 text-white">
                                 <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[9px] font-bold uppercase tracking-wider mb-1">
                                   Full Card Cover Preview
@@ -4273,7 +4140,6 @@ export default function AdminPage() {
                               </div>
                             </div>
 
-                            {/* Photo Stats & Actions */}
                             <div className="flex items-center justify-between bg-brand-light/40 border border-brand-pale rounded-xl px-3 py-2 text-xs">
                               <div>
                                 <span className="inline-block px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold mr-2">
@@ -4365,7 +4231,6 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Title Fields */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div>
                           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
@@ -4393,7 +4258,6 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Date, Category, and Location */}
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
@@ -4432,7 +4296,6 @@ export default function AdminPage() {
                         </div>
                       </div>
 
-                      {/* Descriptions */}
                       <div>
                         <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                           Event Description / Text (English)
@@ -4460,7 +4323,6 @@ export default function AdminPage() {
                       </div>
                     </div>
 
-                    {/* Modal Footer */}
                     <div className="p-3.5 sm:p-4 bg-brand-light/30 border-t border-brand-pale flex flex-col-reverse sm:flex-row justify-end gap-2 shrink-0">
                       <button
                         type="button"
@@ -4483,7 +4345,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* CONTACT INFORMATION */}
         {activeTab === 'contact' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -4567,7 +4428,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* SETTINGS & BACKUP */}
         {activeTab === 'settings' && (
           <div className="space-y-6">
             <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xs">
@@ -4780,11 +4640,9 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* COMMIT DIRECTLY TO GITHUB MODAL */}
         {isCommitModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
           <div className="bg-brand-white border border-brand-pale rounded-2xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] flex flex-col overflow-hidden shadow-2xl my-auto animate-modal-content">
-            {/* Modal Header */}
             <div className="shrink-0 bg-slate-900 px-4 sm:px-5 py-3 sm:py-4 text-white flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center text-white shrink-0">
@@ -4815,7 +4673,6 @@ export default function AdminPage() {
               </button>
             </div>
 
-            {/* Modal Body */}
             <div className="p-4 sm:p-6 space-y-4 overflow-y-auto flex-1">
               {commitResult ? (
                 <div className="text-center py-3 space-y-4">
@@ -4959,7 +4816,6 @@ export default function AdminPage() {
                         </button>
                       </div>
 
-                      {/* Temporary Session Token Fallback */}
                       <div className="pt-2.5 border-t border-amber-200/80 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-[11px] font-bold text-amber-950 flex items-center gap-1.5">
@@ -5078,7 +4934,6 @@ export default function AdminPage() {
         </div>
       )}
 
-      {/* CONFIRM LEAVE / COMMIT MODAL */}
       {isLeaveConfirmOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-modal-backdrop"

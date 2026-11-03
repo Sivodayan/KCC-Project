@@ -1,17 +1,3 @@
-/**
- * GitHub REST API Client
- * Provides authenticated Git content queries and atomic commits directly
- * from the browser without requiring a backend proxy.
- */
-
-/**
- * Safe UTF-8 to Base64 encoder for browser environments.
- * Standard window.btoa throws on multibyte characters (such as Tamil Unicode script).
- * This converts multibyte sequences into byte-safe Latin-1 strings prior to Base64 encoding.
- *
- * @param {string} str - UTF-8 text to encode.
- * @returns {string} Base64-encoded string.
- */
 export function utf8ToBase64(str) {
   try {
     return btoa(
@@ -25,12 +11,6 @@ export function utf8ToBase64(str) {
   }
 }
 
-/**
- * Safe Base64 to UTF-8 decoder supporting multibyte character sets.
- *
- * @param {string} str - Base64 string to decode.
- * @returns {string} Decoded UTF-8 string.
- */
 export function base64ToUtf8(str) {
   try {
     return decodeURIComponent(
@@ -46,12 +26,6 @@ export function base64ToUtf8(str) {
   }
 }
 
-/**
- * Verifies a GitHub Personal Access Token and retrieves the associated user identity.
- *
- * @param {string} token - GitHub PAT.
- * @returns {Promise<{login: string, name: string, avatarUrl: string, htmlUrl: string}>}
- */
 export async function verifyGitHubToken(token) {
   if (!token || !token.trim()) {
     throw new Error('Personal Access Token is required.');
@@ -82,17 +56,6 @@ export async function verifyGitHubToken(token) {
   };
 }
 
-/**
- * Fetches file metadata (SHA and decoded content) from a repository branch.
- *
- * @param {Object} params
- * @param {string} params.owner - GitHub organization or username.
- * @param {string} params.repo - Repository name.
- * @param {string} params.path - Repository file path.
- * @param {string} [params.branch='main'] - Git branch reference.
- * @param {string} [params.token] - Optional PAT for private repositories or elevated rate limits.
- * @returns {Promise<{exists: boolean, sha: string|null, content: string|null, downloadUrl?: string}>}
- */
 export async function fetchFileFromGitHub({ owner, repo, path, branch = 'main', token }) {
   const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${encodeURIComponent(branch)}`;
   const headers = {
@@ -132,25 +95,6 @@ export async function fetchFileFromGitHub({ owner, repo, path, branch = 'main', 
   };
 }
 
-/**
- * Commits updated file content to a branch via the GitHub Contents API.
- * Automatically resolves the latest blob SHA to prevent race condition write conflicts.
- *
- * @param {Object} params
- * @param {string} [params.owner='Sivodayan'] - Repository owner.
- * @param {string} [params.repo='KCC-Project'] - Repository name.
- * @param {string} [params.path='src/data/siteContent.json'] - Target file path.
- * @param {string} [params.branch='main'] - Target branch.
- * @param {string} params.token - GitHub PAT with repo scope.
- * @param {string} params.contentString - Raw stringified content to commit.
- * @param {string} [params.commitMessage] - Custom commit message.
- * @returns {Promise<{success: boolean, commitSha: string, fullSha: string, commitUrl: string, branch: string, timestamp: string}>}
- */
-/**
- * Checks if the Cloudflare Pages Function /api/github proxy is available and configured.
- *
- * @returns {Promise<{ready: boolean, isProxyActive: boolean, configured: boolean, reason?: string}>}
- */
 export async function checkGitHubProxyStatus() {
   try {
     const res = await fetch('/api/github', {
@@ -198,23 +142,6 @@ export async function checkGitHubProxyStatus() {
   }
 }
 
-
-/**
- * Commits updated file content to a branch.
- * Prioritizes the secure Cloudflare Pages Function server-side proxy (/api/github)
- * so GITHUB_TOKEN remains an encrypted server secret without ever being exposed in the browser.
- * Falls back to direct client-side commit for local development if a local token is present.
- *
- * @param {Object} params
- * @param {string} [params.owner='Sivodayan'] - Repository owner.
- * @param {string} [params.repo='KCC-Project'] - Repository name.
- * @param {string} [params.path='src/data/siteContent.json'] - Target file path.
- * @param {string} [params.branch='main'] - Target branch.
- * @param {string} [params.token] - Optional local PAT for local dev fallback.
- * @param {string} params.contentString - Raw stringified content to commit.
- * @param {string} [params.commitMessage] - Custom commit message.
- * @returns {Promise<{success: boolean, commitSha: string, fullSha: string, commitUrl: string, branch: string, timestamp: string}>}
- */
 export async function commitFileToGitHub({
   owner = 'Sivodayan',
   repo = 'KCC-Project',
@@ -226,7 +153,6 @@ export async function commitFileToGitHub({
 }) {
   const msg = commitMessage?.trim() || `Update website content via KCC Admin Panel [${new Date().toISOString()}]`;
 
-  // 1. Primary path: Use Cloudflare Pages Function server-side proxy (/api/github)
   const cleanToken = (
     token ||
     import.meta.env.VITE_GITHUB_TOKEN ||
@@ -234,7 +160,6 @@ export async function commitFileToGitHub({
     ''
   ).trim();
 
-  // 1. Primary path: Use Cloudflare Worker / Pages proxy (/api/github)
   try {
     const headers = { 'Content-Type': 'application/json' };
     if (cleanToken) {
@@ -274,12 +199,10 @@ export async function commitFileToGitHub({
     console.warn('Proxy call failed, attempting direct GitHub commit fallback:', err);
   }
 
-  // 2. Fallback path: Direct client-side commit (used when proxy lacks secret or for local dev)
   if (!cleanToken) {
     throw new Error('GitHub publishing is not configured. Please set GITHUB_TOKEN in Cloudflare or enter a token in the modal.');
   }
 
-  // Query existing file SHA to support atomic in-place update
   const fileInfo = await fetchFileFromGitHub({
     owner,
     repo,

@@ -141,7 +141,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   const hasQuery = Boolean(debouncedQuery.trim());
 
-  // Debounce search by a small, snappy delay (~240ms) and show loading indicator
   useEffect(() => {
     const trimmed = query.trim();
     if (!trimmed) {
@@ -180,14 +179,12 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           return 0;
         });
 
-  // Lock body scroll when search bar / modal is active
   useEffect(() => {
     if (!isOpen) return;
 
     const originalOverflow = document.body.style.overflow;
     const originalPaddingRight = document.body.style.paddingRight;
 
-    // Compensate for scrollbar disappearance to prevent layout shift
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     if (scrollbarWidth > 0) {
       document.body.style.paddingRight = `${scrollbarWidth}px`;
@@ -290,7 +287,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
     >
       <div className="bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
         <div className="p-3.5 sm:p-4 border-b border-brand-pale dark:border-emerald-950/70 bg-brand-white dark:bg-[#0f1911]">
-          {/* Rounded Border Search Box Container */}
           <div className="search-box-wrapper flex items-center gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-brand-light/70 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/50 focus-within:border-brand-forest dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-brand-forest/20 dark:focus-within:ring-emerald-400/25 transition-all shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.18)]">
             <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -384,7 +380,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           </button>
         </div>
 
-        {/* Sleek Indeterminate Progress Bar */}
         {isSearching && (
           <div className="search-progress-track">
             <div className="search-progress-bar" />
@@ -395,7 +390,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         <div className="overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh]">
           {isSearching ? (
             <div className="p-2 space-y-2 select-none">
-              {/* Clean institutional status header - strictly no emojis */}
               <div className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs">
                 <div className="flex items-center gap-2 text-slate-600 dark:text-emerald-400/90 font-medium">
                   <svg className="w-3.5 h-3.5 animate-spin text-brand-forest dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
@@ -409,7 +403,6 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 </span>
               </div>
 
-              {/* 4 Professional Skeleton Rows */}
               {[
                 { titleWidth: 'w-3/5', subWidth: 'w-24', category: 'Events' },
                 { titleWidth: 'w-4/5', subWidth: 'w-32', category: 'History' },

@@ -1,17 +1,7 @@
 import React, { useEffect } from 'react';
 import { ANTHEM_STANZAS } from './SchoolAnthem.jsx';
 
-/**
- * AnthemModal Component
- *
- * Ephemeral dialog providing instant access to the college anthem lyrics
- * without unmounting the current active page context.
- *
- * Features Escape key listening, backdrop backdrop-blur overlay dismiss,
- * and semantic Tamil typographic styling with staggered line entry animation.
- */
 export default function AnthemModal({ isOpen, onClose }) {
-  // Lock body scroll when anthem modal is active
   useEffect(() => {
     if (!isOpen) return;
 
