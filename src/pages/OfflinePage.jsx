@@ -159,35 +159,91 @@ export default function OfflinePage({ onOpenAnthem }) {
         <div className="bg-brand-white dark:bg-[#111e13] rounded-3xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-12 shadow-xs text-center relative overflow-hidden animate-fade-up">
           {/* Subtle Crest Watermark Background */}
           <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] dark:opacity-[0.04] pointer-events-none select-none">
-            <img src="/assets/logo.png" alt="" className="w-96 h-96 object-contain" />
+            <img
+              src="/assets/logo.png"
+              alt=""
+              className="w-96 h-96 object-contain"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
           </div>
 
           <div className="relative z-10 space-y-6">
-            {/* Animated Wi-Fi Disconnected Graphic */}
+            {/* School Crest Badge & College Header */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-light/90 dark:bg-emerald-950/80 border border-brand-pale dark:border-emerald-700/50 shadow-2xs">
+              <div className="w-5 h-5 rounded-md bg-white p-0.5 flex items-center justify-center shrink-0 shadow-2xs">
+                <img
+                  src="/assets/logo.png"
+                  alt="KCC Crest"
+                  className="w-full h-full object-contain"
+                  onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                />
+              </div>
+              <span className="text-[11px] sm:text-xs font-bold tracking-wider uppercase text-brand-forest dark:text-emerald-300">
+                J/Kopay Christian College • Network Alert
+              </span>
+            </div>
+
+            {/* High-Definition No-Internet / Wi-Fi Disconnected Graphic */}
             <div className="flex justify-center">
               <div className="relative">
-                {/* Glowing decorative rings */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-800/40 flex items-center justify-center shadow-inner relative group">
+                {/* Glowing decorative squircle */}
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-brand-light/90 dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 flex items-center justify-center shadow-inner relative group transition-transform hover:scale-105 duration-300">
                   <svg
-                    className="w-12 h-12 sm:w-14 sm:h-14 text-brand-forest dark:text-emerald-400 transition-transform group-hover:scale-105 duration-300"
+                    className="w-16 h-16 sm:w-20 sm:h-20 text-brand-forest dark:text-emerald-400"
+                    viewBox="0 0 64 64"
                     fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
                   >
-                    {/* WiFi off icon */}
+                    {/* Outer Signal Wave */}
                     <path
+                      d="M12 23C17.5 17.5 24.5 14.5 32 14.5C39.5 14.5 46.5 17.5 52 23"
+                      stroke="currentColor"
+                      strokeWidth="3.5"
                       strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="1.8"
-                      d="M3 3l18 18M10.66 6.34A13.06 13.06 0 0112 6c4.09 0 7.8 1.88 10.28 4.88M4.93 4.93C3.12 6.57 1.74 8.65 1.05 11M6.34 10.66C7.94 9.61 9.88 9 12 9c1.07 0 2.09.15 3.05.43M8.53 14.53C9.5 13.9 10.7 13.5 12 13.5c1.17 0 2.27.32 3.2 1.01M12 18.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"
+                      className="opacity-35"
                     />
+
+                    {/* Middle Signal Wave */}
+                    <path
+                      d="M18 29.5C21.8 25.7 26.8 23.5 32 23.5C37.2 23.5 42.2 25.7 46 29.5"
+                      stroke="currentColor"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                      className="opacity-70"
+                    />
+
+                    {/* Inner Signal Wave */}
+                    <path
+                      d="M24 36.5C26.1 34.3 29 33 32 33C35 33 37.9 34.3 40 36.5"
+                      stroke="currentColor"
+                      strokeWidth="3.5"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Central Base Dot */}
+                    <circle cx="32" cy="46" r="3.5" fill="currentColor" />
+
+                    {/* Crisp Red Disconnection Slash */}
+                    <line
+                      x1="11"
+                      y1="11"
+                      x2="53"
+                      y2="53"
+                      stroke="#ef4444"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                    />
+
+                    {/* Red Warning Accent Dot */}
+                    <circle cx="50" cy="14" r="3" fill="#ef4444" />
                   </svg>
                 </div>
 
                 {/* Status indicator badge */}
-                <div className="absolute -bottom-2 -right-2 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 dark:bg-red-950/60 border border-red-300 dark:border-red-800 text-red-600 dark:text-red-400 flex items-center gap-1.5 shadow-2xs">
+                <div className="absolute -bottom-2 -right-2 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 dark:bg-red-950/80 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 flex items-center gap-1.5 shadow-2xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                  <span>{isOnline ? 'Active' : 'Offline'}</span>
+                  <span>{isOnline ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
             </div>
