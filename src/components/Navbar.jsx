@@ -159,18 +159,49 @@ export default function Navbar({
           </div>
 
           <div className="flex items-center gap-1.5 sm:gap-2 md:hidden">
-            <ThemeToggle />
+            {currentPage === 'history' && (
+              <div className="inline-flex items-center bg-brand-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-800/40 p-0.5 rounded-full text-xs font-semibold shadow-2xs">
+                <button
+                  type="button"
+                  onClick={() => onChangeHistoryLang('en')}
+                  className={`px-2 py-1 rounded-full transition-all duration-200 cursor-pointer text-xs ${historyLang === 'en'
+                      ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-brand-forest dark:hover:text-emerald-300'
+                    }`}
+                  aria-label="Switch to English"
+                >
+                  EN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onChangeHistoryLang('ta')}
+                  className={`px-2 py-1 rounded-full transition-all duration-200 font-tamil cursor-pointer text-xs ${historyLang === 'ta'
+                      ? 'bg-brand-forest text-brand-white shadow-2xs font-bold'
+                      : 'text-slate-600 dark:text-slate-300 hover:text-brand-forest dark:hover:text-emerald-300'
+                    }`}
+                  aria-label="Switch to Tamil"
+                >
+                  தமிழ்
+                </button>
+              </div>
+            )}
 
-            <button
-              onClick={onOpenSearch}
-              type="button"
-              className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]"
-              aria-label="Search"
-            >
-              <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </button>
+            {!mobileMenuOpen && (
+              <>
+                <ThemeToggle />
+
+                <button
+                  onClick={onOpenSearch}
+                  type="button"
+                  className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]"
+                  aria-label="Search"
+                >
+                  <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </button>
+              </>
+            )}
 
             <button
               onClick={() => setMobileMenuOpen(prev => !prev)}
@@ -299,28 +330,6 @@ export default function Navbar({
           >
             Contact Us
           </button>
-
-          {currentPage === 'history' && (
-            <div className="flex items-center justify-between pt-2 border-t border-brand-pale dark:border-emerald-900/40">
-              <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">History Language:</span>
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() => onChangeHistoryLang('en')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold ${historyLang === 'en' ? 'bg-brand-forest text-white' : 'bg-brand-light dark:bg-emerald-950/60 text-slate-700 dark:text-slate-300'
-                    }`}
-                >
-                  English
-                </button>
-                <button
-                  onClick={() => onChangeHistoryLang('ta')}
-                  className={`px-3 py-1 rounded-full text-xs font-semibold font-tamil ${historyLang === 'ta' ? 'bg-brand-forest text-white' : 'bg-brand-light dark:bg-emerald-950/60 text-slate-700 dark:text-slate-300'
-                    }`}
-                >
-                  தமிழ்
-                </button>
-              </div>
-            </div>
-          )}
 
           <div className="pt-2 border-t border-brand-pale dark:border-emerald-900/40 flex items-center justify-between">
             <span className="text-xs font-bold text-slate-600 dark:text-slate-400">

@@ -19,16 +19,16 @@ function MilestoneCard({ m, idx, lang }) {
     >
       <span className="history-dot-reveal absolute -left-[7px] top-5 w-3.5 h-3.5 rounded-full bg-brand-forest dark:bg-emerald-500 ring-4 ring-brand-light dark:ring-emerald-950/80 transition-all duration-300 group-hover:scale-125 group-hover:ring-brand-forest/30 dark:group-hover:ring-emerald-400/40" />
 
-      <span className="history-year-reveal hidden sm:block absolute -left-28 top-3.5 w-20 text-right font-bold text-brand-forest dark:text-emerald-400 text-xs transition-colors duration-200">
+      <span className="history-year-reveal hidden sm:block absolute sm:-left-36 sm:w-28 md:-left-40 md:w-32 top-3.5 text-right font-bold text-brand-forest dark:text-emerald-400 text-xs leading-tight pr-3 break-words transition-colors duration-200">
         {yearDisplay}
       </span>
 
       <div className="bg-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-900/40 rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out">
-        <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/50 text-brand-forest dark:text-emerald-300 text-[11px] font-bold mb-2.5 transition-colors">
+        <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/50 text-brand-forest dark:text-emerald-300 text-[11px] font-bold mb-3 transition-colors">
           {yearDisplay}
         </span>
 
-        <h2 className="text-lg sm:text-xl font-bold text-brand-forest dark:text-emerald-300 transition-colors">
+        <h2 className="hidden sm:block text-lg sm:text-xl font-bold text-brand-forest dark:text-emerald-300 transition-colors">
           {titleDisplay}
         </h2>
 
@@ -115,7 +115,7 @@ export default function HistoryTimeline({ lang = 'en' }) {
         )}
       </header>
 
-      <div className="relative border-l-2 border-brand-pale dark:border-emerald-900/40 ml-3 sm:ml-28 space-y-8">
+      <div className="relative border-l-2 border-brand-pale dark:border-emerald-900/40 ml-3 sm:ml-36 md:ml-40 space-y-8">
         {milestones.map((m, idx) => (
           <MilestoneCard 
             key={m.id || idx} 
