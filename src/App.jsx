@@ -83,6 +83,17 @@ export default function App() {
   const isAdminRoute = location.pathname.toLowerCase().startsWith('/admin');
 
   useEffect(() => {
+    // Canonical cleanup for legacy or duplicate parameterized URLs reported by Google Search Console
+    if ((location.pathname === '/' || location.pathname === '') && searchParams.has('lang')) {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('lang');
+      setSearchParams(nextParams, { replace: true });
+    } else if (location.pathname.startsWith('/history') && searchParams.get('lang') === 'en') {
+      const nextParams = new URLSearchParams(searchParams);
+      nextParams.delete('lang');
+      setSearchParams(nextParams, { replace: true });
+    }
+
     const redirectPath = sessionStorage.getItem('redirect_path');
     if (redirectPath) {
       sessionStorage.removeItem('redirect_path');
@@ -183,9 +194,32 @@ export default function App() {
     if (ogDesc) ogDesc.setAttribute("content", descContent);
 
     if (typeof window !== 'undefined') {
-      const canonicalHref = `${window.location.origin}${location.pathname}`;
+      let canonicalHref = `${window.location.origin}${location.pathname}`;
+      if (path.startsWith('/history') && historyLang === 'ta') {
+        canonicalHref = `${window.location.origin}/history?lang=ta`;
+      }
       if (canonicalLink) canonicalLink.setAttribute("href", canonicalHref);
       if (ogUrl) ogUrl.setAttribute("content", canonicalHref);
+
+      // Manage hreflang annotations dynamically for search engine bots
+      const updateHreflang = (lang, href) => {
+        let el = document.querySelector(`link[rel="alternate"][hreflang="${lang}"]`);
+        if (!el) {
+          el = document.createElement('link');
+          el.setAttribute('rel', 'alternate');
+          el.setAttribute('hreflang', lang);
+          document.head.appendChild(el);
+        }
+        el.setAttribute('href', href);
+      };
+
+      if (path.startsWith('/history')) {
+        updateHreflang('en', `${window.location.origin}/history`);
+        updateHreflang('ta', `${window.location.origin}/history?lang=ta`);
+        updateHreflang('x-default', `${window.location.origin}/history`);
+      } else {
+        document.querySelectorAll('link[rel="alternate"][hreflang]').forEach(el => el.remove());
+      }
     }
   }, [location.pathname, historyLang]);
 

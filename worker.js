@@ -24,6 +24,19 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // 301 Canonical Redirects for Search Console duplicate parameter cleanup
+    if ((url.pathname === '/' || url.pathname === '') && url.searchParams.has('lang')) {
+      const target = new URL(url);
+      target.searchParams.delete('lang');
+      return Response.redirect(target.toString(), 301);
+    }
+
+    if (url.pathname === '/history' && url.searchParams.get('lang') === 'en') {
+      const target = new URL(url);
+      target.searchParams.delete('lang');
+      return Response.redirect(target.toString(), 301);
+    }
+
     if (url.pathname === '/api/github') {
       const context = { request, env, ctx };
       if (request.method === 'OPTIONS') {
