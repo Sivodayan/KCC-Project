@@ -180,9 +180,19 @@ export default function OfflineFallback() {
           <div className="relative z-10 space-y-6">
             <div className="flex justify-center">
               <div className="relative">
-                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-brand-light/90 dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 flex items-center justify-center shadow-inner relative group transition-transform hover:scale-105 duration-300">
+                <div
+                  className={`w-28 h-28 sm:w-32 sm:h-32 rounded-3xl ${
+                    isOnline
+                      ? 'bg-emerald-50/80 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/60'
+                      : 'bg-brand-light/90 dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50'
+                  } flex items-center justify-center shadow-inner relative group transition-transform hover:scale-105 duration-300`}
+                >
                   <svg
-                    className="w-16 h-16 sm:w-20 sm:h-20 text-brand-forest dark:text-emerald-400"
+                    className={`w-16 h-16 sm:w-20 sm:h-20 ${
+                      isOnline
+                        ? 'text-emerald-600 dark:text-emerald-400'
+                        : 'text-brand-forest dark:text-emerald-400'
+                    }`}
                     viewBox="0 0 64 64"
                     fill="none"
                     xmlns="http://www.w3.org/2000/svg"
@@ -193,14 +203,14 @@ export default function OfflineFallback() {
                       stroke="currentColor"
                       strokeWidth="3.5"
                       strokeLinecap="round"
-                      className="opacity-35"
+                      className={isOnline ? 'opacity-100' : 'opacity-35'}
                     />
                     <path
                       d="M18 29.5C21.8 25.7 26.8 23.5 32 23.5C37.2 23.5 42.2 25.7 46 29.5"
                       stroke="currentColor"
                       strokeWidth="3.5"
                       strokeLinecap="round"
-                      className="opacity-70"
+                      className={isOnline ? 'opacity-100' : 'opacity-70'}
                     />
                     <path
                       d="M24 36.5C26.1 34.3 29 33 32 33C35 33 37.9 34.3 40 36.5"
@@ -209,21 +219,35 @@ export default function OfflineFallback() {
                       strokeLinecap="round"
                     />
                     <circle cx="32" cy="46" r="3.5" fill="currentColor" />
-                    <line
-                      x1="11"
-                      y1="11"
-                      x2="53"
-                      y2="53"
-                      stroke="#ef4444"
-                      strokeWidth="4"
-                      strokeLinecap="round"
-                    />
-                    <circle cx="50" cy="14" r="3" fill="#ef4444" />
+                    {!isOnline && (
+                      <>
+                        <line
+                          x1="11"
+                          y1="11"
+                          x2="53"
+                          y2="53"
+                          stroke="#ef4444"
+                          strokeWidth="4"
+                          strokeLinecap="round"
+                        />
+                        <circle cx="50" cy="14" r="3" fill="#ef4444" />
+                      </>
+                    )}
                   </svg>
                 </div>
 
-                <div className="absolute -bottom-2 -right-2 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase bg-red-500/10 dark:bg-red-950/80 border border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 flex items-center gap-1.5 shadow-2xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                <div
+                  className={`absolute -bottom-2 -right-2 px-2.5 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase flex items-center gap-1.5 shadow-2xs border ${
+                    isOnline
+                      ? 'bg-emerald-500/10 dark:bg-emerald-950/80 border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-red-500/10 dark:bg-red-950/80 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400'
+                  }`}
+                >
+                  <span
+                    className={`w-1.5 h-1.5 rounded-full animate-pulse ${
+                      isOnline ? 'bg-emerald-500' : 'bg-red-500'
+                    }`}
+                  />
                   <span>{isOnline ? 'Online' : 'Offline'}</span>
                 </div>
               </div>
