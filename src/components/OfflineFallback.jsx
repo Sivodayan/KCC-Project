@@ -286,7 +286,7 @@ export default function OfflineFallback({ onBackToCached }) {
                   No Internet Connection
                 </h1>
                 <p className="font-tamil text-sm sm:text-base text-slate-600 dark:text-slate-400 font-medium max-w-lg mx-auto">
-                  இணைய இணைப்பு துண்டிக்கப்பட்டது. உங்கள் சாதனத்தின் இணைய இணைப்பை சரிபார்க்கவும்.
+                  இணைய இணைப்பு துண்டிக்கப்பட்டது. உங்கள் இணைய இணைப்பை சரிபார்க்கவும்.
                 </p>
               </header>
 
