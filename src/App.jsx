@@ -64,7 +64,7 @@ export default function App() {
           window.location.reload();
         }, 2800);
       } else {
-        noticeTimer = setTimeout(() => setShowRestoredNotice(false), 4500);
+        noticeTimer = setTimeout(() => setShowRestoredNotice(false), 3000);
       }
     };
 
