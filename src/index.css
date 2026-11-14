@@ -1004,6 +1004,12 @@ img[src*="logo.png"]:not(.keep-round) {
   border-radius: 0.5rem !important;
 }
 
+.school-crest-badge img,
+img[src*="logo.png"] {
+  image-rendering: -webkit-optimize-contrast;
+  filter: contrast(1.06) saturate(1.05);
+}
+
 html.dark #mainHeader {
   background-color: rgba(9, 15, 10, 0.92) !important;
   backdrop-filter: blur(18px) saturate(160%) !important;

@@ -242,7 +242,7 @@ export default function OfflinePage({ onOpenAnthem }) {
                 <span>Return to Home</span>
               </button>
 
-              
+
             </div>
           </div>
         </div>
@@ -290,9 +290,9 @@ export default function OfflinePage({ onOpenAnthem }) {
           </div>
         </div>
 
-       
 
-          
+
+
 
 
       </div>

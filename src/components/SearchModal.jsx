@@ -160,7 +160,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
       setIsAnimating(false);
       const timer = setTimeout(() => {
         setShouldRender(false);
-      }, 220);
+      }, 260);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
