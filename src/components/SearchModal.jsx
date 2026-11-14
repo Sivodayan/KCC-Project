@@ -304,7 +304,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   return (
     <div
-      className={`fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 transition-opacity duration-200 ease-out ${
+      className={`fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 transition-all duration-300 ease-out ${
         isAnimating ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}
       onClick={(e) => {
@@ -312,13 +312,28 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
       }}
     >
       <div
-        className={`bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl max-h-[80vh] transition-all duration-200 ease-out ${
-          isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-3'
+        className={`bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl max-h-[80vh] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.96] -translate-y-4'
         }`}
       >
-        <div className="p-3.5 sm:p-4 border-b border-brand-pale dark:border-emerald-950/70 bg-brand-white dark:bg-[#0f1911]">
-          <div className="search-box-wrapper flex items-center gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-brand-light/70 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/50 focus-within:border-brand-forest dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-brand-forest/20 dark:focus-within:ring-emerald-400/25 transition-all shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.18)]">
-            <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div
+          className={`p-3.5 sm:p-4 border-b border-brand-pale dark:border-emerald-950/70 bg-brand-white dark:bg-[#0f1911] transition-all duration-300 ease-out delay-[40ms] ${
+            isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-2'
+          }`}
+        >
+          <div
+            className={`search-box-wrapper flex items-center gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-brand-light/70 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/50 focus-within:border-brand-forest dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-brand-forest/20 dark:focus-within:ring-emerald-400/25 transition-all duration-300 ease-out delay-[70ms] shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.18)] ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-[0.98] translate-y-1'
+            }`}
+          >
+            <svg
+              className={`w-5 h-5 text-brand-forest dark:text-emerald-400 shrink-0 transition-all duration-300 ease-out delay-[100ms] ${
+                isAnimating ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 -rotate-12'
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -329,10 +344,12 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               autoComplete="off"
               spellCheck="false"
               placeholder="Search events, facebook updates, history, anthem, contact, results..."
-              className="search-box-input w-full text-slate-800 dark:text-slate-100 text-sm sm:text-base bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none !border-none !shadow-none !bg-transparent rounded-none"
+              className={`search-box-input w-full text-slate-800 dark:text-slate-100 text-sm sm:text-base bg-transparent placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none !border-none !shadow-none !bg-transparent rounded-none transition-all duration-300 ease-out delay-[110ms] ${
+                isAnimating ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
+              }`}
             />
             {isSearching ? (
-              <div className="flex items-center gap-1.5 shrink-0 px-1 text-brand-forest dark:text-emerald-400" aria-label="Searching">
+              <div className="flex items-center gap-1.5 shrink-0 px-1 text-brand-forest dark:text-emerald-400 animate-fade-in" aria-label="Searching">
                 <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2.5" />
                   <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -344,7 +361,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   setQuery('');
                   if (inputRef.current) inputRef.current.focus();
                 }}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-brand-pale/50 dark:hover:bg-emerald-900/40 transition-colors cursor-pointer shrink-0"
+                className="p-1 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-brand-pale/50 dark:hover:bg-emerald-900/40 transition-all duration-200 cursor-pointer shrink-0 active:scale-90"
                 aria-label="Clear input"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -352,16 +369,27 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                 </svg>
               </button>
             ) : null}
-            
           </div>
         </div>
 
-        <div className="px-4 py-2.5 bg-brand-light/70 dark:bg-[#0b140d]/90 border-b border-brand-pale/70 dark:border-emerald-950/70 flex items-center gap-2 overflow-x-auto text-xs">
-          <span className="text-[11px] font-bold text-slate-400 dark:text-emerald-400/60 uppercase tracking-wider shrink-0">Quick:</span>
+        <div
+          className={`px-4 py-2.5 bg-brand-light/70 dark:bg-[#0b140d]/90 border-b border-brand-pale/70 dark:border-emerald-950/70 flex items-center gap-2 overflow-x-auto text-xs transition-all duration-300 ease-out delay-[120ms] ${
+            isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          }`}
+        >
+          <span
+            className={`text-[11px] font-bold text-slate-400 dark:text-emerald-400/60 uppercase tracking-wider shrink-0 transition-all duration-300 ease-out delay-[130ms] ${
+              isAnimating ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+            }`}
+          >
+            Quick:
+          </span>
           <button
             type="button"
             onClick={() => handleQuickFilter('Events')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'events'
+            className={`px-2.5 py-1 rounded-full border transition-all duration-300 ease-out delay-[150ms] shrink-0 cursor-pointer text-xs ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-1.5'
+            } ${query.toLowerCase() === 'events'
                 ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
@@ -371,7 +399,9 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <button
             type="button"
             onClick={() => handleQuickFilter('History')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'history'
+            className={`px-2.5 py-1 rounded-full border transition-all duration-300 ease-out delay-[180ms] shrink-0 cursor-pointer text-xs ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-1.5'
+            } ${query.toLowerCase() === 'history'
                 ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
@@ -381,7 +411,9 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <button
             type="button"
             onClick={() => handleQuickFilter('Anthem')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'anthem'
+            className={`px-2.5 py-1 rounded-full border transition-all duration-300 ease-out delay-[210ms] shrink-0 cursor-pointer text-xs ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-1.5'
+            } ${query.toLowerCase() === 'anthem'
                 ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
@@ -391,7 +423,9 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <button
             type="button"
             onClick={() => handleQuickFilter('Gallery')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'gallery'
+            className={`px-2.5 py-1 rounded-full border transition-all duration-300 ease-out delay-[240ms] shrink-0 cursor-pointer text-xs ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-1.5'
+            } ${query.toLowerCase() === 'gallery'
                 ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
@@ -401,7 +435,9 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           <button
             type="button"
             onClick={() => handleQuickFilter('Contact')}
-            className={`px-2.5 py-1 rounded-full border transition-all shrink-0 cursor-pointer text-xs ${query.toLowerCase() === 'contact'
+            className={`px-2.5 py-1 rounded-full border transition-all duration-300 ease-out delay-[270ms] shrink-0 cursor-pointer text-xs ${
+              isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-90 translate-y-1.5'
+            } ${query.toLowerCase() === 'contact'
                 ? 'bg-brand-forest dark:bg-emerald-600 text-white border-brand-forest dark:border-emerald-500 font-semibold shadow-xs'
                 : 'bg-brand-white dark:bg-[#111c13] border-brand-pale dark:border-emerald-500/30 hover:border-brand-soft dark:hover:border-emerald-400 text-brand-forest dark:text-emerald-300 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50'
               }`}
@@ -417,9 +453,14 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           </div>
         )}
 
-        <div className="overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh]">
+        {/* Content Area with smooth entrance */}
+        <div
+          className={`overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh] transition-all duration-300 ease-out delay-[180ms] ${
+            isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
+          }`}
+        >
           {isSearching ? (
-            <div className="p-2 space-y-2 select-none">
+            <div className="p-2 space-y-2 select-none animate-fade-in">
               <div className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs">
                 <div className="flex items-center gap-2 text-slate-600 dark:text-emerald-400/90 font-medium">
                   <svg className="w-3.5 h-3.5 animate-spin text-brand-forest dark:text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
@@ -456,19 +497,33 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               ))}
             </div>
           ) : !hasQuery ? (
-            <div className="py-12 px-4 text-center text-slate-500 dark:text-slate-400">
-              <div className="w-12 h-12 mx-auto rounded-full bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/30 flex items-center justify-center text-brand-forest dark:text-emerald-400 mb-3 shadow-2xs">
+            <div className="py-10 text-center text-slate-500 dark:text-slate-400 select-none">
+              <div
+                className={`w-12 h-12 mx-auto rounded-full bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/30 flex items-center justify-center text-brand-forest dark:text-emerald-400 mb-3 shadow-2xs transition-all duration-400 ease-out delay-[220ms] ${
+                  isAnimating ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 -rotate-12'
+                }`}
+              >
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <p className="font-semibold text-slate-700 dark:text-slate-200 text-sm">Start typing to search...</p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
+              <p
+                className={`font-semibold text-slate-700 dark:text-slate-200 text-sm transition-all duration-300 ease-out delay-[250ms] ${
+                  isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                }`}
+              >
+                Start typing to search...
+              </p>
+              <p
+                className={`text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto transition-all duration-300 ease-out delay-[280ms] ${
+                  isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                }`}
+              >
                 Type keywords (events, history, gallery, anthem, contact) or tap a quick topic above.
               </p>
             </div>
           ) : filteredItems.length === 0 ? (
-            <div className="py-12 text-center text-slate-500 dark:text-slate-400">
+            <div className="py-12 text-center text-slate-500 dark:text-slate-400 animate-fade-in">
               <svg className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   strokeLinecap="round"
@@ -490,15 +545,15 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
                   ref={(el) => (itemRefs.current[index] = el)}
                   onClick={() => handleSelect(item)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`search-item px-3.5 py-3 rounded-xl cursor-pointer transition-all flex items-center justify-between gap-3 select-none ${isSelected
-                      ? 'bg-brand-light dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/40 text-brand-forest dark:text-emerald-300 shadow-2xs translate-x-0.5'
+                  className={`search-item px-3.5 py-3 rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-between gap-3 select-none ${isSelected
+                      ? 'bg-brand-light dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/40 text-brand-forest dark:text-emerald-300 shadow-2xs translate-x-1 scale-[1.005]'
                       : 'hover:bg-brand-light/60 dark:hover:bg-emerald-950/20 text-slate-700 dark:text-slate-200'
                     }`}
                 >
                   <div className="min-w-0 flex-1">
                     <span className="font-semibold text-slate-900 dark:text-slate-100 text-sm block truncate">{item.title}</span>
                   </div>
-                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest dark:text-emerald-400 gap-1 opacity-90">
+                  <div className="shrink-0 flex items-center text-xs font-semibold text-brand-forest dark:text-emerald-400 gap-1 opacity-90 transition-transform group-hover:translate-x-0.5">
                     <span>{item.action === 'external' ? 'Open' : 'Go'}</span>
                     {item.action === 'external' ? (
                       <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -516,9 +571,17 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
           )}
         </div>
 
-        <div className="p-3 bg-brand-light/50 dark:bg-[#0b140d] border-t border-brand-pale dark:border-emerald-950/70 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-4">
-          
-          <span className="font-medium text-brand-forest dark:text-emerald-400">
+        {/* Search Modal Footer with transition */}
+        <div
+          className={`p-3 bg-brand-light/50 dark:bg-[#0b140d] border-t border-brand-pale dark:border-emerald-950/70 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 px-4 transition-all duration-300 ease-out delay-[220ms] ${
+            isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+          }`}
+        >
+          <span
+            className={`font-medium text-brand-forest dark:text-emerald-400 transition-all duration-300 delay-[240ms] ${
+              isAnimating ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+            }`}
+          >
             {isSearching ? (
               <span className="inline-flex items-center gap-1.5 text-xs text-brand-forest dark:text-emerald-400">
                 <svg className="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24">
@@ -533,6 +596,16 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               `${filteredItems.length} ${filteredItems.length === 1 ? 'result' : 'results'} found`
             )}
           </span>
+
+          <div
+            className={`hidden sm:flex items-center gap-2.5 text-[10px] text-slate-400 dark:text-slate-500 font-mono transition-all duration-300 delay-[260ms] ${
+              isAnimating ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2'
+            }`}
+          >
+            <span><kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-emerald-950/70 border border-slate-200/80 dark:border-emerald-800/50 shadow-2xs font-sans text-slate-600 dark:text-slate-300">↑↓</kbd> navigate</span>
+            <span><kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-emerald-950/70 border border-slate-200/80 dark:border-emerald-800/50 shadow-2xs font-sans text-slate-600 dark:text-slate-300">↵</kbd> select</span>
+            <span><kbd className="px-1.5 py-0.5 rounded bg-white dark:bg-emerald-950/70 border border-slate-200/80 dark:border-emerald-800/50 shadow-2xs font-sans text-slate-600 dark:text-slate-300">esc</kbd> close</span>
+          </div>
         </div>
       </div>
     </div>
