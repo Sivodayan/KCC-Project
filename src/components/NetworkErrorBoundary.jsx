@@ -1,22 +1,25 @@
 import React from 'react';
 import OfflineFallback from './OfflineFallback.jsx';
 
-function isNetworkOrChunkError(error) {
+function isChunkLoadError(error) {
+  if (!error) return false;
+  const msg = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+  const name = typeof error.name === 'string' ? error.name : '';
+  return (
+    name === 'ChunkLoadError' ||
+    msg.includes('dynamically imported module') ||
+    msg.includes('load failed') ||
+    (msg.includes('failed to fetch') && msg.includes('.js'))
+  );
+}
+
+function isOfflineError(error) {
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
     return true;
   }
   if (!error) return false;
-
   const msg = typeof error.message === 'string' ? error.message.toLowerCase() : '';
-  const name = typeof error.name === 'string' ? error.name : '';
-
-  return (
-    name === 'ChunkLoadError' ||
-    msg.includes('failed to fetch') ||
-    msg.includes('dynamically imported module') ||
-    msg.includes('networkerror') ||
-    msg.includes('load failed')
-  );
+  return msg.includes('networkerror') || (msg.includes('failed to fetch') && !msg.includes('.js'));
 }
 
 export class NetworkErrorBoundary extends React.Component {
@@ -32,6 +35,12 @@ export class NetworkErrorBoundary extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.locationKey !== prevProps.locationKey && this.state.hasError) {
+      this.setState({ hasError: false, error: null });
+    }
+  }
+
   handleReload = () => {
     this.setState({ hasError: false, error: null });
     window.location.reload();
@@ -39,7 +48,24 @@ export class NetworkErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      if (isNetworkOrChunkError(this.state.error)) {
+      // 1. If this is a stale chunk after deployment and user is online, auto-refresh once
+      if (isChunkLoadError(this.state.error) && (typeof navigator === 'undefined' || navigator.onLine)) {
+        try {
+          const lastReload = sessionStorage.getItem('kcc_chunk_reload');
+          const now = Date.now();
+          if (!lastReload || now - Number(lastReload) > 10000) {
+            sessionStorage.setItem('kcc_chunk_reload', String(now));
+            window.location.reload();
+            return null;
+          }
+        } catch {
+          window.location.reload();
+          return null;
+        }
+      }
+
+      // 2. If genuinely offline, render the OfflineFallback screen
+      if (isOfflineError(this.state.error) || (typeof navigator !== 'undefined' && !navigator.onLine)) {
         return <OfflineFallback />;
       }
 

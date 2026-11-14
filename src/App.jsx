@@ -8,14 +8,15 @@ import { SiteContentProvider } from './context/SiteContentContext.jsx';
 import { GlassRouteLoader } from './components/GlassSkeleton.jsx';
 import NetworkErrorBoundary from './components/NetworkErrorBoundary.jsx';
 
-const HomePage = lazy(() => import('./pages/HomePage.jsx'));
-const HistoryPage = lazy(() => import('./pages/HistoryPage.jsx'));
-const EventsPage = lazy(() => import('./pages/EventsPage.jsx'));
-const GalleryPage = lazy(() => import('./pages/GalleryPage.jsx'));
-const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
-const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
+import HomePage from './pages/HomePage.jsx';
+import HistoryPage from './pages/HistoryPage.jsx';
+import EventsPage from './pages/EventsPage.jsx';
+import GalleryPage from './pages/GalleryPage.jsx';
+import ContactPage from './pages/ContactPage.jsx';
+import AnthemPage from './pages/AnthemPage.jsx';
+import NotFoundPage from './pages/NotFoundPage.jsx';
+
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
-const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 
 function scrollToElementWithNavOffset(el) {
   if (!el) return;
@@ -430,7 +431,7 @@ export default function App() {
           </aside>
         )}
 
-        <NetworkErrorBoundary onOpenAnthem={() => setIsAnthemOpen(true)}>
+        <NetworkErrorBoundary locationKey={location.pathname} onOpenAnthem={() => setIsAnthemOpen(true)}>
           <Suspense fallback={<GlassRouteLoader />}>
             <Routes>
               <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
