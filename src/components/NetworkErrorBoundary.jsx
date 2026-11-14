@@ -1,58 +1,66 @@
 import React from 'react';
 import OfflinePage from '../pages/OfflinePage.jsx';
 
-export class NetworkErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
+function isNetworkOrChunkError(error) {
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    return true;
   }
+  if (!error) return false;
+
+  const msg = typeof error.message === 'string' ? error.message.toLowerCase() : '';
+  const name = typeof error.name === 'string' ? error.name : '';
+
+  return (
+    name === 'ChunkLoadError' ||
+    msg.includes('failed to fetch') ||
+    msg.includes('dynamically imported module') ||
+    msg.includes('networkerror') ||
+    msg.includes('load failed')
+  );
+}
+
+export class NetworkErrorBoundary extends React.Component {
+  state = { hasError: false, error: null };
 
   static getDerivedStateFromError(error) {
     return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('NetworkErrorBoundary caught an error:', error, errorInfo);
+    if (process.env.NODE_ENV !== 'production') {
+      console.error('[NetworkErrorBoundary]', error, errorInfo);
+    }
   }
 
-  resetError = () => {
+  handleReload = () => {
     this.setState({ hasError: false, error: null });
+    window.location.reload();
   };
 
   render() {
     if (this.state.hasError) {
-      // Check if error is related to chunk loading or offline fetch
-      const isChunkOrNetwork =
-        !navigator.onLine ||
-        (this.state.error &&
-          (this.state.error.name === 'ChunkLoadError' ||
-           this.state.error.message?.includes('Failed to fetch') ||
-           this.state.error.message?.includes('dynamically imported module') ||
-           this.state.error.message?.includes('NetworkError')));
-
-      if (isChunkOrNetwork) {
-        return <OfflinePage onOpenAnthem={this.props.onOpenAnthem} />;
+      if (isNetworkOrChunkError(this.state.error)) {
+        return <OfflinePage />;
       }
 
-      // Default error fallback
       return (
-        <div className="min-h-[50vh] flex flex-col items-center justify-center p-6 text-center">
+        <main className="min-h-[50vh] flex flex-col items-center justify-center p-6 text-center">
           <div className="bg-brand-white dark:bg-[#111e13] p-8 rounded-3xl border border-brand-pale dark:border-emerald-900/40 shadow-xs max-w-md w-full">
-            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">Something went wrong</h2>
-            <p className="text-xs text-slate-600 dark:text-slate-400 mb-4">
-              A temporary issue occurred while loading this page.
+            <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-2">
+              Something went wrong
+            </h2>
+            <p className="text-xs text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+              An unexpected issue occurred while rendering this view.
             </p>
             <button
-              onClick={() => {
-                this.resetError();
-                window.location.reload();
-              }}
-              className="px-5 py-2.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition-all"
+              type="button"
+              onClick={this.handleReload}
+              className="px-5 py-2.5 rounded-full bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer"
             >
               Reload Page
             </button>
           </div>
-        </div>
+        </main>
       );
     }
 
@@ -61,4 +69,5 @@ export class NetworkErrorBoundary extends React.Component {
 }
 
 export default NetworkErrorBoundary;
+
 
