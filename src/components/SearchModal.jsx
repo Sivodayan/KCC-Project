@@ -453,11 +453,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
         )}
 
         {/* Content Area with smooth entrance */}
-        <div
-          className={`overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh] transition-all duration-300 ease-out delay-[180ms] ${
-            isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
-          }`}
-        >
+        <div className="overflow-y-auto divide-y divide-brand-pale/60 dark:divide-emerald-950/60 p-2 text-sm max-h-[50vh]">
           {isSearching ? (
             <div className="p-2 space-y-2 select-none animate-fade-in">
               <div className="flex items-center justify-between px-3 py-1.5 rounded-lg text-xs">
@@ -496,28 +492,16 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
               ))}
             </div>
           ) : !hasQuery ? (
-            <div className="py-10 text-center text-slate-500 dark:text-slate-400 select-none">
-              <div
-                className={`w-12 h-12 mx-auto rounded-full bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/30 flex items-center justify-center text-brand-forest dark:text-emerald-400 mb-3 shadow-2xs transition-all duration-400 ease-out delay-[220ms] ${
-                  isAnimating ? 'opacity-100 scale-100 rotate-0' : 'opacity-0 scale-75 -rotate-12'
-                }`}
-              >
+            <div className="py-10 text-center text-slate-500 dark:text-slate-400 select-none animate-fade-in">
+              <div className="w-12 h-12 mx-auto rounded-full bg-brand-light/80 dark:bg-emerald-950/50 border border-brand-pale dark:border-emerald-500/30 flex items-center justify-center text-brand-forest dark:text-emerald-400 mb-3 shadow-2xs">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-              <p
-                className={`font-semibold text-slate-700 dark:text-slate-200 text-sm transition-all duration-300 ease-out delay-[250ms] ${
-                  isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-                }`}
-              >
+              <p className="font-semibold text-slate-700 dark:text-slate-200 text-sm">
                 Start typing to search...
               </p>
-              <p
-                className={`text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto transition-all duration-300 ease-out delay-[280ms] ${
-                  isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-                }`}
-              >
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
                 Type keywords (events, history, gallery, anthem, contact) or tap a quick topic above.
               </p>
             </div>
