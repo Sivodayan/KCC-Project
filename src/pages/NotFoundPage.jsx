@@ -7,74 +7,7 @@ export default function NotFoundPage({ onOpenSearch }) {
     document.title = "Page Not Found (404) | J/Kopay Christian College";
   }, []);
 
-  const quickLinks = [
-    {
-      to: "/",
-      titleEn: "Home Page",
-      titleTa: "முகப்பு",
-      desc: "Return to the main campus portal and announcements.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-        </svg>
-      )
-    },
-    {
-      to: "/history",
-      titleEn: "History & Heritage",
-      titleTa: "கல்லூரி வரலாறு",
-      desc: "Explore 170+ years of collegiate chronology and milestones.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-      )
-    },
-    {
-      to: "/events",
-      titleEn: "School Events",
-      titleTa: "நிகழ்வுகள்",
-      desc: "Sports meets, academic exhibitions, and community updates.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      )
-    },
-    {
-      to: "/gallery",
-      titleEn: "Photo Gallery",
-      titleTa: "புகைப்படங்கள்",
-      desc: "Capturing student life, campus quadrangle, and achievements.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-      )
-    },
-    {
-      to: "/anthem",
-      titleEn: "School Anthem",
-      titleTa: "பாடசாலைக் கீதம்",
-      desc: "Listen, read, and print the official anthem in Ragam Hamsadhwani.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-        </svg>
-      )
-    },
-    {
-      to: "/contact",
-      titleEn: "Contact Office",
-      titleTa: "தொடர்புகள்",
-      desc: "Direct telephone, email, and location maps for administrative inquiries.",
-      icon: (
-        <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-        </svg>
-      )
-    }
-  ];
+
 
   return (
     <main className="flex-grow py-6 sm:py-10 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">
@@ -105,7 +38,7 @@ export default function NotFoundPage({ onOpenSearch }) {
             </div>
 
             <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
-              The page you are looking for does not exist on the J/Kopay Christian College portal. Please check the URL or use the quick links below.
+              The page you are looking for does not exist on the J/Kopay Christian College portal. Please check the URL or use the search portal below.
             </p>
 
             {/* Action Buttons */}
@@ -136,7 +69,7 @@ export default function NotFoundPage({ onOpenSearch }) {
           </div>
         </div>
 
-       
+
       </div>
     </main>
   );

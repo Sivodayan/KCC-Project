@@ -6,6 +6,7 @@ import SearchModal from './components/SearchModal.jsx';
 import AnthemModal from './components/AnthemModal.jsx';
 import { SiteContentProvider } from './context/SiteContentContext.jsx';
 import { GlassRouteLoader } from './components/GlassSkeleton.jsx';
+import NetworkErrorBoundary from './components/NetworkErrorBoundary.jsx';
 
 const HomePage = lazy(() => import('./pages/HomePage.jsx'));
 const HistoryPage = lazy(() => import('./pages/HistoryPage.jsx'));
@@ -15,6 +16,7 @@ const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
+import OfflinePage from './pages/OfflinePage.jsx';
 
 function scrollToElementWithNavOffset(el) {
   if (!el) return;
@@ -35,6 +37,34 @@ export default function App() {
   const historyLang = searchParams.get('lang') === 'ta' ? 'ta' : 'en';
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAnthemOpen, setIsAnthemOpen] = useState(false);
+  const [isOnline, setIsOnline] = useState(() => {
+    return typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
+      ? navigator.onLine
+      : true;
+  });
+  const [showRestoredNotice, setShowRestoredNotice] = useState(false);
+
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      setShowRestoredNotice(true);
+      const timer = setTimeout(() => setShowRestoredNotice(false), 3500);
+      return () => clearTimeout(timer);
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      setShowRestoredNotice(false);
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   const getActivePageName = () => {
     const path = location.pathname.toLowerCase();
@@ -44,6 +74,7 @@ export default function App() {
     if (path.startsWith('/gallery')) return 'gallery';
     if (path.startsWith('/contact')) return 'contact';
     if (path.startsWith('/anthem')) return 'anthem';
+    if (path.startsWith('/offline')) return 'offline';
     if (path === '/' || path === '') return 'home';
     return '404';
   };
@@ -137,6 +168,9 @@ export default function App() {
       } else if (path.startsWith('/anthem')) {
         pageTitle = "School Anthem";
         descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
+      } else if (path.startsWith('/offline')) {
+        pageTitle = "No Internet Connection | J/Kopay Christian College";
+        descContent = "You are currently offline. Check your internet connection to continue browsing J/Kopay Christian College.";
       } else if (path !== '/' && path !== '') {
         pageTitle = "Page Not Found (404) | J/Kopay Christian College";
         descContent = "The page you are looking for does not exist on the J/Kopay Christian College website.";
@@ -192,6 +226,7 @@ export default function App() {
     else if (page === 'gallery') target = '/gallery';
     else if (page === 'contact') target = '/contact';
     else if (page === 'anthem') target = '/anthem';
+    else if (page === 'offline') target = '/offline';
 
     navigate(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -303,20 +338,71 @@ export default function App() {
           onChangeHistoryLang={handleHistoryLangChange}
         />
 
-        <Suspense fallback={<GlassRouteLoader />}>
-          <Routes>
-            <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
-            <Route path="/history" element={<HistoryPage lang={historyLang} />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/anthem" element={<AnthemPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/performance" element={<Navigate to="/#performance" replace />} />
-            <Route path="/academics" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<NotFoundPage onOpenSearch={() => setIsSearchOpen(true)} />} />
-          </Routes>
-        </Suspense>
+        {/* Global Offline Bar - Appears seamlessly when connection drops */}
+        {!isOnline && location.pathname !== '/offline' && (
+          <aside
+            role="status"
+            aria-live="polite"
+            className="bg-amber-600 dark:bg-amber-700 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between shadow-xs sticky top-0 z-40 transition-colors animate-fade-down"
+          >
+            <div className="flex items-center gap-2 truncate pr-2">
+              <span className="w-2 h-2 rounded-full bg-white animate-ping shrink-0" />
+              <span className="truncate">
+                No Internet Connection — you are currently viewing offline content.
+              </span>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => navigate('/offline')}
+                className="text-xs font-bold underline hover:text-amber-100 transition-colors cursor-pointer"
+              >
+                View Offline Page
+              </button>
+            </div>
+          </aside>
+        )}
+
+        {/* Connection Restored Notification Banner */}
+        {showRestoredNotice && (
+          <aside
+            role="status"
+            aria-live="polite"
+            className="bg-emerald-600 dark:bg-emerald-700 text-white px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-xs sticky top-0 z-40 animate-fade-down"
+          >
+            <div className="flex items-center gap-2">
+              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+              </svg>
+              <span>Internet connection restored! You are back online.</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowRestoredNotice(false)}
+              className="text-xs text-white/80 hover:text-white px-1.5 py-0.5 rounded cursor-pointer"
+            >
+              ✕
+            </button>
+          </aside>
+        )}
+
+        <NetworkErrorBoundary onOpenAnthem={() => setIsAnthemOpen(true)}>
+          <Suspense fallback={<GlassRouteLoader />}>
+            <Routes>
+              <Route path="/" element={<HomePage onNavigate={handleNavigate} />} />
+              <Route path="/history" element={<HistoryPage lang={historyLang} />} />
+              <Route path="/events" element={<EventsPage />} />
+              <Route path="/gallery" element={<GalleryPage />} />
+              <Route path="/contact" element={<ContactPage />} />
+              <Route path="/anthem" element={<AnthemPage />} />
+              <Route path="/offline" element={<OfflinePage onOpenAnthem={() => setIsAnthemOpen(true)} />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/performance" element={<Navigate to="/#performance" replace />} />
+              <Route path="/academics" element={<Navigate to="/" replace />} />
+              <Route path="*" element={<NotFoundPage onOpenSearch={() => setIsSearchOpen(true)} />} />
+            </Routes>
+          </Suspense>
+        </NetworkErrorBoundary>
 
         <Footer
           onNavigate={handleNavigate}

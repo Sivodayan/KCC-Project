@@ -117,6 +117,12 @@ const searchItems = [
     action: "navigate"
   },
   {
+    title: "No Internet Connection & Network Diagnostics (இணைய இணைப்பு சரிபார்ப்பு)",
+    category: "System",
+    url: "offline",
+    action: "navigate"
+  },
+  {
     title: "Location & Google Maps Directions",
     category: "Contact",
     url: "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
