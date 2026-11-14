@@ -4,8 +4,7 @@
     "tamilTitle": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "subtitle": "One of Jaffna’s most established mixed schools, proudly educating students from Grade 6 to 13 since 1852.",
     "image": "/assets/hero.jpg",
-    "buttonText": "Explore History ",
-    "buttonAction": "history"
+    "buttonText": "Explore History "
   },
   "principles": {
     "motto": {
@@ -22,17 +21,7 @@
       "english": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities.",
       "tamil": "சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்.",
       "description": "To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education."
-    },
-    "customCards": [
-      {
-        "id": "pillar_1",
-        "titleEn": "Heritage & Discipline",
-        "titleTa": "பாரம்பரியமும் ஒழுக்கமும்",
-        "descEn": "Over 170 years of steadfast discipline, nurturing generations of exemplary citizens.",
-        "descTa": "170 ஆண்டுகளுக்கு மேற்பட்ட பாரம்பரிய ஒழுக்க நெறிமுறைகளுடன் முன்மாதிரி குடிமக்களை உருவாக்குகிறது.",
-        "badge": "Heritage"
-      }
-    ]
+    }
   },
   "performance": {
     "title": "Key Numbers & Performance",
@@ -70,26 +59,7 @@
     "houses": 4,
     "housesLabel": "Competitive Houses",
     "housesSub": "Annual Sports Division",
-    "housesSuffix": "",
-    "customStats": [
-      {
-        "id": "stat_smart_rooms",
-        "label": "Smart Classrooms",
-        "labelTa": "ஸ்மார்ட் வகுப்பறைகள்",
-        "value": 12,
-        "suffix": "+",
-        "description": "Equipped with interactive learning tools and high-speed multimedia."
-      },
-      {
-        "id": "stat_alumni",
-        "label": "Alumni Worldwide",
-        "labelTa": "உலகளாவிய பழைய மாணவர்கள்",
-        "value": 2500,
-        "suffix": "+",
-        "description": "Thriving global community supporting alma mater projects."
-      }
-    ],
-    "labs": 100
+    "housesSuffix": ""
   },
   "gallery": [
     {
@@ -252,10 +222,7 @@
     "email": "kcckopay@gmail.com",
     "mapsUrl": "https://maps.app.goo.gl/UMsXzzu46QNMNwcB8",
     "facebookUrl": "https://www.facebook.com/profile.php?id=61575442051109",
-    "instagramUrl": "https://www.instagram.com/explore/tags/kopaychristiancollege/",
-    "collegeName": "J/Kopay Christian College",
-    "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
-    "secondaryPhone": "+94 21 223 0040"
+    "instagramUrl": "https://www.instagram.com/explore/tags/kopaychristiancollege/"
   },
   "history": {
     "overview": {
