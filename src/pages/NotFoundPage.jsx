@@ -1,12 +1,9 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const REPORT_EMAIL = 'kcckopay@gmail.com';
 
 export default function NotFoundPage() {
-  const [isReportOpen, setIsReportOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = 'Page Not Found (404) | J/Kopay Christian College';
@@ -15,40 +12,19 @@ export default function NotFoundPage() {
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
   const reportSubject = 'Broken Link Report - J/Kopay Christian College';
-  const reportBody = `Hello Administration,\n\nI encountered a broken link on the KCC portal:\nBroken Page URL: ${currentUrl}\nDate: ${new Date().toLocaleDateString()}\n\nPlease look into this.\n\nThank you.`;
+  const reportBody = [
+    'Hello Administration,',
+    '',
+    'I encountered a broken link on the KCC portal:',
+    `Broken Page URL: ${currentUrl}`,
+    `Date: ${new Date().toLocaleDateString()}`,
+    '',
+    'Please look into this.',
+    '',
+    'Thank you.'
+  ].join('\r\n');
 
-  const reportMailto = useMemo(() => {
-    return `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody)}`;
-  }, [reportSubject, reportBody]);
-
-  const gmailWebUrl = useMemo(() => {
-    return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(REPORT_EMAIL)}&su=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody)}`;
-  }, [reportSubject, reportBody]);
-
-  const handleCopyDetails = async () => {
-    try {
-      await navigator.clipboard.writeText(
-        `To: ${REPORT_EMAIL}\nSubject: ${reportSubject}\n\n${reportBody}`
-      );
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    } catch {
-      // Clipboard fallback
-    }
-  };
-
-  const handleOpenMailto = () => {
-    window.location.href = reportMailto;
-  };
-
-  useEffect(() => {
-    if (!isReportOpen) return;
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') setIsReportOpen(false);
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isReportOpen]);
+  const reportMailto = `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody)}`;
 
   return (
     <main className="flex-grow py-6 sm:py-10 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">
@@ -89,108 +65,21 @@ export default function NotFoundPage() {
                 <span>Return to Home</span>
               </Link>
 
-              <button
-                type="button"
-                onClick={() => setIsReportOpen(true)}
+              <a
+                href={reportMailto}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 font-bold text-xs sm:text-sm shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                title="Report this broken link to school administration"
+                title="Directly report this broken link via email"
+                aria-label="Directly report this broken link via email"
               >
                 <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
                 <span>Report Broken Link</span>
-              </button>
+              </a>
             </div>
           </div>
         </article>
       </div>
-
-      {/* Report Broken Link Modal Dialog */}
-      {isReportOpen && (
-        <div
-          className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) setIsReportOpen(false);
-          }}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="report-modal-title"
-        >
-          <div className="bg-brand-white dark:bg-[#111e13] max-w-lg w-full rounded-3xl border border-brand-pale dark:border-emerald-800/50 shadow-2xl p-6 sm:p-7 space-y-5 animate-scale-in">
-            <div className="flex items-start justify-between gap-3 border-b border-brand-pale dark:border-emerald-900/40 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 id="report-modal-title" className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100">
-                    Report Broken Link
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Help us keep the college portal accurate & up-to-date
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsReportOpen(false)}
-                className="p-1.5 rounded-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-emerald-950/60 transition-colors cursor-pointer"
-                aria-label="Close dialog"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            <div className="space-y-3">
-              <div>
-                <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Broken Page URL Detected
-                </span>
-                <div className="p-3 rounded-xl bg-slate-50 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-900/40 text-xs font-mono text-slate-700 dark:text-slate-300 break-all select-all">
-                  {currentUrl || 'Current portal link'}
-                </div>
-              </div>
-
-              <div>
-                <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                  Recipient
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800/50 text-emerald-800 dark:text-emerald-300 text-xs font-medium">
-                  ✉️ {REPORT_EMAIL}
-                </span>
-              </div>
-            </div>
-
-            <div className="space-y-2 pt-2">
-              <span className="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Choose How to Send
-              </span>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                <a
-                  href={gmailWebUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-forest hover:bg-brand-forestHover text-white text-xs font-bold shadow-xs transition-all hover:scale-102 active:scale-98 cursor-pointer text-center"
-                >
-                  <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
-                  </svg>
-                  <span>Open in Gmail Web</span>
-                </a>
-
-                
-              </div>
-
-              
-            </div>
-          </div>
-        </div>
-      )}
     </main>
   );
 }
