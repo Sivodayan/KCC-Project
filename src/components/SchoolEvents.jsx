@@ -110,7 +110,7 @@ function EventCard({ post }) {
   );
 }
 
-function ManualEventCard({ post }) {
+function ManualEventCard({ post, isPriority = false }) {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
@@ -187,6 +187,9 @@ function ManualEventCard({ post }) {
             <img
               src={post.image}
               alt={post.title || 'School Event'}
+              loading={isPriority ? 'eager' : 'lazy'}
+              fetchpriority={isPriority ? 'high' : 'auto'}
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 pointer-events-none"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/45 to-black/20 pointer-events-none" />
@@ -456,7 +459,7 @@ export default function SchoolEvents() {
                 className={`reveal-item ${staggerClass} w-full flex justify-center h-full`}
               >
                 {isManual ? (
-                  <ManualEventCard post={post} />
+                  <ManualEventCard post={post} isPriority={idx === 0} />
                 ) : (
                   <EventCard post={post} />
                 )}

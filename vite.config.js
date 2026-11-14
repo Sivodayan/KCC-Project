@@ -64,6 +64,15 @@ function devFacebookResolverPlugin() {
 export default defineConfig({
   base: '/',
   plugins: [react(), devFacebookResolverPlugin()],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom', 'react-router-dom']
+        }
+      }
+    }
+  },
   server: {
     port: 5173,
     open: false,

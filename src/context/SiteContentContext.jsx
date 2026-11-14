@@ -124,7 +124,15 @@ function normalizeSiteContent(raw) {
       ...raw?.performance
     },
     gallery: Array.isArray(raw?.gallery) ? raw.gallery : (defaultSiteContent.gallery || []),
-    events: Array.isArray(raw?.events) ? raw.events : (defaultSiteContent.events || FACEBOOK_POSTS),
+    events: (Array.isArray(raw?.events) ? raw.events : (defaultSiteContent.events || FACEBOOK_POSTS)).map(event => {
+      if (event?.image && typeof event.image === 'string' && event.image.startsWith('data:image/')) {
+        const defaultMatch = defaultSiteContent.events?.find(e => e.id === event.id);
+        if (defaultMatch && defaultMatch.image && !defaultMatch.image.startsWith('data:image/')) {
+          return { ...event, image: defaultMatch.image };
+        }
+      }
+      return event;
+    }),
     contact: { ...defaultSiteContent.contact, ...raw?.contact },
     history: {
       ...defaultSiteContent.history,
