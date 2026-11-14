@@ -53,9 +53,13 @@ The official web portal for **J/Kopay Christian College** (யா/ கோப்�
 * **Canonical URL Resolver:** Backend API integration that resolves short Facebook mobile share URLs into permanent post permalinks.
 
 ### 📡 Offline Network Resiliency & Error Recovery
-* **Real-Time Connectivity Listeners:** Global event listeners on `window.addEventListener('online')` and `'offline'`.
-* **Contextual Offline Banner:** Surfaces a non-blocking amber sticky alert when internet connection drops, switching to an auto-dismissing emerald green badge upon reconnection.
-* **Network Error Boundary:** Custom React boundary (`NetworkErrorBoundary`) wrapping lazy route imports to catch chunk loading failures, displaying an in-place `OfflineFallback` with a live server ping tester (*"Try Again"*) without resetting the user's route history or URL bar.
+* **Real-Time Connectivity Listeners:** Global listeners on `window.addEventListener('online')` and `'offline'` maintaining active connection state.
+* **Fixed Viewport Offline Banner:** Displays a non-blocking amber notification pinned permanently across the top viewport (`fixed top-0 inset-x-0 z-50 h-9`) when network drops, with responsive layout compensation (`body.has-offline-banner`) preventing content or navbar overlap.
+* **Uninterrupted Cached Browsing:** When connection drops, users remain on their current cached page with full reading, scrolling, and in-page anchor navigation capabilities.
+* **Protected Offline Page Transition:** Transition to the dedicated collegiate offline error screen (`OfflineFallback`) only occurs when navigating to another route while disconnected or encountering a network chunk failure.
+* **Hidden Navbar on Offline Screen:** The global navigation bar is cleanly suppressed on the offline error page (`body.offline-fallback-active`), replaced with a standalone institutional header, live network diagnostics (status, effective connection type, last checked timestamp), and a "Try Again" network ping tester.
+* **Reconnection Stabilization & Direct Live Transition:** When network returns, the system stays on the offline screen while displaying a green status notification (*"Connection restored! Reloading page..."*), holding for a 2.8-second socket stabilization buffer before automatically reloading fresh server assets directly into live content—preventing intermediate flashes back to stale cached pages.
+* **Root-Level Error Boundary:** Top-level `<NetworkErrorBoundary>` in `main.jsx` and route-level boundaries prevent script exceptions or stale bundle chunks from ever rendering an unhandled white blank screen.
 
 ### 🌐 Dual-Language State Synchronization & SEO
 * **URL-Synchronized Language Switching:** History records toggle between English and Tamil (தமிழ்) with URL state sync (`/history?lang=ta`).
@@ -66,9 +70,8 @@ The official web portal for **J/Kopay Christian College** (யா/ கோப்�
 * **Tailwind CSS Theme Engine:** Class-based theme toggling with instant root class switching (`html.dark`).
 * **Persistent Preferences:** Automatically detects system color scheme (`prefers-color-scheme`) and persists user preference in `localStorage`.
 
-### 🚫 Themed 404 & Broken Link Reporter
-* **Institutional 404 Page:** Custom error page styled with brand aesthetics, watermark crest, and navigation shortcuts.
-* **One-Click Mailto Link:** Pre-fills an email with the client's current path, referrer, and system timestamp for immediate administrative link fixes.
+### 🚫 Themed Institutional 404 Page
+* **Institutional Error Page:** Custom collegiate error view styled with school branding, background watermark crest, bilingual messaging in English and Tamil, and direct navigation links back to the home portal.
 
 ### 🔐 Administrative Portal & Git-Backed CMS (`/admin`)
 * **Firebase Authentication:** Secure administrator sign-in supporting Google OAuth popup and Email/Password credentials with password reset capabilities.
@@ -151,7 +154,7 @@ KCC-Project/
 │   │   ├── GalleryPage.jsx         # Photo journal view
 │   │   ├── HistoryPage.jsx         # History and leadership view
 │   │   ├── HomePage.jsx            # Main portal landing page
-│   │   └── NotFoundPage.jsx        # 404 view with "Report Broken Link" mailto
+│   │   └── NotFoundPage.jsx        # Custom institutional 404 error view with home navigation
 │   ├── utils/
 │   │   ├── githubSync.js           # GitHub REST API commit & token verification helpers
 │   │   └── imageUpload.js          # Canvas image compression, resizing, and MIME validation
