@@ -49,18 +49,10 @@ export default function AnthemPrintSheet() {
           <h1 className="font-tamil font-bold text-2xl text-[#196716] leading-tight">
             யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
           </h1>
-          <h2 className="font-bold text-base tracking-wider text-slate-900 uppercase mt-0.5">
-            J/Kopay Christian College
-          </h2>
-          <p className="text-xs text-slate-600 mt-0.5 font-medium">
-            Kopay, Jaffna, Sri Lanka • Founded 1852
-          </p>
+         
+          
 
-          <div className="mt-2.5 inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-xs text-[#196716] font-medium font-tamil">
-            <span>மகுடவாசகம்: “உண்மைக்கும் நேர்மைக்கும்”</span>
-            <span className="text-slate-400">•</span>
-            <span className="font-sans italic">"Truth and Justice"</span>
-          </div>
+         
 
           {/* Ornamental Divider */}
           <div className="flex items-center justify-center gap-2 mt-3">
@@ -101,7 +93,7 @@ export default function AnthemPrintSheet() {
         <div className="relative z-10 border-t border-[#196716]/30 pt-3 mt-4 text-center">
           <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium px-2">
             <span>J/Kopay Christian College</span>
-            <span className="italic font-tamil">பாடசாலை உத்தியோகபூர்வ கீதம்</span>
+            
             <span>Kopay, Jaffna</span>
           </div>
         </div>

@@ -24,13 +24,14 @@ function MilestoneCard({ m, idx, lang }) {
       </span>
 
       <div className="bg-white dark:bg-[#101b12] border border-brand-pale dark:border-emerald-900/40 rounded-2xl p-6 sm:p-8 space-y-4 shadow-2xs hover:shadow-xl hover:border-brand-forest/30 dark:hover:border-emerald-500/40 hover:-translate-y-1.5 transition-all duration-300 ease-out">
-        <span className="sm:hidden inline-block px-2.5 py-0.5 rounded-full bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/50 text-brand-forest dark:text-emerald-300 text-[11px] font-bold mb-3 transition-colors">
-          {yearDisplay}
-        </span>
-
-        <h2 className="hidden sm:block text-lg sm:text-xl font-bold text-brand-forest dark:text-emerald-300 transition-colors">
-          {titleDisplay}
-        </h2>
+        <div>
+          <span className="sm:hidden block text-xs font-bold text-brand-forest/80 dark:text-emerald-400/80 mb-1 tracking-wide">
+            {yearDisplay}
+          </span>
+          <h2 className="text-lg sm:text-xl font-bold text-brand-forest dark:text-emerald-300 transition-colors">
+            {titleDisplay}
+          </h2>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {isAlternate && m.image && (

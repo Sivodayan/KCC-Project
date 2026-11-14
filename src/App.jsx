@@ -14,6 +14,7 @@ const GalleryPage = lazy(() => import('./pages/GalleryPage.jsx'));
 const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
 
 function scrollToElementWithNavOffset(el) {
   if (!el) return;
@@ -43,7 +44,8 @@ export default function App() {
     if (path.startsWith('/gallery')) return 'gallery';
     if (path.startsWith('/contact')) return 'contact';
     if (path.startsWith('/anthem')) return 'anthem';
-    return 'home';
+    if (path === '/' || path === '') return 'home';
+    return '404';
   };
 
   const currentPage = getActivePageName();
@@ -135,6 +137,9 @@ export default function App() {
       } else if (path.startsWith('/anthem')) {
         pageTitle = "School Anthem";
         descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
+      } else if (path !== '/' && path !== '') {
+        pageTitle = "Page Not Found (404) | J/Kopay Christian College";
+        descContent = "The page you are looking for does not exist on the J/Kopay Christian College website.";
       }
     }
 
@@ -309,7 +314,7 @@ export default function App() {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/performance" element={<Navigate to="/#performance" replace />} />
             <Route path="/academics" element={<Navigate to="/" replace />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFoundPage onOpenSearch={() => setIsSearchOpen(true)} />} />
           </Routes>
         </Suspense>
 
