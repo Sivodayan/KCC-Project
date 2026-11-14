@@ -1,167 +1,182 @@
-# J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி)
+# J/Kopay Christian College — Official Digital Portal
+### யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி • Kopay, Jaffna, Sri Lanka
 
-[![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![Vite 6](https://img.shields.io/badge/Vite-6.4-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Cloudflare Pages](https://img.shields.io/badge/Deployed-Cloudflare_Pages-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://pages.cloudflare.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-forest?style=flat-square)](LICENSE)
+[![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![Vite 6](https://img.shields.io/badge/Vite-6.4-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers_%26_Assets-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-196716?style=for-the-badge)](LICENSE)
 
 > **Motto:** *"Truth and Justice"* · **மகுடவாசகம்:** *“உண்மைக்கும் நேர்மைக்கும்”*  
 > **Vision:** *"The Ideal School in Peninsula"* · **தூரநோக்கு:** *“குடாநாட்டின் முன்மாதிரிப் பாடசாலை”*  
-> **Mission Statement:** *"To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities."* · **நோக்கக்கூற்று:** *“சுயமரியாதை, விழுமியங்கள், நடத்தைக் கோலங்கள், நாட்டுப்பற்று, சமூக நியாயப்பாடு என்பவற்றை உள்ளடக்கிப் பாடசாலை சமூகத்தை கல்வியிலும், கல்விசார் கடமைகளிலும், வளங்கள், தேர்ச்சிகள், மற்றும் திறமைகளைப் பயன்படுத்திப் பாடசாலையில் கல்வித்தரத்தை நாட்டின் முதல் வரிசைக்குக் கொண்டு வருதல்.”*
+> **Mission:** *"To foster self respect, values, character, patriotism and Social Justice to lead the school community towards the global frontiers in education and to work for the optimum use of all the available resources skills and abilities."*
 
-A modern, high-performance, and bilingual web portal for **J/Kopay Christian College**, a historic collegiate school situated in Kopay, Jaffna, Sri Lanka (founded in 1852, with pedagogical foundations dating back to 1849/1850). Built with **React 19**, **Vite**, and **Tailwind CSS**, featuring interactive 3D elements, archival history timelines, a spotlight command palette, print-ready document sheets, offline network resiliency, and search-optimized metadata.
+The official, production-grade web portal for **J/Kopay Christian College** (Kopay, Jaffna, Sri Lanka). Engineered with modern web standards, high-performance responsive UI, bilingual typography, offline resilience, and edge deployment.
 
----
-
-## 🌐 Live Portal
-
-Official Website:  
-👉 **[https://jkcc.edu.lk/](https://jkcc.edu.lk/)**
+🌐 **Live Production Portal:** [https://jkcc.edu.lk/](https://jkcc.edu.lk/)
 
 ---
 
-## ✨ Key Features & Architecture
+## 🏫 Campus Facilities & Infrastructure
 
-### 🏛️ Interactive Heritage & Collegiate Principles
-* **3D Flip Cards:** Interactive cards for **Motto**, **Vision**, and **Mission** with smooth CSS 3D perspective flip animation between English and Tamil on hover, tap, or keyboard focus (`Enter` / `Space`).
-* **Tamil School Anthem (பாடசாலைக் கீதம்):** Dedicated anthem player and modal composed in *Ragam Hamsadhwani* (*“வாழிய நம் கலைக்கூடமே வாழ்க”*), complete with Tamil lyrics and copy utility.
-* **Single-Page Formal Print Sheet:** Ink-friendly `@media print` layout ([src/components/AnthemPrintSheet.jsx](file:///d:/Documents/Projects/HTML/KCC%20Project/src/components/AnthemPrintSheet.jsx)) engineered to fit all 19 lines, the crest watermark, and ornamental collegiate borders on **a single page** for framing or ceremonies.
+J/Kopay Christian College offers comprehensive facilities supporting academic excellence, practical science education, technological literacy, and holistic extracurricular development:
 
-### 📖 Dual-Language Archival History (1849 – Present)
-* **Full Chronological Timeline:** 12+ historic eras documenting the institution's evolution from the 1849 Church Mission Society (CMS) English School established by Rev. & Mrs. Robert Bren, through the Bren Hall construction, into the modern collegiate era.
-* **Instant Bilingual Switching:** Toggle between full **English** and **Tamil (தமிழ்)** historical records with URL state sync (`?lang=ta`).
-* **Archival Photography:** Integrated historical photos (`his1.jpg` – `his12.jpg`) illustrating significant milestones.
-* **Leadership Directory:** Comprehensive historical registry of Headmasters (from 1880) and School Managers (from 1899).
+### 🔬 Advanced Science Laboratories
+* **Physics, Chemistry & Biology Labs:** Fully equipped specialized laboratory facilities dedicated to G.C.E. Advanced Level and Ordinary Level practical curricula.
+* **Modern Apparatus & Experiment Stations:** Hands-on scientific instrumentation, optical microscopes, chemical preparation zones, and safety-compliant storage for practical examinations and STEM discovery.
 
-### 🖼️ 3D Digital Photo Journal & Gallery
-* **Perspective Coverflow:** 3D carousel showcasing campus moments, science laboratories, cultural celebrations, and sports meets.
-* **Multi-Input Controls:** Supports side-peek click navigation, mouse wheel scrolling, touch swipe gestures, keyboard arrow keys, indicator dots, and continuous auto-play rotation.
-* **Viewport Triggered Fan-in:** Dynamic 3D fan-in entrance animation initialized once the gallery section enters the viewport.
+### 💻 Computer & Information Technology Center
+* **Networked Workstations:** Dedicated computer laboratory providing student access to modern computing hardware and digital educational software.
+* **Broadband & ICT Literacy:** High-speed internet access for student research, ICT coursework, algorithmic thinking, and digital presentation development.
 
-### ⚡ Academic Metrics & Achievements
-* **Animated Counter Statistics:** Easing counter animations (`easeOutExpo`) triggered on scroll:
-  * **1852** — Year founded
-  * **386+** — Enrolled students
-  * **46** — Dedicated faculty mentors
-  * **94.2%** — G.C.E. O/L pass rate
-  * **78%** — G.C.E. A/L university qualification rate
-  * **18** — Active student clubs & societies
-  * **4** — Houses of pride
-  * **100%** — Modern laboratory access
+### 📚 College Library & Digital Learning Resource Center
+* **Comprehensive Book Repository:** Extensive collection of educational volumes, curriculum guides, past examination archives, periodicals, and Tamil & English literature.
+* **Reading & Study Stations:** Quiet, distraction-free study spaces designed for independent research, student collaborative study, and academic preparation.
+
+### 🏛️ Bren Hall & Collegiate Assembly Auditorium
+* **Main Assembly & Cultural Hall:** Multi-purpose collegiate hall serving as the ceremonial center for daily morning assemblies, prize givings, and religious services.
+* **Acoustics & Stage Lighting:** Equipped for student drama, Tamil cultural showcases, debate competitions, and community educational forums.
+
+### ⚽ Sports Grounds & Athletic Pavilion
+* **Extensive Outdoor Athletic Grounds:** Multi-discipline sports field accommodating cricket, football, volleyball, netball, and track-and-field athletics.
+* **Inter-House Athletic Meets:** Annual sports competitions fostering teamwork, physical fitness, discipline, and competitive spirit.
+
+### 🏆 Collegiate House System
+The student body is organized into four storied collegiate houses, fostering sportsmanship, camaraderie, and leadership:
+* 🔴 **Fleming House**
+* 🔵 **Bren House**
+* 🟡 **Goodchild House**
+* 🟢 **Peto House**
+
+### 🤝 Clubs, Societies & Co-Curricular Organizations
+* **Science & Innovation Club:** STEM workshops, scientific exhibitions, and quiz competitions.
+* **Tamil Literary Association (தமிழ் மன்றம்):** Poetry recitations, oratorical competitions, and cultural celebrations.
+* **English Literary & Debating Society:** Developing global communication skills, speechcraft, and debate.
+* **Information & Communication Technology (ICT) Club:** Coding workshops, multimedia creation, and technology seminars.
+* **Scout Troop & Cadet Movement:** Character formation, outdoor survival, discipline, and civic duty.
+* **Environmental & Health Society:** Green campus initiatives, tree planting, and community health awareness.
+
+---
+
+## 🛠️ Technical Architecture & Specifications
+
+### ⚡ Frontend Core
+* **Framework:** [React 19](https://react.dev/) utilizing Concurrent Mode, functional components with custom hooks, and `useCallback`/`useMemo` optimization.
+* **Build System & Toolchain:** [Vite 6](https://vitejs.dev/) with Rollup-based asset compilation, ESM HMR, and automated code chunking.
+* **Client-Side Routing:** [React Router v7](https://reactrouter.com/) Single Page Application (SPA) architecture with lazy-loaded route views (`React.lazy` and `Suspense`).
+
+### 🎨 Styling & Responsive Design System
+* **CSS Framework:** [Tailwind CSS 3.4](https://tailwindcss.com/) with PostCSS and Autoprefixer.
+* **Collegiate Color Tokens:**
+  * Forest Green: `#196716` (`brand-forest`)
+  * Forest Deep Hover: `#135211` (`brand-forestHover`)
+  * Sage Green: `#588F54` (`brand-sage`)
+  * Light Mint: `#E9F8E7` (`brand-light`)
+  * Dark Canvas: `#0b120c` / `#111e13` (Adaptive dark mode support)
+* **3D Perspective Transforms:** Hardware-accelerated CSS 3D transforms (`perspective`, `rotateY`, `backface-visibility: hidden`) powering the interactive Principles flip cards and the Coverflow 3D photo gallery.
+* **Typography Engine:**
+  * **Latin Script:** [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans)
+  * **Tamil Script:** [Noto Sans Tamil](https://fonts.google.com/specimen/Noto+Sans+Tamil)
+
+### 📡 Offline Network Resiliency & Error Recovery
+* **Real-Time Connectivity Monitoring:** Global event listeners (`online` / `offline`) integrated into application state.
+* **Contextual In-Place Offline Fallback:** Custom `OfflineFallback` component with animated Wi-Fi diagnostics, server connection ping testing, and in-place retry capabilities without destroying the user's active route or URL state.
+* **Network Error Boundary:** React Error Boundary wrapping lazy chunk imports to gracefully intercept network timeouts or chunk download failures on unstable connections.
 
 ### 🔍 Spotlight Command Palette (`Ctrl + K` / `/`)
-* Global search dialog accessible from anywhere on the site with `Ctrl + K` or `/`.
-* **Staggered Entry Transitions:** Micro-staggered animations for search inputs, rotating icon badges, quick filter tags (*Events*, *History*, *Anthem*, *Gallery*, *Contact*), and search results.
-* **Desktop Hotkeys:** On-screen keyboard shortcuts (`↑↓` navigate, `↵` select, `esc` close).
+* System-wide modal search indexed across portal pages, school events, leadership, facilities, and contact points.
+* Micro-staggered CSS entry transitions with full keyboard accessibility (`↑↓` navigation, `↵` selection, `Esc` dismissal).
 
-### 📡 Offline & Network Resiliency System
-* **Global Connection Monitoring:** Real-time browser `online`/`offline` listener that surfaces a non-intrusive sticky notice when connection drops and confirms reconnection with an auto-dismissing banner.
-* **Contextual Offline Fallback:** In-place network error boundary component featuring an animated vector Wi-Fi disconnection illustration, live connectivity testing button (*"Try Again"* with real server ping), connection diagnostics, and reload action without disturbing the user's route history or URL bar.
-* **Network Error Boundary:** React boundary wrapping lazy route imports to catch offline chunk-load failures and render the in-place fallback rather than a blank screen.
+### 🖨️ A4 Full-Page Print Engine
+* Ink-friendly, high-contrast `@media print` stylesheet optimized specifically for standard **A4 portrait sheets** ($190\text{mm} \times 270\text{mm}$ printable canvas).
+* Features an ornate collegiate double-border, subtle crest watermark (`opacity: 0.045`), calibrated Tamil typography (`text-[13pt]`/`text-[12.5pt]` with `leading-[2.05]`), and page-break isolation to guarantee a pristine, zero-overflow single-page document.
 
-### 🚫 Themed 404 Error Handling
-* Dedicated `NotFoundPage` matching the college green aesthetic with watermark crest, popular portal directory links, and a direct **"Report Broken Link"** `mailto:` button with pre-filled error URL and timestamp.
+### 🌐 Edge Deployment & Serverless Integration
+* **Hosting Platform:** [Cloudflare Workers with Static Assets](https://developers.cloudflare.com/workers/static-assets/) providing global edge CDN delivery and instant asset caching.
+* **Serverless Worker (`worker.js`):**
+  * SPA route fallback routing for seamless deep linking.
+  * API proxy dispatchers (`/api/github`, `/api/resolve-facebook`) with automated CORS handling and security headers (`X-Robots-Tag: noindex, nofollow, noarchive`).
+  * 301 Permanent Canonical redirects for query parameter consolidation (`/?lang=...`).
+* **Security & HTTP Headers:** Configured with `Strict-Transport-Security` (HSTS), `X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, and `Referrer-Policy: strict-origin-when-cross-origin`.
 
-### 🔍 Search Engine Optimization (SEO) & Google Search Console
-* **Google XML Sitemap (`sitemap.xml`):** Fully compliant with Google's Sitemaps and Image Sitemaps protocols (`xmlns:image`), indexing key campus photography, official crests, and archival images.
-* **Bidirectional Multilingual Annotations:** Self-referential `xhtml:link` hreflang tags for English (`/history`), Tamil (`/history?lang=ta`), and `x-default`.
-* **Canonical 301 Edge Redirects:** Automatic 301 redirects in `worker.js` and `public/_redirects` to consolidate legacy parameterized queries (`/?lang=en`, `/?lang=ta`, `/history?lang=en`) into clean canonical URLs.
-* **Structured Data:** Comprehensive JSON-LD schema for `WebSite`, `WebPage`, and `School`.
-
----
-
-## ⌨️ Keyboard Shortcuts
-
-| Shortcut | Action |
-| :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>K</kbd> or <kbd>⌘</kbd> + <kbd>K</kbd> | Open / Close Search Command Palette |
-| <kbd>/</kbd> | Open Search (when not in a text field) |
-| <kbd>Esc</kbd> | Close active modal (Search, Anthem, or Mobile Menu) |
-| <kbd>↑</kbd> / <kbd>↓</kbd> | Navigate search items in Command Palette |
-| <kbd>Enter</kbd> | Select active search result / Flip Principles cards |
-| <kbd>←</kbd> / <kbd>→</kbd> | Navigate 3D Gallery slides |
+### 🚀 Search Engine Optimization (SEO) & Performance
+* **Dynamic Metadata:** Automated document title, meta description, and Open Graph / Twitter Card tag synchronization per route.
+* **Sitemap & Search Console:** Fully structured XML Sitemap (`sitemap.xml`) indexing pages and campus imagery with Google Image protocol support.
+* **Bidirectional Hreflang:** Dynamic `xhtml:link` annotations for English (`en`), Tamil (`ta`), and `x-default`.
+* **Vendor Chunk Optimization:** Manual Rollup chunking separating React, React-DOM, and React Router from application code, slashing primary bundle size for sub-second First Contentful Paint (FCP).
 
 ---
 
-## 🛠️ Tech Stack & Design System
+## ⌨️ Global Keyboard Shortcuts
 
-* **Framework:** [React 19](https://react.dev/)
-* **Routing:** [React Router v7](https://reactrouter.com/) (SPA architecture)
-* **Build Tool:** [Vite 6](https://vitejs.dev/)
-* **Styling:** [Tailwind CSS 3.x](https://tailwindcss.com/) + Custom CSS for 3D transforms, print layouts, and keyframes
-* **Typography:**
-  * **Primary (English):** [Plus Jakarta Sans](https://fonts.google.com/specimen/Plus+Jakarta+Sans)
-  * **Tamil Script:** [Noto Sans Tamil](https://fonts.google.com/specimen/Noto+Sans+Tamil)
-* **Brand Color Palette:**
-  * Forest Green: `#196716` (`brand-forest`)
-  * Forest Hover: `#135211` (`brand-forestHover`)
-  * Sage: `#588F54` (`brand-sage`)
-  * Soft Green: `#91BD8D` (`brand-soft`)
-  * Pale Green: `#C5E1C1` (`brand-pale`)
-  * Light Mint: `#E9F8E7` (`brand-light`)
-  * Clean White: `#FDFEFD` (`brand-white`)
-  * Dark Canvas: `#0b120c` / `#111e13` (Dark mode background)
-* **Hosting & CDN:** [Cloudflare Pages](https://pages.cloudflare.com/) + Cloudflare Workers
+| Shortcut | Action | Scope |
+| :--- | :--- | :--- |
+| <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> | Toggle Spotlight Search Command Palette | Global |
+| <kbd>/</kbd> | Open Search Palette (when outside form inputs) | Global |
+| <kbd>Esc</kbd> | Close active dialog (Search, Anthem Modal, Mobile Menu) | Global |
+| <kbd>↑</kbd> / <kbd>↓</kbd> | Navigate search results | Command Palette |
+| <kbd>Enter</kbd> | Select active item / Flip Principles Card | Search / 3D Cards |
+| <kbd>←</kbd> / <kbd>→</kbd> | Previous / Next slide | 3D Photo Gallery |
 
 ---
 
-## 📁 Project Directory Structure
+## 📁 Repository Directory Structure
 
 ```text
 KCC-Project/
 ├── public/
-│   ├── assets/                     # Campus imagery, historical archives, and school crest
-│   ├── _headers                    # Security headers (HSTS, CSP, X-Frame-Options)
-│   ├── _redirects                  # Cloudflare Pages 301 canonical redirects
-│   ├── 404.html                    # SPA redirect fallback for static hosts
-│   ├── robots.txt                  # Robots crawler directives & sitemap reference
-│   └── sitemap.xml                 # XML Sitemap with Google Image extensions & hreflang
+│   ├── assets/                     # School crest, campus photography, and facility media
+│   ├── _headers                    # Cloudflare edge security headers (HSTS, CSP, X-Frame)
+│   ├── 404.html                    # Fallback redirect for static hosts
+│   ├── robots.txt                  # Search crawler directives & sitemap location
+│   └── sitemap.xml                 # XML Sitemap with image metadata & hreflang tags
 ├── src/
 │   ├── components/
-│   │   ├── AboutDropdown.jsx       # About dropdown menu (History, Anthem, Principles)
-│   │   ├── AnthemModal.jsx         # School anthem pop-up modal
-│   │   ├── AnthemPrintSheet.jsx    # Single-page formal printable anthem sheet
-│   │   ├── Contact.jsx             # Contact cards and message inquiry form
-│   │   ├── Footer.jsx              # Footer links, navigation, and copyright notices
-│   │   ├── Gallery.jsx             # 3D interactive coverflow photo gallery
-│   │   ├── GlassImage.jsx          # Progressive glassmorphic image component
-│   │   ├── GlassSkeleton.jsx       # Route suspense loader & shimmer skeletons
+│   │   ├── AboutDropdown.jsx       # Navigation dropdown for school institutional links
+│   │   ├── AnthemModal.jsx         # School anthem modal with integrated audio/lyrics
+│   │   ├── AnthemPrintSheet.jsx    # Formal A4 full-page certificate print layout
+│   │   ├── Contact.jsx             # Contact cards and message inquiry interface
+│   │   ├── Footer.jsx              # Footer navigation, contacts, and copyright notices
+│   │   ├── Gallery.jsx             # 3D Coverflow photo journal and campus gallery
+│   │   ├── GlassImage.jsx          # Progressive image component with shimmer placeholder
+│   │   ├── GlassSkeleton.jsx       # Route suspense shimmer skeleton loader
 │   │   ├── Hero.jsx                # Campus hero section with bilingual banner
-│   │   ├── HistoryTimeline.jsx     # Comprehensive bilingual timeline (English & தமிழ்)
-│   │   ├── LeadershipDirectory.jsx # Historical registry of Headmasters & Managers
-│   │   ├── Navbar.jsx              # Responsive header, language toggle & mobile menu
-│   │   ├── NetworkErrorBoundary.jsx# Route error boundary catching network/chunk load errors
-│   │   ├── Performance.jsx         # Animated counter statistics section
-│   │   ├── Principles.jsx          # 3D interactive flip-cards (Motto, Vision, Mission)
-│   │   ├── SchoolAnthem.jsx        # School anthem player, lyrics, and print trigger
+│   │   ├── HistoryTimeline.jsx     # Institutional milestones timeline
+│   │   ├── LeadershipDirectory.jsx # Administration directory
+│   │   ├── Navbar.jsx              # Responsive header, search launcher & mobile drawer
+│   │   ├── NetworkErrorBoundary.jsx# Boundary catching chunk-load and network drops
+│   │   ├── OfflineFallback.jsx     # In-place network diagnostics & reconnect tester
+│   │   ├── Performance.jsx         # Animated counter statistics and metrics section
+│   │   ├── Principles.jsx          # Interactive 3D flip cards for Motto, Vision, Mission
+│   │   ├── SchoolAnthem.jsx        # School anthem player, Tamil lyrics, and print trigger
 │   │   ├── SchoolEvents.jsx        # School events timeline & Facebook community sync
 │   │   ├── SearchModal.jsx         # Spotlight command palette with staggered transitions
-│   │   ├── OfflineFallback.jsx     # In-place network diagnostics & connection recovery fallback
-│   │   └── ThemeToggle.jsx         # Dark / Light mode toggle switch
+│   │   └── ThemeToggle.jsx         # Adaptive dark / light theme switcher
 │   ├── context/
-│   │   └── SiteContentContext.jsx  # Global site content state and CMS data provider
+│   │   └── SiteContentContext.jsx  # Global site content state and CMS provider
 │   ├── data/
-│   │   ├── facebookEvents.js       # Facebook community feeds & fallback events
-│   │   └── siteContent.json        # Centralized content store (History, Events, Staff)
+│   │   ├── facebookEvents.js       # Facebook community feeds and fallback news data
+│   │   └── siteContent.json        # Centralized site content repository
 │   ├── pages/
 │   │   ├── AdminPage.jsx           # Administrative portal for site updates
 │   │   ├── AnthemPage.jsx          # Dedicated school anthem page
 │   │   ├── ContactPage.jsx         # Contact administration view
-│   │   ├── EventsPage.jsx          # Full school events & news view
-│   │   ├── GalleryPage.jsx         # Dedicated photo gallery view
-│   │   ├── HistoryPage.jsx         # Dedicated history view with language toggle
-│   │   ├── HomePage.jsx            # Main landing view
-│   │   └── NotFoundPage.jsx        # 404 page with "Report Broken Link" mailto
-│   ├── App.jsx                     # Root router, SEO metadata manager & network monitor
-│   ├── index.css                   # Custom utility classes, animations & print styles
+│   │   ├── EventsPage.jsx          # School events & news gallery
+│   │   ├── GalleryPage.jsx         # Photo journal view
+│   │   ├── HistoryPage.jsx         # History and leadership view
+│   │   ├── HomePage.jsx            # Main portal landing page
+│   │   └── NotFoundPage.jsx        # 404 view with "Report Broken Link" mailto
+│   ├── App.jsx                     # Root application router, SEO manager & network listener
+│   ├── index.css                   # Custom utility classes, 3D keyframes & A4 print CSS
 │   └── main.jsx                    # React 19 entry point
-├── worker.js                       # Cloudflare Worker for API proxies & 301 redirects
-├── index.html                      # HTML5 shell, SEO tags, and JSON-LD schema
-├── package.json                    # Dependencies & npm scripts
-├── tailwind.config.js              # Tailwind theme configurations
-├── vite.config.js                  # Vite bundler configuration
-└── README.md                       # Documentation
+├── functions/
+│   └── api/                        # Cloudflare Pages / Workers API functions
+├── worker.js                       # Cloudflare Worker for edge routing & API dispatching
+├── wrangler.json                   # Cloudflare Workers & Static Assets deployment configuration
+├── index.html                      # HTML5 template, Open Graph meta, and JSON-LD schema
+├── package.json                    # Project metadata, dependencies, and npm scripts
+├── tailwind.config.js              # Tailwind theme configurations and color tokens
+└── vite.config.js                  # Bundler configuration and manual chunk splitting
 ```
 
 ---
@@ -169,10 +184,10 @@ KCC-Project/
 ## 🚀 Getting Started
 
 ### Prerequisites
+* [Node.js](https://nodejs.org/) (`v18.0.0` or higher recommended)
+* [npm](https://www.npmjs.com/) (included with Node.js)
 
-Ensure you have [Node.js](https://nodejs.org/) installed on your machine (`v18.x` or higher recommended).
-
-### Installation
+### Local Development Setup
 
 1. **Clone the repository:**
    ```bash
@@ -180,51 +195,57 @@ Ensure you have [Node.js](https://nodejs.org/) installed on your machine (`v18.x
    cd KCC-Project
    ```
 
-2. **Install dependencies:**
+2. **Install project dependencies:**
    ```bash
    npm install
    ```
 
-3. **Start the local development server:**
+3. **Launch the development server:**
    ```bash
    npm run dev
    ```
-   Open [http://localhost:5173/](http://localhost:5173/) in your browser.
+   The application will be live at `http://localhost:5173/`.
+
+4. **Compile for production:**
+   ```bash
+   npm run build
+   ```
+
+5. **Preview production build locally:**
+   ```bash
+   npm run preview
+   ```
 
 ---
 
-## 📜 Available Scripts
+## ☁️ Deployment Pipeline
 
-| Script | Command | Description |
-| :--- | :--- | :--- |
-| **Dev** | `npm run dev` | Runs the Vite development server with Hot Module Replacement (HMR). |
-| **Build** | `npm run build` | Compiles and bundles production-ready assets into the `dist/` directory. |
-| **Preview** | `npm run preview` | Locally serves the production build to inspect prior to deployment. |
+The application is deployed on **Cloudflare Workers with Static Assets**:
 
----
+```mermaid
+flowchart LR
+    A["git push origin main"] --> B["Cloudflare Build Pipeline"]
+    B --> C["npm run build"]
+    C --> D["Vite Bundler -> dist/"]
+    D --> E["Wrangler Deploy"]
+    E --> F["Edge Assets CDN (Pages & SPA Routes)"]
+    E --> G["Cloudflare Worker (/api/* endpoints)"]
+```
 
-## 🚀 Deployment (Cloudflare Pages & Worker)
-
-The project is configured for continuous deployment on **Cloudflare Pages**:
-
-### Build Settings:
-* **Framework preset:** `Vite`
-* **Build command:** `npm run build`
-* **Build output directory:** `dist`
-* **Root directory:** `/`
-
-### Edge Routing & 301 Redirects:
-* `worker.js` handles API requests (`/api/github`, `/api/resolve-facebook`) and performs canonical 301 permanent redirects for parameterized URLs (`/?lang=en`, `/?lang=ta`, `/history?lang=en`).
-* `public/_headers` enforces security headers (`X-Frame-Options: SAMEORIGIN`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security`).
+* **Configuration:** [wrangler.json](file:///d:/Documents/Projects/HTML/KCC%20Project/wrangler.json)
+* **Build Command:** `npm run build`
+* **Static Assets Directory:** `./dist`
+* **SPA Handling:** `not_found_handling: "single-page-application"`
+* **Worker Execution:** `run_worker_first: ["/api/*"]`
 
 ---
 
 ## 📄 License
 
-Distributed under the **MIT License**. See `LICENSE` for more information.
+Distributed under the **MIT License**. See `LICENSE` for further details.
 
 ---
 
 <div align="center">
-  <sub>Built with pride for <strong>J/Kopay Christian College</strong> · யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி</sub>
+  <sub>Official Digital Platform · <strong>J/Kopay Christian College</strong> · யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி</sub>
 </div>
