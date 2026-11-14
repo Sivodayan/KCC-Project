@@ -1369,3 +1369,78 @@ html[data-theme-transition] *::before,
 html[data-theme-transition] *::after {
   transition: none !important;
 }
+
+/* ==========================================================================
+   Clean School Anthem Print Styles
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
+  /* Reset body and page styles for ink-friendly, pristine output */
+  html,
+  body {
+    background: #ffffff !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide regular UI chrome when printing */
+  #mainHeader,
+  header,
+  nav,
+  footer,
+  aside,
+  button,
+  .no-print,
+  .animate-modal-backdrop,
+  nav[aria-label="Breadcrumb"] {
+    display: none !important;
+  }
+
+  /* Hide regular screen elements, display only the anthem sheet */
+  body * {
+    visibility: hidden;
+  }
+
+  #anthem-print-sheet,
+  #anthem-print-sheet * {
+    visibility: visible !important;
+  }
+
+  #anthem-print-sheet {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  /* Override dark mode rules during print */
+  html.dark #anthem-print-sheet {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  html.dark #anthem-print-sheet * {
+    color: inherit !important;
+  }
+
+  html.dark #anthem-print-sheet .text-\[\#196716\] {
+    color: #196716 !important;
+  }
+}

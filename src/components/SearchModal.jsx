@@ -131,6 +131,8 @@ const searchItems = [
 ];
 
 export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem }) {
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [isAnimating, setIsAnimating] = useState(false);
   const [query, setQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -140,6 +142,22 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
   const routerNavigate = useNavigate();
 
   const hasQuery = Boolean(debouncedQuery.trim());
+
+  useEffect(() => {
+    if (isOpen) {
+      setShouldRender(true);
+      const raf = requestAnimationFrame(() => {
+        setIsAnimating(true);
+      });
+      return () => cancelAnimationFrame(raf);
+    } else {
+      setIsAnimating(false);
+      const timer = setTimeout(() => {
+        setShouldRender(false);
+      }, 220);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     const trimmed = query.trim();
@@ -253,7 +271,7 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, [isOpen, isSearching, filteredItems, selectedIndex, onClose]);
 
-  if (!isOpen) return null;
+  if (!shouldRender) return null;
 
   function handleSelect(item) {
     onClose();
@@ -280,12 +298,18 @@ export default function SearchModal({ isOpen, onClose, onNavigate, onOpenAnthem 
 
   return (
     <div
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 animate-modal-backdrop"
+      className={`fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-start justify-center pt-16 sm:pt-24 p-4 transition-opacity duration-200 ease-out ${
+        isAnimating ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl animate-modal-content max-h-[80vh]">
+      <div
+        className={`bg-brand-white dark:bg-[#0f1911] max-w-2xl w-full rounded-2xl border border-brand-pale dark:border-emerald-500/30 overflow-hidden flex flex-col shadow-2xl max-h-[80vh] transition-all duration-200 ease-out ${
+          isAnimating ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 -translate-y-3'
+        }`}
+      >
         <div className="p-3.5 sm:p-4 border-b border-brand-pale dark:border-emerald-950/70 bg-brand-white dark:bg-[#0f1911]">
           <div className="search-box-wrapper flex items-center gap-3 px-3.5 sm:px-4 py-2.5 sm:py-3 rounded-2xl bg-brand-light/70 dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/50 focus-within:border-brand-forest dark:focus-within:border-emerald-400 focus-within:ring-2 focus-within:ring-brand-forest/20 dark:focus-within:ring-emerald-400/25 transition-all shadow-xs dark:shadow-[0_0_15px_rgba(74,222,128,0.18)]">
             <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import AnthemPrintSheet from './AnthemPrintSheet.jsx';
 
 export const ANTHEM_STANZAS = [
   {
@@ -150,6 +151,9 @@ export default function SchoolAnthem() {
           ← Return to Home
         </Link>
       </div>
+
+      {/* Pristine Document Sheet for Printing */}
+      <AnthemPrintSheet />
     </article>
   );
 }

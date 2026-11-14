@@ -186,22 +186,26 @@ export default function Navbar({
               </div>
             )}
 
-            {!mobileMenuOpen && (
-              <>
-                <ThemeToggle />
+            <div
+              className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-200 ease-out ${
+                mobileMenuOpen
+                  ? 'max-w-0 opacity-0 pointer-events-none -mr-1 overflow-hidden scale-90'
+                  : 'max-w-[120px] opacity-100 scale-100'
+              }`}
+            >
+              <ThemeToggle />
 
-                <button
-                  onClick={onOpenSearch}
-                  type="button"
-                  className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]"
-                  aria-label="Search"
-                >
-                  <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </button>
-              </>
-            )}
+              <button
+                onClick={onOpenSearch}
+                type="button"
+                className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-all duration-200 cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)] active:scale-95"
+                aria-label="Search"
+              >
+                <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </button>
+            </div>
 
             <button
               onClick={() => setMobileMenuOpen(prev => !prev)}
@@ -222,123 +226,135 @@ export default function Navbar({
         </nav>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-brand-white dark:bg-[#101911] border-t border-brand-pale dark:border-emerald-900/40 px-6 py-4 space-y-3 shadow-lg">
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenSearch();
-            }}
-            type="button"
-            className="w-full flex items-center gap-2 bg-brand-light dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/40 px-4 py-2.5 rounded-xl text-xs text-slate-600 dark:text-emerald-200 font-medium hover:bg-brand-pale/50 dark:hover:bg-emerald-950/60 transition-colors text-left dark:shadow-[0_0_10px_rgba(74,222,128,0.1)]"
-          >
-            <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <span>Search KCC portal...</span>
-          </button>
-
-          <button
-            onClick={() => handleNavLink('home')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home'
-                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
-              }`}
-          >
-            Home
-          </button>
-
-          <div className="border border-brand-pale dark:border-emerald-800/40 rounded-xl overflow-hidden bg-brand-light/40 dark:bg-[#0e1910]">
+      <div
+        className={`grid md:hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
+          mobileMenuOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className="overflow-hidden bg-brand-white dark:bg-[#101911] border-t border-brand-pale dark:border-emerald-900/40 shadow-lg">
+          <div className="px-6 py-4 space-y-3">
             <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                onOpenSearch();
+              }}
               type="button"
-              onClick={() => setMobileAboutOpen(prev => !prev)}
-              className="w-full flex items-center justify-between text-left text-slate-800 dark:text-slate-200 font-semibold py-2.5 px-3 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+              className="w-full flex items-center gap-2 bg-brand-light dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-500/40 px-4 py-2.5 rounded-xl text-xs text-slate-600 dark:text-emerald-200 font-medium hover:bg-brand-pale/50 dark:hover:bg-emerald-950/60 transition-all duration-200 text-left dark:shadow-[0_0_10px_rgba(74,222,128,0.1)] hover:border-brand-forest/50 dark:hover:border-emerald-400/50 hover:shadow-xs active:scale-[0.99] group"
             >
-              <span className="flex items-center gap-2 text-sm">
-                <span className="w-2 h-2 rounded-full bg-brand-forest dark:bg-emerald-400"></span>
-                <span>About</span>
-              </span>
-              <svg
-                className={`w-4 h-4 text-brand-forest dark:text-emerald-400 transition-transform duration-200 ${mobileAboutOpen ? 'rotate-180' : 'rotate-0'
-                  }`}
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400 shrink-0 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
+              <span className="transition-colors group-hover:text-brand-forest dark:group-hover:text-emerald-300">Search KCC portal...</span>
             </button>
 
-            {mobileAboutOpen && (
-              <div className="px-2 pb-2 space-y-1 bg-white/70 dark:bg-[#0c160e] border-t border-brand-pale/40 dark:border-emerald-900/40">
-                <button
-                  onClick={() => handleNavLink('history')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'history'
-                      ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                      : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
+            <button
+              onClick={() => handleNavLink('home')}
+              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'home'
+                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
+                }`}
+            >
+              Home
+            </button>
+
+            <div className="border border-brand-pale dark:border-emerald-800/40 rounded-xl overflow-hidden bg-brand-light/40 dark:bg-[#0e1910]">
+              <button
+                type="button"
+                onClick={() => setMobileAboutOpen(prev => !prev)}
+                className="w-full flex items-center justify-between text-left text-slate-800 dark:text-slate-200 font-semibold py-2.5 px-3 hover:bg-brand-pale/40 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2 text-sm">
+                  <span className="w-2 h-2 rounded-full bg-brand-forest dark:bg-emerald-400"></span>
+                  <span>About</span>
+                </span>
+                <svg
+                  className={`w-4 h-4 text-brand-forest dark:text-emerald-400 transition-transform duration-200 ${mobileAboutOpen ? 'rotate-180' : 'rotate-0'
                     }`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  History
-                </button>
-                <button
-                  onClick={() => handleNavLink('anthem')}
-                  className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'anthem'
-                      ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                      : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
-                    }`}
-                >
-                  School Anthem
-                </button>
-                <button
-                  onClick={() => handleNavLink('motto')}
-                  className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300"
-                >
-                  Motto
-                </button>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              <div
+                className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                  mobileAboutOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <div className="px-2 pb-2 space-y-1 bg-white/70 dark:bg-[#0c160e] border-t border-brand-pale/40 dark:border-emerald-900/40">
+                    <button
+                      onClick={() => handleNavLink('history')}
+                      className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'history'
+                          ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                          : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
+                        }`}
+                    >
+                      History
+                    </button>
+                    <button
+                      onClick={() => handleNavLink('anthem')}
+                      className={`w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium ${currentPage === 'anthem'
+                          ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                          : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300'
+                        }`}
+                    >
+                      School Anthem
+                    </button>
+                    <button
+                      onClick={() => handleNavLink('motto')}
+                      className="w-full text-left text-sm py-2 px-3 rounded-lg hover:bg-brand-light dark:hover:bg-emerald-500/15 transition-colors cursor-pointer font-medium text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300"
+                    >
+                      Motto
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
+            </div>
 
-          <button
-            onClick={() => handleNavLink('events')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events'
-                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
-              }`}
-          >
-            Events
-          </button>
-          <button
-            onClick={() => handleNavLink('gallery')}
-            className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery'
-                ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
-              }`}
-          >
-            Gallery
-          </button>
-          <button
-            onClick={() => handleNavLink('performance')}
-            className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50"
-          >
-            Performance
-          </button>
-          <button
-            onClick={() => handleNavLink('contact')}
-            className={`block w-full text-center py-2.5 rounded-full font-medium transition-colors cursor-pointer ${currentPage === 'contact' ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold' : 'bg-brand-forest hover:bg-brand-forestHover text-brand-white'
-              }`}
-          >
-            Contact Us
-          </button>
+            <button
+              onClick={() => handleNavLink('events')}
+              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events'
+                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
+                }`}
+            >
+              Events
+            </button>
+            <button
+              onClick={() => handleNavLink('gallery')}
+              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery'
+                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
+                }`}
+            >
+              Gallery
+            </button>
+            <button
+              onClick={() => handleNavLink('performance')}
+              className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50"
+            >
+              Performance
+            </button>
+            <button
+              onClick={() => handleNavLink('contact')}
+              className={`block w-full text-center py-2.5 rounded-full font-medium transition-colors cursor-pointer ${currentPage === 'contact' ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold' : 'bg-brand-forest hover:bg-brand-forestHover text-brand-white'
+                }`}
+            >
+              Contact Us
+            </button>
 
-          <div className="pt-2 border-t border-brand-pale dark:border-emerald-900/40 flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
-              Appearance
-            </span>
-            <ThemeToggle />
+            <div className="pt-2 border-t border-brand-pale dark:border-emerald-900/40 flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
+                Appearance
+              </span>
+              <ThemeToggle />
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }
