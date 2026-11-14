@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import ThemeToggle from './ThemeToggle.jsx';
 
 const PING_ENDPOINT = '/assets/logo.png';
 const PING_TIMEOUT_MS = 4000;
@@ -13,6 +14,13 @@ export default function OfflineFallback() {
   const [checkResult, setCheckResult] = useState(null);
   const [lastChecked, setLastChecked] = useState(() => new Date().toLocaleTimeString());
   const [connectionType, setConnectionType] = useState('standard');
+
+  useEffect(() => {
+    document.body.classList.add('offline-fallback-active');
+    return () => {
+      document.body.classList.remove('offline-fallback-active');
+    };
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -119,8 +127,32 @@ export default function OfflineFallback() {
   ];
 
   return (
-    <main className="flex-grow py-6 sm:py-10 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="flex-grow flex flex-col bg-brand-white dark:bg-[#0b120c] transition-colors">
+      {/* Standalone Brand Header for Offline View (Main Navbar is hidden) */}
+      <header className="border-b border-brand-pale dark:border-emerald-900/40 bg-brand-white/95 dark:bg-[#0b120c]/95 py-3.5 px-4 sm:px-8">
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img
+              src="/assets/logo.png"
+              alt="KCC Crest"
+              className="w-10 h-10 object-contain"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <div>
+              <h1 className="font-tamil font-bold text-base sm:text-lg text-brand-forest dark:text-emerald-400 leading-tight">
+                யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
+              </h1>
+              <p className="text-[10px] sm:text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                J/Kopay Christian College
+              </p>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+
+      <main className="flex-grow py-6 sm:py-10 animate-page-enter">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
         {checkResult === 'online' && (
           <aside
             role="status"
@@ -328,5 +360,6 @@ export default function OfflineFallback() {
         </section>
       </div>
     </main>
+  </div>
   );
 }

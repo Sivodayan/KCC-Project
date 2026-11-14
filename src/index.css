@@ -1582,6 +1582,14 @@ html[data-theme-transition] *::after {
 }
 
 /* ==========================================================================
+   Offline Page Styles (Hide Navigation Chrome)
+   ========================================================================== */
+body.offline-fallback-active #mainHeader,
+body.offline-fallback-active header#mainHeader {
+  display: none !important;
+}
+
+/* ==========================================================================
    Professional Multi-Page & Document Print Styles
    ========================================================================== */
 @media print {
