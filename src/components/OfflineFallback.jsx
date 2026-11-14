@@ -318,7 +318,7 @@ export default function OfflineFallback({ onBackToCached }) {
                   <span>{isChecking ? 'Checking Connection...' : 'Try Again'}</span>
                 </button>
 
-                {onBackToCached && (
+                {!isOnline && onBackToCached && (
                   <button
                     type="button"
                     onClick={onBackToCached}

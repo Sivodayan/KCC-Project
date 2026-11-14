@@ -55,7 +55,6 @@ export default function App() {
 
     const handleOnline = () => {
       setIsOnline(true);
-      setHasNavigatedOffline(false);
       setShowRestoredNotice(true);
 
       // Automatically reload page when connection is restored after being offline
@@ -438,7 +437,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
 
-  if (!isOnline && hasNavigatedOffline) {
+  if (hasNavigatedOffline) {
     return (
       <SiteContentProvider>
         <div className="min-h-screen flex flex-col bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300">
