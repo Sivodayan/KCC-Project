@@ -13,7 +13,8 @@
     "run_worker_first": [
       "/api/*",
       "/",
-      "/history"
+      "/history",
+      "/history/*"
     ]
   },
   "observability": {
