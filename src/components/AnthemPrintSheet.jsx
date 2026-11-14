@@ -87,11 +87,7 @@ export default function AnthemPrintSheet() {
           <h2 className="font-tamil font-black text-2xl text-[#196716] tracking-tight">
             பாடசாலைக் கீதம்
           </h2>
-          <div className="inline-flex items-center gap-2 mt-1 px-3.5 py-0.5 rounded-full bg-emerald-50/80 border border-emerald-300/60">
-            <p className="font-tamil text-xs font-semibold text-emerald-900">
-              இராகம்: ஹம்சத்வனி • தாளம்: ஆதி
-            </p>
-          </div>
+         
         </div>
 
         {/* Anthem Lyrics Body - Formatted across full A4 sheet with comfortable typography */}
@@ -106,8 +102,8 @@ export default function AnthemPrintSheet() {
                 <p
                   key={lIdx}
                   className={`m-0 tracking-normal ${sIdx === 0
-                      ? 'text-[13pt] font-semibold text-slate-900'
-                      : 'text-[12.5pt] font-medium text-slate-800'
+                    ? 'text-[13pt] font-semibold text-slate-900'
+                    : 'text-[12.5pt] font-medium text-slate-800'
                     }`}
                 >
                   {line}
