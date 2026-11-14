@@ -66,7 +66,8 @@ export default function SchoolAnthem() {
   let globalLineCount = 0;
 
   return (
-    <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6">
+    <>
+      <article className="max-w-4xl mx-auto py-8 sm:py-14 px-4 sm:px-6 print:hidden">
       <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-brand-forest dark:text-emerald-400 tracking-tight font-tamil leading-tight animate-anthem-title">
           பாடசாலைக் கீதம்
@@ -152,8 +153,10 @@ export default function SchoolAnthem() {
         </Link>
       </div>
 
+      </article>
+
       {/* Pristine Document Sheet for Printing */}
       <AnthemPrintSheet />
-    </article>
+    </>
   );
 }

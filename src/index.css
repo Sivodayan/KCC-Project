@@ -1582,15 +1582,15 @@ html[data-theme-transition] *::after {
 }
 
 /* ==========================================================================
-   Clean School Anthem Print Styles
+   Professional Multi-Page & Document Print Styles
    ========================================================================== */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 6mm 8mm;
+    margin: 10mm 12mm;
   }
 
-  /* Reset body and page styles for ink-friendly, pristine single-page output */
+  /* Reset document for clean ink-friendly printing */
   html,
   body {
     background: #ffffff !important;
@@ -1598,36 +1598,78 @@ html[data-theme-transition] *::after {
     color: #0f172a !important;
     margin: 0 !important;
     padding: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
-    overflow: hidden !important;
+    height: auto !important;
+    min-height: 100% !important;
+    max-height: none !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Hide regular UI chrome when printing */
+  /* Hide regular UI chrome, navigation, headers, footers, interactive elements */
   #mainHeader,
-  header,
+  header#mainHeader,
   nav,
   footer,
   aside,
   button,
+  input,
+  select,
+  textarea,
   .no-print,
+  .print\:hidden,
   .animate-modal-backdrop,
-  nav[aria-label="Breadcrumb"] {
+  nav[aria-label="Breadcrumb"],
+  #search-modal-backdrop {
     display: none !important;
   }
 
-  /* Hide regular screen elements, display only the anthem sheet */
-  body * {
-    visibility: hidden;
+  /* Allow main content to flow naturally across pages */
+  main {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
-  #anthem-print-sheet,
-  #anthem-print-sheet * {
-    visibility: visible !important;
+  /* Ensure card containers break cleanly across pages */
+  article,
+  section,
+  .event-card,
+  .history-card,
+  .gallery-card {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
+  /* Strip dark mode overrides and glows during print */
+  html.dark,
+  html.dark body,
+  html.dark #root,
+  html.dark main,
+  html.dark div,
+  html.dark section,
+  html.dark article,
+  html.dark p,
+  html.dark h1,
+  html.dark h2,
+  html.dark h3,
+  html.dark h4,
+  html.dark span {
+    background-color: transparent !important;
+    color: #0f172a !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* When printing from the Anthem Modal, isolate and print only the anthem modal sheet */
+  body.anthem-modal-open main,
+  body.anthem-modal-open > #root > div > *:not(#anthem-modal-root) {
+    display: none !important;
+  }
+
+  /* School Anthem Pristine Document Sheet */
   #anthem-print-sheet {
     display: flex !important;
     flex-direction: column !important;
@@ -1649,7 +1691,6 @@ html[data-theme-transition] *::after {
     break-after: avoid !important;
   }
 
-  /* Override dark mode rules during print */
   html.dark #anthem-print-sheet {
     background-color: #ffffff !important;
     color: #0f172a !important;

@@ -15,10 +15,12 @@ export default function AnthemModal({ isOpen, onClose }) {
     }
 
     document.body.style.overflow = 'hidden';
+    document.body.classList.add('anthem-modal-open');
 
     return () => {
       document.body.style.overflow = originalOverflow;
       document.body.style.paddingRight = originalPaddingRight;
+      document.body.classList.remove('anthem-modal-open');
     };
   }, [isOpen]);
 
@@ -37,13 +39,14 @@ export default function AnthemModal({ isOpen, onClose }) {
   let modalLineCount = 0;
 
   return (
-    <div
-      className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-modal-backdrop"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) onClose();
-      }}
-    >
-      <div className="bg-brand-white dark:bg-[#111e13] max-w-lg w-full rounded-2xl border border-brand-pale dark:border-emerald-800/40 overflow-hidden flex flex-col max-h-[85vh] shadow-2xl animate-modal-content">
+    <div id="anthem-modal-root">
+      <div
+        className="fixed inset-0 bg-slate-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-modal-backdrop print:hidden"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) onClose();
+        }}
+      >
+        <div className="bg-brand-white dark:bg-[#111e13] max-w-lg w-full rounded-2xl border border-brand-pale dark:border-emerald-800/40 overflow-hidden flex flex-col max-h-[85vh] shadow-2xl animate-modal-content">
         <div className="bg-brand-forest dark:bg-[#0e2a14] p-5 text-brand-white flex items-center justify-between">
           <div>
             <h3 className="text-xl font-bold font-tamil">பாடசாலைக் கீதம்</h3>
@@ -103,6 +106,7 @@ export default function AnthemModal({ isOpen, onClose }) {
           </button>
         </div>
       </div>
+    </div>
 
       {/* Pristine Document Sheet for Printing */}
       <AnthemPrintSheet />
