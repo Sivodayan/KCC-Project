@@ -360,6 +360,10 @@ export default function OfflineFallback() {
         </section>
       </div>
     </main>
+
+    <footer className="border-t border-brand-pale dark:border-emerald-900/40 py-4 px-4 text-center text-xs text-slate-500 dark:text-slate-400">
+      <p>© {new Date().getFullYear()} J/Kopay Christian College. All rights reserved.</p>
+    </footer>
   </div>
   );
 }
