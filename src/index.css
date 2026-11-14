@@ -616,6 +616,211 @@ html.dark .hero-ambient-vignette {
   animation: modalContentPopIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* ==========================================================================
+   Search Modal & Search Bar Entry Animations
+   Guarantee fluid, distinct entry transitions for every child element
+   ========================================================================== */
+
+@keyframes searchBackdropIn {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes searchBackdropOut {
+  0% {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+  100% {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+@keyframes searchModalCardIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.93) translateY(-26px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.008) translateY(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes searchModalCardOut {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(-14px);
+  }
+}
+
+@keyframes searchBarHeaderIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes searchBoxWrapperIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes searchIconSpinIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-35deg) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+@keyframes searchInputSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes searchPillBarIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes searchLabelSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes searchPillButtonIn {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes searchFooterSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-search-backdrop-in {
+  animation: searchBackdropIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-search-backdrop-out {
+  animation: searchBackdropOut 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-search-modal-in {
+  animation: searchModalCardIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-search-modal-out {
+  animation: searchModalCardOut 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-search-header-in {
+  animation: searchBarHeaderIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.04s both;
+}
+
+.animate-search-box-in {
+  animation: searchBoxWrapperIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
+}
+
+.animate-search-icon-in {
+  animation: searchIconSpinIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.animate-search-input-in {
+  animation: searchInputSlideIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+}
+
+.animate-search-pill-bar-in {
+  animation: searchPillBarIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.12s both;
+}
+
+.animate-search-label-in {
+  animation: searchLabelSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.14s both;
+}
+
+.animate-search-pill-1 {
+  animation: searchPillButtonIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
+}
+
+.animate-search-pill-2 {
+  animation: searchPillButtonIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.19s both;
+}
+
+.animate-search-pill-3 {
+  animation: searchPillButtonIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
+.animate-search-pill-4 {
+  animation: searchPillButtonIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.25s both;
+}
+
+.animate-search-pill-5 {
+  animation: searchPillButtonIn 0.34s cubic-bezier(0.16, 1, 0.3, 1) 0.28s both;
+}
+
+.animate-search-footer-in {
+  animation: searchFooterSlideUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+}
+
 @keyframes captionFadeUp {
   from {
     opacity: 0;
