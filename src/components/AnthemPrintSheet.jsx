@@ -70,11 +70,9 @@ export default function AnthemPrintSheet() {
             யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
           </h1>
           <p className="text-xs tracking-widest uppercase text-slate-600 font-bold mt-1">
-            J/Kopay Christian College • Kopay, Jaffna
+            J/Kopay Christian College
           </p>
-          <p className="text-[10px] tracking-wider text-slate-500 font-medium mt-0.5">
-            Estd. 1852 • யாழ் / கோப்பாய் • CMS Foundation
-          </p>
+
 
           {/* Ornamental Divider */}
           <div className="flex items-center justify-center gap-2 mt-2">
@@ -91,7 +89,7 @@ export default function AnthemPrintSheet() {
           </h2>
           <div className="inline-flex items-center gap-2 mt-1 px-3.5 py-0.5 rounded-full bg-emerald-50/80 border border-emerald-300/60">
             <p className="font-tamil text-xs font-semibold text-emerald-900">
-              இராகம்: ஹம்சத்வனி (Ragam: Hamsadhwani) • தாளம்: ஆதி (Thalam: Adi)
+              இராகம்: ஹம்சத்வனி • தாளம்: ஆதி
             </p>
           </div>
         </div>
@@ -107,11 +105,10 @@ export default function AnthemPrintSheet() {
               {stanza.lines.map((line, lIdx) => (
                 <p
                   key={lIdx}
-                  className={`m-0 tracking-normal ${
-                    sIdx === 0
+                  className={`m-0 tracking-normal ${sIdx === 0
                       ? 'text-[13pt] font-semibold text-slate-900'
                       : 'text-[12.5pt] font-medium text-slate-800'
-                  }`}
+                    }`}
                 >
                   {line}
                 </p>
