@@ -63,9 +63,9 @@ export default function App() {
         wasOfflineRef.current = false;
         reloadTimer = setTimeout(() => {
           window.location.reload();
-        }, 1200);
+        }, 2800);
       } else {
-        noticeTimer = setTimeout(() => setShowRestoredNotice(false), 3500);
+        noticeTimer = setTimeout(() => setShowRestoredNotice(false), 4500);
       }
     };
 

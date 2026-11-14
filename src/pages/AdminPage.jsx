@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSiteContent, parseFacebookInput, resolveFacebookShareUrl } from '../context/SiteContentContext.jsx';
-import { processImageFile, formatBytes, MAX_FILE_SIZE_MB } from '../utils/imageUpload.js';
+import { processImageFile, formatBytes } from '../utils/imageUpload.js';
 import { commitFileToGitHub, checkGitHubProxyStatus } from '../utils/githubSync.js';
 import GlassImage from '../components/GlassImage.jsx';
 import ThemeToggle from '../components/ThemeToggle.jsx';
 import {
-  isFirebaseConfigured,
   firebaseProjectId,
   signInWithGoogle,
   signInWithEmail,

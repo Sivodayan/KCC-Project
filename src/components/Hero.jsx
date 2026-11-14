@@ -12,20 +12,6 @@ export default function Hero({ onExploreHistory }) {
   const image = hero.image || "/assets/hero.jpg";
   const buttonText = hero.buttonText || "Explore History";
 
-  const handleScrollToPrinciples = (e) => {
-    e.preventDefault();
-    const el = document.getElementById('principles');
-    if (el) {
-      const header = document.getElementById('mainHeader') || document.querySelector('header');
-      const navHeight = header ? header.getBoundingClientRect().height : 76;
-      const targetTop = el.getBoundingClientRect().top + window.scrollY - navHeight;
-      window.scrollTo({
-        top: Math.max(0, Math.round(targetTop)),
-        behavior: 'smooth'
-      });
-    }
-  };
-
   return (
     <section className="py-5 sm:py-8 bg-brand-white dark:bg-[#0b120c] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="about">
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">

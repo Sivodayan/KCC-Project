@@ -257,36 +257,6 @@
     "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
     "secondaryPhone": "+94 21 223 0040"
   },
-  "meta": {
-    "schoolName": "J/Kopay Christian College",
-    "tamilName": "யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி",
-    "foundedYear": "1852",
-    "motto": "Truth and Justice",
-    "tamilMotto": "உண்மைக்கும் நேர்மைக்கும்"
-  },
-  "announcement": {
-    "enabled": false,
-    "badge": "Admissions 2026-2027",
-    "text": "Applications are now open for collegiate G.C.E. A/L Science, Commerce, and Arts streams.",
-    "tamil": "க.பொ.த உயர்தர வகுப்புக்களுக்கான மாணவர் அனுமதி விண்ணப்பங்கள் கோரப்படுகின்றன.",
-    "link": "#contact",
-    "linkText": "Contact Office →",
-    "type": "info"
-  },
-  "anthem": {
-    "title": "School Anthem",
-    "tamilTitle": "பாடசாலைக் கீதம்",
-    "ragam": "Hamsadhwani (ஹம்சத்வனி)",
-    "composer": "Composed with collegiate pride and devotion",
-    "audioUrl": "",
-    "versesTamil": [
-      "வாழ்க வாழ்க வாழ்கவே - எங்கள்\nகோப்பாய் கிறிஸ்தவ கல்லூரி வாழ்கவே!",
-      "உண்மை நேர்மை நெறியிலே - என்றும்\nஒளிரும் அறிவின் ஜோதியாய்",
-      "கலைகள் யாவும் பயின்று நாம் - உயர்\nகருணை அன்பில் திளைக்கவே",
-      "இலங்கை நாடும் போற்றிட - இறையருளால்\nஇணையிலாது திகழவே வாழ்கவே!"
-    ],
-    "translationEn": "Long live our beloved Kopay Christian College, shining as a sacred beacon of truth and justice in Kopay, Jaffna."
-  },
   "history": {
     "overview": {
       "titleEn": "CMS English School & Today’s Christian College",

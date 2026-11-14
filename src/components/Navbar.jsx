@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import AboutDropdown from './AboutDropdown.jsx';
-import GlassImage from './GlassImage.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
 export default function Navbar({

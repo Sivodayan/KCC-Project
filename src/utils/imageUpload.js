@@ -1,5 +1,4 @@
 export const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; 
-export const MAX_FILE_SIZE_MB = 5;
 
 export function formatBytes(bytes, decimals = 1) {
   if (!bytes || bytes === 0) return '0 B';

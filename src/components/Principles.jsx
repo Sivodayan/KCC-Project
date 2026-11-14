@@ -47,8 +47,6 @@ export default function Principles() {
     }
   };
 
-  const visibleClass = isRevealed ? 'is-visible' : '';
-
   return (
     <section ref={principlesRef} className="py-12 sm:py-16 bg-brand-light dark:bg-[#081009] border-b border-brand-pale dark:border-emerald-950/60 transition-colors" id="principles">
       <div className="max-w-9xl mx-auto px-4 sm:px-10 lg:px-8">

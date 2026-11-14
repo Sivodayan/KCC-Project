@@ -1,30 +1,11 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const REPORT_EMAIL = 'kcckopay@gmail.com';
-
 export default function NotFoundPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     document.title = '404 - Page Not Found | J/Kopay Christian College';
   }, []);
-
-  const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
-
-  const reportSubject = 'Broken Link Report - J/Kopay Christian College';
-  const reportBody = [
-    'Hello Administration,',
-    '',
-    'I encountered a broken link on the KCC portal:',
-    `Broken Page URL: ${currentUrl}`,
-    `Date: ${new Date().toLocaleDateString()}`,
-    '',
-    'Please look into this.',
-    '',
-    'Thank you.'
-  ].join('\r\n');
-
-  const reportMailto = `mailto:${REPORT_EMAIL}?subject=${encodeURIComponent(reportSubject)}&body=${encodeURIComponent(reportBody)}`;
 
   return (
     <main className="flex-grow py-6 sm:py-10 bg-brand-white dark:bg-[#0b120c] transition-colors animate-page-enter">

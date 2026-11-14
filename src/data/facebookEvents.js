@@ -1,17 +1,3 @@
-export const FACEBOOK_PAGE_URL = "https://www.facebook.com/profile.php?id=61575442051109";
-
-export const FACEBOOK_CANONICAL_URL = "https://www.facebook.com/people/%E0%AE%95%E0%AF%8B%E0%AE%AA%E0%AF%8D%E0%AE%AA%E0%AE%BE%E0%AE%AF%E0%AF%8D-%E0%AE%95%E0%AE%BF%E0%AE%B1%E0%AE%BF%E0%AE%B8%E0%AF%8D%E0%AE%A4%E0%AE%B5-%E0%AE%95%E0%AE%B2%E0%AF%8D%E0%AE%B2%E0%AF%82%E0%AE%B0%E0%AE%BF-%E0%AE%AE%E0%AE%BE%E0%AE%A3%E0%AE%B5%E0%AE%B0%E0%AF%8D%E0%AE%95%E0%AE%B3%E0%AF%8D/pfbid02EEBQ1TnjeggnBkPt3EsU3ouwxJyeDqxhT3khfg1681XKbkdvCDXeiox8o2BzLyewl/";
-
-export const FACEBOOK_PROFILE_ID = "61575442051109";
-
-export const FACEBOOK_PROFILE_NAME = "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள்";
-
-export const FACEBOOK_PROFILE_DESC = "கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் is on Facebook. Join Facebook to connect with கோப்பாய் கிறிஸ்தவ கல்லூரி மாணவர்கள் and others you may know.";
-
-export const FACEBOOK_PROFILE_IMAGE = "/assets/fb_profile.jpg";
-
-export const FACEBOOK_APP_URL = "fb://profile/61575442051109";
-
 export const FACEBOOK_POSTS = [
   {
     id: "post-1",

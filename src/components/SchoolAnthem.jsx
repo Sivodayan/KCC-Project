@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import AnthemPrintSheet from './AnthemPrintSheet.jsx';
 
@@ -44,21 +44,7 @@ export const ANTHEM_STANZAS = [
   }
 ];
 
-export const ANTHEM_TAMIL_TEXT = ANTHEM_STANZAS.map(s => s.lines.join('\n')).join('\n\n');
-
 export default function SchoolAnthem() {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(ANTHEM_TAMIL_TEXT).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    }).catch(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    });
-  };
-
   const handlePrint = () => {
     window.print();
   };
