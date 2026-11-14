@@ -1587,7 +1587,7 @@ html[data-theme-transition] *::after {
 @media print {
   @page {
     size: A4 portrait;
-    margin: 10mm 12mm;
+    margin: 10mm 10mm;
   }
 
   /* Reset document for clean ink-friendly printing */
@@ -1669,17 +1669,20 @@ html[data-theme-transition] *::after {
     display: none !important;
   }
 
-  /* School Anthem Pristine Document Sheet */
+  /* School Anthem Pristine Document Sheet (Optimized for A4 full page) */
   #anthem-print-sheet {
     display: flex !important;
     flex-direction: column !important;
     position: relative !important;
     width: 100% !important;
     max-width: 190mm !important;
-    height: 100% !important;
-    max-height: 265mm !important;
+    height: 270mm !important;
+    min-height: 270mm !important;
+    max-height: 270mm !important;
     margin: 0 auto !important;
     padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
     background: #ffffff !important;
     color: #0f172a !important;
     box-shadow: none !important;
