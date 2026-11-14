@@ -6,7 +6,7 @@
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![React Router](https://img.shields.io/badge/React_Router-v7-CA4245?style=for-the-badge&logo=react-router&logoColor=white)](https://reactrouter.com/)
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers_%26_Assets-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)](https://workers.cloudflare.com/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-196716?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-Proprietary_%7C_All_Rights_Reserved-red?style=for-the-badge)](LICENSE)
 
 The official web portal for **J/Kopay Christian College** (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி), Kopay, Jaffna, Sri Lanka. Built as a high-performance Single Page Application with **React 19**, **Vite 6**, and **Tailwind CSS**, featuring hardware-accelerated 3D components, dual-language state synchronization, an in-place offline resiliency system, an A4 certificate-grade print stylesheet, an administrative Git-backed CMS, and edge deployment on **Cloudflare Workers with Static Assets**.
 
@@ -230,9 +230,12 @@ flowchart LR
 
 ---
 
-## 📄 License
+## 📄 License & Ownership
 
-Distributed under the **MIT License**. See `LICENSE` for details.
+**Proprietary Software — All Rights Reserved.**  
+Copyright © 2026 **Sivodayan Sujeevakumar**.
+
+This software and all associated source code, design assets, and documentation are strictly the private and proprietary property of Sivodayan Sujeevakumar. Unauthorized copying, modification, distribution, sublicensing, reverse engineering, or commercial use without prior written permission is strictly prohibited. See [LICENSE](LICENSE) for full legal terms.
 
 ---
 
