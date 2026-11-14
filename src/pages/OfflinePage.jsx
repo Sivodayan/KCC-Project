@@ -194,9 +194,7 @@ export default function OfflinePage({ onOpenAnthem }) {
 
             {/* Title & Tamil Subheading */}
             <div className="space-y-2">
-              <span className="inline-block text-[11px] sm:text-xs font-bold tracking-widest uppercase text-brand-forest dark:text-emerald-400/90 bg-brand-light dark:bg-emerald-950/70 border border-brand-pale dark:border-emerald-800/40 px-3 py-1 rounded-full">
-                J/Kopay Christian College • Network Alert
-              </span>
+
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-800 dark:text-slate-100 tracking-tight">
                 No Internet Connection
               </h1>
@@ -244,18 +242,7 @@ export default function OfflinePage({ onOpenAnthem }) {
                 <span>Return to Home</span>
               </button>
 
-              {onOpenAnthem && (
-                <button
-                  type="button"
-                  onClick={onOpenAnthem}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-brand-light/70 dark:bg-emerald-950/40 border border-brand-pale/70 dark:border-emerald-800/30 text-brand-forest dark:text-emerald-300 font-semibold text-xs sm:text-sm hover:bg-brand-light transition-all cursor-pointer"
-                >
-                  <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
-                  </svg>
-                  <span>School Anthem (Offline)</span>
-                </button>
-              )}
+              
             </div>
           </div>
         </div>
@@ -303,116 +290,10 @@ export default function OfflinePage({ onOpenAnthem }) {
           </div>
         </div>
 
-        {/* Troubleshooting Checklist */}
-        <div className="bg-brand-white dark:bg-[#111e13] rounded-3xl border border-brand-pale dark:border-emerald-900/40 p-6 sm:p-8 shadow-xs space-y-4">
-          <div className="flex items-center gap-2.5 border-b border-brand-pale/60 dark:border-emerald-900/40 pb-3">
-            <div className="w-7 h-7 rounded-lg bg-brand-light dark:bg-emerald-950/60 flex items-center justify-center text-brand-forest dark:text-emerald-400 shrink-0">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-              </svg>
-            </div>
-            <div>
-              <h2 className="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-100">
-                Troubleshooting Checklist
-              </h2>
-              <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400">
-                Quick steps to get back online
-              </p>
-            </div>
-          </div>
+       
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
-            <div className="p-3.5 rounded-2xl bg-brand-light/40 dark:bg-emerald-950/20 border border-brand-pale/50 dark:border-emerald-900/30 flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-brand-forest dark:bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                1
-              </span>
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Check Wi-Fi or Mobile Data
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-0.5">
-                  Confirm Wi-Fi is toggled on in your device settings or switch to mobile cellular data.
-                </p>
-              </div>
-            </div>
+          
 
-            <div className="p-3.5 rounded-2xl bg-brand-light/40 dark:bg-emerald-950/20 border border-brand-pale/50 dark:border-emerald-900/30 flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-brand-forest dark:bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                2
-              </span>
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Turn Off Airplane Mode
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-0.5">
-                  Make sure Airplane / Flight mode is switched off so cellular and wireless radios can connect.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-brand-light/40 dark:bg-emerald-950/20 border border-brand-pale/50 dark:border-emerald-900/30 flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-brand-forest dark:bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                3
-              </span>
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Restart Wireless Router
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-0.5">
-                  If connected to home or school Wi-Fi, power-cycling the modem or access point can resolve DNS issues.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-2xl bg-brand-light/40 dark:bg-emerald-950/20 border border-brand-pale/50 dark:border-emerald-900/30 flex items-start gap-3">
-              <span className="w-5 h-5 rounded-full bg-brand-forest dark:bg-emerald-800 text-white flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
-                4
-              </span>
-              <div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-200">
-                  Reload When Reconnected
-                </h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mt-0.5">
-                  Once your signal indicator turns green, click "Try Again" to resume browsing where you left off.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Emergency College Direct Contacts (Work without internet on phones) */}
-        <div className="bg-brand-forest dark:bg-[#132817] text-white rounded-3xl p-6 sm:p-8 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-6">
-          <div className="space-y-1 text-center sm:text-left">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-brand-pale">
-              Need Direct Assistance?
-            </span>
-            <h3 className="text-base sm:text-lg font-extrabold text-white">
-              Contact School Administration Office
-            </h3>
-            <p className="text-xs text-brand-pale/90 max-w-md">
-              Telephone voice calls operate via cellular mobile networks without needing active internet data.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 shrink-0">
-            <a
-              href="tel:0212230040"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white text-brand-forest hover:bg-brand-pale font-bold text-xs sm:text-sm shadow-xs transition-transform hover:scale-105 active:scale-95"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              <span>Call: 021 223 0040</span>
-            </a>
-
-            <Link
-              to="/contact"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-medium text-xs sm:text-sm border border-white/20 transition-colors"
-            >
-              <span>View Office Info</span>
-            </Link>
-          </div>
-        </div>
 
       </div>
     </main>

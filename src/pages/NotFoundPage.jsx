@@ -22,7 +22,11 @@ export default function NotFoundPage({ onOpenSearch }) {
           </div>
 
           <div className="relative z-10 space-y-6">
-
+            {/* Badge Indicator */}
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-light/90 dark:bg-emerald-950/80 border border-brand-pale dark:border-emerald-700/50 text-brand-forest dark:text-emerald-300 text-xs font-bold shadow-2xs">
+              <span className="w-2 h-2 rounded-full bg-brand-forest dark:bg-emerald-400 animate-pulse"></span>
+              <span>404 ERROR • பக்கம் காணப்படவில்லை</span>
+            </div>
 
             {/* Giant 404 Number */}
             <div className="space-y-2">
@@ -70,6 +74,49 @@ export default function NotFoundPage({ onOpenSearch }) {
         </div>
 
 
+        {/* Suggested Directory Quick Links */}
+        <div className="mt-10 space-y-4">
+          <div className="text-center sm:text-left">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-slate-200">
+              Popular College Portals
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Quickly navigate to verified sections of J/Kopay Christian College.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            {quickLinks.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="group flex flex-col justify-between p-4 rounded-2xl bg-brand-light/50 dark:bg-[#101b12] border border-brand-pale dark:border-emerald-900/40 hover:border-brand-forest/40 dark:hover:border-emerald-500/50 hover:bg-brand-light dark:hover:bg-[#142316] transition-all duration-200 shadow-2xs hover:shadow-md hover:-translate-y-0.5"
+              >
+                <div className="space-y-2">
+                  <div className="w-9 h-9 rounded-xl bg-white dark:bg-[#0b140d] border border-brand-pale dark:border-emerald-800/40 flex items-center justify-center shadow-2xs transition-transform group-hover:scale-110">
+                    {link.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-brand-forest dark:text-emerald-300 group-hover:underline">
+                      {link.titleEn}
+                    </h3>
+                    <span className="font-tamil text-xs text-slate-500 dark:text-slate-400">
+                      {link.titleTa}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {link.desc}
+                  </p>
+                </div>
+
+                <div className="pt-3 flex items-center gap-1 text-xs font-semibold text-brand-forest dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
+                  <span>Visit page</span>
+                  <span>→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </main>
   );
