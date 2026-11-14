@@ -4,7 +4,7 @@ import ThemeToggle from './ThemeToggle.jsx';
 const PING_ENDPOINT = '/assets/logo.png';
 const PING_TIMEOUT_MS = 4000;
 
-export default function OfflineFallback() {
+export default function OfflineFallback({ onBackToCached }) {
   const [isOnline, setIsOnline] = useState(() => (
     typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
       ? navigator.onLine
@@ -318,16 +318,18 @@ export default function OfflineFallback() {
                   <span>{isChecking ? 'Checking Connection...' : 'Try Again'}</span>
                 </button>
 
-                <button
-                  type="button"
-                  onClick={() => window.location.reload()}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 font-bold text-xs sm:text-sm shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                >
-                  <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span>Reload Page</span>
-                </button>
+                {onBackToCached && (
+                  <button
+                    type="button"
+                    onClick={onBackToCached}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/60 border border-slate-300 dark:border-emerald-800/40 text-slate-700 dark:text-slate-200 font-bold text-xs sm:text-sm shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    <svg className="w-4 h-4 text-slate-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    <span>Back to Cached Page</span>
+                  </button>
+                )}
               </div>
             </div>
           </section>
