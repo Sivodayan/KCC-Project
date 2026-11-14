@@ -183,39 +183,10 @@ export default function NotFoundPage() {
                   <span>Open in Gmail Web</span>
                 </a>
 
-                <button
-                  type="button"
-                  onClick={handleOpenMailto}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-800 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 text-xs font-bold shadow-2xs transition-all hover:scale-102 active:scale-98 cursor-pointer text-center"
-                >
-                  <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  <span>Default Mail App</span>
-                </button>
+                
               </div>
 
-              <button
-                type="button"
-                onClick={handleCopyDetails}
-                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-[#0b140d] hover:bg-slate-200 dark:hover:bg-emerald-950/50 border border-slate-200 dark:border-emerald-900/40 text-slate-700 dark:text-slate-300 text-xs font-semibold transition-all cursor-pointer"
-              >
-                {copied ? (
-                  <>
-                    <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-                    </svg>
-                    <span className="text-emerald-600 dark:text-emerald-400 font-bold">Report Details Copied to Clipboard!</span>
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-4 h-4 text-slate-500 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                    </svg>
-                    <span>Copy Email & Report Details</span>
-                  </>
-                )}
-              </button>
+              
             </div>
           </div>
         </div>

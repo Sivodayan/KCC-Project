@@ -380,9 +380,9 @@ export default function App() {
             className="bg-amber-600 dark:bg-amber-700 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between shadow-xs sticky top-0 z-40 transition-colors animate-fade-down"
           >
             <div className="flex items-center gap-2 truncate pr-2">
-              <span className="w-2 h-2 rounded-full bg-white animate-ping shrink-0" />
+
               <span className="truncate">
-                No Internet Connection — you are currently viewing offline content.
+                No Internet Connection - you are currently viewing offline content.
               </span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
