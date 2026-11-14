@@ -101,10 +101,7 @@ export default function AnthemPrintSheet() {
               {stanza.lines.map((line, lIdx) => (
                 <p
                   key={lIdx}
-                  className={`m-0 tracking-normal ${sIdx === 0
-                    ? 'text-[13pt] font-semibold text-slate-900'
-                    : 'text-[12.5pt] font-medium text-slate-800'
-                    }`}
+                  className="m-0 tracking-normal text-[13pt] font-medium text-slate-900"
                 >
                   {line}
                 </p>
