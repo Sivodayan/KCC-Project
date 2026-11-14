@@ -44,8 +44,10 @@ export default function App() {
       : true;
   });
   const [showRestoredNotice, setShowRestoredNotice] = useState(false);
+  const [hasNavigatedOffline, setHasNavigatedOffline] = useState(false);
 
   const wasOfflineRef = useRef(!navigator.onLine);
+  const initialOfflinePathRef = useRef(location.pathname);
 
   useEffect(() => {
     let reloadTimer = null;
@@ -53,6 +55,7 @@ export default function App() {
 
     const handleOnline = () => {
       setIsOnline(true);
+      setHasNavigatedOffline(false);
       setShowRestoredNotice(true);
 
       // Automatically reload page when connection is restored after being offline
@@ -68,7 +71,9 @@ export default function App() {
 
     const handleOffline = () => {
       wasOfflineRef.current = true;
+      initialOfflinePathRef.current = location.pathname;
       setIsOnline(false);
+      setHasNavigatedOffline(false);
       setShowRestoredNotice(false);
       if (reloadTimer) clearTimeout(reloadTimer);
     };
@@ -82,7 +87,49 @@ export default function App() {
       if (reloadTimer) clearTimeout(reloadTimer);
       if (noticeTimer) clearTimeout(noticeTimer);
     };
-  }, []);
+  }, [location.pathname]);
+
+  // Track route changes while offline: if route changes, transition to offline fallback
+  useEffect(() => {
+    if (isOnline) {
+      initialOfflinePathRef.current = location.pathname;
+    } else if (location.pathname !== initialOfflinePathRef.current) {
+      setHasNavigatedOffline(true);
+    }
+  }, [isOnline, location.pathname]);
+
+  // Catch clicks on internal links while offline
+  useEffect(() => {
+    const handleDocumentClick = (e) => {
+      if (isOnline) return;
+      const anchor = e.target.closest('a');
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+
+      if (href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:')) return;
+      if (anchor.getAttribute('role') === 'button' || anchor.dataset?.action === 'retry') return;
+
+      try {
+        const url = new URL(anchor.href, window.location.href);
+        if (url.origin === window.location.origin) {
+          if (url.pathname === location.pathname && url.search === location.search) {
+            return;
+          }
+        }
+      } catch {
+        // Continue
+      }
+
+      e.preventDefault();
+      setHasNavigatedOffline(true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    document.addEventListener('click', handleDocumentClick, true);
+    return () => document.removeEventListener('click', handleDocumentClick, true);
+  }, [isOnline, location.pathname, location.search]);
 
   useEffect(() => {
     const hasBanner = !isOnline || showRestoredNotice;
@@ -259,6 +306,9 @@ export default function App() {
         } else {
           window.location.hash = '#performance';
         }
+      } else if (!isOnline) {
+        setHasNavigatedOffline(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         navigate('/#performance');
       }
@@ -274,6 +324,9 @@ export default function App() {
         } else {
           window.location.hash = '#principles';
         }
+      } else if (!isOnline) {
+        setHasNavigatedOffline(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         navigate('/#principles');
       }
@@ -287,9 +340,19 @@ export default function App() {
     else if (page === 'contact') target = '/contact';
     else if (page === 'anthem') target = '/anthem';
 
+    if (!isOnline) {
+      const isSamePage = (target === '/' && (location.pathname === '/' || location.pathname === '')) ||
+        (target !== '/' && location.pathname.startsWith(target));
+      if (!isSamePage) {
+        setHasNavigatedOffline(true);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
+
     navigate(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, isOnline]);
 
   useEffect(() => {
     let observer = null;
@@ -374,6 +437,16 @@ export default function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
+
+  if (!isOnline && hasNavigatedOffline) {
+    return (
+      <SiteContentProvider>
+        <div className="min-h-screen flex flex-col bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300">
+          <OfflineFallback onBackToCached={() => setHasNavigatedOffline(false)} />
+        </div>
+      </SiteContentProvider>
+    );
+  }
 
   if (isAdminRoute) {
     return (
