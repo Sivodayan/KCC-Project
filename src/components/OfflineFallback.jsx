@@ -22,6 +22,11 @@ export default function OfflineFallback() {
       setIsOnline(online);
       setCheckResult(online ? 'online' : 'offline');
       setLastChecked(new Date().toLocaleTimeString());
+      if (online) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+      }
     };
 
     window.addEventListener('online', syncNetworkState);
@@ -62,6 +67,11 @@ export default function OfflineFallback() {
       const reachable = res.ok || res.status === 304 || res.type === 'opaque';
       setIsOnline(reachable);
       setCheckResult(reachable ? 'online' : 'offline');
+      if (reachable) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+      }
     } catch {
       const fallbackOnline = typeof navigator !== 'undefined' && navigator.onLine;
       setIsOnline(fallbackOnline);
@@ -124,20 +134,14 @@ export default function OfflineFallback() {
               </span>
               <div className="min-w-0">
                 <p className="text-xs sm:text-sm font-bold truncate">
-                  Connection restored! You are back online.
+                  Connection restored! Reloading page...
                 </p>
                 <p className="text-[11px] sm:text-xs text-emerald-700 dark:text-emerald-300/80">
-                  இணைய இணைப்பு மீண்டும் கிடைத்துள்ளது.
+                  இணைய இணைப்பு மீண்டும் கிடைத்துள்ளது. பக்கம் புதுப்பிக்கப்படுகிறது...
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={handleReload}
-              className="px-3.5 py-1.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer shrink-0"
-            >
-              Reload Page
-            </button>
+           
           </aside>
         )}
 

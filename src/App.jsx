@@ -43,17 +43,32 @@ export default function App() {
   });
   const [showRestoredNotice, setShowRestoredNotice] = useState(false);
 
+  const wasOfflineRef = useRef(!navigator.onLine);
+
   useEffect(() => {
+    let reloadTimer = null;
+    let noticeTimer = null;
+
     const handleOnline = () => {
       setIsOnline(true);
       setShowRestoredNotice(true);
-      const timer = setTimeout(() => setShowRestoredNotice(false), 3500);
-      return () => clearTimeout(timer);
+
+      // Automatically reload page when connection is restored after being offline
+      if (wasOfflineRef.current) {
+        wasOfflineRef.current = false;
+        reloadTimer = setTimeout(() => {
+          window.location.reload();
+        }, 1200);
+      } else {
+        noticeTimer = setTimeout(() => setShowRestoredNotice(false), 3500);
+      }
     };
 
     const handleOffline = () => {
+      wasOfflineRef.current = true;
       setIsOnline(false);
       setShowRestoredNotice(false);
+      if (reloadTimer) clearTimeout(reloadTimer);
     };
 
     window.addEventListener('online', handleOnline);
@@ -62,6 +77,8 @@ export default function App() {
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      if (reloadTimer) clearTimeout(reloadTimer);
+      if (noticeTimer) clearTimeout(noticeTimer);
     };
   }, []);
 
@@ -375,7 +392,7 @@ export default function App() {
           >
             <div className="flex items-center gap-2 truncate pr-2">
               <span className="truncate">
-                No Internet Connection — you are currently viewing cached content.
+                No Internet Connection - you are currently viewing cached content.
               </span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
@@ -401,7 +418,7 @@ export default function App() {
               <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
               </svg>
-              <span>Internet connection restored! You are back online.</span>
+              <span>Internet connection restored! Reloading page...</span>
             </div>
             <button
               type="button"

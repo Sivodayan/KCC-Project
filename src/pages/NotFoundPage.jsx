@@ -6,7 +6,7 @@ const REPORT_EMAIL = 'kcckopay@gmail.com';
 export default function NotFoundPage() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = 'Page Not Found (404) | J/Kopay Christian College';
+    document.title = '404 - Page Not Found | J/Kopay Christian College';
   }, []);
 
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
