@@ -1589,6 +1589,19 @@ body.offline-fallback-active header#mainHeader {
   display: none !important;
 }
 
+body.offline-fallback-active {
+  padding-top: 0 !important;
+}
+
+body.has-offline-banner {
+  padding-top: 36px;
+}
+
+body.has-offline-banner #mainHeader,
+body.has-offline-banner header#mainHeader {
+  top: 36px;
+}
+
 /* ==========================================================================
    Professional Multi-Page & Document Print Styles
    ========================================================================== */

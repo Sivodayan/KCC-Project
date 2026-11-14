@@ -84,6 +84,18 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    const hasBanner = !isOnline || showRestoredNotice;
+    if (hasBanner) {
+      document.body.classList.add('has-offline-banner');
+    } else {
+      document.body.classList.remove('has-offline-banner');
+    }
+    return () => {
+      document.body.classList.remove('has-offline-banner');
+    };
+  }, [isOnline, showRestoredNotice]);
+
   const getActivePageName = () => {
     const path = location.pathname.toLowerCase();
     if (path.startsWith('/admin')) return 'admin';
@@ -363,19 +375,31 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isSearchOpen, isAnthemOpen]);
 
-  if (!isOnline) {
-    return (
-      <SiteContentProvider>
-        <div className="min-h-screen flex flex-col bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans antialiased selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300">
-          <OfflineFallback />
-        </div>
-      </SiteContentProvider>
-    );
-  }
-
   if (isAdminRoute) {
     return (
       <SiteContentProvider>
+        {!isOnline && (
+          <aside
+            role="status"
+            aria-live="polite"
+            className="bg-amber-600 dark:bg-amber-700 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between shadow-md fixed top-0 inset-x-0 z-50 h-9 transition-colors animate-fade-down"
+          >
+            <div className="flex items-center gap-2 truncate pr-2">
+              <span className="truncate">
+                No Internet Connection - you are currently viewing cached content.
+              </span>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="text-xs font-bold underline hover:text-amber-100 transition-colors cursor-pointer"
+              >
+                Retry
+              </button>
+            </div>
+          </aside>
+        )}
         <Suspense fallback={<GlassRouteLoader />}>
           <AdminPage />
         </Suspense>
@@ -386,21 +410,36 @@ export default function App() {
   return (
     <SiteContentProvider>
       <div className="min-h-screen flex flex-col bg-brand-white dark:bg-[#0b120c] text-slate-800 dark:text-slate-100 font-sans selection:bg-brand-pale selection:text-brand-forest dark:selection:bg-emerald-950 dark:selection:text-emerald-300 antialiased transition-colors duration-150">
-        <Navbar
-          currentPage={currentPage}
-          onNavigate={handleNavigate}
-          onOpenSearch={() => setIsSearchOpen(true)}
-          onOpenAnthem={() => setIsAnthemOpen(true)}
-          historyLang={historyLang}
-          onChangeHistoryLang={handleHistoryLangChange}
-        />
+        {/* Global Offline Bar - Fixed to top across viewport */}
+        {!isOnline && (
+          <aside
+            role="status"
+            aria-live="polite"
+            className="bg-amber-600 dark:bg-amber-700 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between shadow-md fixed top-0 inset-x-0 z-50 h-9 transition-colors animate-fade-down"
+          >
+            <div className="flex items-center gap-2 truncate pr-2">
+              <span className="truncate">
+                No Internet Connection - you are currently viewing cached content.
+              </span>
+            </div>
+            <div className="flex items-center gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => window.location.reload()}
+                className="text-xs font-bold underline hover:text-amber-100 transition-colors cursor-pointer"
+              >
+                Retry
+              </button>
+            </div>
+          </aside>
+        )}
 
         {/* Connection Restored Notification Banner */}
         {showRestoredNotice && (
           <aside
             role="status"
             aria-live="polite"
-            className="bg-emerald-600 dark:bg-emerald-700 text-white px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-xs sticky top-0 z-40 animate-fade-down"
+            className="bg-emerald-600 dark:bg-emerald-700 text-white px-4 py-2 text-xs sm:text-sm font-semibold flex items-center justify-between shadow-md fixed top-0 inset-x-0 z-50 h-9 animate-fade-down"
           >
             <div className="flex items-center gap-2">
               <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -417,6 +456,15 @@ export default function App() {
             </button>
           </aside>
         )}
+
+        <Navbar
+          currentPage={currentPage}
+          onNavigate={handleNavigate}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onOpenAnthem={() => setIsAnthemOpen(true)}
+          historyLang={historyLang}
+          onChangeHistoryLang={handleHistoryLangChange}
+        />
 
         <NetworkErrorBoundary locationKey={location.pathname} onOpenAnthem={() => setIsAnthemOpen(true)}>
           <Suspense fallback={<GlassRouteLoader />}>
