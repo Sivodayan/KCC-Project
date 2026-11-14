@@ -9,10 +9,12 @@ import {
   onRequestOptions as fbOptions
 } from './functions/api/resolve-facebook.js';
 
-function withNoIndex(response) {
+const NO_ROBOTS_HEADER = 'noindex, nofollow, noarchive';
+
+function withSecurityHeaders(response) {
   if (!response) return response;
   const headers = new Headers(response.headers);
-  headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  headers.set('X-Robots-Tag', NO_ROBOTS_HEADER);
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -20,11 +22,20 @@ function withNoIndex(response) {
   });
 }
 
+function methodNotAllowed() {
+  return withSecurityHeaders(
+    new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' }
+    })
+  );
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // 301 Canonical Redirects for Search Console duplicate parameter cleanup
+    // Canonical 301 redirects for Search Console query parameter deduplication
     if ((url.pathname === '/' || url.pathname === '') && url.searchParams.has('lang')) {
       const target = new URL(url);
       target.searchParams.delete('lang');
@@ -37,37 +48,34 @@ export default {
       return Response.redirect(target.toString(), 301);
     }
 
+    // API Dispatcher
     if (url.pathname === '/api/github') {
       const context = { request, env, ctx };
-      if (request.method === 'OPTIONS') {
-        return withNoIndex(await githubOptions(context));
+      switch (request.method) {
+        case 'OPTIONS':
+          return withSecurityHeaders(await githubOptions(context));
+        case 'GET':
+          return withSecurityHeaders(await githubGet(context));
+        case 'POST':
+          return withSecurityHeaders(await githubPost(context));
+        default:
+          return methodNotAllowed();
       }
-      if (request.method === 'GET') {
-        return withNoIndex(await githubGet(context));
-      }
-      if (request.method === 'POST') {
-        return withNoIndex(await githubPost(context));
-      }
-      return withNoIndex(new Response(JSON.stringify({ error: 'Method not allowed' }), {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' }
-      }));
     }
 
     if (url.pathname === '/api/resolve-facebook') {
       const context = { request, env, ctx };
-      if (request.method === 'OPTIONS') {
-        return withNoIndex(await fbOptions(context));
+      switch (request.method) {
+        case 'OPTIONS':
+          return withSecurityHeaders(await fbOptions(context));
+        case 'GET':
+          return withSecurityHeaders(await fbGet(context));
+        default:
+          return methodNotAllowed();
       }
-      if (request.method === 'GET') {
-        return withNoIndex(await fbGet(context));
-      }
-      return withNoIndex(new Response(JSON.stringify({ error: 'Method not allowed' }), {
-        status: 405,
-        headers: { 'Content-Type': 'application/json' }
-      }));
     }
 
+    // Static asset serving via Cloudflare Workers Assets
     if (env.ASSETS && typeof env.ASSETS.fetch === 'function') {
       return env.ASSETS.fetch(request);
     }
