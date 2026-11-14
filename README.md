@@ -1,4 +1,4 @@
-# J/Kopay Christian College — Official Web Platform
+# J/Kopay Christian College - Official Web Platform
 ### Institutional Single Page Application (SPA)
 
 [![React 19](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
@@ -232,7 +232,7 @@ flowchart LR
 
 ## 📄 License & Ownership
 
-**Proprietary Software — All Rights Reserved.**  
+**Proprietary Software - All Rights Reserved.**  
 Copyright © 2026 **Sivodayan Sujeevakumar**.
 
 This software and all associated source code, design assets, and documentation are strictly the private and proprietary property of Sivodayan Sujeevakumar. Unauthorized copying, modification, distribution, sublicensing, reverse engineering, or commercial use without prior written permission is strictly prohibited. See [LICENSE](LICENSE) for full legal terms.
