@@ -5,22 +5,30 @@ export default function AnthemPrintSheet() {
   return (
     <div
       id="anthem-print-sheet"
-      className="hidden print:block font-sans bg-white text-slate-900 p-6 max-w-[210mm] mx-auto"
+      className="hidden print:flex print:flex-col font-sans bg-white text-slate-900 mx-auto"
       style={{
         boxSizing: 'border-box',
         WebkitPrintColorAdjust: 'exact',
-        printColorAdjust: 'exact'
+        printColorAdjust: 'exact',
+        width: '100%',
+        maxWidth: '190mm',
+        height: '100%',
+        maxHeight: '265mm',
+        pageBreakInside: 'avoid',
+        pageBreakAfter: 'avoid',
+        pageBreakBefore: 'avoid',
+        breakInside: 'avoid',
       }}
     >
       {/* Formal Collegiate Document Frame */}
       <div
-        className="relative border-4 border-double border-[#196716] rounded-xl p-6 sm:p-8"
+        className="relative border-4 border-double border-[#196716] rounded-xl p-4 sm:p-5 flex-1 flex flex-col justify-between"
         style={{
-          minHeight: '260mm',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          pageBreakInside: 'avoid'
+          boxSizing: 'border-box',
+          height: '100%',
+          maxHeight: '265mm',
+          pageBreakInside: 'avoid',
+          breakInside: 'avoid',
         }}
       >
         {/* Subtle Watermark Crest in Center */}
@@ -32,53 +40,52 @@ export default function AnthemPrintSheet() {
           <img
             src="/assets/logo.png"
             alt=""
-            className="w-80 h-80 object-contain"
+            className="w-72 h-72 object-contain"
           />
         </div>
 
         {/* Header Section */}
-        <div className="relative z-10 text-center border-b border-[#196716]/30 pb-4">
-          <div className="flex items-center justify-center gap-3 mb-2">
+        <div className="relative z-10 text-center border-b border-[#196716]/30 pb-2.5">
+          <div className="flex items-center justify-center gap-2 mb-1">
             <img
               src="/assets/logo.png"
               alt="KCC Crest"
-              className="w-16 h-16 object-contain"
+              className="w-12 h-12 object-contain"
             />
           </div>
 
-          <h1 className="font-tamil font-bold text-2xl text-[#196716] leading-tight">
+          <h1 className="font-tamil font-bold text-xl text-[#196716] leading-tight">
             யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி
           </h1>
-         
-          
-
-         
+          <p className="text-[10px] tracking-wider uppercase text-slate-500 font-semibold mt-0.5">
+            J/Kopay Christian College • Kopay, Jaffna
+          </p>
 
           {/* Ornamental Divider */}
-          <div className="flex items-center justify-center gap-2 mt-3">
-            <span className="h-[1px] w-16 bg-[#196716]/40"></span>
-            <span className="text-[#196716] text-[10px]">❖</span>
-            <span className="h-[1px] w-16 bg-[#196716]/40"></span>
+          <div className="flex items-center justify-center gap-2 mt-1.5">
+            <span className="h-[1px] w-12 bg-[#196716]/40"></span>
+            <span className="text-[#196716] text-[9px]">❖</span>
+            <span className="h-[1px] w-12 bg-[#196716]/40"></span>
           </div>
         </div>
 
         {/* Anthem Title & Raga */}
-        <div className="relative z-10 text-center my-3">
-          <h3 className="font-tamil font-extrabold text-2xl text-[#196716] tracking-tight">
+        <div className="relative z-10 text-center my-2">
+          <h2 className="font-tamil font-extrabold text-xl text-[#196716] tracking-tight">
             பாடசாலைக் கீதம்
-          </h3>
-          <p className="font-tamil text-xs font-semibold text-emerald-800 mt-1">
+          </h2>
+          <p className="font-tamil text-[11px] font-semibold text-emerald-800 mt-0.5">
             இராகம்: ஹம்சத்வனி (Ragam: Hamsadhwani)
           </p>
         </div>
 
-        {/* Anthem Lyrics Body */}
-        <div className="relative z-10 font-tamil text-center text-slate-900 leading-[2.3] space-y-4 text-[13pt] my-auto">
+        {/* Anthem Lyrics Body - All 19 lines formatted compactly to guarantee 1 page */}
+        <div className="relative z-10 font-tamil text-center text-slate-900 leading-[1.75] space-y-2.5 text-[11pt] my-auto">
           {ANTHEM_STANZAS.map((stanza, sIdx) => (
             <div
               key={stanza.id || sIdx}
               className="space-y-0.5"
-              style={{ pageBreakInside: 'avoid' }}
+              style={{ pageBreakInside: 'avoid', breakInside: 'avoid' }}
             >
               {stanza.lines.map((line, lIdx) => (
                 <p key={lIdx} className="m-0 font-medium tracking-normal">
@@ -90,10 +97,10 @@ export default function AnthemPrintSheet() {
         </div>
 
         {/* Document Footer */}
-        <div className="relative z-10 border-t border-[#196716]/30 pt-3 mt-4 text-center">
-          <div className="flex items-center justify-between text-[10px] text-slate-500 font-medium px-2">
+        <div className="relative z-10 border-t border-[#196716]/30 pt-2 text-center">
+          <div className="flex items-center justify-between text-[9px] text-slate-500 font-medium px-2">
             <span>J/Kopay Christian College</span>
-            
+            <span className="font-tamil">மகுடவாசகம்: உண்மைக்கும் நேர்மைக்கும்</span>
             <span>Kopay, Jaffna</span>
           </div>
         </div>
