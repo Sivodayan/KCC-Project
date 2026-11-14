@@ -51,7 +51,7 @@ export default function NotFoundPage() {
             </header>
 
             <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
-              The page you are looking for does not exist on the J/Kopay Christian College portal. Please check the URL or report this broken link to school administration.
+              The page you are looking for does not exist on the J/Kopay Christian College portal. Please check the URL and try again.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -65,17 +65,7 @@ export default function NotFoundPage() {
                 <span>Return to Home</span>
               </Link>
 
-              <a
-                href={reportMailto}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 font-bold text-xs sm:text-sm shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
-                title="Directly report this broken link via email"
-                aria-label="Directly report this broken link via email"
-              >
-                <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
-                <span>Report Broken Link</span>
-              </a>
+
             </div>
           </div>
         </article>

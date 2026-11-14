@@ -16,7 +16,6 @@ const ContactPage = lazy(() => import('./pages/ContactPage.jsx'));
 const AnthemPage = lazy(() => import('./pages/AnthemPage.jsx'));
 const AdminPage = lazy(() => import('./pages/AdminPage.jsx'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage.jsx'));
-import OfflinePage from './pages/OfflinePage.jsx';
 
 function scrollToElementWithNavOffset(el) {
   if (!el) return;
@@ -74,7 +73,6 @@ export default function App() {
     if (path.startsWith('/gallery')) return 'gallery';
     if (path.startsWith('/contact')) return 'contact';
     if (path.startsWith('/anthem')) return 'anthem';
-    if (path.startsWith('/offline')) return 'offline';
     if (path === '/' || path === '') return 'home';
     return '404';
   };
@@ -179,9 +177,6 @@ export default function App() {
       } else if (path.startsWith('/anthem')) {
         pageTitle = "School Anthem";
         descContent = "Official School Anthem of J/Kopay Christian College (யா/ கோப்பாய் கிறிஸ்தவ கல்லூரி). Composed in Ragam Hamsadhwani celebrating truth, justice, and collegiate heritage.";
-      } else if (path.startsWith('/offline')) {
-        pageTitle = "No Internet Connection | J/Kopay Christian College";
-        descContent = "You are currently offline. Check your internet connection to continue browsing J/Kopay Christian College.";
       } else if (path !== '/' && path !== '') {
         pageTitle = "Page Not Found (404) | J/Kopay Christian College";
         descContent = "The page you are looking for does not exist on the J/Kopay Christian College website.";
@@ -260,7 +255,6 @@ export default function App() {
     else if (page === 'gallery') target = '/gallery';
     else if (page === 'contact') target = '/contact';
     else if (page === 'anthem') target = '/anthem';
-    else if (page === 'offline') target = '/offline';
 
     navigate(target);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -373,25 +367,24 @@ export default function App() {
         />
 
         {/* Global Offline Bar - Appears seamlessly when connection drops */}
-        {!isOnline && location.pathname !== '/offline' && (
+        {!isOnline && (
           <aside
             role="status"
             aria-live="polite"
             className="bg-amber-600 dark:bg-amber-700 text-white px-4 py-2 text-xs sm:text-sm font-medium flex items-center justify-between shadow-xs sticky top-0 z-40 transition-colors animate-fade-down"
           >
             <div className="flex items-center gap-2 truncate pr-2">
-
               <span className="truncate">
-                No Internet Connection - you are currently viewing offline content.
+                No Internet Connection — you are currently viewing cached content.
               </span>
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <button
                 type="button"
-                onClick={() => navigate('/offline')}
+                onClick={() => window.location.reload()}
                 className="text-xs font-bold underline hover:text-amber-100 transition-colors cursor-pointer"
               >
-                View Offline Page
+                Retry
               </button>
             </div>
           </aside>
@@ -429,7 +422,6 @@ export default function App() {
               <Route path="/gallery" element={<GalleryPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/anthem" element={<AnthemPage />} />
-              <Route path="/offline" element={<OfflinePage onOpenAnthem={() => setIsAnthemOpen(true)} />} />
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/performance" element={<Navigate to="/#performance" replace />} />
               <Route path="/academics" element={<Navigate to="/" replace />} />

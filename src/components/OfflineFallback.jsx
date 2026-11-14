@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const PING_ENDPOINT = '/assets/logo.png';
 const PING_TIMEOUT_MS = 4000;
 
-export default function OfflinePage() {
-  const navigate = useNavigate();
+export default function OfflineFallback() {
   const [isOnline, setIsOnline] = useState(() => (
     typeof navigator !== 'undefined' && typeof navigator.onLine === 'boolean'
       ? navigator.onLine
-      : true
+      : false
   ));
   const [isChecking, setIsChecking] = useState(false);
   const [checkResult, setCheckResult] = useState(null);
@@ -18,7 +16,6 @@ export default function OfflinePage() {
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
-    document.title = 'No Internet Connection | J/Kopay Christian College';
 
     const syncNetworkState = () => {
       const online = navigator.onLine;
@@ -75,10 +72,6 @@ export default function OfflinePage() {
       setLastChecked(new Date().toLocaleTimeString());
     }
   }, []);
-
-  const handleReturnHome = useCallback(() => {
-    navigate('/');
-  }, [navigate]);
 
   const handleReload = useCallback(() => {
     window.location.reload();
@@ -185,8 +178,6 @@ export default function OfflinePage() {
           </div>
 
           <div className="relative z-10 space-y-6">
-            
-
             <div className="flex justify-center">
               <div className="relative">
                 <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-brand-light/90 dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 flex items-center justify-center shadow-inner relative group transition-transform hover:scale-105 duration-300">
@@ -248,7 +239,7 @@ export default function OfflinePage() {
             </header>
 
             <p className="text-slate-600 dark:text-slate-300 text-xs sm:text-sm max-w-md mx-auto leading-relaxed">
-              We couldn't reach the school portal. This might happen due to a weak Wi-Fi signal, disabled mobile data, or temporary network outage.
+              We couldn't load this content right now. Please check your network connection and try again.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
@@ -277,13 +268,13 @@ export default function OfflinePage() {
 
               <button
                 type="button"
-                onClick={handleReturnHome}
+                onClick={handleReload}
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-brand-white dark:bg-emerald-950/60 border border-brand-pale dark:border-emerald-800/50 hover:border-brand-soft text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 font-bold text-xs sm:text-sm shadow-2xs transition-all hover:scale-105 active:scale-95 cursor-pointer"
               >
                 <svg className="w-4 h-4 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
-                <span>Return to Home</span>
+                <span>Reload Page</span>
               </button>
             </div>
           </div>

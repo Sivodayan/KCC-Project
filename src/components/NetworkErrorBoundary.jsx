@@ -1,5 +1,5 @@
 import React from 'react';
-import OfflinePage from '../pages/OfflinePage.jsx';
+import OfflineFallback from './OfflineFallback.jsx';
 
 function isNetworkOrChunkError(error) {
   if (typeof navigator !== 'undefined' && !navigator.onLine) {
@@ -40,7 +40,7 @@ export class NetworkErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       if (isNetworkOrChunkError(this.state.error)) {
-        return <OfflinePage />;
+        return <OfflineFallback />;
       }
 
       return (

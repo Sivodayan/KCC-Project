@@ -57,8 +57,8 @@ Official Website:
 
 ### 📡 Offline & Network Resiliency System
 * **Global Connection Monitoring:** Real-time browser `online`/`offline` listener that surfaces a non-intrusive sticky notice when connection drops and confirms reconnection with an auto-dismissing banner.
-* **Dedicated Offline Page (`/offline`):** Themed error page featuring an animated vector Wi-Fi disconnection illustration, live connectivity testing button (*"Try Again"* with real server ping), connection diagnostics, troubleshooting checklist, and direct telephone dialing to the school administration office (`021 223 0040`).
-* **Network Error Boundary:** React boundary wrapping lazy route imports to catch offline chunk-load failures and render the offline view rather than a blank screen.
+* **Contextual Offline Fallback:** In-place network error boundary component featuring an animated vector Wi-Fi disconnection illustration, live connectivity testing button (*"Try Again"* with real server ping), connection diagnostics, and reload action without disturbing the user's route history or URL bar.
+* **Network Error Boundary:** React boundary wrapping lazy route imports to catch offline chunk-load failures and render the in-place fallback rather than a blank screen.
 
 ### 🚫 Themed 404 Error Handling
 * Dedicated `NotFoundPage` matching the college green aesthetic with watermark crest, popular portal directory links, and a direct **"Report Broken Link"** `mailto:` button with pre-filled error URL and timestamp.
@@ -137,6 +137,7 @@ KCC-Project/
 │   │   ├── SchoolAnthem.jsx        # School anthem player, lyrics, and print trigger
 │   │   ├── SchoolEvents.jsx        # School events timeline & Facebook community sync
 │   │   ├── SearchModal.jsx         # Spotlight command palette with staggered transitions
+│   │   ├── OfflineFallback.jsx     # In-place network diagnostics & connection recovery fallback
 │   │   └── ThemeToggle.jsx         # Dark / Light mode toggle switch
 │   ├── context/
 │   │   └── SiteContentContext.jsx  # Global site content state and CMS data provider
@@ -151,8 +152,7 @@ KCC-Project/
 │   │   ├── GalleryPage.jsx         # Dedicated photo gallery view
 │   │   ├── HistoryPage.jsx         # Dedicated history view with language toggle
 │   │   ├── HomePage.jsx            # Main landing view
-│   │   ├── NotFoundPage.jsx        # 404 page with "Report Broken Link" mailto
-│   │   └── OfflinePage.jsx         # Offline network diagnostics & connection recovery page
+│   │   └── NotFoundPage.jsx        # 404 page with "Report Broken Link" mailto
 │   ├── App.jsx                     # Root router, SEO metadata manager & network monitor
 │   ├── index.css                   # Custom utility classes, animations & print styles
 │   └── main.jsx                    # React 19 entry point
