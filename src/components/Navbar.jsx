@@ -256,6 +256,32 @@ export default function Navbar({
               Home
             </button>
 
+            <button
+              onClick={() => handleNavLink('performance')}
+              className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50"
+            >
+              Performance
+            </button>
+
+            <button
+              onClick={() => handleNavLink('events')}
+              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events'
+                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
+                }`}
+            >
+              Events
+            </button>
+            <button
+              onClick={() => handleNavLink('gallery')}
+              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery'
+                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
+                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
+                }`}
+            >
+              Gallery
+            </button>
+
             <div className="border border-brand-pale dark:border-emerald-800/40 rounded-xl overflow-hidden bg-brand-light/40 dark:bg-[#0e1910]">
               <button
                 type="button"
@@ -312,31 +338,6 @@ export default function Navbar({
                 </div>
               </div>
             </div>
-
-            <button
-              onClick={() => handleNavLink('events')}
-              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'events'
-                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
-                }`}
-            >
-              Events
-            </button>
-            <button
-              onClick={() => handleNavLink('gallery')}
-              className={`block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer ${currentPage === 'gallery'
-                  ? 'bg-brand-pale dark:bg-emerald-900/60 text-brand-forest dark:text-emerald-300 font-bold'
-                  : 'text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50'
-                }`}
-            >
-              Gallery
-            </button>
-            <button
-              onClick={() => handleNavLink('performance')}
-              className="block w-full text-left font-medium py-2 rounded-lg px-3 transition-colors cursor-pointer text-slate-700 dark:text-slate-200 hover:text-brand-forest dark:hover:text-emerald-300 hover:bg-brand-light dark:hover:bg-emerald-950/50"
-            >
-              Performance
-            </button>
             <button
               onClick={() => handleNavLink('contact')}
               className={`block w-full text-center py-2.5 rounded-full font-medium transition-colors cursor-pointer ${currentPage === 'contact' ? 'bg-brand-forestHover text-white ring-2 ring-brand-forest font-bold' : 'bg-brand-forest hover:bg-brand-forestHover text-brand-white'
