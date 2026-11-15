@@ -214,7 +214,13 @@ export default function Navbar({
               </div>
             )}
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div
+              className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-200 ease-out origin-right ${
+                mobileMenuOpen
+                  ? 'max-w-0 opacity-0 pointer-events-none overflow-hidden scale-90'
+                  : 'max-w-[120px] opacity-100 pointer-events-auto scale-100'
+              }`}
+            >
               <ThemeToggle />
 
               <button
