@@ -18,6 +18,11 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID || ''
 };
 
+export const isFirebaseConfigured = Boolean(
+  firebaseConfig.apiKey &&
+  firebaseConfig.projectId
+);
+
 export const firebaseProjectId = firebaseConfig.projectId || '';
 
 let app = null;
