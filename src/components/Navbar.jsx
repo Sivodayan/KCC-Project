@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AboutDropdown from './AboutDropdown.jsx';
 import ThemeToggle from './ThemeToggle.jsx';
 
@@ -17,6 +17,35 @@ export default function Navbar({
     setMobileMenuOpen(false);
     onNavigate(page, hash);
   }
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth >= 768 && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    }
+    function handleKeyDown(e) {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+      }
+    }
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <header className="w-full border-b border-brand-pale dark:border-emerald-900/40 bg-brand-white/95 dark:bg-[#0b120c]/95 backdrop-blur-md sticky top-0 z-40 transition-colors duration-150 animate-nav-enter" id="mainHeader">
@@ -185,19 +214,13 @@ export default function Navbar({
               </div>
             )}
 
-            <div
-              className={`flex items-center gap-1.5 sm:gap-2 transition-all duration-200 ease-out ${
-                mobileMenuOpen
-                  ? 'max-w-0 opacity-0 pointer-events-none -mr-1 overflow-hidden scale-90'
-                  : 'max-w-[120px] opacity-100 scale-100'
-              }`}
-            >
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <ThemeToggle />
 
               <button
                 onClick={onOpenSearch}
                 type="button"
-                className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-all duration-200 cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)] active:scale-95"
+                className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer dark:shadow-[0_0_10px_rgba(74,222,128,0.1)] active:scale-95"
                 aria-label="Search"
               >
                 <svg className="w-5 h-5 text-brand-forest dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -209,11 +232,11 @@ export default function Navbar({
             <button
               onClick={() => setMobileMenuOpen(prev => !prev)}
               type="button"
-              className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer"
+              className="p-2 rounded-xl bg-brand-light dark:bg-[#101b12] border border-brand-pale dark:border-emerald-500/40 text-slate-700 dark:text-emerald-300 hover:text-brand-forest transition-colors cursor-pointer active:scale-95"
               aria-expanded={mobileMenuOpen}
               aria-label="Toggle navigation menu"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-6 h-6 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {mobileMenuOpen ? (
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                 ) : (
@@ -225,13 +248,25 @@ export default function Navbar({
         </nav>
       </div>
 
+      {/* Mobile Drawer Backdrop */}
       <div
-        className={`grid md:hidden transition-[grid-template-rows,opacity] duration-300 ease-out ${
-          mobileMenuOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0 pointer-events-none'
+        className={`fixed inset-0 bg-slate-900/40 dark:bg-black/60 md:hidden transition-opacity duration-200 z-30 ${
+          mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
+        onClick={() => setMobileMenuOpen(false)}
+        aria-hidden="true"
+      />
+
+      {/* Mobile Drawer Menu Dropdown */}
+      <div
+        className={`absolute top-full left-0 right-0 w-full md:hidden bg-brand-white dark:bg-[#101911] border-b border-brand-pale dark:border-emerald-900/40 shadow-2xl transition-all duration-200 ease-out origin-top overflow-y-auto overscroll-contain z-40 transform-gpu ${
+          mobileMenuOpen
+            ? 'opacity-100 translate-y-0 pointer-events-auto visible'
+            : 'opacity-0 -translate-y-2 pointer-events-none invisible'
+        }`}
+        style={{ maxHeight: 'calc(100dvh - 4.5rem)' }}
       >
-        <div className="overflow-hidden bg-brand-white dark:bg-[#101911] border-t border-brand-pale dark:border-emerald-900/40 shadow-lg">
-          <div className="px-6 py-4 space-y-3">
+        <div className="px-6 py-4 space-y-3">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -354,7 +389,6 @@ export default function Navbar({
             </div>
           </div>
         </div>
-      </div>
     </header>
   );
 }
